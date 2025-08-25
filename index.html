@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galería Paginada y Aleatoria - Multi Repos</title>
+    <script src="./gioUI.js"></script>
+    <script src="libfiltergio.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        #menusimple {
+            position: fixed;
+            top: 50%;
+            left: 3%;
+            transform: translate(-50%, -50%);
+            height: auto;
+            min-height: 400px;
+            width: 67px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            align-items: center;
+            border-right: 1.5px solid #e5e5e0;
+            box-shadow: 4px 2px 10px 3px rgba(0, 0, 0, 0.23);
+            background-color: #ffffff;
+            z-index: 10;
+        }
+
+        #contenedor {
+            width: 86%;
+            height: 80%;
+            position: fixed;
+            top: 5%;
+            left: 10%;
+            background-color: rgb(255, 255, 255);
+            overflow-y: scroll;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .contenedordeiamgenes {
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .imgcontenida {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .contenedordeiamgenes:hover .imgcontenida {
+            transform: scale(1.05);
+        }
+        
+        .info-imagen {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 10px;
+            box-sizing: border-box;
+            transform: translateY(100%);
+            transition: transform 0.3s ease-in-out;
+            text-align: center;
+        }
+
+        .contenedordeiamgenes:hover .info-imagen {
+            transform: translateY(0);
+        }
+
+        .info-imagen h4 {
+            margin: 0;
+            font-size: 1em;
+        }
+
+        .repo-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: rgba(0, 0, 0, 0.226);
+            color: rgba(255, 255, 255, 0.247);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        #controlesPaginacion {
+            position: fixed;
+            bottom: 4%;
+            left: 53%;
+            transform: translateX(-50%);
+            text-align: center;
+            width: 86%;
+        }
+
+        #controlesPaginacion button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 0 10px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #efefef;
+        }
+
+        #controlesPaginacion button:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+            background-color: #f0f0f0;
+        }
+
+        #cargando {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0,0,0,0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .error {
+            background-color: white;
+            color: black;
+            padding: 20px;
+            border: 1px solid #ccc;
+            margin: 20px;
+            text-align: center;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+        
+        .error h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .error p {
+            margin: 10px 0;
+            line-height: 1.4;
+        }
+
+        #idcontendoreditor{
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffffc9;
+            z-index: 100000;
+            display: none;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            justify-content: center;
+            align-items: center;
+            align-content: center;
+            padding-bottom: 70px;
+        }
+     
+        .clbtsimpleeditors{
+            border: none;
+            background-color: #525252;
+            color: #ffffff;
+            width: auto;
+            min-width: 60px;
+            height: 60px;
+            border-radius: 50%;
+        }
+
+        #dicloseedit{
+            position: fixed;
+            top: 10%;
+            right: 20%;
+            z-index: 1000000;
+        }
+
+        .info-paginacion {
+            display: inline-block;
+            margin: 0 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        #vista-previa-hover {
+            position: fixed;
+            width: 700px;
+            height: 700px;
+            background: white;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            z-index: 5000;
+            pointer-events: none;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            overflow: hidden;
+        }
+
+        #vista-previa-hover.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        #vista-previa-hover img {
+            width: 100%;
+            height: 90%;
+            object-fit: contain;
+        }
+
+        #vista-previa-hover .info-preview {
+            height: 10%;
+            padding: 10px;
+            background: #333;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        #repo-stats {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div id="repo-stats"></div>
+    <div id="idcontendoreditor"><button id="dicloseedit" class="clbtsimpleeditors">close</button></div>
+
+    <div id="vista-previa-hover">
+        <img id="preview-img" src="" alt="">
+        <div class="info-preview" id="preview-info"></div>
+    </div>
+
+    <div id="menusimple"></div>
+    <div id="contenedor"></div>
+    <div id="controlesPaginacion">
+        <button id="btnAtras">Atrás</button>
+        <button id="btnSiguiente">Siguiente</button>
+        <button id="btnRecargar">Recargar</button>
+    </div>
+
+    <div id="cargando" style="display: none;">
+        <p>load ...</p>
+    </div>
+
+    <script  >
+        document.addEventListener('DOMContentLoaded', () => {
+            const contenedor = document.getElementById('contenedor');
+            const btnAtras = document.getElementById('btnAtras');
+            const btnSiguiente = document.getElementById('btnSiguiente');
+            const btnRecargar = document.getElementById('btnRecargar');
+            const cargando = document.getElementById('cargando');
+            const repoStats = document.getElementById('repo-stats');
+
+            const btdicloseedit=document.getElementById("dicloseedit");
+            btdicloseedit.onclick=()=>{ document.getElementById("idcontendoreditor").style.display="none";}
+            
+            const vistaPrevia = document.getElementById('vista-previa-hover');
+            const previewImg = document.getElementById('preview-img');
+            const previewInfo = document.getElementById('preview-info');
+            
+            var editorgiofilter=null;
+            let todasLasUrls = []; 
+            let loteActual = 0;  
+            const imagenesPorLote = 20;  
+
+            const repositorios = [
+         { owner: 'unonibes4a', name: 'newImgs' }, 
+                { owner: 'unonibes4a', name: 'newimg2' },
+              
+            ];
+
+            const extensionesValidas = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg', '.tiff', '.tif', '.ico'];
+
+            function esImagen(nombreArchivo) {
+                const extension = nombreArchivo.toLowerCase().substring(nombreArchivo.lastIndexOf('.'));
+                return extensionesValidas.includes(extension);
+            }
+          
+            function obtenerNombreArchivo(path) {
+                return path.split('/').pop().replace(/\.[^/.]+$/, "");
+            }
+
+            function mostraridcontendoreditor(){
+                document.getElementById("idcontendoreditor").style.display="flex";
+            }
+
+            function posicionarVistaPrevia(mouseX, mouseY, elementoRect) {
+                const previewWidth = 500;
+                const previewHeight = 500;
+                const margen = 20;
+                
+                const windowWidth = window.innerWidth;
+                const windowHeight = window.innerHeight;
+                
+                let x, y;
+                
+                if (mouseX < windowWidth / 2) {
+                    x = elementoRect.right + margen;
+                    if (x + previewWidth > windowWidth) {
+                        x = windowWidth - previewWidth - margen;
+                    }
+                } else {
+                    x = elementoRect.left - previewWidth - margen;
+                    if (x < 0) {
+                        x = margen;
+                    }
+                }
+                
+                y = mouseY - previewHeight / 2;
+                
+                if (y < margen) {
+                    y = margen;
+                } else if (y + previewHeight > windowHeight - margen) {
+                    y = windowHeight - previewHeight - margen;
+                }
+                
+                vistaPrevia.style.left = x + 'px';
+                vistaPrevia.style.top = y + 'px';
+            }
+
+            function mostrarVistaPrevia(imgSrc, nombre, mouseEvent, elemento) {
+                previewImg.src = imgSrc;
+                previewInfo.textContent = nombre;
+                
+                const rect = elemento.getBoundingClientRect();
+                posicionarVistaPrevia(mouseEvent.clientX, mouseEvent.clientY, rect);
+                
+                elemento.classList.add('hover-active');
+                vistaPrevia.classList.add('visible');
+            }
+
+            function ocultarVistaPrevia(elemento) {
+                elemento.classList.remove('hover-active');
+                vistaPrevia.classList.remove('visible');
+            }
+
+            async function cargarImagenesDesdeDirectorio(url, rutaBase = '', repoName = '') {
+                const urls = [];
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        console.warn(`Error al cargar directorio ${url}: ${response.status}`);
+                        return urls;
+                    }
+
+                    const data = await response.json();
+                    
+                    for (const item of data) {
+                        if (item.type === 'file' && esImagen(item.name)) {
+                            urls.push({
+                                url: item.download_url,
+                                nombre: obtenerNombreArchivo(item.name),
+                                repo: repoName
+                            });
+                        } else if (item.type === 'dir') {
+                            const subUrls = await cargarImagenesDesdeDirectorio(
+                                item.url, 
+                                `${rutaBase}${item.name}/`,
+                                repoName
+                            );
+                            urls.push(...subUrls);
+                        }
+                    }
+                } catch (error) {
+                    console.warn(`Error procesando directorio ${url}:`, error);
+                }
+                return urls;
+            }
+
+            async function cargarImagenesDesdeRepositorio(repo) {
+                const githubApiUrl = `https://api.github.com/repos/${repo.owner}/${repo.name}/contents`;
+                console.log(`Cargando desde repositorio: ${repo.name}`);
+                
+                try {
+                    const urls = await cargarImagenesDesdeDirectorio(githubApiUrl, '', repo.name);
+                    console.log(`${repo.name}: ${urls.length} imágenes encontradas`);
+                    return urls;
+                } catch (error) {
+                    console.warn(`Error cargando repositorio ${repo.name}:`, error);
+                    return [];
+                }
+            }
+
+            async function cargarImagenesDesdeMultiplesRepos() {
+                cargando.style.display = 'block';
+                
+                try {
+                    console.log(`Cargando desde ${repositorios.length} repositorios...`);
+                    
+                    const promesas = repositorios.map(repo => cargarImagenesDesdeRepositorio(repo));
+                    const resultados = await Promise.all(promesas);
+                    
+                    const todasLasImagenes = resultados.flat();
+                    
+                    console.log(`Total de imágenes encontradas: ${todasLasImagenes.length}`);
+                    
+                    const estadisticas = {};
+                    todasLasImagenes.forEach(img => {
+                        estadisticas[img.repo] = (estadisticas[img.repo] || 0) + 1;
+                    });
+                    
+                    let statsText = `Total: ${todasLasImagenes.length} | `;
+                    for (const [repo, count] of Object.entries(estadisticas)) {
+                        statsText += `${repo}: ${count} | `;
+                    }
+                    repoStats.textContent = statsText.slice(0, -3);
+                    
+                    if (todasLasImagenes.length === 0) {
+                        throw new Error('No se encontraron imágenes en ningún repositorio.');
+                    }
+
+                    const urlsBarajadas = barajarArray([...todasLasImagenes]);
+                    console.log('URLs combinadas y barajadas, listas para mostrar en lotes de', imagenesPorLote);
+
+                    return urlsBarajadas;
+
+                } catch (error) {
+                    console.error('Error cargando imágenes desde repositorios:', error);
+                    contenedor.innerHTML = `
+                        <div class="error">
+                            <h3>Error cargando imágenes</h3>
+                            <p>No se pudieron cargar las imágenes de los repositorios</p>
+                            <p>${error.message}</p>
+                        </div>
+                    `;
+                    return [];
+                } finally {
+                    cargando.style.display = 'none';
+                }
+            }
+
+            function barajarArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            function obtenerLoteActual() {
+                const inicio = loteActual * imagenesPorLote;
+                const fin = inicio + imagenesPorLote;
+                return todasLasUrls.slice(inicio, fin);
+            }
+
+            function actualizarBotones() {
+                const totalLotes = Math.ceil(todasLasUrls.length / imagenesPorLote);
+                
+                btnAtras.disabled = (loteActual === 0);
+                btnSiguiente.disabled = (loteActual >= totalLotes - 1);
+                
+                console.log(`Lote actual: ${loteActual + 1} de ${totalLotes}`);
+            }
+
+            function generarNumeroAleatorio(min, max) {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+
+            function mostrarLote() {
+                const imagenes = obtenerLoteActual();
+                
+                contenedor.innerHTML = '';
+                
+                if (imagenes.length === 0) {
+                    contenedor.innerHTML = '<div class="error">No hay imágenes para mostrar en este lote</div>';
+                    return;
+                }
+
+                const fragmento = document.createDocumentFragment();
+
+                imagenes.forEach(imageData => {
+                    const divContenedor = document.createElement('div');
+                    divContenedor.className = 'contenedordeiamgenes';
+                    let w = 223;
+                    let h = generarNumeroAleatorio(200, 400);
+                    divContenedor.style.width = w.toString() + "px";
+                    divContenedor.style.height = h.toString() + "px";
+
+                    const imgElemento = document.createElement('img');
+                    imgElemento.className = 'imgcontenida';
+                    imgElemento.src = imageData.url;
+                    imgElemento.alt = imageData.nombre;
+                    
+                    imgElemento.onclick = () => {
+                        if (editorgiofilter) {
+                            editorgiofilter.changeImgUrl(imgElemento.src);
+                            mostraridcontendoreditor();
+                        }
+                    }
+                    
+                    divContenedor.onmouseenter = (e) => {
+                        mostrarVistaPrevia(imageData.url, `${imageData.nombre} (${imageData.repo})`, e, divContenedor);
+                    };
+                    
+                    divContenedor.onmouseleave = () => {
+                        ocultarVistaPrevia(divContenedor);
+                    };
+                    
+                    divContenedor.onmousemove = (e) => {
+                        if (vistaPrevia.classList.contains('visible')) {
+                            const rect = divContenedor.getBoundingClientRect();
+                            posicionarVistaPrevia(e.clientX, e.clientY, rect);
+                        }
+                    };
+                    
+                    imgElemento.onerror = function() {
+                        this.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="240" height="340" viewBox="0 0 240 340"%3E%3Crect width="240" height="340" fill="%23f0f0f0"/%3E%3Ctext x="120" y="170" text-anchor="middle" fill="%23999" font-family="Arial, sans-serif" font-size="14"%3EImagen no disponible%3C/text%3E%3C/svg%3E';
+                    };
+
+                    const infoDiv = document.createElement('div');
+                    infoDiv.className = 'info-imagen';
+                    infoDiv.innerHTML = `<h4>${imageData.nombre}</h4>`;
+
+                    const repoBadge = document.createElement('div');
+                    repoBadge.className = 'repo-badge';
+                    repoBadge.textContent = imageData.repo;  
+
+                    divContenedor.appendChild(imgElemento);
+                    divContenedor.appendChild(infoDiv);
+                    divContenedor.appendChild(repoBadge);  
+                    fragmento.appendChild(divContenedor);
+                });
+
+                contenedor.appendChild(fragmento);
+                actualizarBotones();
+            }
+
+            btnAtras.addEventListener('click', () => {
+                if (loteActual > 0) {
+                    loteActual--;
+                    mostrarLote();
+                    console.log('Navegando al lote anterior:', loteActual + 1);
+                }
+            });
+
+            btnSiguiente.addEventListener('click', () => {
+                const totalLotes = Math.ceil(todasLasUrls.length / imagenesPorLote);
+                if (loteActual < totalLotes - 1) {
+                    loteActual++;
+                    mostrarLote();
+                    console.log('Navegando al siguiente lote:', loteActual + 1);
+                }
+            });
+
+            btnRecargar.addEventListener('click', () => {
+                iniciarGaleria();
+            });
+
+            async function iniciarGaleria() {
+                const urls = await cargarImagenesDesdeMultiplesRepos();
+                
+                if (urls.length > 0) {
+                    todasLasUrls = urls;  
+                    loteActual = 0;  
+                    mostrarLote();
+                    
+                    const totalLotes = Math.ceil(todasLasUrls.length / imagenesPorLote);
+                    console.log(`Galería iniciada: ${todasLasUrls.length} imágenes en ${totalLotes} lotes de ${imagenesPorLote}`);
+                }
+            }
+
+            function inifiltergio(){
+                try {
+                    editorgiofilter = new EditorImgz('idcontendoreditor');
+                } catch (error) {
+                    console.warn('Editor de imágenes no disponible:', error);
+                }
+            }
+            
+            inifiltergio();
+            iniciarGaleria();
+        });
+    </script>
+
+</body>
+</html>
