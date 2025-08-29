@@ -582,10 +582,21 @@ body{
                 imagenes.forEach(imageData => {
                     const divContenedor = document.createElement('div');
                     divContenedor.className = 'contenedordeiamgenes';
+                   
                     let w = 223;
                     let h = generarNumeroAleatorio(200, 400);
-                    divContenedor.style.width = w.toString() + "px";
+                      if(window.innerWidth>=410){
+     divContenedor.style.width = w.toString() + "px";
                     divContenedor.style.height = h.toString() + "px";
+                    }
+                    else{
+                        w = 240;
+                     // h = generarNumeroAleatorio(200, 400); 
+                     divContenedor.style.width = w.toString() + "px";
+                    divContenedor.style.height = h.toString() + "px";  
+                        
+                    }
+                
 
                     const imgElemento = document.createElement('img');
                     imgElemento.className = 'imgcontenida';
