@@ -27,12 +27,16 @@
             background-color: #41414162;
             z-index: 10;
 
-            display: flex;
+     display: flex;
 	flex-direction: column;
 	flex-wrap: nowrap;
-	justify-content: space-evenly;
+	justify-content: center;
 	align-items: center;
-	align-content: space-evenly;
+	align-content: flex-start;
+        }
+        #menusimple *{
+            margin-top: 2px;
+            margin-bottom: 2px;
         }
        
 
@@ -319,8 +323,8 @@ body{
 .cbtondeimgsimple:hover{
 
     color: #ffffff;
-    background-color: #8f8f8f93;
-    scale: 2;
+    background-color: #8f8f8f;
+    scale: 1.2;
    
 
 }
@@ -343,6 +347,7 @@ body{
         <button class="cbtondeimgsimple"  id="btnSiguientebt">-></button>
     <button class="cbtondeimgsimple" id="btnAtrasbt"  ><-</button>
       <button class="cbtondeimgsimple" id="btnRecargarbt"  ><-></button>
+      <button class="cbtondeimgsimple" id="btnRecargarbt"  >img</button>
 </div>
     <div id="contenedor"></div>
     <div id="controlesPaginacion" style="display: none;">
