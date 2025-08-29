@@ -38,9 +38,9 @@
 
         #contenedor {
             width: 86%;
-            height: 80%;
+            height: 94%;
             position: fixed;
-            top: 5%;
+            top: 80px;
             left: 10%;
             background-color: rgb(255, 255, 255);
             overflow-y: scroll;
@@ -312,12 +312,15 @@ body{
 	justify-content: center;
 	align-items: center;
 	align-content: center;
+    cursor: pointer;
+    transition: 0.7s;
 
 }
-.cbtondeimgsimple.hover{
+.cbtondeimgsimple:hover{
 
     color: #ffffff;
-    background-color: #8f8f8f;
+    background-color: #8f8f8f93;
+    scale: 2;
    
 
 }
@@ -342,7 +345,7 @@ body{
       <button class="cbtondeimgsimple" id="btnRecargarbt"  ><-></button>
 </div>
     <div id="contenedor"></div>
-    <div id="controlesPaginacion">
+    <div id="controlesPaginacion" style="display: none;">
         <button id="btnAtras" class="displanone">Atrás</button>
         <button id="btnSiguiente" class="displanone">Siguiente</button>
         <button id="btnRecargar" class="displanone">Recargar</button>
