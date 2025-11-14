@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="icon" type="image/x-icon" href="https://unonibes4a.github.io/pintaresta/pintarest.ico">
     <title>Galería Paginada y Aleatoria - Multi Repos</title>
 
 
@@ -3136,6 +3137,7 @@ body{
                             editorgiofilter.changeImgUrl(imgElemento.src);
                             mostraridcontendoreditor();
                         } */
+                       calleditorpintaresta();
                     }
                     
                     divContenedor.onmouseenter = (e) => {
@@ -3210,12 +3212,15 @@ body{
 
            
               document.getElementById("btneditorIni").onclick=()=>{
-                   const soporteApp = document.getElementById('idSoporteApp');  
-        soporteApp.style.display = soporteApp.style.display === 'none' ? 'block' : 'none';        
+                calleditorpintaresta();
+                          
          };
 
 
-
+function calleditorpintaresta(){
+  const soporteApp = document.getElementById('idSoporteApp');  
+        soporteApp.style.display = soporteApp.style.display === 'none' ? 'block' : 'none';  
+}
 
 
            document.getElementById("btnRecargarbt").onclick=()=>{
