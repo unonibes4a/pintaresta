@@ -748,7 +748,7 @@
                         e.stopPropagation();
                      /*    const infoExtra = esLocal ? `\nArchivo: ${mediaData.nombreCompleto}\nTamano: ${mediaData.tamañoLegible}\nRuta: ${mediaData.ruta}` : '';
                         alert(`Imagen\n\nNombre: ${mediaData.nombre}\nOrigen: ${mediaData.repo}${infoExtra}`); */
-                      calleditorpintaresta();
+                     this. calleditorpintaresta(imgElement);
                     };
                     imgElement.onerror = function() {
                         this.style.background = 'linear-gradient(135deg, #f0f0f0, #e0e0e0)';
@@ -843,10 +843,12 @@
                     this.mostrarLote();
                 }
             }
-              calleditorpintaresta=()=>{
+              calleditorpintaresta=(img)=>{
+                console.log(window.appEditorgioBasico.parentElement ,'window.appEditorgioBasico ');
                 if(window.appEditorgioBasico    &&window.appEditorgioBasico .parentElement){
+ window.appEditorgioBasico.setImage(img.src);
+                 window.appEditorgioBasico. openappf();   
 
-                 window.appEditorgioBasico .parentElement. openappf();  
                 }
   
 }
