@@ -746,8 +746,9 @@
                     }
                     imgElement.onclick = (e) => {
                         e.stopPropagation();
-                        const infoExtra = esLocal ? `\nArchivo: ${mediaData.nombreCompleto}\nTamano: ${mediaData.tamañoLegible}\nRuta: ${mediaData.ruta}` : '';
-                        alert(`Imagen\n\nNombre: ${mediaData.nombre}\nOrigen: ${mediaData.repo}${infoExtra}`);
+                     /*    const infoExtra = esLocal ? `\nArchivo: ${mediaData.nombreCompleto}\nTamano: ${mediaData.tamañoLegible}\nRuta: ${mediaData.ruta}` : '';
+                        alert(`Imagen\n\nNombre: ${mediaData.nombre}\nOrigen: ${mediaData.repo}${infoExtra}`); */
+                      calleditorpintaresta();
                     };
                     imgElement.onerror = function() {
                         this.style.background = 'linear-gradient(135deg, #f0f0f0, #e0e0e0)';
