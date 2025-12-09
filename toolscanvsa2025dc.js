@@ -1569,6 +1569,10 @@ class AppEditorDefaultImg {
     }
     this._initResponsive();
   }
+  openappf=()=>{
+     const soporteApp =this.parentElement;
+        soporteApp.style.display = soporteApp.style.display === 'none' ? 'block' : 'none';  
+  }
 closeappf= (e) => {
       var soporteApp = this.parentElement;
       soporteApp.style.display = soporteApp.style.display === 'none' ? 'block' : 'none';
@@ -1608,7 +1612,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => {
       window.appEditorgioBasico .closeappf();
   }, 100);
-}); 
+});   
 /* fin de filtros efectfgx otros */
 
     
