@@ -1564,12 +1564,15 @@ class AppEditorDefaultImg {
     this.LabelEdit = document.getElementById(`${this.idGenerico}textoedi`);
     this.botonCloseEditor = document.getElementById(`${this.idGenerico}closeImageEditor`);
     this.botonCloseEditor.onclick = (e) => {
-      var soporteApp = this.parentElement;
-      soporteApp.style.display = soporteApp.style.display === 'none' ? 'block' : 'none';
+     
+      this.closeappf();
     }
     this._initResponsive();
   }
-
+closeappf= (e) => {
+      var soporteApp = this.parentElement;
+      soporteApp.style.display = soporteApp.style.display === 'none' ? 'block' : 'none';
+    }
   _initResponsive() {
     this._handleResize();
     window.addEventListener('resize', () => this._handleResize());
@@ -1602,6 +1605,9 @@ window.appEditorgioBasico = null;
 document.addEventListener('DOMContentLoaded', () => {
  
   window.appEditorgioBasico = new AppEditorDefaultImg( 'app1', "Edit");
+  setTimeout(() => {
+      window.appEditorgioBasico .closeappf();
+  }, 100);
 }); 
 /* fin de filtros efectfgx otros */
 
