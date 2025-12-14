@@ -995,7 +995,7 @@ class EscalaDeGrisFilter {
 
     this.controls.intensity = new GioUISliderBasico(
       this.controlsContainer, -300, 200, { onChange },
-      `${this.prefix}_grayscale_intensity`, 'Intensidad', 100, 1
+      `${this.prefix}_grayscale_intensity`, 'Intensidad', 1, 1
     );
   }
 
