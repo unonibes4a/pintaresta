@@ -1610,8 +1610,8 @@ document.addEventListener('DOMContentLoaded', () => {
  
   window.appEditorgioBasico = new AppEditorDefaultImg( 'app1', "Edit");
   setTimeout(() => {
-    //  window.appEditorgioBasico .closeappf();
-  }, 100);
+     window.appEditorgioBasico .closeappf();
+  }, 20);
 });   
 /* fin de filtros efectfgx otros */
 
