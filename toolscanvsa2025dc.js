@@ -650,7 +650,7 @@ class CarbonDrawingFilter {
 
     this.controls.strokeWidth = new GioUISliderBasico(
       this.controlsContainer, -10, 100, { onChange },
-      `${this.prefix}_carbon_stroke`, 'Stroke Thickness', 7, 1
+      `${this.prefix}_carbon_stroke`, 'Stroke Thickness', 1, 1
     );
 
     this.controls.contrast = new GioUISliderBasico(
@@ -664,13 +664,13 @@ class CarbonDrawingFilter {
     );
 
     this.controls.paperTexture = new GioUISliderBasico(
-      this.controlsContainer, -100, 100, { onChange },
-      `${this.prefix}_carbon_texture`, 'Paper Texture', -70, 1
+      this.controlsContainer, -200, 100, { onChange },
+      `${this.prefix}_carbon_texture`, 'Paper Texture', -200, 1
     );
 
     this.controls.smoothing = new GioUISliderBasico(
       this.controlsContainer, 0, 10, { onChange },
-      `${this.prefix}_carbon_smooth`, 'Softening', 3, 1
+      `${this.prefix}_carbon_smooth`, 'Softening', 0, 1
     );
   }
 
@@ -1610,7 +1610,7 @@ document.addEventListener('DOMContentLoaded', () => {
  
   window.appEditorgioBasico = new AppEditorDefaultImg( 'app1', "Edit");
   setTimeout(() => {
-      window.appEditorgioBasico .closeappf();
+    //  window.appEditorgioBasico .closeappf();
   }, 100);
 });   
 /* fin de filtros efectfgx otros */
@@ -1625,6 +1625,16 @@ document.addEventListener('DOMContentLoaded', () => {
     
     
     
+
+
+
+
+
+
+
+
+
+
     
     
     
