@@ -979,7 +979,7 @@ class EscalaDeGrisFilter {
     section.className = 'giodefaultimgeditor-filter-section';
     section.innerHTML = `
       <button class="giodefaultimgeditor-filter-toggle-btn" id="${this.idToggleBtn}">
-        Escala de Grises
+       saturation
       </button>
       <div class="giodefaultimgeditor-filter-controls" id="${this.prefix}_grayscale_controls">
       </div>
@@ -994,7 +994,7 @@ class EscalaDeGrisFilter {
     const onChange = () => this.isActive && this.onUpdate?.();
 
     this.controls.intensity = new GioUISliderBasico(
-      this.controlsContainer, 0, 100, { onChange },
+      this.controlsContainer, -300, 200, { onChange },
       `${this.prefix}_grayscale_intensity`, 'Intensidad', 100, 1
     );
   }
@@ -2644,3 +2644,4 @@ addCssClassToElement=(element, classNameToAdd) =>{
         });
       };
     }
+
