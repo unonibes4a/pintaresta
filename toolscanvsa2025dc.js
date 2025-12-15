@@ -1030,6 +1030,341 @@ class EscalaDeGrisFilter {
   }
 }
 
+
+/* init normal map */
+
+class NormalMapFilter {
+  constructor(canvas, onUpdate, idPrefix) {
+    this.prefix = idPrefix;
+    this.idSection = `${this.prefix}_normalmap_sect`;
+    this.idToggleBtn = `${this.prefix}_normalmap_toggle_btn`;
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d', { willReadFrequently: true });
+    this.onUpdate = onUpdate;
+    this.controls = {};
+    this.isActive = false;
+    this.controlsContainer = null;
+    this.blurEnabled = false;
+    this.normalMapFormat = 'opengl'; // 'opengl', 'directx'
+  }
+
+  createUI(parentElement) {
+    const section = document.createElement('div');
+    section.id = this.idSection;
+    section.className = 'giodefaultimgeditor-filter-section';
+    section.innerHTML = `
+      <button class="giodefaultimgeditor-filter-toggle-btn" id="${this.idToggleBtn}">
+        Normal Map
+      </button>
+      <div class="giodefaultimgeditor-filter-controls" id="${this.prefix}_normalmap_controls">
+      </div>
+    `;
+    parentElement.appendChild(section);
+    this.controlsContainer = document.getElementById(`${this.prefix}_normalmap_controls`);
+    document.getElementById(this.idToggleBtn).addEventListener('click', () => this.toggle());
+    this._createControls();
+  }
+
+  _createControls() {
+    const onChange = () => this.isActive && this.onUpdate?.();
+
+    // Format selector (OpenGL/DirectX)
+    const formatGroup = document.createElement('div');
+    formatGroup.className = 'giodefaultimgeditor-control-group';
+    formatGroup.innerHTML = `
+      <div class="giodefaultimgeditor-control-label">
+        <span>Formato Normal Map</span>
+      </div>
+      <div style="display: flex; gap: 10px; margin-top: 5px;">
+        <label class="giodefaultimgeditor-checkbox-label" style="flex: 1;">
+          <input type="radio" name="${this.prefix}_normalmap_format" value="opengl" checked>
+          <span>OpenGL (Blender)</span>
+        </label>
+        <label class="giodefaultimgeditor-checkbox-label" style="flex: 1;">
+          <input type="radio" name="${this.prefix}_normalmap_format" value="directx">
+          <span>DirectX (Unreal/Unity)</span>
+        </label>
+      </div>
+    `;
+    this.controlsContainer.appendChild(formatGroup);
+
+    // Add event listeners to radio buttons
+    const radioButtons = formatGroup.querySelectorAll('input[type="radio"]');
+    radioButtons.forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        this.normalMapFormat = e.target.value;
+        // Auto-adjust invert G based on format
+        if (this.normalMapFormat === 'directx') {
+          this.invertGCheckbox.checked = true;
+        } else {
+          this.invertGCheckbox.checked = false;
+        }
+        onChange();
+      });
+    });
+
+    // Blur controls
+    const blurGroup = document.createElement('div');
+    blurGroup.className = 'giodefaultimgeditor-control-group';
+    blurGroup.innerHTML = `
+      <label class="giodefaultimgeditor-checkbox-label">
+        <input type="checkbox" id="${this.prefix}_normalmap_blur_checkbox">
+        <span>Aplicar Blur Pre-proceso</span>
+      </label>
+    `;
+    this.controlsContainer.appendChild(blurGroup);
+
+    this.blurCheckbox = document.getElementById(`${this.prefix}_normalmap_blur_checkbox`);
+    this.blurCheckbox.addEventListener('change', (e) => {
+      this.blurEnabled = e.target.checked;
+      this.controls.blurRadius.controlGroup.style.display = this.blurEnabled ? 'block' : 'none';
+      onChange();
+    });
+
+    // Blur radius slider
+    this.controls.blurRadius = new GioUISliderBasico(
+      this.controlsContainer, 1, 20, { onChange },
+      `${this.prefix}_normalmap_blur_radius`, 'Radio Blur', 3, 1
+    );
+    this.controls.blurRadius.controlGroup.style.display = 'none';
+
+    // Strength slider
+    this.controls.strength = new GioUISliderBasico(
+      this.controlsContainer, 1, 100, { onChange },
+      `${this.prefix}_normalmap_strength`, 'Strength (Intensidad)', 10, 1
+    );
+
+    // Bias slider
+    this.controls.bias = new GioUISliderBasico(
+      this.controlsContainer, 1, 200, { onChange },
+      `${this.prefix}_normalmap_bias`, 'Bias (Profundidad)', 100, 1
+    );
+
+    // Divider
+    const divider = document.createElement('div');
+    divider.style.borderTop = '1px solid rgba(255,255,255,0.1)';
+    divider.style.margin = '10px 0';
+    this.controlsContainer.appendChild(divider);
+
+    // Advanced controls label
+    const advancedLabel = document.createElement('div');
+    advancedLabel.className = 'giodefaultimgeditor-control-label';
+    advancedLabel.innerHTML = '<span style="font-weight: bold;">Controles Avanzados</span>';
+    this.controlsContainer.appendChild(advancedLabel);
+
+    // Invert R checkbox
+    const invertRGroup = document.createElement('div');
+    invertRGroup.className = 'giodefaultimgeditor-control-group';
+    invertRGroup.innerHTML = `
+      <label class="giodefaultimgeditor-checkbox-label">
+        <input type="checkbox" id="${this.prefix}_normalmap_invert_r">
+        <span>Invertir Eje X (Canal Rojo)</span>
+      </label>
+    `;
+    this.controlsContainer.appendChild(invertRGroup);
+    this.invertRCheckbox = document.getElementById(`${this.prefix}_normalmap_invert_r`);
+    this.invertRCheckbox.addEventListener('change', onChange);
+
+    // Invert G checkbox
+    const invertGGroup = document.createElement('div');
+    invertGGroup.className = 'giodefaultimgeditor-control-group';
+    invertGGroup.innerHTML = `
+      <label class="giodefaultimgeditor-checkbox-label">
+        <input type="checkbox" id="${this.prefix}_normalmap_invert_g">
+        <span>Invertir Eje Y (Canal Verde)</span>
+      </label>
+    `;
+    this.controlsContainer.appendChild(invertGGroup);
+    this.invertGCheckbox = document.getElementById(`${this.prefix}_normalmap_invert_g`);
+    this.invertGCheckbox.addEventListener('change', onChange);
+
+    // Use Red Channel checkbox
+    const useRedGroup = document.createElement('div');
+    useRedGroup.className = 'giodefaultimgeditor-control-group';
+    useRedGroup.innerHTML = `
+      <label class="giodefaultimgeditor-checkbox-label">
+        <input type="checkbox" id="${this.prefix}_normalmap_use_red" checked>
+        <span>Usar Canal Rojo (X)</span>
+      </label>
+    `;
+    this.controlsContainer.appendChild(useRedGroup);
+    this.useRedCheckbox = document.getElementById(`${this.prefix}_normalmap_use_red`);
+    this.useRedCheckbox.addEventListener('change', onChange);
+
+    // Use Green Channel checkbox
+    const useGreenGroup = document.createElement('div');
+    useGreenGroup.className = 'giodefaultimgeditor-control-group';
+    useGreenGroup.innerHTML = `
+      <label class="giodefaultimgeditor-checkbox-label">
+        <input type="checkbox" id="${this.prefix}_normalmap_use_green" checked>
+        <span>Usar Canal Verde (Y)</span>
+      </label>
+    `;
+    this.controlsContainer.appendChild(useGreenGroup);
+    this.useGreenCheckbox = document.getElementById(`${this.prefix}_normalmap_use_green`);
+    this.useGreenCheckbox.addEventListener('change', onChange);
+
+    // Info text
+    const infoText = document.createElement('div');
+    infoText.style.fontSize = '11px';
+    infoText.style.color = 'rgba(255,255,255,0.5)';
+    infoText.style.marginTop = '10px';
+    infoText.style.padding = '8px';
+    infoText.style.background = 'rgba(0,0,0,0.2)';
+    infoText.style.borderRadius = '4px';
+    infoText.innerHTML = `
+      <strong>Formatos:</strong><br>
+      • <strong>OpenGL (Blender):</strong> Y+ hacia arriba<br>
+      • <strong>DirectX (Unreal/Unity):</strong> Y+ hacia abajo (invierte verde automáticamente)
+    `;
+    this.controlsContainer.appendChild(infoText);
+  }
+
+  toggle() {
+    this.isActive = !this.isActive;
+    if (this.controlsContainer) {
+      this.controlsContainer.style.display = this.isActive ? 'block' : 'none';
+    }
+    const btn = document.getElementById(this.idToggleBtn);
+    btn?.classList.toggle('giodefaultimgeditor-active', this.isActive);
+    this.onUpdate?.();
+  }
+
+  applyFilter(imageData) {
+    if (!this.isActive) return imageData;
+
+    let processedData = imageData;
+
+    // Apply blur if enabled
+    if (this.blurEnabled) {
+      processedData = this._applyBlur(processedData);
+    }
+
+    // Apply normal map
+    return this._createNormalMap(processedData);
+  }
+
+  _applyBlur(imageData) {
+    const radius = this.controls.blurRadius.getValue();
+    const data = imageData.data;
+    const width = imageData.width;
+    const height = imageData.height;
+    const newData = new Uint8ClampedArray(data.length);
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        let r = 0, g = 0, b = 0, count = 0;
+
+        for (let ky = -radius; ky <= radius; ky++) {
+          for (let kx = -radius; kx <= radius; kx++) {
+            const px = x + kx;
+            const py = y + ky;
+
+            if (px >= 0 && px < width && py >= 0 && py < height) {
+              const index = (py * width + px) * 4;
+              r += data[index];
+              g += data[index + 1];
+              b += data[index + 2];
+              count++;
+            }
+          }
+        }
+
+        const index = (y * width + x) * 4;
+        newData[index] = r / count;
+        newData[index + 1] = g / count;
+        newData[index + 2] = b / count;
+        newData[index + 3] = data[index + 3];
+      }
+    }
+
+    return new ImageData(newData, width, height);
+  }
+
+  _createNormalMap(imageData) {
+    const data = imageData.data;
+    const width = imageData.width;
+    const height = imageData.height;
+    const newData = new Uint8ClampedArray(data.length);
+
+    const bias = this.controls.bias.getValue() / 100.0;
+    const strength = this.controls.strength.getValue() / 10.0;
+    
+    // Apply format-specific inversion
+    let invertR = this.invertRCheckbox.checked ? -1.0 : 1.0;
+    let invertG = this.invertGCheckbox.checked ? -1.0 : 1.0;
+    
+    // DirectX automatically inverts G channel
+    if (this.normalMapFormat === 'directx') {
+      invertG = -1.0; // Force invert for DirectX
+    }
+    
+    const useRed = this.useRedCheckbox.checked;
+    const useGreen = this.useGreenCheckbox.checked;
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const index = (y * width + x) * 4;
+
+        // Sample surrounding pixels for gradient calculation
+        const d0 = this._getRedValue(data, x, y, width, height) / 255.0;
+        const d1 = this._getRedValue(data, x + 1, y, width, height) / 255.0;
+        const d2 = this._getRedValue(data, x - 1, y, width, height) / 255.0;
+        const d3 = this._getRedValue(data, x, y + 1, width, height) / 255.0;
+        const d4 = this._getRedValue(data, x, y - 1, width, height) / 255.0;
+
+        // Calculate gradients (Sobel-like operator)
+        let dx = (d2 - d1) * strength;
+        let dy = (d4 - d3) * strength;
+
+        // Apply inversions
+        dx *= invertR;
+        dy *= invertG;
+
+        // Calculate Z component
+        const dz = 1.0 / Math.max(bias, 0.01);
+        
+        // Normalize the vector
+        const length = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        const normX = dx / length;
+        const normY = dy / length;
+        const normZ = dz / length;
+
+        // Convert from [-1, 1] to [0, 255]
+        if (useRed) {
+          newData[index] = Math.floor(Math.max(0, Math.min(255, (normX * 0.5 + 0.5) * 255)));
+        } else {
+          newData[index] = data[index];
+        }
+
+        if (useGreen) {
+          newData[index + 1] = Math.floor(Math.max(0, Math.min(255, (normY * 0.5 + 0.5) * 255)));
+        } else {
+          newData[index + 1] = data[index + 1];
+        }
+
+        // Blue channel always calculated (Z axis)
+        newData[index + 2] = Math.floor(Math.max(0, Math.min(255, (normZ * 0.5 + 0.5) * 255)));
+        newData[index + 3] = 255; // Full opacity
+      }
+    }
+
+    return new ImageData(newData, width, height);
+  }
+
+  _getRedValue(data, x, y, width, height) {
+    if (x < 0 || x >= width || y < 0 || y >= height) {
+      return 0;
+    }
+    const index = (y * width + x) * 4;
+    return data[index];
+  }
+}
+
+
+
+/*  end normal map  */
+
 class GLFXFilterManager {
   constructor(onUpdate, idPrefix) {
     this.prefix = idPrefix;
@@ -1367,6 +1702,7 @@ class FilterManager {
     this.escalaDeGrisFilter = null;
     this.tempCanvas = null;
     this.tempCtx = null;
+    this.normalMapFilter= null;
   }
 
   init() {
@@ -1392,6 +1728,8 @@ class FilterManager {
 
     this.escalaDeGrisFilter = new EscalaDeGrisFilter(this.canvas, () => this._updateCanvas(), this.prefix);
     this.escalaDeGrisFilter.createUI(filtersContainer);
+  this.normalMapFilter =   new NormalMapFilter(this.canvas, () => this._updateCanvas(), this.prefix);
+     this.normalMapFilter .createUI(filtersContainer);
   }
 
   async setImage(imageSource) {
@@ -1488,6 +1826,11 @@ class FilterManager {
         if (resultCanvas && resultCanvas !== this.canvas) {
           this.ctx.drawImage(resultCanvas, 0, 0);
         }
+      }
+        if (this.normalMapFilter.isActive) {
+        let imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+        imageData = this.normalMapFilter.applyFilter(imageData);
+        this.ctx.putImageData(imageData, 0, 0);
       }
     } catch (error) {
       console.error('Error updating canvas:', error);
@@ -2644,4 +2987,5 @@ addCssClassToElement=(element, classNameToAdd) =>{
         });
       };
     }
+
 
