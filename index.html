@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 <script src="https://unonibes4a.github.io/pintaresta/toolscanvsa2025dc.js"></script>
 <title>Pintaresta Gallery</title>
 <style>
@@ -52,7 +52,6 @@ video.pin-image::-webkit-media-controls{display:none!important}
 .loading-spinner{width:50px;height:50px;border:4px solid #efefef;border-top:4px solid #e60023;border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
 .loading-text{font-size:16px;color:#5f5f5f}
-
 .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:2000;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.active{display:flex}
 .modal-content{background:#fff;border-radius:16px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column}
@@ -67,10 +66,6 @@ video.pin-image::-webkit-media-controls{display:none!important}
 .btn-modal.primary:hover{background:#ad081b}
 .btn-modal.secondary{background:#efefef;color:#211922}
 .btn-modal.secondary:hover{background:#e1e1e1}
-.btn-modal.sm{background:#f5f5f5;color:#333;border:1px solid #ddd;padding:6px 14px;font-size:12px;border-radius:8px}
-.btn-modal.sm:hover{background:#e8e8e8}
-.btn-modal.sm.active{background:#211922;color:#fff;border-color:#211922}
-
 .json-preview{background:#f5f5f5;padding:15px;border-radius:8px;font-family:'Courier New',monospace;font-size:12px;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word}
 .stats-box{background:#f0f7ff;padding:15px;border-radius:8px;margin-bottom:15px}
 .stats-box h3{margin:0 0 10px;color:#0066ff;font-size:14px}
@@ -78,7 +73,6 @@ video.pin-image::-webkit-media-controls{display:none!important}
 .stat-item{text-align:center}
 .stat-number{font-size:22px;font-weight:bold;color:#211922}
 .stat-label{font-size:11px;color:#5f5f5f;margin-top:4px}
-
 .video-wrap{background:#000;flex:1;display:flex;align-items:center;justify-content:center;min-height:0;overflow:hidden}
 .video-wrap video{max-width:100%;max-height:100%;display:block}
 .video-controls{background:#111;padding:12px 16px;display:flex;flex-direction:column;gap:10px;flex-shrink:0}
@@ -93,33 +87,43 @@ video.pin-image::-webkit-media-controls{display:none!important}
 .vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:#fff;cursor:pointer}
 .speed-select{background:#222;color:#fff;border:1px solid #444;border-radius:6px;padding:4px 8px;font-size:12px;cursor:pointer;outline:none}
 .vc-spacer{flex:1}
-.fullscreen-btn{margin-left:auto}
-
 .three-wrap{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden}
 .three-canvas-wrap{flex:1;position:relative;min-height:0;overflow:hidden}
 .three-canvas-wrap canvas{width:100%!important;height:100%!important;display:block}
-.env-panel{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.75);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;width:210px;z-index:10}
-.sky-btns{display:flex;gap:6px}
-.sky-btn{flex:1;padding:5px;font-size:11px;background:rgba(255,255,255,.1);color:#ddd;border:1px solid rgba(255,255,255,.2);border-radius:6px;cursor:pointer;transition:all .2s;font-weight:600}
-.sky-btn:hover{background:rgba(255,255,255,.2)}
+.env-panel{position:absolute;top:10px;right:10px;background:rgba(10,10,10,.82);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;width:220px;z-index:10;backdrop-filter:blur(4px)}
+.env-section-title{font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.6px;margin-top:4px}
+.env-section-title:first-child{margin-top:0}
+.sky-btns{display:flex;gap:5px}
+.sky-btn{flex:1;padding:5px 4px;font-size:11px;background:rgba(255,255,255,.08);color:#ccc;border:1px solid rgba(255,255,255,.15);border-radius:6px;cursor:pointer;transition:all .2s;font-weight:600}
+.sky-btn:hover{background:rgba(255,255,255,.16)}
 .sky-btn.active{background:#e60023;color:#fff;border-color:#e60023}
 .env-row{display:flex;align-items:center;gap:6px}
-.env-row label{font-size:11px;color:#bbb;width:72px;flex-shrink:0}
-.env-row input[type=range]{flex:1;accent-color:#e60023;height:3px}
-.env-row span{font-size:11px;color:#fff;min-width:30px;text-align:right}
-.env-row input[type=color]{width:30px;height:22px;border:none;cursor:pointer;border-radius:4px;background:none}
+.env-row label{font-size:11px;color:#bbb;width:76px;flex-shrink:0}
+.env-row input[type=range]{flex:1;accent-color:#e60023;height:3px;cursor:pointer}
+.env-row span{font-size:11px;color:#fff;min-width:32px;text-align:right}
+.env-row input[type=color]{width:34px;height:24px;border:none;cursor:pointer;border-radius:4px;padding:1px}
+.env-row input[type=number]{width:52px;background:#222;color:#fff;border:1px solid #444;border-radius:4px;padding:2px 4px;font-size:11px;outline:none}
+.hdr-url-row{display:flex;flex-direction:column;gap:4px}
+.hdr-url-row label{font-size:11px;color:#bbb}
+.hdr-url-input{background:#1a1a1a;color:#ccc;border:1px solid #444;border-radius:5px;padding:4px 6px;font-size:10px;outline:none;width:100%;font-family:monospace}
+.hdr-url-input:focus{border-color:#e60023}
+.hdr-load-btn{margin-top:2px;padding:5px;font-size:11px;background:#e60023;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600;width:100%}
+.hdr-load-btn:hover{background:#ad081b}
 </style>
 
 <script type="importmap">
 {
   "imports": {
-    "three":                                     "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.js",
-    "three/addons/controls/OrbitControls":       "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/controls/OrbitControls.js",
-    "three/addons/loaders/GLTFLoader":           "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/GLTFLoader.js",
-    "three/addons/loaders/OBJLoader":            "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/OBJLoader.js",
-    "three/addons/loaders/FBXLoader":            "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/FBXLoader.js",
-    "three/addons/objects/Sky":                  "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/objects/Sky.js",
-    "three/addons/environments/RoomEnvironment": "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/environments/RoomEnvironment.js"
+    "three":                                          "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.js",
+    "three/addons/controls/OrbitControls":            "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/controls/OrbitControls.js",
+    "three/addons/loaders/GLTFLoader":                "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/GLTFLoader.js",
+    "three/addons/loaders/OBJLoader":                 "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/OBJLoader.js",
+    "three/addons/loaders/FBXLoader":                 "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/FBXLoader.js",
+    "three/addons/loaders/HDRCubeTextureLoader":      "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/HDRCubeTextureLoader.js",
+    "three/addons/loaders/RGBELoader":                "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/RGBELoader.js",
+    "three/addons/objects/Sky":                       "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/objects/Sky.js",
+    "three/addons/environments/RoomEnvironment":      "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/environments/RoomEnvironment.js",
+    "three/addons/environments/DebugEnvironment":     "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/environments/DebugEnvironment.js"
   }
 }
 </script>
@@ -155,9 +159,7 @@ video.pin-image::-webkit-media-controls{display:none!important}
       <button class="btn-modal secondary" id="btnCloseVideo" style="background:#333;color:#fff">✕</button>
     </div>
     <div class="modal-body">
-      <div class="video-wrap">
-        <video id="modalVideo" preload="metadata"></video>
-      </div>
+      <div class="video-wrap"><video id="modalVideoEl" preload="metadata"></video></div>
       <div class="video-controls">
         <div class="timeline-wrap">
           <span id="vcCurrent">0:00</span>
@@ -180,7 +182,7 @@ video.pin-image::-webkit-media-controls{display:none!important}
             <option value="2">2×</option>
           </select>
           <span class="vc-spacer"></span>
-          <button class="vc-btn fullscreen-btn" id="vcFs">&#x26F6;</button>
+          <button class="vc-btn" id="vcFs">&#x26F6;</button>
         </div>
       </div>
     </div>
@@ -197,21 +199,41 @@ video.pin-image::-webkit-media-controls{display:none!important}
       <div class="three-wrap">
         <div class="three-canvas-wrap" id="threeWrap">
           <canvas id="threeCanvas"></canvas>
+
           <div class="env-panel">
+
+            <div class="env-section-title">Entorno</div>
             <div class="sky-btns">
               <button class="sky-btn active" id="bSky">Sky</button>
               <button class="sky-btn" id="bRoom">Room</button>
+              <button class="sky-btn" id="bDebug">Debug</button>
+              <button class="sky-btn" id="bHdr">HDR</button>
               <button class="sky-btn" id="bSolid">Sólido</button>
             </div>
-            <div class="env-row" id="bgColorRow" style="display:none">
-              <label>Color</label>
+
+            <div id="hdrSection" style="display:none">
+              <div class="hdr-url-row">
+                <label>URL base (carpeta HDR)</label>
+                <input class="hdr-url-input" id="hdrBase" placeholder="https://tuserver.com/hdr/" value="">
+                <label style="margin-top:4px">Archivos (px,nx,py,ny,pz,nz)</label>
+                <input class="hdr-url-input" id="hdrFiles" placeholder="px.hdr,nx.hdr,py.hdr,ny.hdr,pz.hdr,nz.hdr" value="px.hdr,nx.hdr,py.hdr,ny.hdr,pz.hdr,nz.hdr">
+                <button class="hdr-load-btn" id="hdrLoadBtn">Cargar HDR</button>
+              </div>
+            </div>
+
+            <div id="bgColorRow" style="display:none" class="env-row">
+              <label>Color fondo</label>
               <input type="color" id="bgColor" value="#1a2a3a">
             </div>
+
+            <div class="env-section-title">Render</div>
             <div class="env-row">
               <label>Exposición</label>
-              <input type="range" id="slExp" min="0.1" max="5" step="0.1" value="2">
-              <span id="slExpV">2.0</span>
+              <input type="range" id="slExp" min="0.1" max="5" step="0.1" value="1">
+              <span id="slExpV">1.0</span>
             </div>
+
+            <div class="env-section-title">Luces</div>
             <div class="env-row">
               <label>Ambiente</label>
               <input type="range" id="slAmb" min="0" max="3" step="0.1" value="0.5">
@@ -222,6 +244,8 @@ video.pin-image::-webkit-media-controls{display:none!important}
               <input type="range" id="slDir" min="0" max="5" step="0.1" value="1">
               <span id="slDirV">1.0</span>
             </div>
+
+            <div class="env-section-title">Sky procedural</div>
             <div class="env-row">
               <label>Turbidez</label>
               <input type="range" id="slTur" min="0" max="20" step="0.5" value="10">
@@ -232,6 +256,28 @@ video.pin-image::-webkit-media-controls{display:none!important}
               <input type="range" id="slSun" min="-0.5" max="1" step="0.01" value="0.3">
               <span id="slSunV">0.30</span>
             </div>
+
+            <div class="env-section-title">Material</div>
+            <div class="env-row">
+              <label>Albedo</label>
+              <input type="color" id="matColor" value="#ffffff">
+            </div>
+            <div class="env-row">
+              <label>Metalness</label>
+              <input type="range" id="slMetal" min="0" max="1" step="0.01" value="0">
+              <span id="slMetalV">0.00</span>
+            </div>
+            <div class="env-row">
+              <label>Roughness</label>
+              <input type="range" id="slRough" min="0" max="1" step="0.01" value="0.5">
+              <span id="slRoughV">0.50</span>
+            </div>
+            <div class="env-row">
+              <label>EnvMap Int.</label>
+              <input type="range" id="slEnvInt" min="0" max="5" step="0.05" value="1">
+              <span id="slEnvIntV">1.00</span>
+            </div>
+
           </div>
         </div>
       </div>
@@ -268,114 +314,177 @@ video.pin-image::-webkit-media-controls{display:none!important}
 
 <script type="module">
 import * as THREE from 'three';
-import { OrbitControls }   from 'three/addons/controls/OrbitControls';
-import { GLTFLoader }      from 'three/addons/loaders/GLTFLoader';
-import { OBJLoader }       from 'three/addons/loaders/OBJLoader';
-import { FBXLoader }       from 'three/addons/loaders/FBXLoader';
-import { Sky }             from 'three/addons/objects/Sky';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment';
+import { OrbitControls }        from 'three/addons/controls/OrbitControls';
+import { GLTFLoader }           from 'three/addons/loaders/GLTFLoader';
+import { OBJLoader }            from 'three/addons/loaders/OBJLoader';
+import { FBXLoader }            from 'three/addons/loaders/FBXLoader';
+import { HDRCubeTextureLoader } from 'three/addons/loaders/HDRCubeTextureLoader';
+import { RGBELoader }           from 'three/addons/loaders/RGBELoader';
+import { Sky }                  from 'three/addons/objects/Sky';
+import { RoomEnvironment }      from 'three/addons/environments/RoomEnvironment';
+import { DebugEnvironment }     from 'three/addons/environments/DebugEnvironment';
 
-const fmtTime = s => { s=Math.floor(s||0); return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}` };
+const fmtTime = s => { s=Math.floor(s||0); return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; };
 
 const VideoModal = (() => {
-  const vid = document.getElementById('modalVideo');
-  const overlay = document.getElementById('modalVideo');
-  const tl = document.getElementById('vcTimeline');
-  const cur = document.getElementById('vcCurrent');
-  const dur = document.getElementById('vcDuration');
-  const btnPlay = document.getElementById('vcPlay');
-  const btnMute = document.getElementById('vcMute');
-  const volSl = document.getElementById('vcVol');
-  const btnBack = document.getElementById('vcBack');
-  const btnFwd = document.getElementById('vcFwd');
-  const speedSel = document.getElementById('vcSpeed');
-  const btnFs = document.getElementById('vcFs');
-  let dragging = false;
-
-  vid.ontimeupdate = () => { if(!dragging){ tl.value=vid.currentTime; cur.textContent=fmtTime(vid.currentTime); } };
-  vid.onloadedmetadata = () => { tl.max=vid.duration; dur.textContent=fmtTime(vid.duration); };
-  vid.onplay = () => { btnPlay.innerHTML='&#9646;&#9646;'; };
-  vid.onpause = () => { btnPlay.innerHTML='&#9654;'; };
-  vid.onended = () => { btnPlay.innerHTML='&#9654;'; };
-
-  tl.oninput = () => { dragging=true; cur.textContent=fmtTime(tl.value); };
-  tl.onchange = () => { vid.currentTime=tl.value; dragging=false; };
-  btnPlay.onclick = () => vid.paused ? vid.play() : vid.pause();
-  btnMute.onclick = () => { vid.muted=!vid.muted; btnMute.innerHTML=vid.muted?'&#128264;':'&#128266;'; };
-  volSl.oninput = () => { vid.volume=volSl.value; vid.muted=+volSl.value===0; btnMute.innerHTML=vid.muted?'&#128264;':'&#128266;'; };
-  btnBack.onclick = () => { vid.currentTime=Math.max(0,vid.currentTime-5); };
-  btnFwd.onclick = () => { vid.currentTime=Math.min(vid.duration||0,vid.currentTime+10); };
-  speedSel.onchange = () => { vid.playbackRate=+speedSel.value; };
-  btnFs.onclick = () => { const w=document.getElementById('modalVideo'); w.requestFullscreen?w.requestFullscreen():w.webkitRequestFullscreen&&w.webkitRequestFullscreen(); };
-
-  document.addEventListener('keydown', e => {
-    if(!document.getElementById('modalVideo').classList.contains('active')) return;
-    if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT') return;
+  const vid=document.getElementById('modalVideoEl');
+  const tl=document.getElementById('vcTimeline');
+  const cur=document.getElementById('vcCurrent'), dur=document.getElementById('vcDuration');
+  const btnPlay=document.getElementById('vcPlay'), btnMute=document.getElementById('vcMute');
+  const volSl=document.getElementById('vcVol'), speedSel=document.getElementById('vcSpeed');
+  let dragging=false;
+  vid.ontimeupdate=()=>{if(!dragging){tl.value=vid.currentTime;cur.textContent=fmtTime(vid.currentTime);}};
+  vid.onloadedmetadata=()=>{tl.max=vid.duration;dur.textContent=fmtTime(vid.duration);};
+  vid.onplay=()=>btnPlay.innerHTML='&#9646;&#9646;';
+  vid.onpause=()=>btnPlay.innerHTML='&#9654;';
+  tl.oninput=()=>{dragging=true;cur.textContent=fmtTime(tl.value);};
+  tl.onchange=()=>{vid.currentTime=tl.value;dragging=false;};
+  btnPlay.onclick=()=>vid.paused?vid.play():vid.pause();
+  btnMute.onclick=()=>{vid.muted=!vid.muted;btnMute.innerHTML=vid.muted?'&#128264;':'&#128266;';};
+  volSl.oninput=()=>{vid.volume=volSl.value;vid.muted=+volSl.value===0;btnMute.innerHTML=vid.muted?'&#128264;':'&#128266;';};
+  document.getElementById('vcBack').onclick=()=>vid.currentTime=Math.max(0,vid.currentTime-5);
+  document.getElementById('vcFwd').onclick=()=>vid.currentTime=Math.min(vid.duration||0,vid.currentTime+10);
+  speedSel.onchange=()=>vid.playbackRate=+speedSel.value;
+  document.getElementById('vcFs').onclick=()=>{const w=document.getElementById('modalVideo');(w.requestFullscreen||w.webkitRequestFullscreen).call(w);};
+  document.addEventListener('keydown',e=>{
+    if(!document.getElementById('modalVideo').classList.contains('active'))return;
+    if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;
     if(e.code==='Space'){e.preventDefault();vid.paused?vid.play():vid.pause();}
-    else if(e.code==='ArrowLeft') vid.currentTime=Math.max(0,vid.currentTime-5);
-    else if(e.code==='ArrowRight') vid.currentTime=Math.min(vid.duration||0,vid.currentTime+10);
+    else if(e.code==='ArrowLeft')vid.currentTime=Math.max(0,vid.currentTime-5);
+    else if(e.code==='ArrowRight')vid.currentTime=Math.min(vid.duration||0,vid.currentTime+10);
     else if(e.code==='ArrowUp'){vid.volume=Math.min(1,vid.volume+.1);volSl.value=vid.volume;}
     else if(e.code==='ArrowDown'){vid.volume=Math.max(0,vid.volume-.1);volSl.value=vid.volume;}
     else if(e.key==='m'||e.key==='M'){vid.muted=!vid.muted;btnMute.innerHTML=vid.muted?'&#128264;':'&#128266;';}
   });
-
   return {
-    open(url, nombre) {
-      document.getElementById('videoModalTitle').textContent=nombre;
-      vid.src=url; vid.load(); vid.play().catch(()=>{});
-      document.getElementById('modalVideo').classList.add('active');
-    },
-    close() {
-      vid.pause(); vid.src='';
-      document.getElementById('modalVideo').classList.remove('active');
-    }
+    open(url,nombre){document.getElementById('videoModalTitle').textContent=nombre;vid.src=url;vid.load();vid.play().catch(()=>{});document.getElementById('modalVideo').classList.add('active');},
+    close(){vid.pause();vid.src='';document.getElementById('modalVideo').classList.remove('active');}
   };
 })();
 
 const ThreeModal = (() => {
-  let renderer=null, scene=null, camera=null, controls=null, sky=null, ambL=null, dirL=null, rafId=null, resObs=null, skyMode='sky';
+  let renderer=null,scene=null,camera=null,controls=null;
+  let sky=null,ambL=null,dirL=null,rafId=null,resObs=null;
+  let skyMode='sky', loadedObj=null, pmremGenerator=null;
+  let currentEnvMap=null;
+
+  const g = id => document.getElementById(id);
+
+  const applyMaterial = () => {
+    if(!loadedObj) return;
+    const color = new THREE.Color(g('matColor').value);
+    const metalness = +g('slMetal').value;
+    const roughness = +g('slRough').value;
+    const envMapIntensity = +g('slEnvInt').value;
+    loadedObj.traverse(o => {
+      if(!o.isMesh) return;
+      if(!o.material || Array.isArray(o.material) ? o.material?.length===0 : false) {
+        o.material = new THREE.MeshStandardMaterial();
+      }
+      const mats = [].concat(o.material);
+      mats.forEach(m => {
+        if(!(m instanceof THREE.MeshStandardMaterial)) {
+          const nm = new THREE.MeshStandardMaterial({color,metalness,roughness,envMapIntensity});
+          if(Array.isArray(o.material)){
+            o.material[o.material.indexOf(m)]=nm;
+          } else {
+            o.material=nm;
+          }
+        } else {
+          m.color.set(color);
+          m.metalness=metalness;
+          m.roughness=roughness;
+          m.envMapIntensity=envMapIntensity;
+          m.needsUpdate=true;
+        }
+      });
+    });
+  };
+
+  const applyEnvToMeshes = envTex => {
+    currentEnvMap = envTex;
+    scene.environment = envTex;
+    applyMaterial();
+  };
 
   const sl = (id,outId,dec,fn) => {
-    const el=document.getElementById(id), out=document.getElementById(outId);
-    el.oninput=()=>{ out.textContent=parseFloat(el.value).toFixed(dec); fn(+el.value); };
+    const el=g(id),out=g(outId);
+    el.oninput=()=>{out.textContent=parseFloat(el.value).toFixed(dec);fn(+el.value);};
   };
 
   const applySky = () => {
     if(!sky) return;
     const u=sky.material.uniforms;
-    u.turbidity.value=+document.getElementById('slTur').value;
+    u.turbidity.value=+g('slTur').value;
     u.rayleigh.value=2; u.mieCoefficient.value=0.005; u.mieDirectionalG.value=0.8;
-    u.sunPosition.value.set(0.3,+document.getElementById('slSun').value,-0.5).normalize();
+    u.sunPosition.value.set(0.3,+g('slSun').value,-0.5).normalize();
   };
 
+  const clearSkyObj = () => { if(sky){scene.remove(sky);sky=null;} };
+
   const buildSky = () => {
-    if(sky) scene.remove(sky);
+    clearSkyObj();
     sky=new Sky(); sky.scale.setScalar(450000); scene.add(sky);
-    scene.background=null; scene.environment=null;
+    scene.background=null;
+    const pmrem=new THREE.PMREMGenerator(renderer);
     applySky();
+    applyEnvToMeshes(null);
+    pmrem.dispose();
   };
 
   const buildRoom = () => {
-    if(sky){scene.remove(sky);sky=null;}
+    clearSkyObj();
     const pmrem=new THREE.PMREMGenerator(renderer);
-    scene.environment=pmrem.fromScene(new RoomEnvironment(),0.04).texture;
-    pmrem.dispose(); scene.background=new THREE.Color(0x333333);
+    const env=pmrem.fromScene(new RoomEnvironment(),0.04).texture;
+    applyEnvToMeshes(env);
+    scene.background=new THREE.Color(0x333333);
+    pmrem.dispose();
+  };
+
+  const buildDebug = () => {
+    clearSkyObj();
+    const pmrem=new THREE.PMREMGenerator(renderer);
+    pmrem.compileEquirectangularShader();
+    const env=pmrem.fromScene(new DebugEnvironment()).texture;
+    applyEnvToMeshes(env);
+    scene.background=env;
+    pmrem.dispose();
   };
 
   const buildSolid = () => {
-    if(sky){scene.remove(sky);sky=null;}
+    clearSkyObj();
     scene.environment=null;
-    scene.background=new THREE.Color(document.getElementById('bgColor').value);
+    scene.background=new THREE.Color(g('bgColor').value);
+    applyMaterial();
+  };
+
+  const loadHDRCube = () => {
+    const base = g('hdrBase').value.trim();
+    const files = g('hdrFiles').value.split(',').map(s=>s.trim());
+    if(!base||files.length!==6){alert('Necesitas URL base y 6 archivos HDR (px,nx,py,ny,pz,nz)');return;}
+    clearSkyObj();
+    const pmrem=new THREE.PMREMGenerator(renderer);
+    pmrem.compileCubemapShader();
+    new HDRCubeTextureLoader().setPath(base).load(files, tex => {
+      const rt=pmrem.fromCubemap(tex);
+      applyEnvToMeshes(rt.texture);
+      scene.background=tex;
+      tex.magFilter=THREE.LinearFilter;
+      tex.needsUpdate=true;
+      pmrem.dispose();
+    }, undefined, err=>alert('Error cargando HDR: '+err.message));
   };
 
   const setMode = mode => {
     skyMode=mode;
-    ['bSky','bRoom','bSolid'].forEach(id=>document.getElementById(id).classList.remove('active'));
-    document.getElementById(mode==='sky'?'bSky':mode==='room'?'bRoom':'bSolid').classList.add('active');
-    document.getElementById('bgColorRow').style.display=mode==='solid'?'flex':'none';
+    ['bSky','bRoom','bDebug','bHdr','bSolid'].forEach(id=>g(id).classList.remove('active'));
+    g(mode==='sky'?'bSky':mode==='room'?'bRoom':mode==='debug'?'bDebug':mode==='hdr'?'bHdr':'bSolid').classList.add('active');
+    g('bgColorRow').style.display=mode==='solid'?'flex':'none';
+    g('hdrSection').style.display=mode==='hdr'?'block':'none';
     if(mode==='sky') buildSky();
     else if(mode==='room') buildRoom();
-    else buildSolid();
+    else if(mode==='debug') buildDebug();
+    else if(mode==='solid') buildSolid();
   };
 
   const initSliders = () => {
@@ -384,10 +493,17 @@ const ThreeModal = (() => {
     sl('slDir','slDirV',1,v=>{if(dirL)dirL.intensity=v;});
     sl('slTur','slTurV',0,()=>applySky());
     sl('slSun','slSunV',2,()=>applySky());
-    document.getElementById('bgColor').oninput=()=>{if(skyMode==='solid')buildSolid();};
-    document.getElementById('bSky').onclick=()=>setMode('sky');
-    document.getElementById('bRoom').onclick=()=>setMode('room');
-    document.getElementById('bSolid').onclick=()=>setMode('solid');
+    sl('slMetal','slMetalV',2,()=>applyMaterial());
+    sl('slRough','slRoughV',2,()=>applyMaterial());
+    sl('slEnvInt','slEnvIntV',2,()=>applyMaterial());
+    g('matColor').oninput=()=>applyMaterial();
+    g('bgColor').oninput=()=>{if(skyMode==='solid')buildSolid();};
+    g('bSky').onclick=()=>setMode('sky');
+    g('bRoom').onclick=()=>setMode('room');
+    g('bDebug').onclick=()=>setMode('debug');
+    g('bHdr').onclick=()=>setMode('hdr');
+    g('bSolid').onclick=()=>setMode('solid');
+    g('hdrLoadBtn').onclick=()=>loadHDRCube();
   };
 
   const dispose = () => {
@@ -395,8 +511,17 @@ const ThreeModal = (() => {
     if(resObs){resObs.disconnect();resObs=null;}
     if(renderer){
       scene.traverse(o=>{if(o.isMesh){o.geometry?.dispose();[].concat(o.material).forEach(m=>m?.dispose());}});
-      renderer.dispose(); scene=null; camera=null; renderer=null; controls=null; sky=null; ambL=null; dirL=null;
+      renderer.dispose(); scene=null; camera=null; renderer=null; controls=null; sky=null; ambL=null; dirL=null; loadedObj=null; currentEnvMap=null;
     }
+  };
+
+  const fitCamera = obj => {
+    const box=new THREE.Box3().setFromObject(obj);
+    const size=box.getSize(new THREE.Vector3()), center=box.getCenter(new THREE.Vector3());
+    const maxD=Math.max(size.x,size.y,size.z);
+    const cz=Math.abs(maxD/2/Math.tan(camera.fov*Math.PI/180/2))*1.6;
+    camera.position.set(center.x+cz*.4,center.y+cz*.3,center.z+cz);
+    camera.lookAt(center); controls.target.copy(center); controls.update();
   };
 
   const generateThumb = async (modelUrl, ext) => {
@@ -405,14 +530,17 @@ const ThreeModal = (() => {
       const rnd=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});
       rnd.setSize(400,400); rnd.setClearColor(0x000000,0); rnd.domElement.style.display='none';
       document.body.appendChild(rnd.domElement);
-      sc.add(new THREE.AmbientLight(0xffffff,0.6));
-      const dl=new THREE.DirectionalLight(0xffffff,0.8); dl.position.set(1,2,1).normalize(); sc.add(dl);
+      sc.add(new THREE.AmbientLight(0xffffff,0.7));
+      const dl=new THREE.DirectionalLight(0xffffff,1); dl.position.set(1,2,1).normalize(); sc.add(dl);
       const map={'.glb':GLTFLoader,'.gltf':GLTFLoader,'.obj':OBJLoader,'.fbx':FBXLoader};
       const Loader=map[ext]; if(!Loader){rnd.dispose();rnd.domElement.remove();reject(new Error('Sin loader'));return;}
       try {
         const loader=new Loader(); let obj;
-        if(ext==='.glb'||ext==='.gltf'){const g=await loader.loadAsync(modelUrl);obj=g.scene;}
+        if(ext==='.glb'||ext==='.gltf'){const gg=await loader.loadAsync(modelUrl);obj=gg.scene;}
         else{obj=await loader.loadAsync(modelUrl);}
+        obj.traverse(o=>{
+          if(o.isMesh&&!o.material){o.material=new THREE.MeshStandardMaterial({color:0xaaaaaa});}
+        });
         sc.add(obj);
         const box=new THREE.Box3().setFromObject(obj);
         const size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());
@@ -421,60 +549,59 @@ const ThreeModal = (() => {
         cam.position.set(center.x+cz*.4,center.y+cz*.3,center.z+cz); cam.lookAt(center);
         rnd.render(sc,cam); resolve(rnd.domElement.toDataURL('image/png'));
       } catch(e){reject(e);}
-      finally{
-        sc.traverse(o=>{if(o.isMesh){o.geometry?.dispose();[].concat(o.material).forEach(m=>m?.dispose());}});
-        rnd.dispose(); rnd.domElement.remove();
-      }
+      finally{sc.traverse(o=>{if(o.isMesh){o.geometry?.dispose();[].concat(o.material).forEach(m=>m?.dispose());}});rnd.dispose();rnd.domElement.remove();}
     });
   };
 
   return {
-    initSliders,
-    generateThumb,
-    async open(modelData) {
-      document.getElementById('modal3DTitle').textContent=modelData.nombre;
-      document.getElementById('modal3D').classList.add('active');
+    initSliders, generateThumb,
+    async open(modelData){
+      g('modal3DTitle').textContent=modelData.nombre;
+      g('modal3D').classList.add('active');
       await new Promise(r=>setTimeout(r,60));
 
-      const canvas=document.getElementById('threeCanvas');
-      const wrap=document.getElementById('threeWrap');
-      const w=wrap.clientWidth, h=wrap.clientHeight||600;
+      const canvas=g('threeCanvas');
+      const wrap=g('threeWrap');
+      const w=wrap.clientWidth, h=Math.max(wrap.clientHeight,500);
 
       scene=new THREE.Scene();
       camera=new THREE.PerspectiveCamera(60,w/h,0.001,100000);
       renderer=new THREE.WebGLRenderer({canvas,antialias:true,preserveDrawingBuffer:true});
       renderer.setSize(w,h,false); renderer.setPixelRatio(devicePixelRatio);
       renderer.toneMapping=THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure=+document.getElementById('slExp').value;
+      renderer.toneMappingExposure=+g('slExp').value;
 
-      ambL=new THREE.AmbientLight(0xffffff,+document.getElementById('slAmb').value);
-      dirL=new THREE.DirectionalLight(0xffffff,+document.getElementById('slDir').value);
+      ambL=new THREE.AmbientLight(0xffffff,+g('slAmb').value);
+      dirL=new THREE.DirectionalLight(0xffffff,+g('slDir').value);
       dirL.position.set(5,10,5); scene.add(ambL,dirL);
 
-      skyMode='sky'; ['bSky','bRoom','bSolid'].forEach(id=>document.getElementById(id).classList.remove('active'));
-      document.getElementById('bSky').classList.add('active');
-      document.getElementById('bgColorRow').style.display='none';
+      skyMode='sky';
+      ['bSky','bRoom','bDebug','bHdr','bSolid'].forEach(id=>g(id).classList.remove('active'));
+      g('bSky').classList.add('active');
+      g('bgColorRow').style.display='none'; g('hdrSection').style.display='none';
       buildSky();
 
       controls=new OrbitControls(camera,renderer.domElement);
-      controls.enableDamping=true;
+      controls.enableDamping=true; controls.dampingFactor=0.05;
 
-      document.getElementById('loadingScreen').style.display='flex';
+      g('loadingScreen').style.display='flex';
       document.querySelector('.loading-text').textContent='Cargando modelo 3D...';
       try {
         const ext=modelData.extension;
         const map={'.glb':GLTFLoader,'.gltf':GLTFLoader,'.obj':OBJLoader,'.fbx':FBXLoader};
         const Loader=map[ext]; if(!Loader) throw new Error(`Formato no soportado: ${ext}`);
         const loader=new Loader(); let obj;
-        if(ext==='.glb'||ext==='.gltf'){const g=await loader.loadAsync(modelData.url);obj=g.scene;}
+        if(ext==='.glb'||ext==='.gltf'){const gg=await loader.loadAsync(modelData.url);obj=gg.scene;}
         else{obj=await loader.loadAsync(modelData.url);}
-        scene.add(obj);
-        const box=new THREE.Box3().setFromObject(obj);
-        const size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());
-        const maxD=Math.max(size.x,size.y,size.z);
-        const cz=Math.abs(maxD/2/Math.tan(camera.fov*Math.PI/180/2))*1.6;
-        camera.position.set(center.x+cz*.4,center.y+cz*.3,center.z+cz); camera.lookAt(center);
-        controls.target.copy(center); controls.update();
+
+        obj.traverse(o=>{
+          if(!o.isMesh) return;
+          if(!o.material){o.material=new THREE.MeshStandardMaterial({color:0xffffff,roughness:.5,metalness:0});}
+          [].concat(o.material).forEach(m=>{if(!(m instanceof THREE.MeshStandardMaterial)){const nm=new THREE.MeshStandardMaterial({color:m.color||0xffffff,roughness:.5,metalness:0});o.material=nm;}});
+        });
+
+        loadedObj=obj; scene.add(obj);
+        fitCamera(obj);
 
         setTimeout(()=>{
           renderer.render(scene,camera);
@@ -483,7 +610,7 @@ const ThreeModal = (() => {
           tc.getContext('2d').drawImage(canvas,(cw-side)/2,(ch-side)/2,side,side,0,0,400,400);
           modelData.thumbnailUrl=tc.toDataURL('image/png');
           document.querySelectorAll(`img[data-model="${modelData.nombre}"]`).forEach(img=>img.src=modelData.thumbnailUrl);
-        },200);
+        },250);
 
         const animate=()=>{rafId=requestAnimationFrame(animate);controls.update();renderer.render(scene,camera);};
         animate();
@@ -494,17 +621,14 @@ const ThreeModal = (() => {
         });
         resObs.observe(wrap);
       } catch(e){alert('Error al cargar modelo: '+e.message);this.close();}
-      finally{document.getElementById('loadingScreen').style.display='none';}
+      finally{g('loadingScreen').style.display='none';}
     },
-    close() {
-      dispose();
-      document.getElementById('modal3D').classList.remove('active');
-    }
+    close(){dispose();g('modal3D').classList.remove('active');}
   };
 })();
 
 class PintarestaGallery {
-  constructor() {
+  constructor(){
     this.todasLasUrls=[];
     this.urlsFiltradas=[];
     this.loteActual=0;
@@ -516,8 +640,9 @@ class PintarestaGallery {
       {owner:'unonibes4a',name:'newimg4'},
       {owner:'unonibes4a',name:'newimg5'},
       {owner:'unonibes4a',name:'storeImg'},
-      {owner:'unonibes4a',name:'newimg'},
-      {owner:'unonibes4a',name:'newimg6'}
+      {owner:'unonibes4a',name:'newimg'},  
+       {owner:'unonibes4a',name:'newimg6'},  
+      {owner:'unonibes4a',name:'repjob'},
     ];
     this.extensionesValidas={
       imagen:['.jpg','.jpeg','.png','.gif','.bmp','.webp','.svg','.tiff','.tif','.ico','.heic','.heif'],
@@ -526,7 +651,6 @@ class PintarestaGallery {
     };
     this.jsonData=null;
   }
-
   esImagen(n){return this.extensionesValidas.imagen.includes(n.toLowerCase().substring(n.lastIndexOf('.')));}
   esVideo(n){return this.extensionesValidas.video.includes(n.toLowerCase().substring(n.lastIndexOf('.')));}
   esModelo3D(n){return this.extensionesValidas.model.includes(n.toLowerCase().substring(n.lastIndexOf('.')));}
@@ -534,55 +658,37 @@ class PintarestaGallery {
   obtenerNombreArchivo(p){return p.split('/').pop().replace(/\.[^/.]+$/,'');}
   formatBytes(b){if(!b)return '0 B';const k=1024,s=['B','KB','MB','GB'],i=Math.floor(Math.log(b)/Math.log(k));return parseFloat((b/Math.pow(k,i)).toFixed(2))+' '+s[i];}
   barajarArray(a){const s=[...a];for(let i=s.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[s[i],s[j]]=[s[j],s[i]];}return s;}
-
   async cargarDesdeDirectorio(url,rutaBase='',repoName=''){
     const urls=[];
-    try {
-      const r=await fetch(url); if(!r.ok) return urls;
-      const data=await r.json();
+    try{const r=await fetch(url);if(!r.ok)return urls;const data=await r.json();
       for(const item of data){
         if(item.type==='file'&&this.esMediaValido(item.name)){
           const tipo=this.esImagen(item.name)?'imagen':this.esVideo(item.name)?'video':'model';
           urls.push({url:item.download_url,nombre:this.obtenerNombreArchivo(item.name),repo:repoName,tipo,extension:item.name.toLowerCase().substring(item.name.lastIndexOf('.'))});
-        } else if(item.type==='dir'){
-          urls.push(...await this.cargarDesdeDirectorio(item.url,`${rutaBase}${item.name}/`,repoName));
-        }
+        }else if(item.type==='dir'){urls.push(...await this.cargarDesdeDirectorio(item.url,`${rutaBase}${item.name}/`,repoName));}
       }
-    } catch(e){}
+    }catch(e){}
     return urls;
   }
-
-  async cargarDesdeRepositorio(repo){
-    try{return await this.cargarDesdeDirectorio(`https://api.github.com/repos/${repo.owner}/${repo.name}/contents`,'',repo.name);}
-    catch(e){return [];}
-  }
-
+  async cargarDesdeRepositorio(repo){try{return await this.cargarDesdeDirectorio(`https://api.github.com/repos/${repo.owner}/${repo.name}/contents`,'',repo.name);}catch(e){return [];}}
   async cargarDesdeMultiplesRepos(){
     this.mostrarCargando(true,'Cargando repositorios...');
-    try {
-      const todos=(await Promise.all(this.repositorios.map(r=>this.cargarDesdeRepositorio(r)))).flat();
-      if(!todos.length) throw new Error('No se encontraron archivos multimedia');
-      return this.barajarArray(todos);
-    } catch(e){
-      document.getElementById('pinsContainer').innerHTML=`<div style="text-align:center;padding:40px;color:#767676;grid-column:1/-1"><h3>Error cargando archivos</h3><p>${e.message}</p></div>`;
-      return [];
-    } finally{this.mostrarCargando(false);}
+    try{const todos=(await Promise.all(this.repositorios.map(r=>this.cargarDesdeRepositorio(r)))).flat();if(!todos.length)throw new Error('No se encontraron archivos');return this.barajarArray(todos);}
+    catch(e){document.getElementById('pinsContainer').innerHTML=`<div style="text-align:center;padding:40px;color:#767676"><h3>Error</h3><p>${e.message}</p></div>`;return[];}
+    finally{this.mostrarCargando(false);}
   }
-
   async procesarArchivosLocales(files){
-    const validos=[]; const promesas=[]; let img=0,vid=0,mod=0;
+    const validos=[],promesas=[];let img=0,vid=0,mod=0;
     for(const file of files){
-      if(!this.esMediaValido(file.name)) continue;
+      if(!this.esMediaValido(file.name))continue;
       const tipo=this.esImagen(file.name)?(img++,'imagen'):this.esVideo(file.name)?(vid++,'video'):(mod++,'model');
       promesas.push(new Promise(resolve=>{
         const reader=new FileReader();
         reader.onload=async e=>{
           const ext=file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
           const d={url:e.target.result,nombre:this.obtenerNombreArchivo(file.name),nombreCompleto:file.name,repo:'Local',tipo,extension:ext,tamaño:file.size,tamañoLegible:this.formatBytes(file.size),fechaModificacion:file.lastModified,ruta:file.webkitRelativePath||file.name};
-          if(tipo==='model'){
-            try{d.thumbnailUrl=await ThreeModal.generateThumb(d.url,ext);}catch(e){console.warn(e);}
-          }
-          validos.push(d); resolve();
+          if(tipo==='model'){try{d.thumbnailUrl=await ThreeModal.generateThumb(d.url,ext);}catch(e){console.warn(e);}}
+          validos.push(d);resolve();
         };
         reader.readAsDataURL(file);
       }));
@@ -591,52 +697,31 @@ class PintarestaGallery {
     this.jsonData={fecha_generacion:new Date().toISOString(),total_archivos:validos.length,imagenes:img,videos:vid,modelos:mod,archivos:validos.map(a=>({nombre:a.nombre,nombreCompleto:a.nombreCompleto,ruta:a.ruta,tipo:a.tipo,extension:a.extension,tamaño:a.tamañoLegible,fechaModificacion:new Date(a.fechaModificacion).toISOString()}))};
     return validos;
   }
-
   async cargarArchivosLocales(files){
-    this.mostrarCargando(true,'Procesando archivos y generando miniaturas 3D...');
-    try {
-      const local=await this.procesarArchivosLocales(files);
-      if(!local.length){alert('No se encontraron archivos válidos');return;}
-      this.todasLasUrls=this.barajarArray(local);
-      this.urlsFiltradas=[...this.todasLasUrls];
-      this.loteActual=0; this.mostrarLote();
+    this.mostrarCargando(true,'Procesando archivos y generando miniaturas...');
+    try{const local=await this.procesarArchivosLocales(files);if(!local.length){alert('No se encontraron archivos válidos');return;}
+      this.todasLasUrls=this.barajarArray(local);this.urlsFiltradas=[...this.todasLasUrls];this.loteActual=0;this.mostrarLote();
       document.getElementById('btnViewJSON').style.display='block';
       alert(`Cargados ${local.length} archivos\nImagenes: ${this.jsonData.imagenes}\nVideos: ${this.jsonData.videos}\nModelos 3D: ${this.jsonData.modelos}`);
-    } catch(e){alert('Error: '+e.message);}
-    finally{this.mostrarCargando(false);}
+    }catch(e){alert('Error: '+e.message);}finally{this.mostrarCargando(false);}
   }
-
   mostrarJSON(){
     if(!this.jsonData){alert('Primero carga una carpeta');return;}
     document.getElementById('statsContainer').innerHTML=`<h3>Estadisticas</h3><div class="stats-grid"><div class="stat-item"><div class="stat-number">${this.jsonData.total_archivos}</div><div class="stat-label">Total</div></div><div class="stat-item"><div class="stat-number">${this.jsonData.imagenes}</div><div class="stat-label">Imagenes</div></div><div class="stat-item"><div class="stat-number">${this.jsonData.videos}</div><div class="stat-label">Videos</div></div><div class="stat-item"><div class="stat-number">${this.jsonData.modelos}</div><div class="stat-label">Modelos 3D</div></div></div>`;
-    document.getElementById('jsonPreview').textContent=JSON.stringify({...this.jsonData,archivos:this.jsonData.archivos},null,2);
+    document.getElementById('jsonPreview').textContent=JSON.stringify(this.jsonData,null,2);
     document.getElementById('modalJSON').classList.add('active');
   }
-
-  descargarJSON(){
-    if(!this.jsonData)return;
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(new Blob([JSON.stringify(this.jsonData,null,2)],{type:'application/json'}));
-    a.download=`galeria_${Date.now()}.json`; document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  }
-
+  descargarJSON(){if(!this.jsonData)return;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(this.jsonData,null,2)],{type:'application/json'}));a.download=`galeria_${Date.now()}.json`;document.body.appendChild(a);a.click();document.body.removeChild(a);}
   copiarJSON(){if(!this.jsonData)return;navigator.clipboard.writeText(JSON.stringify(this.jsonData,null,2)).then(()=>alert('JSON copiado')).catch(()=>alert('Error al copiar'));}
-
-  mostrarCargando(show,msg='Cargando...'){
-    document.getElementById('loadingScreen').style.display=show?'flex':'none';
-    document.querySelector('.loading-text').textContent=msg;
-  }
-
+  mostrarCargando(show,msg='Cargando...'){document.getElementById('loadingScreen').style.display=show?'flex':'none';document.querySelector('.loading-text').textContent=msg;}
   crearPinElement(mediaData){
-    const pin=document.createElement('div'); pin.className='pin';
+    const pin=document.createElement('div');pin.className='pin';
     const alturas=['h-280','h-320','h-360','h-400','h-440'];
     const alt=alturas[Math.floor(Math.random()*alturas.length)];
     const esLocal=mediaData.repo==='Local';
-    const av=esLocal?'PC':'GH'; const cr=esLocal?'Mi PC':'GitHub';
+    const av=esLocal?'PC':'GH',cr=esLocal?'Mi PC':'GitHub';
     const desc=mediaData.repo+(esLocal&&mediaData.tamañoLegible?' - '+mediaData.tamañoLegible:'');
-
     const infoHTML=`<div class="pin-info"><div class="pin-title">${mediaData.nombre}</div><div class="pin-description">${desc}</div><div class="pin-creator"><div class="creator-avatar">${av}</div><div class="creator-name">${cr}</div></div></div>`;
-
     if(mediaData.tipo==='video'){
       pin.innerHTML=`<div class="pin-image-container"><video class="pin-image ${alt}" ${esLocal?'src':'data-src'}="${mediaData.url}" muted loop playsinline preload="none"></video><div class="media-badge">VIDEO</div><button class="save-btn">Guardar</button></div>${infoHTML}`;
       const v=pin.querySelector('video');
@@ -644,70 +729,53 @@ class PintarestaGallery {
       v.addEventListener('mouseenter',()=>v.play().catch(()=>{}));
       v.addEventListener('mouseleave',()=>{v.pause();v.currentTime=0;});
       v.onclick=e=>{e.stopPropagation();VideoModal.open(mediaData.url,mediaData.nombre);};
-      v.onerror=function(){this.style.background='#222';};
-    } else if(mediaData.tipo==='imagen'){
+    }else if(mediaData.tipo==='imagen'){
       pin.innerHTML=`<div class="pin-image-container"><img class="pin-image ${alt}" ${esLocal?'src':'data-src'}="${mediaData.url}" alt="${mediaData.nombre}" loading="lazy"><button class="save-btn">Guardar</button></div>${infoHTML}`;
       const img=pin.querySelector('img');
       if(!esLocal&&img.dataset.src){const ob=new IntersectionObserver(e=>{if(e[0].isIntersecting&&img.dataset.src){img.src=img.dataset.src;img.removeAttribute('data-src');ob.unobserve(img);}});ob.observe(img);}
-      img.onclick=e=>{e.stopPropagation();if(window.appEditorgioBasico?.parentElement){window.appEditorgioBasico.setImage(img.src);window.appEditorgioBasico.openappf();}else{alert(`Imagen: ${mediaData.nombre}`);} };
+      img.onclick=e=>{e.stopPropagation();if(window.appEditorgioBasico?.parentElement){window.appEditorgioBasico.setImage(img.src);window.appEditorgioBasico.openappf();}};
       img.onerror=function(){this.style.background='#f0f0f0';this.alt='Error';};
-    } else if(mediaData.tipo==='model'){
+    }else if(mediaData.tipo==='model'){
       const thumb=mediaData.thumbnailUrl||'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect width="200" height="200" fill="%23e0e0e0"/><text x="50%" y="45%" dominant-baseline="middle" text-anchor="middle" font-size="32" fill="%23999">⬡</text><text x="50%" y="68%" dominant-baseline="middle" text-anchor="middle" font-size="14" fill="%23999">3D MODEL</text></svg>';
       pin.innerHTML=`<div class="pin-image-container"><img class="pin-image model-thumb ${alt}" src="${thumb}" alt="${mediaData.nombre}" data-model="${mediaData.nombre}" loading="lazy"><div class="media-badge">3D MODEL</div><button class="save-btn">Guardar</button></div>${infoHTML}`;
       pin.querySelector('img').onclick=e=>{e.stopPropagation();ThreeModal.open(mediaData);};
     }
-
     const saveBtn=pin.querySelector('.save-btn');
-    if(saveBtn) saveBtn.onclick=e=>{
-      e.stopPropagation();
-      const a=document.createElement('a'); a.href=mediaData.url; a.download=mediaData.nombreCompleto||`${mediaData.nombre}${mediaData.extension}`;
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    };
+    if(saveBtn)saveBtn.onclick=e=>{e.stopPropagation();const a=document.createElement('a');a.href=mediaData.url;a.download=mediaData.nombreCompleto||`${mediaData.nombre}${mediaData.extension}`;document.body.appendChild(a);a.click();document.body.removeChild(a);};
     return pin;
   }
-
   obtenerLoteActual(){const i=this.loteActual*this.imagenesPorLote;return this.barajarArray(this.urlsFiltradas.slice(i,i+this.imagenesPorLote));}
-
   actualizarBotones(){
     const total=Math.ceil(this.urlsFiltradas.length/this.imagenesPorLote);
     document.getElementById('btnBack').disabled=this.loteActual===0;
     document.getElementById('btnNext').disabled=this.loteActual>=total-1;
-    const i=this.loteActual*this.imagenesPorLote+1, f=Math.min((this.loteActual+1)*this.imagenesPorLote,this.urlsFiltradas.length);
-    const img=this.urlsFiltradas.filter(m=>m.tipo==='imagen').length;
-    const vid=this.urlsFiltradas.filter(m=>m.tipo==='video').length;
-    const mod=this.urlsFiltradas.filter(m=>m.tipo==='model').length;
+    const i=this.loteActual*this.imagenesPorLote+1,f=Math.min((this.loteActual+1)*this.imagenesPorLote,this.urlsFiltradas.length);
+    const img=this.urlsFiltradas.filter(m=>m.tipo==='imagen').length,vid=this.urlsFiltradas.filter(m=>m.tipo==='video').length,mod=this.urlsFiltradas.filter(m=>m.tipo==='model').length;
     document.getElementById('loteInfo').textContent=`${i}-${f} de ${this.urlsFiltradas.length} (IMG ${img} VID ${vid} 3D ${mod})`;
   }
-
   mostrarLote(){
-    const c=document.getElementById('pinsContainer'); c.innerHTML='';
+    const c=document.getElementById('pinsContainer');c.innerHTML='';
     const archivos=this.obtenerLoteActual();
-    if(!archivos.length){c.innerHTML='<div style="text-align:center;padding:40px;color:#767676;grid-column:1/-1">No hay archivos para mostrar</div>';return;}
+    if(!archivos.length){c.innerHTML='<div style="text-align:center;padding:40px;color:#767676;grid-column:1/-1">No hay archivos</div>';return;}
     const frag=document.createDocumentFragment();
     archivos.forEach(m=>frag.appendChild(this.crearPinElement(m)));
-    c.appendChild(frag); this.actualizarBotones();
+    c.appendChild(frag);this.actualizarBotones();
     window.scrollTo({top:0,behavior:'smooth'});
   }
-
   filtrarMedia(q){
     const b=q.toLowerCase().trim();
     this.urlsFiltradas=b?this.todasLasUrls.filter(m=>m.nombre.toLowerCase().includes(b)||m.repo.toLowerCase().includes(b)||(m.tipo==='model'&&'3d model'.includes(b))):[...this.todasLasUrls];
-    this.loteActual=0; this.mostrarLote();
+    this.loteActual=0;this.mostrarLote();
   }
-
   async siguienteLote(){if(this.loteActual<Math.ceil(this.urlsFiltradas.length/this.imagenesPorLote)-1){this.loteActual++;this.mostrarLote();}}
   async loteAnterior(){if(this.loteActual>0){this.loteActual--;this.mostrarLote();}}
   async recargar(){this.loteActual=0;await this.iniciar();}
-  async iniciar(){
-    const urls=await this.cargarDesdeMultiplesRepos();
-    if(urls.length){this.todasLasUrls=urls;this.urlsFiltradas=[...urls];this.loteActual=0;this.mostrarLote();}
-  }
+  async iniciar(){const urls=await this.cargarDesdeMultiplesRepos();if(urls.length){this.todasLasUrls=urls;this.urlsFiltradas=[...urls];this.loteActual=0;this.mostrarLote();}}
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
   ThreeModal.initSliders();
   const g=new PintarestaGallery();
-
   document.getElementById('btnBack').onclick=()=>g.loteAnterior();
   document.getElementById('btnNext').onclick=()=>g.siguienteLote();
   document.getElementById('btnReload').onclick=()=>g.recargar();
@@ -721,19 +789,16 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('modalVideo').onclick=e=>{if(e.target===document.getElementById('modalVideo'))VideoModal.close();};
   document.getElementById('btnClose3D').onclick=()=>ThreeModal.close();
   document.getElementById('modal3D').onclick=e=>{if(e.target===document.getElementById('modal3D'))ThreeModal.close();};
-
-  let t; document.getElementById('searchInput').oninput=e=>{clearTimeout(t);t=setTimeout(()=>g.filtrarMedia(e.target.value),300);};
-
+  let t;document.getElementById('searchInput').oninput=e=>{clearTimeout(t);t=setTimeout(()=>g.filtrarMedia(e.target.value),300);};
   document.addEventListener('keydown',e=>{
     if(document.getElementById('modal3D').classList.contains('active')){if(e.key==='Escape')ThreeModal.close();return;}
     if(document.getElementById('modalVideo').classList.contains('active')){if(e.key==='Escape')VideoModal.close();return;}
     if(document.getElementById('modalJSON').classList.contains('active')){if(e.key==='Escape')document.getElementById('modalJSON').classList.remove('active');return;}
-    if(e.target.tagName==='INPUT') return;
+    if(e.target.tagName==='INPUT')return;
     if(e.key==='ArrowLeft')g.loteAnterior();
     else if(e.key==='ArrowRight')g.siguienteLote();
     else if(e.key==='r'||e.key==='R')g.recargar();
   });
-
   g.iniciar();
   window.galeriaPintaresta=g;
 });
