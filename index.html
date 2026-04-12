@@ -109,6 +109,7 @@ video.pin-image::-webkit-media-controls{display:none!important}
 .hdr-url-input:focus{border-color:#e60023}
 .hdr-load-btn{margin-top:2px;padding:5px;font-size:11px;background:#e60023;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600;width:100%}
 .hdr-load-btn:hover{background:#ad081b}
+#guiContainer .lil-gui{--background-color:#111;--text-color:#eee;--title-background-color:#1a1a1a;--widget-color:#2a2a2a;--hover-color:#333;--focus-color:#444;--number-color:#88ccff;--string-color:#88ffcc;max-height:80vh;overflow-y:auto}
 </style>
 
 <script type="importmap">
@@ -123,7 +124,8 @@ video.pin-image::-webkit-media-controls{display:none!important}
     "three/addons/loaders/RGBELoader":                "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/RGBELoader.js",
     "three/addons/objects/Sky":                       "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/objects/Sky.js",
     "three/addons/environments/RoomEnvironment":      "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/environments/RoomEnvironment.js",
-    "three/addons/environments/DebugEnvironment":     "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/environments/DebugEnvironment.js"
+    "three/addons/environments/DebugEnvironment":     "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/environments/DebugEnvironment.js",
+    "three/addons/libs/lil-gui":                         "https://threejs.org/examples/jsm/libs/lil-gui.module.min.js"
   }
 }
 </script>
@@ -200,85 +202,7 @@ video.pin-image::-webkit-media-controls{display:none!important}
         <div class="three-canvas-wrap" id="threeWrap">
           <canvas id="threeCanvas"></canvas>
 
-          <div class="env-panel">
-
-            <div class="env-section-title">Entorno</div>
-            <div class="sky-btns">
-              <button class="sky-btn active" id="bSky">Sky</button>
-              <button class="sky-btn" id="bRoom">Room</button>
-              <button class="sky-btn" id="bDebug">Debug</button>
-              <button class="sky-btn" id="bHdr">HDR</button>
-              <button class="sky-btn" id="bSolid">Sólido</button>
-            </div>
-
-            <div id="hdrSection" style="display:none">
-              <div class="hdr-url-row">
-                <label>URL base (carpeta HDR)</label>
-                <input class="hdr-url-input" id="hdrBase" placeholder="https://tuserver.com/hdr/" value="">
-                <label style="margin-top:4px">Archivos (px,nx,py,ny,pz,nz)</label>
-                <input class="hdr-url-input" id="hdrFiles" placeholder="px.hdr,nx.hdr,py.hdr,ny.hdr,pz.hdr,nz.hdr" value="px.hdr,nx.hdr,py.hdr,ny.hdr,pz.hdr,nz.hdr">
-                <button class="hdr-load-btn" id="hdrLoadBtn">Cargar HDR</button>
-              </div>
-            </div>
-
-            <div id="bgColorRow" style="display:none" class="env-row">
-              <label>Color fondo</label>
-              <input type="color" id="bgColor" value="#1a2a3a">
-            </div>
-
-            <div class="env-section-title">Render</div>
-            <div class="env-row">
-              <label>Exposición</label>
-              <input type="range" id="slExp" min="0.1" max="5" step="0.1" value="1">
-              <span id="slExpV">1.0</span>
-            </div>
-
-            <div class="env-section-title">Luces</div>
-            <div class="env-row">
-              <label>Ambiente</label>
-              <input type="range" id="slAmb" min="0" max="3" step="0.1" value="0.5">
-              <span id="slAmbV">0.5</span>
-            </div>
-            <div class="env-row">
-              <label>Luz dir.</label>
-              <input type="range" id="slDir" min="0" max="5" step="0.1" value="1">
-              <span id="slDirV">1.0</span>
-            </div>
-
-            <div class="env-section-title">Sky procedural</div>
-            <div class="env-row">
-              <label>Turbidez</label>
-              <input type="range" id="slTur" min="0" max="20" step="0.5" value="10">
-              <span id="slTurV">10</span>
-            </div>
-            <div class="env-row">
-              <label>Sol Y</label>
-              <input type="range" id="slSun" min="-0.5" max="1" step="0.01" value="0.3">
-              <span id="slSunV">0.30</span>
-            </div>
-
-            <div class="env-section-title">Material</div>
-            <div class="env-row">
-              <label>Albedo</label>
-              <input type="color" id="matColor" value="#ffffff">
-            </div>
-            <div class="env-row">
-              <label>Metalness</label>
-              <input type="range" id="slMetal" min="0" max="1" step="0.01" value="0">
-              <span id="slMetalV">0.00</span>
-            </div>
-            <div class="env-row">
-              <label>Roughness</label>
-              <input type="range" id="slRough" min="0" max="1" step="0.01" value="0.5">
-              <span id="slRoughV">0.50</span>
-            </div>
-            <div class="env-row">
-              <label>EnvMap Int.</label>
-              <input type="range" id="slEnvInt" min="0" max="5" step="0.05" value="1">
-              <span id="slEnvIntV">1.00</span>
-            </div>
-
-          </div>
+          <div id="guiContainer" style="position:absolute;top:10px;right:10px;z-index:10"></div>
         </div>
       </div>
     </div>
@@ -314,15 +238,15 @@ video.pin-image::-webkit-media-controls{display:none!important}
 
 <script type="module">
 import * as THREE from 'three';
-import { OrbitControls }        from 'three/addons/controls/OrbitControls';
-import { GLTFLoader }           from 'three/addons/loaders/GLTFLoader';
-import { OBJLoader }            from 'three/addons/loaders/OBJLoader';
-import { FBXLoader }            from 'three/addons/loaders/FBXLoader';
-import { HDRCubeTextureLoader } from 'three/addons/loaders/HDRCubeTextureLoader';
-import { RGBELoader }           from 'three/addons/loaders/RGBELoader';
-import { Sky }                  from 'three/addons/objects/Sky';
-import { RoomEnvironment }      from 'three/addons/environments/RoomEnvironment';
-import { DebugEnvironment }     from 'three/addons/environments/DebugEnvironment';
+import { OrbitControls }    from 'three/addons/controls/OrbitControls';
+import { GLTFLoader }       from 'three/addons/loaders/GLTFLoader';
+import { OBJLoader }        from 'three/addons/loaders/OBJLoader';
+import { FBXLoader }        from 'three/addons/loaders/FBXLoader';
+import { RGBELoader }       from 'three/addons/loaders/RGBELoader';
+import { Sky }              from 'three/addons/objects/Sky';
+import { RoomEnvironment }  from 'three/addons/environments/RoomEnvironment';
+import { DebugEnvironment } from 'three/addons/environments/DebugEnvironment';
+import { GUI }              from 'three/addons/libs/lil-gui';
 
 const fmtTime = s => { s=Math.floor(s||0); return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; };
 
@@ -365,265 +289,233 @@ const VideoModal = (() => {
 const ThreeModal = (() => {
   let renderer=null,scene=null,camera=null,controls=null;
   let sky=null,ambL=null,dirL=null,rafId=null,resObs=null;
-  let skyMode='sky', loadedObj=null, pmremGenerator=null;
-  let currentEnvMap=null;
+  let loadedObj=null, gui=null;
 
-  const g = id => document.getElementById(id);
+  const DEFAULT_HDR = 'https://threejs.org/examples/textures/equirectangular/quarry_01_1k.hdr';
+
+  const params = {
+    envMap: 'HDR',
+    hdrUrl: DEFAULT_HDR,
+    roughness: 0.0,
+    metalness: 0.0,
+    envMapIntensity: 1.0,
+    exposure: 1.0,
+    albedo: '#ffffff',
+    ambientIntensity: 0.0,
+    dirIntensity: 0.0,
+    bgColor: '#222222'
+  };
+
+  const clearSky = () => { if(sky){scene.remove(sky);sky=null;} };
 
   const applyMaterial = () => {
     if(!loadedObj) return;
-    const color = new THREE.Color(g('matColor').value);
-    const metalness = +g('slMetal').value;
-    const roughness = +g('slRough').value;
-    const envMapIntensity = +g('slEnvInt').value;
+    const color = new THREE.Color(params.albedo);
     loadedObj.traverse(o => {
       if(!o.isMesh) return;
-      if(!o.material || Array.isArray(o.material) ? o.material?.length===0 : false) {
-        o.material = new THREE.MeshStandardMaterial();
-      }
+      if(!o.material) o.material = new THREE.MeshStandardMaterial();
       const mats = [].concat(o.material);
-      mats.forEach(m => {
-        if(!(m instanceof THREE.MeshStandardMaterial)) {
-          const nm = new THREE.MeshStandardMaterial({color,metalness,roughness,envMapIntensity});
-          if(Array.isArray(o.material)){
-            o.material[o.material.indexOf(m)]=nm;
-          } else {
-            o.material=nm;
-          }
-        } else {
-          m.color.set(color);
-          m.metalness=metalness;
-          m.roughness=roughness;
-          m.envMapIntensity=envMapIntensity;
-          m.needsUpdate=true;
+      mats.forEach((m,i) => {
+        let mat = m;
+        if(!(mat instanceof THREE.MeshStandardMaterial)) {
+          mat = new THREE.MeshStandardMaterial({map: m.map||null});
+          Array.isArray(o.material) ? o.material[i]=mat : o.material=mat;
         }
+        mat.color.set(color);
+        mat.roughness = params.roughness;
+        mat.metalness = params.metalness;
+        mat.envMapIntensity = params.envMapIntensity;
+        mat.needsUpdate = true;
       });
     });
   };
 
-  const applyEnvToMeshes = envTex => {
-    currentEnvMap = envTex;
-    scene.environment = envTex;
+  const applyEnv = tex => {
+    scene.environment = tex;
+    scene.background = tex;
     applyMaterial();
   };
 
-  const sl = (id,outId,dec,fn) => {
-    const el=g(id),out=g(outId);
-    el.oninput=()=>{out.textContent=parseFloat(el.value).toFixed(dec);fn(+el.value);};
+  const loadHDR = url => {
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    pmrem.compileEquirectangularShader();
+    new RGBELoader().load(url, tex => {
+      tex.mapping = THREE.EquirectangularReflectionMapping;
+      const rt = pmrem.fromEquirectangular(tex);
+      applyEnv(rt.texture);
+      scene.background = rt.texture;
+      tex.dispose(); pmrem.dispose();
+    }, undefined, ()=>{});
   };
 
-  const applySky = () => {
-    if(!sky) return;
-    const u=sky.material.uniforms;
-    u.turbidity.value=+g('slTur').value;
-    u.rayleigh.value=2; u.mieCoefficient.value=0.005; u.mieDirectionalG.value=0.8;
-    u.sunPosition.value.set(0.3,+g('slSun').value,-0.5).normalize();
-  };
-
-  const clearSkyObj = () => { if(sky){scene.remove(sky);sky=null;} };
-
-  const buildSky = () => {
-    clearSkyObj();
-    sky=new Sky(); sky.scale.setScalar(450000); scene.add(sky);
-    scene.background=null;
-    const pmrem=new THREE.PMREMGenerator(renderer);
-    applySky();
-    applyEnvToMeshes(null);
-    pmrem.dispose();
+  const applySkyProc = () => {
+    clearSky();
+    sky = new Sky(); sky.scale.setScalar(450000); scene.add(sky);
+    scene.background = null;
+    scene.environment = null;
+    applyMaterial();
   };
 
   const buildRoom = () => {
-    clearSkyObj();
-    const pmrem=new THREE.PMREMGenerator(renderer);
-    const env=pmrem.fromScene(new RoomEnvironment(),0.04).texture;
-    applyEnvToMeshes(env);
-    scene.background=new THREE.Color(0x333333);
-    pmrem.dispose();
+    clearSky();
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    const env = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+    applyEnv(env); pmrem.dispose();
   };
 
   const buildDebug = () => {
-    clearSkyObj();
-    const pmrem=new THREE.PMREMGenerator(renderer);
-    pmrem.compileEquirectangularShader();
-    const env=pmrem.fromScene(new DebugEnvironment()).texture;
-    applyEnvToMeshes(env);
-    scene.background=env;
-    pmrem.dispose();
+    clearSky();
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    const env = pmrem.fromScene(new DebugEnvironment()).texture;
+    applyEnv(env); pmrem.dispose();
   };
 
   const buildSolid = () => {
-    clearSkyObj();
-    scene.environment=null;
-    scene.background=new THREE.Color(g('bgColor').value);
+    clearSky();
+    scene.environment = null;
+    scene.background = new THREE.Color(params.bgColor);
     applyMaterial();
   };
 
-  const loadHDRCube = () => {
-    const base = g('hdrBase').value.trim();
-    const files = g('hdrFiles').value.split(',').map(s=>s.trim());
-    if(!base||files.length!==6){alert('Necesitas URL base y 6 archivos HDR (px,nx,py,ny,pz,nz)');return;}
-    clearSkyObj();
-    const pmrem=new THREE.PMREMGenerator(renderer);
-    pmrem.compileCubemapShader();
-    new HDRCubeTextureLoader().setPath(base).load(files, tex => {
-      const rt=pmrem.fromCubemap(tex);
-      applyEnvToMeshes(rt.texture);
-      scene.background=tex;
-      tex.magFilter=THREE.LinearFilter;
-      tex.needsUpdate=true;
-      pmrem.dispose();
-    }, undefined, err=>alert('Error cargando HDR: '+err.message));
+  const switchEnv = () => {
+    if(params.envMap==='HDR') loadHDR(params.hdrUrl);
+    else if(params.envMap==='Sky') applySkyProc();
+    else if(params.envMap==='Room') buildRoom();
+    else if(params.envMap==='Debug') buildDebug();
+    else if(params.envMap==='Solid') buildSolid();
   };
 
-  const setMode = mode => {
-    skyMode=mode;
-    ['bSky','bRoom','bDebug','bHdr','bSolid'].forEach(id=>g(id).classList.remove('active'));
-    g(mode==='sky'?'bSky':mode==='room'?'bRoom':mode==='debug'?'bDebug':mode==='hdr'?'bHdr':'bSolid').classList.add('active');
-    g('bgColorRow').style.display=mode==='solid'?'flex':'none';
-    g('hdrSection').style.display=mode==='hdr'?'block':'none';
-    if(mode==='sky') buildSky();
-    else if(mode==='room') buildRoom();
-    else if(mode==='debug') buildDebug();
-    else if(mode==='solid') buildSolid();
-  };
+  const buildGUI = () => {
+    if(gui) { gui.destroy(); gui=null; }
+    const container = document.getElementById('guiContainer');
+    gui = new GUI({ container, width: 240, title: 'Configuración' });
 
-  const initSliders = () => {
-    sl('slExp','slExpV',1,v=>{if(renderer)renderer.toneMappingExposure=v;});
-    sl('slAmb','slAmbV',1,v=>{if(ambL)ambL.intensity=v;});
-    sl('slDir','slDirV',1,v=>{if(dirL)dirL.intensity=v;});
-    sl('slTur','slTurV',0,()=>applySky());
-    sl('slSun','slSunV',2,()=>applySky());
-    sl('slMetal','slMetalV',2,()=>applyMaterial());
-    sl('slRough','slRoughV',2,()=>applyMaterial());
-    sl('slEnvInt','slEnvIntV',2,()=>applyMaterial());
-    g('matColor').oninput=()=>applyMaterial();
-    g('bgColor').oninput=()=>{if(skyMode==='solid')buildSolid();};
-    g('bSky').onclick=()=>setMode('sky');
-    g('bRoom').onclick=()=>setMode('room');
-    g('bDebug').onclick=()=>setMode('debug');
-    g('bHdr').onclick=()=>setMode('hdr');
-    g('bSolid').onclick=()=>setMode('solid');
-    g('hdrLoadBtn').onclick=()=>loadHDRCube();
-  };
+    const envF = gui.addFolder('Entorno');
+    envF.add(params,'envMap',['HDR','Sky','Room','Debug','Solid']).name('tipo').onChange(switchEnv);
+    envF.add(params,'hdrUrl').name('URL HDR').onFinishChange(v=>{ if(params.envMap==='HDR') loadHDR(v); });
+    envF.add(renderer,'toneMappingExposure',0,4,0.01).name('exposición');
+    envF.open();
 
-  const dispose = () => {
-    if(rafId){cancelAnimationFrame(rafId);rafId=null;}
-    if(resObs){resObs.disconnect();resObs=null;}
-    if(renderer){
-      scene.traverse(o=>{if(o.isMesh){o.geometry?.dispose();[].concat(o.material).forEach(m=>m?.dispose());}});
-      renderer.dispose(); scene=null; camera=null; renderer=null; controls=null; sky=null; ambL=null; dirL=null; loadedObj=null; currentEnvMap=null;
-    }
+    const matF = gui.addFolder('Material');
+    matF.addColor(params,'albedo').name('albedo').onChange(applyMaterial);
+    matF.add(params,'roughness',0,1,0.01).name('roughness').onChange(applyMaterial);
+    matF.add(params,'metalness',0,1,0.01).name('metalness').onChange(applyMaterial);
+    matF.add(params,'envMapIntensity',0,5,0.05).name('env intensity').onChange(applyMaterial);
+    matF.open();
+
+    const lightF = gui.addFolder('Luces');
+    lightF.add(params,'ambientIntensity',0,3,0.05).name('ambiente').onChange(v=>{ if(ambL) ambL.intensity=v; });
+    lightF.add(params,'dirIntensity',0,5,0.1).name('direccional').onChange(v=>{ if(dirL) dirL.intensity=v; });
+    lightF.open();
   };
 
   const fitCamera = obj => {
-    const box=new THREE.Box3().setFromObject(obj);
-    const size=box.getSize(new THREE.Vector3()), center=box.getCenter(new THREE.Vector3());
-    const maxD=Math.max(size.x,size.y,size.z);
-    const cz=Math.abs(maxD/2/Math.tan(camera.fov*Math.PI/180/2))*1.6;
-    camera.position.set(center.x+cz*.4,center.y+cz*.3,center.z+cz);
-    camera.lookAt(center); controls.target.copy(center); controls.update();
+    obj.updateMatrixWorld(true);
+    const box = new THREE.Box3().setFromObject(obj);
+    if(box.isEmpty()) return;
+    const size   = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+    const fovRad = camera.fov * Math.PI / 180;
+    const fovH   = 2 * Math.atan(Math.tan(fovRad / 2) * camera.aspect);
+    const distV  = (size.y / 2) / Math.tan(fovRad / 2);
+    const distH  = (size.x / 2) / Math.tan(fovH / 2);
+    const dist   = Math.max(distV, distH, Math.max(size.x,size.y,size.z)) * 1.8;
+    camera.near  = Math.max(dist / 1000, 0.001);
+    camera.far   = dist * 200;
+    camera.updateProjectionMatrix();
+    camera.position.set(center.x + dist*0.35, center.y + dist*0.25, center.z + dist);
+    camera.lookAt(center);
+    controls.target.copy(center);
+    controls.minDistance = dist * 0.05;
+    controls.maxDistance = dist * 20;
+    controls.update();
   };
 
-  const generateThumb = async (modelUrl, ext) => {
-    return new Promise(async(resolve,reject)=>{
-      const sc=new THREE.Scene(), cam=new THREE.PerspectiveCamera(75,1,0.1,100000);
-      const rnd=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});
-      rnd.setSize(400,400); rnd.setClearColor(0x000000,0); rnd.domElement.style.display='none';
-      document.body.appendChild(rnd.domElement);
-      sc.add(new THREE.AmbientLight(0xffffff,0.7));
-      const dl=new THREE.DirectionalLight(0xffffff,1); dl.position.set(1,2,1).normalize(); sc.add(dl);
-      const map={'.glb':GLTFLoader,'.gltf':GLTFLoader,'.obj':OBJLoader,'.fbx':FBXLoader};
-      const Loader=map[ext]; if(!Loader){rnd.dispose();rnd.domElement.remove();reject(new Error('Sin loader'));return;}
-      try {
-        const loader=new Loader(); let obj;
-        if(ext==='.glb'||ext==='.gltf'){const gg=await loader.loadAsync(modelUrl);obj=gg.scene;}
-        else{obj=await loader.loadAsync(modelUrl);}
-        obj.traverse(o=>{
-          if(o.isMesh&&!o.material){o.material=new THREE.MeshStandardMaterial({color:0xaaaaaa});}
-        });
-        sc.add(obj);
-        const box=new THREE.Box3().setFromObject(obj);
-        const size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());
-        const maxD=Math.max(size.x,size.y,size.z);
-        const cz=Math.abs(maxD/2/Math.tan(cam.fov*Math.PI/180/2))*1.6;
-        cam.position.set(center.x+cz*.4,center.y+cz*.3,center.z+cz); cam.lookAt(center);
-        rnd.render(sc,cam); resolve(rnd.domElement.toDataURL('image/png'));
-      } catch(e){reject(e);}
-      finally{sc.traverse(o=>{if(o.isMesh){o.geometry?.dispose();[].concat(o.material).forEach(m=>m?.dispose());}});rnd.dispose();rnd.domElement.remove();}
-    });
+  const dispose = () => {
+    if(gui){ gui.destroy(); gui=null; }
+    if(rafId){ cancelAnimationFrame(rafId); rafId=null; }
+    if(resObs){ resObs.disconnect(); resObs=null; }
+    if(renderer){
+      scene.traverse(o=>{ if(o.isMesh){ o.geometry?.dispose(); [].concat(o.material).forEach(m=>m?.dispose()); } });
+      renderer.dispose();
+      scene=null; camera=null; renderer=null; controls=null; sky=null; ambL=null; dirL=null; loadedObj=null;
+    }
   };
 
   return {
-    initSliders, generateThumb,
+    MODEL_THUMB: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnBg6cLuer28Z5mIhmk2pdS8Nsz-mPjxwXWw&s',
+    initSliders() {},
     async open(modelData){
-      g('modal3DTitle').textContent=modelData.nombre;
-      g('modal3D').classList.add('active');
+      document.getElementById('modal3DTitle').textContent = modelData.nombre;
+      document.getElementById('modal3D').classList.add('active');
       await new Promise(r=>setTimeout(r,60));
 
-      const canvas=g('threeCanvas');
-      const wrap=g('threeWrap');
-      const w=wrap.clientWidth, h=Math.max(wrap.clientHeight,500);
+      const canvas = document.getElementById('threeCanvas');
+      const wrap   = document.getElementById('threeWrap');
+      const w = wrap.clientWidth, h = Math.max(wrap.clientHeight, 500);
 
-      scene=new THREE.Scene();
-      camera=new THREE.PerspectiveCamera(60,w/h,0.001,100000);
-      renderer=new THREE.WebGLRenderer({canvas,antialias:true,preserveDrawingBuffer:true});
-      renderer.setSize(w,h,false); renderer.setPixelRatio(devicePixelRatio);
-      renderer.toneMapping=THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure=+g('slExp').value;
+      scene    = new THREE.Scene();
+      camera   = new THREE.PerspectiveCamera(60, w/h, 0.001, 100000);
+      renderer = new THREE.WebGLRenderer({canvas, antialias:true, preserveDrawingBuffer:true});
+      renderer.setSize(w, h, false);
+      renderer.setPixelRatio(devicePixelRatio);
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = params.exposure;
 
-      ambL=new THREE.AmbientLight(0xffffff,+g('slAmb').value);
-      dirL=new THREE.DirectionalLight(0xffffff,+g('slDir').value);
-      dirL.position.set(5,10,5); scene.add(ambL,dirL);
+      ambL = new THREE.AmbientLight(0xffffff, params.ambientIntensity);
+      dirL = new THREE.DirectionalLight(0xffffff, params.dirIntensity);
+      dirL.position.set(5,10,5);
+      scene.add(ambL, dirL);
 
-      skyMode='sky';
-      ['bSky','bRoom','bDebug','bHdr','bSolid'].forEach(id=>g(id).classList.remove('active'));
-      g('bSky').classList.add('active');
-      g('bgColorRow').style.display='none'; g('hdrSection').style.display='none';
-      buildSky();
+      controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
 
-      controls=new OrbitControls(camera,renderer.domElement);
-      controls.enableDamping=true; controls.dampingFactor=0.05;
+      buildGUI();
+      params.envMap = 'HDR';
+      loadHDR(params.hdrUrl);
 
-      g('loadingScreen').style.display='flex';
+      document.getElementById('loadingScreen').style.display='flex';
       document.querySelector('.loading-text').textContent='Cargando modelo 3D...';
       try {
-        const ext=modelData.extension;
-        const map={'.glb':GLTFLoader,'.gltf':GLTFLoader,'.obj':OBJLoader,'.fbx':FBXLoader};
-        const Loader=map[ext]; if(!Loader) throw new Error(`Formato no soportado: ${ext}`);
-        const loader=new Loader(); let obj;
-        if(ext==='.glb'||ext==='.gltf'){const gg=await loader.loadAsync(modelData.url);obj=gg.scene;}
-        else{obj=await loader.loadAsync(modelData.url);}
+        const ext = modelData.extension;
+        const loaderMap = {'.glb':GLTFLoader,'.gltf':GLTFLoader,'.obj':OBJLoader,'.fbx':FBXLoader};
+        const Loader = loaderMap[ext];
+        if(!Loader) throw new Error('Formato no soportado: '+ext);
+        const loader = new Loader();
+        let obj;
+        if(ext==='.glb'||ext==='.gltf'){ const gg=await loader.loadAsync(modelData.url); obj=gg.scene; }
+        else { obj = await loader.loadAsync(modelData.url); }
 
-        obj.traverse(o=>{
+        obj.traverse(o => {
           if(!o.isMesh) return;
-          if(!o.material){o.material=new THREE.MeshStandardMaterial({color:0xffffff,roughness:.5,metalness:0});}
-          [].concat(o.material).forEach(m=>{if(!(m instanceof THREE.MeshStandardMaterial)){const nm=new THREE.MeshStandardMaterial({color:m.color||0xffffff,roughness:.5,metalness:0});o.material=nm;}});
+          if(!o.material) o.material = new THREE.MeshStandardMaterial({color:0xffffff,roughness:.5,metalness:0});
+          const mats = [].concat(o.material);
+          mats.forEach((m,i) => {
+            if(!(m instanceof THREE.MeshStandardMaterial)){
+              const nm = new THREE.MeshStandardMaterial({color:0xffffff,roughness:.5,metalness:0,map:m.map||null});
+              Array.isArray(o.material) ? o.material[i]=nm : o.material=nm;
+            }
+          });
         });
 
-        loadedObj=obj; scene.add(obj);
+        loadedObj = obj;
+        scene.add(obj);
+        renderer.render(scene, camera);
         fitCamera(obj);
 
-        setTimeout(()=>{
-          renderer.render(scene,camera);
-          const tc=document.createElement('canvas'); tc.width=400; tc.height=400;
-          const cw=canvas.width,ch=canvas.height,side=Math.min(cw,ch);
-          tc.getContext('2d').drawImage(canvas,(cw-side)/2,(ch-side)/2,side,side,0,0,400,400);
-          modelData.thumbnailUrl=tc.toDataURL('image/png');
-          document.querySelectorAll(`img[data-model="${modelData.nombre}"]`).forEach(img=>img.src=modelData.thumbnailUrl);
-        },250);
-
-        const animate=()=>{rafId=requestAnimationFrame(animate);controls.update();renderer.render(scene,camera);};
+        const animate = () => { rafId=requestAnimationFrame(animate); controls.update(); renderer.render(scene,camera); };
         animate();
 
-        resObs=new ResizeObserver(()=>{
-          const nw=wrap.clientWidth,nh=wrap.clientHeight;
+        resObs = new ResizeObserver(()=>{
+          const nw=wrap.clientWidth, nh=wrap.clientHeight;
           camera.aspect=nw/nh; camera.updateProjectionMatrix(); renderer.setSize(nw,nh,false);
         });
         resObs.observe(wrap);
-      } catch(e){alert('Error al cargar modelo: '+e.message);this.close();}
-      finally{g('loadingScreen').style.display='none';}
+      } catch(e){ alert('Error al cargar modelo: '+e.message); this.close(); }
+      finally { document.getElementById('loadingScreen').style.display='none'; }
     },
-    close(){dispose();g('modal3D').classList.remove('active');}
+    close(){ dispose(); document.getElementById('modal3D').classList.remove('active'); }
   };
 })();
 
@@ -634,15 +526,15 @@ class PintarestaGallery {
     this.loteActual=0;
     this.imagenesPorLote=30;
     this.repositorios=[
-      {owner:'unonibes4a',name:'newImgs'},
+        {owner:'unonibes4a',name:'newImgs'},
       {owner:'unonibes4a',name:'newimg2'},
       {owner:'unonibes4a',name:'newimg3'},
       {owner:'unonibes4a',name:'newimg4'},
       {owner:'unonibes4a',name:'newimg5'},
       {owner:'unonibes4a',name:'storeImg'},
-      {owner:'unonibes4a',name:'newimg'},  
-       {owner:'unonibes4a',name:'newimg6'},  
-      {owner:'unonibes4a',name:'repjob'},
+      {owner:'unonibes4a',name:'newimg'},
+      {owner:'unonibes4a',name:'newimg6'}  ,
+      // {owner:'unonibes4a',name:'repjob'} 
     ];
     this.extensionesValidas={
       imagen:['.jpg','.jpeg','.png','.gif','.bmp','.webp','.svg','.tiff','.tif','.ico','.heic','.heif'],
@@ -687,7 +579,6 @@ class PintarestaGallery {
         reader.onload=async e=>{
           const ext=file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
           const d={url:e.target.result,nombre:this.obtenerNombreArchivo(file.name),nombreCompleto:file.name,repo:'Local',tipo,extension:ext,tamaño:file.size,tamañoLegible:this.formatBytes(file.size),fechaModificacion:file.lastModified,ruta:file.webkitRelativePath||file.name};
-          if(tipo==='model'){try{d.thumbnailUrl=await ThreeModal.generateThumb(d.url,ext);}catch(e){console.warn(e);}}
           validos.push(d);resolve();
         };
         reader.readAsDataURL(file);
@@ -736,7 +627,7 @@ class PintarestaGallery {
       img.onclick=e=>{e.stopPropagation();if(window.appEditorgioBasico?.parentElement){window.appEditorgioBasico.setImage(img.src);window.appEditorgioBasico.openappf();}};
       img.onerror=function(){this.style.background='#f0f0f0';this.alt='Error';};
     }else if(mediaData.tipo==='model'){
-      const thumb=mediaData.thumbnailUrl||'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect width="200" height="200" fill="%23e0e0e0"/><text x="50%" y="45%" dominant-baseline="middle" text-anchor="middle" font-size="32" fill="%23999">⬡</text><text x="50%" y="68%" dominant-baseline="middle" text-anchor="middle" font-size="14" fill="%23999">3D MODEL</text></svg>';
+      const thumb=ThreeModal.MODEL_THUMB;
       pin.innerHTML=`<div class="pin-image-container"><img class="pin-image model-thumb ${alt}" src="${thumb}" alt="${mediaData.nombre}" data-model="${mediaData.nombre}" loading="lazy"><div class="media-badge">3D MODEL</div><button class="save-btn">Guardar</button></div>${infoHTML}`;
       pin.querySelector('img').onclick=e=>{e.stopPropagation();ThreeModal.open(mediaData);};
     }
