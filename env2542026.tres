@@ -1,0 +1,29 @@
+[gd_resource type="Environment" format=3 uid="uid://cd7l5koflhmto"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_uji4k"]
+load_path = "res://.godot/imported/sk1a.png-6f0f63a9d883dad6208e40a207edf2d3.s3tc.ctex"
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_cxrps"]
+panorama = SubResource("CompressedTexture2D_uji4k")
+
+[sub_resource type="Sky" id="Sky_guehd"]
+sky_material = SubResource("PanoramaSkyMaterial_cxrps")
+
+[resource]
+background_mode = 2
+sky = SubResource("Sky_guehd")
+ssr_enabled = true
+ssao_enabled = true
+ssao_radius = 3.0
+ssao_intensity = 3.0
+ssao_power = 5.0
+ssil_radius = 0.01
+sdfgi_enabled = true
+sdfgi_use_occlusion = true
+sdfgi_min_cell_size = 0.48828125
+sdfgi_energy = 3.0
+glow_enabled = true
+glow_blend_mode = 0
+adjustment_enabled = true
+adjustment_brightness = 2.0
+adjustment_saturation = 1.5
