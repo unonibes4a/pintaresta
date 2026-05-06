@@ -110,6 +110,45 @@ video.pin-image::-webkit-media-controls{display:none!important}
 .hdr-load-btn{margin-top:2px;padding:5px;font-size:11px;background:#e60023;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600;width:100%}
 .hdr-load-btn:hover{background:#ad081b}
 #guiContainer .lil-gui{--background-color:#111;--text-color:#eee;--title-background-color:#1a1a1a;--widget-color:#2a2a2a;--hover-color:#333;--focus-color:#444;--number-color:#88ccff;--string-color:#88ffcc;max-height:80vh;overflow-y:auto}
+
+
+.nav-btn2{ 
+  position: relative;
+  background-color: #efefef;
+  color: #212121;
+  border-radius: 12px;
+  width: 80%;
+  font-size: 12px;
+  border: none;
+  height: 37px;
+  cursor: pointer;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  left:10%;
+
+}
+.nav-btn2:hover{
+    background-color: #00d08457;
+ 
+}
+
+#idboxmenuitems{
+
+  width:120px;
+  height: 600px;
+  background-color: #23242767;
+  z-index: 99999;
+  position: fixed;
+  top: 20%;
+  right:0%;
+  border-left: 4px ;
+  border-color:  #232427a6;
+ 
+  
+}
+.cursorpointclss{
+  cursor: pointer;
+}
 </style>
 
 <script type="importmap">
@@ -131,6 +170,16 @@ video.pin-image::-webkit-media-controls{display:none!important}
 </script>
 </head>
 <body>
+  <div id="idboxmenuitems">
+     
+      <button class="nav-btn2" id="btnmaquinas">Maquinas</button>
+      <button class="nav-btn2" id="btnsuelos">Suelos</button>
+      <button class="nav-btn2" id="btscenes">Scenes</button>
+      <button class="nav-btn2" id="btmaderas">Maderas</button>
+      <button class="nav-btn2" id="btnmetalOcides">MetalOxide</button>
+      <button class="nav-btn2" id="btntelas">telas</button>
+      <button class="nav-btn2" id="btntelas">tiles</button>
+  </div>
 
 <div class="loading-screen" id="loadingScreen" style="display:none">
   <div class="loading-spinner"></div>
@@ -211,7 +260,7 @@ video.pin-image::-webkit-media-controls{display:none!important}
 
 <div class="header">
   <div class="header-content">
-    <a href="#" class="logo">PINTARESTA</a>
+    <a  class="logo cursorpointclss" id="btnLogo">PINTARESTA</a>
     <div class="search-container">
       <div class="search-bar">
         <span>Buscar</span>
@@ -226,8 +275,9 @@ video.pin-image::-webkit-media-controls{display:none!important}
       </button>
       <button class="nav-btn" id="btnViewJSON" style="display:none">Ver JSON</button>
       <button class="nav-btn" id="btnBack" disabled>Atras</button>
-      <button class="nav-btn" id="btnReload">Recargar</button>
+      <button class="nav-btn" id="btnReload">Home</button>
       <button class="nav-btn" id="btnNext" disabled>Siguiente</button>
+      <button class="nav-btn" id="btnItems" disabled>Items</button>
     </div>
   </div>
 </div>
@@ -237,7 +287,7 @@ video.pin-image::-webkit-media-controls{display:none!important}
 </div>
 
 <script type="module">
-import * as THREE from 'three';
+  import * as THREE from 'three';
 import { OrbitControls }    from 'three/addons/controls/OrbitControls';
 import { GLTFLoader }       from 'three/addons/loaders/GLTFLoader';
 import { OBJLoader }        from 'three/addons/loaders/OBJLoader';
@@ -525,17 +575,28 @@ class PintarestaGallery {
     this.urlsFiltradas=[];
     this.loteActual=0;
     this.imagenesPorLote=30;
-    this.repositorios=[
-        {owner:'unonibes4a',name:'newImgs'},
-      {owner:'unonibes4a',name:'newimg2'},
-      {owner:'unonibes4a',name:'newimg3'},
-      {owner:'unonibes4a',name:'newimg4'},
-      {owner:'unonibes4a',name:'newimg5'},
-      {owner:'unonibes4a',name:'storeImg'},
-      {owner:'unonibes4a',name:'newimg'},
-      {owner:'unonibes4a',name:'newimg6'}  ,
-       {owner:'unonibes4a',name:'repjob'} 
+    this.todosLosRepositorios = [
+
+
+
+      {id: 'repjob', owner:'unonibes4a', name:'repjob'},
+      {id: 'suelos', owner:'unonibes4a', name:'imgrocassuelos'},
+      {id: 'scenes', owner:'unonibes4a', name:'scenelugares'},
+      {id: 'maquinas', owner:'unonibes4a', name:'Maquinas'},
+
+          {id: 'id1', owner:'unonibes4a',name:'newImgs'},
+      {id: 'id2',owner:'unonibes4a',name:'newimg2'},
+      {id: 'id3',owner:'unonibes4a',name:'newimg3'},
+      {id: 'id4',owner:'unonibes4a',name:'newimg4'},
+      {id: 'id5',owner:'unonibes4a',name:'newimg5'},
+      {id: 'id6',owner:'unonibes4a',name:'storeImg'},
+      {id: 'id7',owner:'unonibes4a',name:'newimg'},
+      {id: 'id8',owner:'unonibes4a',name:'newimg6'}  ,
+       {id: 'id9',owner:'unonibes4a',name:'repjob'} 
+       
+       
     ];
+    this.repositoriosActivos = [...this.todosLosRepositorios];
     this.extensionesValidas={
       imagen:['.jpg','.jpeg','.png','.gif','.bmp','.webp','.svg','.tiff','.tif','.ico','.heic','.heif'],
       video:['.mp4','.webm','.avi','.mov','.mkv','.flv','.wmv','.m4v','.mpeg','.mpg','.3gp'],
@@ -562,12 +623,26 @@ class PintarestaGallery {
     }catch(e){}
     return urls;
   }
-  async cargarDesdeRepositorio(repo){try{return await this.cargarDesdeDirectorio(`https://api.github.com/repos/${repo.owner}/${repo.name}/contents`,'',repo.name);}catch(e){return [];}}
-  async cargarDesdeMultiplesRepos(){
+  async cargarDesdeRepositorio(repo){
+    try{
+        return await this.cargarDesdeDirectorio(`https://api.github.com/repos/${repo.owner}/${repo.name}/contents`,'',repo.name);
+    }catch(e){
+        return [];
+    }
+  }
+  async cargarRepositoriosEspecificos(reposACargar){
     this.mostrarCargando(true,'Cargando repositorios...');
-    try{const todos=(await Promise.all(this.repositorios.map(r=>this.cargarDesdeRepositorio(r)))).flat();if(!todos.length)throw new Error('No se encontraron archivos');return this.barajarArray(todos);}
-    catch(e){document.getElementById('pinsContainer').innerHTML=`<div style="text-align:center;padding:40px;color:#767676"><h3>Error</h3><p>${e.message}</p></div>`;return[];}
-    finally{this.mostrarCargando(false);}
+    try{
+        const todos=(await Promise.all(reposACargar.map(r=>this.cargarDesdeRepositorio(r)))).flat();
+        if(!todos.length) {
+            document.getElementById('pinsContainer').innerHTML=`<div style="text-align:center;padding:40px;color:#767676"><h3>Error</h3><p>No se encontraron archivos en los repositorios seleccionados o hubo un problema al cargarlos.</p></div>`;
+            return [];
+        }
+        return this.barajarArray(todos);
+    }catch(e){
+        document.getElementById('pinsContainer').innerHTML=`<div style="text-align:center;padding:40px;color:#767676"><h3>Error</h3><p>${e.message}</p></div>`;
+        return[];
+    }finally{this.mostrarCargando(false);}
   }
   async procesarArchivosLocales(files){
     const validos=[],promesas=[];let img=0,vid=0,mod=0;
@@ -661,12 +736,35 @@ class PintarestaGallery {
   async siguienteLote(){if(this.loteActual<Math.ceil(this.urlsFiltradas.length/this.imagenesPorLote)-1){this.loteActual++;this.mostrarLote();}}
   async loteAnterior(){if(this.loteActual>0){this.loteActual--;this.mostrarLote();}}
   async recargar(){this.loteActual=0;await this.iniciar();}
-  async iniciar(){const urls=await this.cargarDesdeMultiplesRepos();if(urls.length){this.todasLasUrls=urls;this.urlsFiltradas=[...urls];this.loteActual=0;this.mostrarLote();}}
+  
+  async iniciar(repos = this.todosLosRepositorios){
+    const urls=await this.cargarRepositoriosEspecificos(repos);
+    if(urls.length){
+      this.todasLasUrls=urls;
+      this.urlsFiltradas=[...urls];
+      this.loteActual=0;
+      this.mostrarLote();
+    }
+  }
+
+  async cargarCategoria(categoryId) {
+    const repo = this.todosLosRepositorios.find(r => r.id === categoryId);
+    if (repo) {
+      document.getElementById('pinsContainer').innerHTML = '';
+      this.todasLasUrls = [];
+      this.urlsFiltradas = [];
+      this.loteActual = 0;
+      await this.iniciar([repo]);
+    } else {
+      document.getElementById('pinsContainer').innerHTML=`<div style="text-align:center;padding:40px;color:#767676"><h3>Atención</h3><p>La categoría "${categoryId}" no tiene un repositorio asociado.</p></div>`;
+    }
+  }
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
   ThreeModal.initSliders();
   const g=new PintarestaGallery();
+  document.getElementById('btnLogo').onclick=()=>g.recargar();
   document.getElementById('btnBack').onclick=()=>g.loteAnterior();
   document.getElementById('btnNext').onclick=()=>g.siguienteLote();
   document.getElementById('btnReload').onclick=()=>g.recargar();
@@ -690,9 +788,15 @@ document.addEventListener('DOMContentLoaded',()=>{
     else if(e.key==='ArrowRight')g.siguienteLote();
     else if(e.key==='r'||e.key==='R')g.recargar();
   });
+  
+  document.getElementById('btnsuelos').onclick = () => g.cargarCategoria('suelos');
+  document.getElementById('btscenes').onclick = () => g.cargarCategoria('scenes');
+  document.getElementById('btnmaquinas').onclick = () => g.cargarCategoria('maquinas');
+
   g.iniciar();
   window.galeriaPintaresta=g;
 });
+  
 </script>
 </body>
 </html>
