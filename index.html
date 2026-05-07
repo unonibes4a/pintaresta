@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -176,9 +177,13 @@ video.pin-image::-webkit-media-controls{display:none!important}
       <button class="nav-btn2" id="btnsuelos">Suelos</button>
       <button class="nav-btn2" id="btscenes">Scenes</button>
       <button class="nav-btn2" id="btmaderas">Maderas</button>
-      <button class="nav-btn2" id="btnmetalOcides">MetalOxide</button>
+      <button class="nav-btn2" id="btnparedes">Paredes</button>
+     <!--  <button class="nav-btn2" id="btnmetalOcides">MetalOxide</button>
       <button class="nav-btn2" id="btntelas">telas</button>
-      <button class="nav-btn2" id="btntelas">tiles</button>
+      <button class="nav-btn2" id="btntelas">tiles</button> -->
+       
+
+       
   </div>
 
 <div class="loading-screen" id="loadingScreen" style="display:none">
@@ -582,9 +587,12 @@ class PintarestaGallery {
       {id: 'repjob', owner:'unonibes4a', name:'repjob'},
       {id: 'suelos', owner:'unonibes4a', name:'imgrocassuelos'},
       {id: 'scenes', owner:'unonibes4a', name:'scenelugares'},
-      {id: 'maquinas', owner:'unonibes4a', name:'Maquinas'},
+      {id: 'maquinas', owner:'unonibes4a', name:'Maquinas'}, 
+      {id: 'idimgfamilia', owner:'unonibes4a', name:'imgfamilia'},
 
-          {id: 'id1', owner:'unonibes4a',name:'newImgs'},
+       
+
+      {id: 'id1', owner:'unonibes4a',name:'newImgs'},
       {id: 'id2',owner:'unonibes4a',name:'newimg2'},
       {id: 'id3',owner:'unonibes4a',name:'newimg3'},
       {id: 'id4',owner:'unonibes4a',name:'newimg4'},
@@ -592,7 +600,10 @@ class PintarestaGallery {
       {id: 'id6',owner:'unonibes4a',name:'storeImg'},
       {id: 'id7',owner:'unonibes4a',name:'newimg'},
       {id: 'id8',owner:'unonibes4a',name:'newimg6'}  ,
-       {id: 'id9',owner:'unonibes4a',name:'repjob'} 
+      {id: 'id9',owner:'unonibes4a',name:'repjob'} ,
+      {id: 'iparedes',owner:'unonibes4a',name:'paredimg'} ,
+      {id: 'idmaderas',owner:'unonibes4a',name:'maderas'} 
+        
        
        
     ];
@@ -792,6 +803,10 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('btnsuelos').onclick = () => g.cargarCategoria('suelos');
   document.getElementById('btscenes').onclick = () => g.cargarCategoria('scenes');
   document.getElementById('btnmaquinas').onclick = () => g.cargarCategoria('maquinas');
+  document.getElementById('btnparedes').onclick = () => g.cargarCategoria('iparedes');
+  document.getElementById('btmaderas').onclick = () => g.cargarCategoria('idmaderas');
+   
+   
 
   g.iniciar();
   window.galeriaPintaresta=g;
