@@ -178,6 +178,8 @@ video.pin-image::-webkit-media-controls{display:none!important}
       <button class="nav-btn2" id="btscenes">Scenes</button>
       <button class="nav-btn2" id="btmaderas">Maderas</button>
       <button class="nav-btn2" id="btnparedes">Paredes</button>
+      <button class="nav-btn2" id="btnmetales">Metales</button>
+       
      <!--  <button class="nav-btn2" id="btnmetalOcides">MetalOxide</button>
       <button class="nav-btn2" id="btntelas">telas</button>
       <button class="nav-btn2" id="btntelas">tiles</button> -->
@@ -589,6 +591,8 @@ class PintarestaGallery {
       {id: 'scenes', owner:'unonibes4a', name:'scenelugares'},
       {id: 'maquinas', owner:'unonibes4a', name:'Maquinas'}, 
       {id: 'idimgfamilia', owner:'unonibes4a', name:'imgfamilia'},
+       {id: 'idmetales', owner:'unonibes4a', name:'metales'},
+       
 
        
 
@@ -805,6 +809,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('btnmaquinas').onclick = () => g.cargarCategoria('maquinas');
   document.getElementById('btnparedes').onclick = () => g.cargarCategoria('iparedes');
   document.getElementById('btmaderas').onclick = () => g.cargarCategoria('idmaderas');
+  document.getElementById('btnmetales').onclick = () => g.cargarCategoria('idmetales');
+   
    
    
 
