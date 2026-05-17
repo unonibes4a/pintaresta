@@ -180,6 +180,8 @@ video.pin-image::-webkit-media-controls{display:none!important}
       <button class="nav-btn2" id="btnparedes">Paredes</button>
       <button class="nav-btn2" id="btnmetales">Metales</button>
        <button class="nav-btn2" id="btnNormalsmap">Normals</button>
+      <button class="nav-btn2" id="btnidrepjob">3D</button>
+        
        
      <!--  <button class="nav-btn2" id="btnmetalOcides">MetalOxide</button>
       <button class="nav-btn2" id="btntelas">telas</button>
@@ -608,7 +610,7 @@ class PintarestaGallery {
       {id: 'id6',owner:'unonibes4a',name:'storeImg'},
       {id: 'id7',owner:'unonibes4a',name:'newimg'},
       {id: 'id8',owner:'unonibes4a',name:'newimg6'}  ,
-      {id: 'id9',owner:'unonibes4a',name:'repjob'} ,
+      {id: 'idrepjob',owner:'unonibes4a',name:'repjob'} ,
       {id: 'iparedes',owner:'unonibes4a',name:'paredimg'} ,
       {id: 'idmaderas',owner:'unonibes4a',name:'maderas'} 
         
@@ -815,6 +817,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('btmaderas').onclick = () => g.cargarCategoria('idmaderas');
   document.getElementById('btnmetales').onclick = () => g.cargarCategoria('idmetales');
   document.getElementById('btnNormalsmap').onclick = () => g.cargarCategoria('idnormals');
+  document.getElementById('btnidrepjob').onclick = () => g.cargarCategoria('idrepjob');
+   
 
    
    
