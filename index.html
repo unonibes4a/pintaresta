@@ -11,7 +11,7 @@
 body{background:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif}
 .header{position:fixed;top:0;left:0;right:0;background:#fff;padding:16px 24px;z-index:1000;box-shadow:0 1px 0 rgba(0,0,0,.08)}
 .header-content{max-width:1640px;margin:0 auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.logo{font-size:24px;font-weight:700;color:#e60023;text-decoration:none;padding:12px 16px;border-radius:24px;transition:background .2s}
+.logo{font-size:24px;font-weight:700;color:#e60023;text-decoration:none;padding:12px 16px;border-radius:24px;transition:background .2s;cursor:pointer}
 .logo:hover{background:#f0f0f0}
 .search-container{flex:1;max-width:800px}
 .search-bar{display:flex;align-items:center;background:#efefef;border-radius:24px;padding:12px 16px}
@@ -88,68 +88,92 @@ video.pin-image::-webkit-media-controls{display:none!important}
 .vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:#fff;cursor:pointer}
 .speed-select{background:#222;color:#fff;border:1px solid #444;border-radius:6px;padding:4px 8px;font-size:12px;cursor:pointer;outline:none}
 .vc-spacer{flex:1}
-.three-wrap{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden}
-.three-canvas-wrap{flex:1;position:relative;min-height:0;overflow:hidden}
-.three-canvas-wrap canvas{width:100%!important;height:100%!important;display:block}
-.env-panel{position:absolute;top:10px;right:10px;background:rgba(10,10,10,.82);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;width:220px;z-index:10;backdrop-filter:blur(4px)}
-.env-section-title{font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.6px;margin-top:4px}
-.env-section-title:first-child{margin-top:0}
-.sky-btns{display:flex;gap:5px}
-.sky-btn{flex:1;padding:5px 4px;font-size:11px;background:rgba(255,255,255,.08);color:#ccc;border:1px solid rgba(255,255,255,.15);border-radius:6px;cursor:pointer;transition:all .2s;font-weight:600}
-.sky-btn:hover{background:rgba(255,255,255,.16)}
-.sky-btn.active{background:#e60023;color:#fff;border-color:#e60023}
-.env-row{display:flex;align-items:center;gap:6px}
-.env-row label{font-size:11px;color:#bbb;width:76px;flex-shrink:0}
-.env-row input[type=range]{flex:1;accent-color:#e60023;height:3px;cursor:pointer}
-.env-row span{font-size:11px;color:#fff;min-width:32px;text-align:right}
-.env-row input[type=color]{width:34px;height:24px;border:none;cursor:pointer;border-radius:4px;padding:1px}
-.env-row input[type=number]{width:52px;background:#222;color:#fff;border:1px solid #444;border-radius:4px;padding:2px 4px;font-size:11px;outline:none}
-.hdr-url-row{display:flex;flex-direction:column;gap:4px}
-.hdr-url-row label{font-size:11px;color:#bbb}
-.hdr-url-input{background:#1a1a1a;color:#ccc;border:1px solid #444;border-radius:5px;padding:4px 6px;font-size:10px;outline:none;width:100%;font-family:monospace}
-.hdr-url-input:focus{border-color:#e60023}
-.hdr-load-btn{margin-top:2px;padding:5px;font-size:11px;background:#e60023;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600;width:100%}
-.hdr-load-btn:hover{background:#ad081b}
-#guiContainer .lil-gui{--background-color:#111;--text-color:#eee;--title-background-color:#1a1a1a;--widget-color:#2a2a2a;--hover-color:#333;--focus-color:#444;--number-color:#88ccff;--string-color:#88ffcc;max-height:80vh;overflow-y:auto}
 
+/* ── SIDE MENU ──────────────────────────────────────────── */
+.nav-btn2{position:relative;background-color:#efefef;color:#212121;border-radius:12px;width:80%;font-size:12px;border:none;height:37px;cursor:pointer;margin-top:4px;margin-bottom:4px;left:10%}
+.nav-btn2:hover{background-color:#00d08457}
+#idboxmenuitems{width:120px;height:600px;background-color:#23242767;z-index:99999;position:fixed;top:20%;right:0%;border-left:4px;border-color:#232427a6}
 
-.nav-btn2{ 
-  position: relative;
-  background-color: #efefef;
-  color: #212121;
-  border-radius: 12px;
-  width: 80%;
-  font-size: 12px;
-  border: none;
-  height: 37px;
-  cursor: pointer;
-  margin-top: 4px;
-  margin-bottom: 4px;
-  left:10%;
+/* ── PBR MODAL 3D ───────────────────────────────────────── */
+.pbr-wrap{flex:1;display:flex;overflow:hidden;min-height:0;background:#0a0a0f}
+.pbr-canvas-area{flex:1;position:relative;overflow:hidden}
+#threeCanvas{width:100%;height:100%;display:block}
 
-}
-.nav-btn2:hover{
-    background-color: #00d08457;
- 
-}
+/* sidebar */
+.pbr-sidebar{width:220px;background:#111118;border-left:1px solid #2a2a3a;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;font-family:'Courier New',monospace;font-size:12px;color:#e8e8f0}
+.pbr-sb-head{padding:10px 12px 7px;border-bottom:1px solid #2a2a3a;font-size:9px;font-weight:700;letter-spacing:2px;color:#555568;text-transform:uppercase}
+.pbr-sb-body{flex:1;overflow-y:auto;padding:8px}
+.pbr-sb-body::-webkit-scrollbar{width:3px}
+.pbr-sb-body::-webkit-scrollbar-thumb{background:#2a2a3a;border-radius:2px}
+.pbr-section{margin-bottom:14px}
+.pbr-sec-title{font-size:8px;font-weight:700;letter-spacing:2px;color:#555568;text-transform:uppercase;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid #1a1a26}
+.pbr-row{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.pbr-lbl{font-size:9px;color:#888898;width:64px;flex-shrink:0}
+.pbr-val{font-size:9px;color:#555568;min-width:26px;text-align:right}
+.pbr-sl{-webkit-appearance:none;flex:1;height:3px;background:#2a2a3a;border-radius:2px;outline:none;cursor:pointer}
+.pbr-sl::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:#e63946;cursor:pointer;border:2px solid #0a0a0f}
+.pbr-col{width:24px;height:18px;border:1px solid #2a2a3a;border-radius:3px;background:transparent;cursor:pointer;padding:1px}
+.pbr-select{background:#1a1a26;color:#e8e8f0;border:1px solid #2a2a3a;border-radius:4px;padding:3px 5px;font-size:10px;font-family:'Courier New',monospace;outline:none;cursor:pointer;width:100%;margin-bottom:4px}
 
-#idboxmenuitems{
+/* env btns */
+.pbr-env-btns{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-bottom:6px}
+.pbr-ebtn{padding:4px 2px;font-size:8px;font-weight:700;letter-spacing:.4px;background:#1a1a26;color:#555568;border:1px solid #2a2a3a;border-radius:4px;cursor:pointer;transition:all .15s;font-family:'Courier New',monospace;text-align:center}
+.pbr-ebtn:hover{border-color:#888898;color:#e8e8f0}
+.pbr-ebtn.active{background:rgba(230,57,70,.15);border-color:#e63946;color:#e63946}
 
-  width:120px;
-  height: 600px;
-  background-color: #23242767;
-  z-index: 99999;
-  position: fixed;
-  top: 20%;
-  right:0%;
-  border-left: 4px ;
-  border-color:  #232427a6;
- 
-  
-}
-.cursorpointclss{
-  cursor: pointer;
-}
+/* hdr url */
+.pbr-hdr-row{display:flex;gap:3px;margin-bottom:6px}
+.pbr-hdr-in{flex:1;background:#1a1a26;border:1px solid #2a2a3a;color:#888898;border-radius:4px;padding:3px 5px;font-size:8px;font-family:'Courier New',monospace;outline:none;min-width:0}
+.pbr-hdr-in:focus{border-color:#e63946}
+.pbr-hdr-btn{background:#e63946;color:#fff;border:none;border-radius:4px;padding:3px 7px;font-size:9px;font-weight:700;cursor:pointer;flex-shrink:0}
+.pbr-hdr-btn:hover{background:#c1121f}
+
+/* texture slots */
+.pbr-tex-slot{border:1px dashed #2a2a3a;border-radius:8px;padding:6px;margin-bottom:5px;cursor:pointer;position:relative;display:flex;align-items:center;gap:6px;overflow:hidden;transition:all .15s}
+.pbr-tex-slot:hover{border-color:#e63946;background:rgba(230,57,70,.04)}
+.pbr-tex-slot input[type=file]{position:absolute;opacity:0;inset:0;cursor:pointer;z-index:2}
+.pbr-thumb{width:28px;height:28px;border-radius:4px;background:#1a1a26;border:1px solid #2a2a3a;object-fit:cover;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;color:#555568;overflow:hidden}
+.pbr-thumb img{width:28px;height:28px;object-fit:cover;border-radius:3px}
+.pbr-tex-info{flex:1;min-width:0}
+.pbr-tex-name{font-size:9px;color:#888898;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pbr-tex-sub{font-size:8px;color:#555568;margin-top:1px}
+.pbr-tex-clr{position:absolute;top:3px;right:3px;background:rgba(230,57,70,.18);border:none;color:#e63946;border-radius:2px;width:14px;height:14px;font-size:9px;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:3}
+.pbr-tex-slot:hover .pbr-tex-clr.vis{display:flex}
+
+/* local load btn */
+.pbr-local-btn{width:100%;padding:6px;background:transparent;border:1px dashed #2a2a3a;border-radius:6px;color:#555568;font-size:9px;font-family:'Courier New',monospace;cursor:pointer;letter-spacing:1px;transition:all .15s;margin-bottom:5px;position:relative;overflow:hidden}
+.pbr-local-btn:hover{border-color:#e63946;color:#e63946}
+.pbr-local-btn input[type=file]{position:absolute;opacity:0;inset:0;cursor:pointer}
+
+/* reset */
+.pbr-reset-btn{width:100%;padding:5px;background:transparent;border:1px solid #2a2a3a;border-radius:5px;color:#555568;font-size:9px;font-family:'Courier New',monospace;cursor:pointer;letter-spacing:1px;transition:all .15s;margin-top:2px}
+.pbr-reset-btn:hover{border-color:#e63946;color:#e63946}
+
+/* stats */
+.pbr-stat-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.pbr-stat-k{font-size:8px;color:#555568}
+.pbr-stat-v{font-size:9px;color:#888898;font-weight:500}
+
+/* loader inside modal */
+.pbr-loader{position:absolute;inset:0;background:rgba(10,10,15,.92);display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;z-index:50}
+.pbr-loader.on{display:flex}
+.pbr-spinner{width:32px;height:32px;border:2px solid #2a2a3a;border-top-color:#e63946;border-radius:50%;animation:spin 1s linear infinite}
+.pbr-loader-txt{font-size:10px;color:#888898;font-family:'Courier New',monospace;letter-spacing:1px}
+
+/* drop overlay inside modal */
+.pbr-drop{position:absolute;inset:0;background:rgba(10,10,15,.9);display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;pointer-events:none;z-index:40;border:2px dashed #e63946}
+.pbr-drop.on{display:flex}
+.pbr-drop-icon{font-size:40px}
+.pbr-drop-title{font-size:16px;font-weight:700;color:#e8e8f0;letter-spacing:1px;font-family:'Courier New',monospace}
+.pbr-drop-sub{font-size:11px;color:#888898}
+
+/* modal topbar inside */
+.pbr-topbar{background:#111118;border-bottom:1px solid #2a2a3a;padding:6px 12px;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.pbr-tb-btn{display:flex;align-items:center;gap:4px;padding:4px 10px;border-radius:5px;border:1px solid #2a2a3a;background:#1a1a26;color:#888898;cursor:pointer;font-size:10px;font-family:'Courier New',monospace;transition:all .15s;position:relative;overflow:hidden;white-space:nowrap}
+.pbr-tb-btn:hover{border-color:#e63946;color:#e8e8f0}
+.pbr-tb-btn input[type=file]{position:absolute;opacity:0;inset:0;cursor:pointer}
+.pbr-tb-badge{background:#e63946;color:#fff;font-size:8px;padding:1px 4px;border-radius:2px;font-weight:700;letter-spacing:1px}
+.pbr-tb-info{margin-left:auto;font-size:9px;color:#555568;font-family:'Courier New',monospace}
 </style>
 
 <script type="importmap">
@@ -160,42 +184,35 @@ video.pin-image::-webkit-media-controls{display:none!important}
     "three/addons/loaders/GLTFLoader":                "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/GLTFLoader.js",
     "three/addons/loaders/OBJLoader":                 "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/OBJLoader.js",
     "three/addons/loaders/FBXLoader":                 "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/FBXLoader.js",
-    "three/addons/loaders/HDRCubeTextureLoader":      "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/HDRCubeTextureLoader.js",
     "three/addons/loaders/RGBELoader":                "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/RGBELoader.js",
     "three/addons/objects/Sky":                       "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/objects/Sky.js",
     "three/addons/environments/RoomEnvironment":      "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/environments/RoomEnvironment.js",
-    "three/addons/environments/DebugEnvironment":     "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/environments/DebugEnvironment.js",
-    "three/addons/libs/lil-gui":                         "https://threejs.org/examples/jsm/libs/lil-gui.module.min.js"
+    "three/addons/environments/DebugEnvironment":     "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/environments/DebugEnvironment.js"
   }
 }
 </script>
 </head>
 <body>
-  <div id="idboxmenuitems">
-     
-      <button class="nav-btn2" id="btnmaquinas">Maquinas</button>
-      <button class="nav-btn2" id="btnsuelos">Suelos</button>
-      <button class="nav-btn2" id="btscenes">Scenes</button>
-      <button class="nav-btn2" id="btmaderas">Maderas</button>
-      <button class="nav-btn2" id="btnparedes">Paredes</button>
-      <button class="nav-btn2" id="btnmetales">Metales</button>
-       <button class="nav-btn2" id="btnNormalsmap">Normals</button>
-      <button class="nav-btn2" id="btnidrepjob">3D</button>
-        
-       
-     <!--  <button class="nav-btn2" id="btnmetalOcides">MetalOxide</button>
-      <button class="nav-btn2" id="btntelas">telas</button>
-      <button class="nav-btn2" id="btntelas">tiles</button> -->
-       
 
-       
-  </div>
+<!-- SIDE MENU -->
+<div id="idboxmenuitems">
+  <button class="nav-btn2" id="btnmaquinas">Maquinas</button>
+  <button class="nav-btn2" id="btnsuelos">Suelos</button>
+  <button class="nav-btn2" id="btscenes">Scenes</button>
+  <button class="nav-btn2" id="btmaderas">Maderas</button>
+  <button class="nav-btn2" id="btnparedes">Paredes</button>
+  <button class="nav-btn2" id="btnmetales">Metales</button>
+  <button class="nav-btn2" id="btnNormalsmap">Normals</button>
+  <button class="nav-btn2" id="btnidrepjob">3D</button>
+</div>
 
+<!-- LOADING SCREEN -->
 <div class="loading-screen" id="loadingScreen" style="display:none">
   <div class="loading-spinner"></div>
   <div class="loading-text">Cargando...</div>
 </div>
 
+<!-- MODAL JSON -->
 <div class="modal-overlay" id="modalJSON">
   <div class="modal-content sm">
     <div class="modal-header">
@@ -213,6 +230,7 @@ video.pin-image::-webkit-media-controls{display:none!important}
   </div>
 </div>
 
+<!-- MODAL VIDEO -->
 <div class="modal-overlay" id="modalVideo">
   <div class="modal-content sm" style="max-width:900px;background:#000">
     <div class="modal-header" style="background:#111;border-color:#222">
@@ -234,12 +252,9 @@ video.pin-image::-webkit-media-controls{display:none!important}
           <button class="vc-btn" id="vcBack">&#9664;&#9664; 5s</button>
           <button class="vc-btn" id="vcFwd">10s &#9654;&#9654;</button>
           <select class="speed-select" id="vcSpeed">
-            <option value="0.25">0.25×</option>
-            <option value="0.5">0.5×</option>
-            <option value="0.75">0.75×</option>
-            <option value="1" selected>1×</option>
-            <option value="1.25">1.25×</option>
-            <option value="1.5">1.5×</option>
+            <option value="0.25">0.25×</option><option value="0.5">0.5×</option>
+            <option value="0.75">0.75×</option><option value="1" selected>1×</option>
+            <option value="1.25">1.25×</option><option value="1.5">1.5×</option>
             <option value="2">2×</option>
           </select>
           <span class="vc-spacer"></span>
@@ -250,27 +265,214 @@ video.pin-image::-webkit-media-controls{display:none!important}
   </div>
 </div>
 
+<!-- MODAL 3D PBR ─────────────────────────────────────────── -->
 <div class="modal-overlay" id="modal3D">
-  <div class="modal-content lg">
-    <div class="modal-header" style="background:#111;border-color:#222">
-      <h2 id="modal3DTitle" style="color:#fff">Modelo 3D</h2>
-      <button class="btn-modal secondary" id="btnClose3D" style="background:#333;color:#fff">✕</button>
+  <div class="modal-content lg" style="background:#0a0a0f;border:1px solid #2a2a3a">
+    <div class="modal-header" style="background:#111118;border-color:#2a2a3a;padding:10px 14px">
+      <h2 id="modal3DTitle" style="color:#e8e8f0;font-family:'Courier New',monospace;font-size:13px;letter-spacing:1px">Modelo 3D</h2>
+      <button class="btn-modal secondary" id="btnClose3D" style="background:#1a1a26;color:#888898;border:1px solid #2a2a3a;font-size:12px">✕</button>
     </div>
+
+    <!-- inner topbar (load local model + texture shortcuts) -->
+    <div class="pbr-topbar">
+      <label class="pbr-tb-btn">
+        ⊕ Cargar modelo
+        <input type="file" id="pbrFileModel" accept=".glb,.gltf,.obj,.fbx">
+      </label>
+      <button class="pbr-tb-btn" id="pbrBtnResetCam">⊙ Reset cam</button>
+      <button class="pbr-tb-btn" id="pbrBtnWire">⊞ Wire</button>
+      <button class="pbr-tb-btn" id="pbrBtnGrid">⊟ Grid</button>
+      <div class="pbr-tb-badge">PBR</div>
+      <div class="pbr-tb-info" id="pbrTbInfo">drag &amp; drop GLB / OBJ / FBX</div>
+    </div>
+
     <div class="modal-body">
-      <div class="three-wrap">
-        <div class="three-canvas-wrap" id="threeWrap">
+      <div class="pbr-wrap">
+
+        <!-- CANVAS -->
+        <div class="pbr-canvas-area" id="pbrCanvasArea">
           <canvas id="threeCanvas"></canvas>
 
-          <div id="guiContainer" style="position:absolute;top:10px;right:10px;z-index:10"></div>
+          <!-- drop overlay -->
+          <div class="pbr-drop" id="pbrDrop">
+            <div class="pbr-drop-icon">⬇</div>
+            <div class="pbr-drop-title">SOLTAR MODELO</div>
+            <div class="pbr-drop-sub">GLB · GLTF · OBJ · FBX | img → albedo (shift→normal, ctrl→rough)</div>
+          </div>
+
+          <!-- loader -->
+          <div class="pbr-loader" id="pbrLoader">
+            <div class="pbr-spinner"></div>
+            <div class="pbr-loader-txt" id="pbrLoaderTxt">Cargando...</div>
+          </div>
+        </div>
+
+        <!-- SIDEBAR PBR -->
+        <div class="pbr-sidebar">
+          <div class="pbr-sb-head">PBR Controls</div>
+          <div class="pbr-sb-body">
+
+            <!-- ENV -->
+            <div class="pbr-section">
+              <div class="pbr-sec-title">Environment</div>
+              <div class="pbr-env-btns">
+                <button class="pbr-ebtn active" data-env="hdr">HDR</button>
+                <button class="pbr-ebtn" data-env="room">Room</button>
+                <button class="pbr-ebtn" data-env="sky">Sky</button>
+                <button class="pbr-ebtn" data-env="debug">Debug</button>
+                <button class="pbr-ebtn" data-env="solid">Sólido</button>
+                <button class="pbr-ebtn" data-env="none">None</button>
+              </div>
+              <div class="pbr-hdr-row">
+                <input class="pbr-hdr-in" id="pbrHdrUrl" type="text" value="https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_08_1k.hdr" placeholder="URL .hdr">
+                <button class="pbr-hdr-btn" id="pbrBtnHdr">↵</button>
+              </div>
+              <div class="pbr-row">
+                <span class="pbr-lbl">Exposición</span>
+                <input type="range" class="pbr-sl" id="pbrSlExposure" min="0.1" max="4" step="0.05" value="1.0">
+                <span class="pbr-val" id="pbrVExposure">1.0</span>
+              </div>
+              <div class="pbr-row">
+                <span class="pbr-lbl">Env Int.</span>
+                <input type="range" class="pbr-sl" id="pbrSlEnvInt" min="0" max="5" step="0.05" value="1.0">
+                <span class="pbr-val" id="pbrVEnvInt">1.0</span>
+              </div>
+              <div class="pbr-row">
+                <span class="pbr-lbl">BG Color</span>
+                <input type="color" class="pbr-col" id="pbrColBg" value="#111118">
+              </div>
+            </div>
+
+            <!-- MATERIAL -->
+            <div class="pbr-section">
+              <div class="pbr-sec-title">Material PBR</div>
+              <div class="pbr-row">
+                <span class="pbr-lbl">Albedo</span>
+                <input type="color" class="pbr-col" id="pbrColAlbedo" value="#ffffff">
+              </div>
+              <div class="pbr-row">
+                <span class="pbr-lbl">Roughness</span>
+                <input type="range" class="pbr-sl" id="pbrSlRough" min="0" max="1" step="0.01" value="0.5">
+                <span class="pbr-val" id="pbrVRough">0.50</span>
+              </div>
+              <div class="pbr-row">
+                <span class="pbr-lbl">Metalness</span>
+                <input type="range" class="pbr-sl" id="pbrSlMetal" min="0" max="1" step="0.01" value="0.0">
+                <span class="pbr-val" id="pbrVMetal">0.00</span>
+              </div>
+              <div class="pbr-row">
+                <span class="pbr-lbl">AO Int.</span>
+                <input type="range" class="pbr-sl" id="pbrSlAO" min="0" max="1" step="0.01" value="1.0">
+                <span class="pbr-val" id="pbrVAO">1.00</span>
+              </div>
+              <div class="pbr-row">
+                <span class="pbr-lbl">Normal Sc.</span>
+                <input type="range" class="pbr-sl" id="pbrSlNorm" min="0" max="3" step="0.05" value="1.0">
+                <span class="pbr-val" id="pbrVNorm">1.00</span>
+              </div>
+              <div class="pbr-row">
+                <span class="pbr-lbl">Emissivo</span>
+                <input type="color" class="pbr-col" id="pbrColEmissive" value="#000000">
+                <input type="range" class="pbr-sl" id="pbrSlEmissive" min="0" max="5" step="0.1" value="0">
+                <span class="pbr-val" id="pbrVEmissive">0.0</span>
+              </div>
+            </div>
+
+            <!-- TEXTURAS -->
+            <div class="pbr-section">
+              <div class="pbr-sec-title">Texturas</div>
+              <!-- albedo -->
+              <div class="pbr-tex-slot" id="pbrSlotAlbedo">
+                <input type="file" accept="image/*" id="pbrFileAlbedo">
+                <div class="pbr-thumb" id="pbrThumbAlbedo">🎨</div>
+                <div class="pbr-tex-info">
+                  <div class="pbr-tex-name" id="pbrNameAlbedo">Albedo / Color</div>
+                  <div class="pbr-tex-sub">click para cargar</div>
+                </div>
+                <button class="pbr-tex-clr" id="pbrClrAlbedo">✕</button>
+              </div>
+              <!-- normal -->
+              <div class="pbr-tex-slot" id="pbrSlotNormal">
+                <input type="file" accept="image/*" id="pbrFileNormal">
+                <div class="pbr-thumb" id="pbrThumbNormal">↗</div>
+                <div class="pbr-tex-info">
+                  <div class="pbr-tex-name" id="pbrNameNormal">Normal Map</div>
+                  <div class="pbr-tex-sub">click para cargar</div>
+                </div>
+                <button class="pbr-tex-clr" id="pbrClrNormal">✕</button>
+              </div>
+              <!-- roughmetal -->
+              <div class="pbr-tex-slot" id="pbrSlotRoughMetal">
+                <input type="file" accept="image/*" id="pbrFileRoughMetal">
+                <div class="pbr-thumb" id="pbrThumbRoughMetal">◈</div>
+                <div class="pbr-tex-info">
+                  <div class="pbr-tex-name" id="pbrNameRoughMetal">Rough / Metal</div>
+                  <div class="pbr-tex-sub">click para cargar</div>
+                </div>
+                <button class="pbr-tex-clr" id="pbrClrRoughMetal">✕</button>
+              </div>
+              <!-- ao -->
+              <div class="pbr-tex-slot" id="pbrSlotAO">
+                <input type="file" accept="image/*" id="pbrFileAO">
+                <div class="pbr-thumb" id="pbrThumbAO">◐</div>
+                <div class="pbr-tex-info">
+                  <div class="pbr-tex-name" id="pbrNameAO">AO Map</div>
+                  <div class="pbr-tex-sub">click para cargar</div>
+                </div>
+                <button class="pbr-tex-clr" id="pbrClrAO">✕</button>
+              </div>
+              <!-- emissive -->
+              <div class="pbr-tex-slot" id="pbrSlotEmissive">
+                <input type="file" accept="image/*" id="pbrFileEmissive">
+                <div class="pbr-thumb" id="pbrThumbEmissive">✦</div>
+                <div class="pbr-tex-info">
+                  <div class="pbr-tex-name" id="pbrNameEmissive">Emissive Map</div>
+                  <div class="pbr-tex-sub">click para cargar</div>
+                </div>
+                <button class="pbr-tex-clr" id="pbrClrEmissive">✕</button>
+              </div>
+            </div>
+
+            <!-- LUCES -->
+            <div class="pbr-section">
+              <div class="pbr-sec-title">Luces</div>
+              <div class="pbr-row">
+                <span class="pbr-lbl">Ambient</span>
+                <input type="range" class="pbr-sl" id="pbrSlAmb" min="0" max="4" step="0.05" value="0.3">
+                <span class="pbr-val" id="pbrVAmb">0.30</span>
+              </div>
+              <div class="pbr-row">
+                <span class="pbr-lbl">Direc.</span>
+                <input type="range" class="pbr-sl" id="pbrSlDir" min="0" max="8" step="0.1" value="1.0">
+                <span class="pbr-val" id="pbrVDir">1.00</span>
+              </div>
+              <div class="pbr-row">
+                <span class="pbr-lbl">Dir Color</span>
+                <input type="color" class="pbr-col" id="pbrColDir" value="#ffffff">
+              </div>
+            </div>
+
+            <!-- STATS -->
+            <div class="pbr-section">
+              <div class="pbr-sec-title">Escena</div>
+              <div class="pbr-stat-row"><span class="pbr-stat-k">Modelo</span><span class="pbr-stat-v" id="pbrStatModel">—</span></div>
+              <div class="pbr-stat-row"><span class="pbr-stat-k">Mallas</span><span class="pbr-stat-v" id="pbrStatMesh">0</span></div>
+              <div class="pbr-stat-row"><span class="pbr-stat-k">Triángulos</span><span class="pbr-stat-v" id="pbrStatTris">0</span></div>
+              <div class="pbr-stat-row"><span class="pbr-stat-k">Materiales</span><span class="pbr-stat-v" id="pbrStatMats">0</span></div>
+            </div>
+
+            <button class="pbr-reset-btn" id="pbrBtnReset">⟳ Resetear material</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
+<!-- HEADER -->
 <div class="header">
   <div class="header-content">
-    <a  class="logo cursorpointclss" id="btnLogo">PINTARESTA</a>
+    <a class="logo" id="btnLogo">PINTARESTA</a>
     <div class="search-container">
       <div class="search-bar">
         <span>Buscar</span>
@@ -296,8 +498,11 @@ video.pin-image::-webkit-media-controls{display:none!important}
   <div class="pins-container" id="pinsContainer"></div>
 </div>
 
+<!-- ══════════════════════════════════════════════════════════
+     SCRIPT MODULE
+═══════════════════════════════════════════════════════════ -->
 <script type="module">
-  import * as THREE from 'three';
+import * as THREE from 'three';
 import { OrbitControls }    from 'three/addons/controls/OrbitControls';
 import { GLTFLoader }       from 'three/addons/loaders/GLTFLoader';
 import { OBJLoader }        from 'three/addons/loaders/OBJLoader';
@@ -306,8 +511,10 @@ import { RGBELoader }       from 'three/addons/loaders/RGBELoader';
 import { Sky }              from 'three/addons/objects/Sky';
 import { RoomEnvironment }  from 'three/addons/environments/RoomEnvironment';
 import { DebugEnvironment } from 'three/addons/environments/DebugEnvironment';
-import { GUI }              from 'three/addons/libs/lil-gui';
 
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   VIDEO MODAL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 const fmtTime = s => { s=Math.floor(s||0); return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; };
 
 const VideoModal = (() => {
@@ -346,278 +553,414 @@ const VideoModal = (() => {
   };
 })();
 
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   THREE / PBR MODAL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 const ThreeModal = (() => {
-  let renderer=null,scene=null,camera=null,controls=null;
-  let sky=null,ambL=null,dirL=null,rafId=null,resObs=null;
-  let loadedObj=null, gui=null;
 
-  const DEFAULT_HDR = 'https://threejs.org/examples/textures/equirectangular/quarry_01_1k.hdr';
+  /* scene objects */
+  let renderer=null, scene=null, camera=null, controls=null;
+  let ambLight=null, dirLight=null, gridHelper=null;
+  let sky=null, loadedModel=null, pmremGen=null;
+  let rafId=null, resObs=null;
+  let wireMode=false, gridVisible=true;
+  let currentEnv='hdr';
 
-  const params = {
-    envMap: 'HDR',
-    hdrUrl: DEFAULT_HDR,
-    roughness: 0.0,
-    metalness: 0.0,
-    envMapIntensity: 1.0,
-    exposure: 1.0,
-    albedo: '#ffffff',
-    ambientIntensity: 0.0,
-    dirIntensity: 0.0,
-    bgColor: '#222222'
+  /* material state */
+  const MS = {
+    roughness:0.5, metalness:0.0, aoIntensity:1.0, normalScale:1.0,
+    albedo:'#ffffff', emissive:'#000000', emissiveIntensity:0.0, envMapIntensity:1.0
   };
+  const TX = { albedo:null, normal:null, roughMetal:null, ao:null, emissive:null };
 
-  const clearSky = () => { if(sky){scene.remove(sky);sky=null;} };
+  /* helpers */
+  const $ = id => document.getElementById(id);
+  const showLoader = msg => { $('pbrLoader').classList.add('on'); $('pbrLoaderTxt').textContent = msg||'Cargando...'; };
+  const hideLoader = ()  => $('pbrLoader').classList.remove('on');
 
-  const applyMaterial = () => {
-    if(!loadedObj) return;
-    const color = new THREE.Color(params.albedo);
-    loadedObj.traverse(o => {
+  /* ── Three init ───────────────────────────────────────── */
+  function initThree() {
+    const canvas = $('threeCanvas');
+    const area   = $('pbrCanvasArea');
+
+    renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:false });
+    renderer.setPixelRatio(devicePixelRatio);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.0;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color('#111118');
+
+    camera = new THREE.PerspectiveCamera(50, area.clientWidth/area.clientHeight, 0.001, 100000);
+    camera.position.set(0, 1.2, 3);
+
+    controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.06;
+
+    ambLight = new THREE.AmbientLight(0xffffff, 0.3);
+    dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
+    dirLight.position.set(4,8,5);
+    dirLight.castShadow = true;
+    scene.add(ambLight, dirLight);
+
+    gridHelper = new THREE.GridHelper(10, 20, 0x333344, 0x222233);
+    scene.add(gridHelper);
+    scene.add(new THREE.AxesHelper(0.4));
+
+    pmremGen = new THREE.PMREMGenerator(renderer);
+    pmremGen.compileEquirectangularShader();
+
+    resize();
+
+    resObs = new ResizeObserver(resize);
+    resObs.observe(area);
+
+    (function animate(){ rafId=requestAnimationFrame(animate); controls.update(); renderer.render(scene,camera); })();
+  }
+
+  function resize() {
+    const area = $('pbrCanvasArea');
+    const w = area.clientWidth, h = area.clientHeight;
+    if(!w||!h) return;
+    renderer.setSize(w, h, false);
+    camera.aspect = w/h;
+    camera.updateProjectionMatrix();
+  }
+
+  /* ── ENV ──────────────────────────────────────────────── */
+  function clearSky(){ if(sky){ scene.remove(sky); sky=null; } }
+
+  function applyMaterial(){
+    if(!loadedModel) return;
+    const albedo   = new THREE.Color(MS.albedo);
+    const emissive = new THREE.Color(MS.emissive);
+    loadedModel.traverse(o => {
       if(!o.isMesh) return;
-      if(!o.material) o.material = new THREE.MeshStandardMaterial();
       const mats = [].concat(o.material);
       mats.forEach((m,i) => {
         let mat = m;
-        if(!(mat instanceof THREE.MeshStandardMaterial)) {
-          mat = new THREE.MeshStandardMaterial({map: m.map||null});
+        if(!(mat instanceof THREE.MeshStandardMaterial)){
+          mat = new THREE.MeshStandardMaterial({ map: m.map||null });
           Array.isArray(o.material) ? o.material[i]=mat : o.material=mat;
         }
-        mat.color.set(color);
-        mat.roughness = params.roughness;
-        mat.metalness = params.metalness;
-        mat.envMapIntensity = params.envMapIntensity;
+        mat.color.copy(albedo);
+        mat.roughness       = MS.roughness;
+        mat.metalness       = MS.metalness;
+        mat.aoMapIntensity  = MS.aoIntensity;
+        if(mat.normalScale) mat.normalScale.set(MS.normalScale, MS.normalScale);
+        mat.emissive.copy(emissive);
+        mat.emissiveIntensity = MS.emissiveIntensity;
+        mat.envMapIntensity   = MS.envMapIntensity;
+        if(TX.albedo)     { mat.map = TX.albedo; mat.map.colorSpace = THREE.SRGBColorSpace; }
+        if(TX.normal)     { mat.normalMap = TX.normal; if(!mat.normalScale) mat.normalScale=new THREE.Vector2(1,1); }
+        if(TX.roughMetal) { mat.roughnessMap = TX.roughMetal; mat.metalnessMap = TX.roughMetal; }
+        if(TX.ao)         mat.aoMap = TX.ao;
+        if(TX.emissive)   mat.emissiveMap = TX.emissive;
+        mat.wireframe   = wireMode;
         mat.needsUpdate = true;
       });
     });
-  };
+  }
 
-  const applyEnv = tex => {
-    scene.environment = tex;
-    scene.background = tex;
-    applyMaterial();
-  };
-
-  const loadHDR = url => {
-    const pmrem = new THREE.PMREMGenerator(renderer);
-    pmrem.compileEquirectangularShader();
-    new RGBELoader().load(url, tex => {
-      tex.mapping = THREE.EquirectangularReflectionMapping;
-      const rt = pmrem.fromEquirectangular(tex);
-      applyEnv(rt.texture);
-      scene.background = rt.texture;
-      tex.dispose(); pmrem.dispose();
-    }, undefined, ()=>{});
-  };
-
-  const applySkyProc = () => {
+  function setEnv(type){
+    currentEnv = type;
+    document.querySelectorAll('.pbr-ebtn').forEach(b => b.classList.toggle('active', b.dataset.env===type));
     clearSky();
-    sky = new Sky(); sky.scale.setScalar(450000); scene.add(sky);
-    scene.background = null;
-    scene.environment = null;
-    applyMaterial();
-  };
+    if(type==='hdr'){
+      const url = $('pbrHdrUrl').value.trim();
+      showLoader('Cargando HDR...');
+      new RGBELoader().load(url, tex => {
+        const env = pmremGen.fromEquirectangular(tex).texture;
+        tex.dispose();
+        scene.environment = env; scene.background = env;
+        applyMaterial(); hideLoader();
+      }, undefined, ()=>{ hideLoader(); });
+    } else if(type==='room'){
+      const env = pmremGen.fromScene(new RoomEnvironment(),0.04).texture;
+      scene.environment = env; scene.background = env; applyMaterial();
+    } else if(type==='debug'){
+      const env = pmremGen.fromScene(new DebugEnvironment()).texture;
+      scene.environment = env; scene.background = env; applyMaterial();
+    } else if(type==='sky'){
+      sky = new Sky(); sky.scale.setScalar(450000); scene.add(sky);
+      const sun=new THREE.Vector3(), eff=sky.material.uniforms;
+      eff['turbidity'].value=10; eff['rayleigh'].value=3;
+      eff['mieCoefficient'].value=0.005; eff['mieDirectionalG'].value=0.7;
+      sun.setFromSphericalCoords(1, THREE.MathUtils.degToRad(85), THREE.MathUtils.degToRad(180));
+      eff['sunPosition'].value.copy(sun);
+      const rt = pmremGen.fromScene(sky);
+      scene.environment = rt.texture; scene.background = sky; applyMaterial();
+    } else if(type==='solid'){
+      scene.environment=null; scene.background=new THREE.Color($('pbrColBg').value); applyMaterial();
+    } else if(type==='none'){
+      scene.environment=null; scene.background=new THREE.Color('#0a0a0f'); applyMaterial();
+    }
+  }
 
-  const buildRoom = () => {
-    clearSky();
-    const pmrem = new THREE.PMREMGenerator(renderer);
-    const env = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-    applyEnv(env); pmrem.dispose();
-  };
-
-  const buildDebug = () => {
-    clearSky();
-    const pmrem = new THREE.PMREMGenerator(renderer);
-    const env = pmrem.fromScene(new DebugEnvironment()).texture;
-    applyEnv(env); pmrem.dispose();
-  };
-
-  const buildSolid = () => {
-    clearSky();
-    scene.environment = null;
-    scene.background = new THREE.Color(params.bgColor);
-    applyMaterial();
-  };
-
-  const switchEnv = () => {
-    if(params.envMap==='HDR') loadHDR(params.hdrUrl);
-    else if(params.envMap==='Sky') applySkyProc();
-    else if(params.envMap==='Room') buildRoom();
-    else if(params.envMap==='Debug') buildDebug();
-    else if(params.envMap==='Solid') buildSolid();
-  };
-
-  const buildGUI = () => {
-    if(gui) { gui.destroy(); gui=null; }
-    const container = document.getElementById('guiContainer');
-    gui = new GUI({ container, width: 240, title: 'Configuración' });
-
-    const envF = gui.addFolder('Entorno');
-    envF.add(params,'envMap',['HDR','Sky','Room','Debug','Solid']).name('tipo').onChange(switchEnv);
-    envF.add(params,'hdrUrl').name('URL HDR').onFinishChange(v=>{ if(params.envMap==='HDR') loadHDR(v); });
-    envF.add(renderer,'toneMappingExposure',0,4,0.01).name('exposición');
-    envF.open();
-
-    const matF = gui.addFolder('Material');
-    matF.addColor(params,'albedo').name('albedo').onChange(applyMaterial);
-    matF.add(params,'roughness',0,1,0.01).name('roughness').onChange(applyMaterial);
-    matF.add(params,'metalness',0,1,0.01).name('metalness').onChange(applyMaterial);
-    matF.add(params,'envMapIntensity',0,5,0.05).name('env intensity').onChange(applyMaterial);
-    matF.open();
-
-    const lightF = gui.addFolder('Luces');
-    lightF.add(params,'ambientIntensity',0,3,0.05).name('ambiente').onChange(v=>{ if(ambL) ambL.intensity=v; });
-    lightF.add(params,'dirIntensity',0,5,0.1).name('direccional').onChange(v=>{ if(dirL) dirL.intensity=v; });
-    lightF.open();
-  };
-
-  const fitCamera = obj => {
+  /* ── MODEL LOADING ────────────────────────────────────── */
+  function fitCamera(obj){
     obj.updateMatrixWorld(true);
-    const box = new THREE.Box3().setFromObject(obj);
+    const box=new THREE.Box3().setFromObject(obj);
     if(box.isEmpty()) return;
-    const size   = box.getSize(new THREE.Vector3());
-    const center = box.getCenter(new THREE.Vector3());
-    const fovRad = camera.fov * Math.PI / 180;
-    const fovH   = 2 * Math.atan(Math.tan(fovRad / 2) * camera.aspect);
-    const distV  = (size.y / 2) / Math.tan(fovRad / 2);
-    const distH  = (size.x / 2) / Math.tan(fovH / 2);
-    const dist   = Math.max(distV, distH, Math.max(size.x,size.y,size.z)) * 1.8;
-    camera.near  = Math.max(dist / 1000, 0.001);
-    camera.far   = dist * 200;
-    camera.updateProjectionMatrix();
-    camera.position.set(center.x + dist*0.35, center.y + dist*0.25, center.z + dist);
+    const size=box.getSize(new THREE.Vector3()), center=box.getCenter(new THREE.Vector3());
+    const maxDim=Math.max(size.x,size.y,size.z), dist=maxDim*2.0;
+    camera.near=dist/1000; camera.far=dist*300; camera.updateProjectionMatrix();
+    camera.position.set(center.x+dist*0.4, center.y+dist*0.3, center.z+dist);
     camera.lookAt(center);
     controls.target.copy(center);
-    controls.minDistance = dist * 0.05;
-    controls.maxDistance = dist * 20;
-    controls.update();
-  };
+    controls.minDistance=dist*0.02; controls.maxDistance=dist*50; controls.update();
+    if(gridHelper){ gridHelper.scale.setScalar(Math.max(1,maxDim*0.5)); gridHelper.position.y=box.min.y; }
+  }
 
-  const dispose = () => {
-    if(gui){ gui.destroy(); gui=null; }
+  function updateStats(name, obj){
+    let meshCount=0, trisCount=0; const matsSet=new Set();
+    obj.traverse(o=>{
+      if(!o.isMesh) return; meshCount++;
+      if(o.geometry?.index) trisCount+=o.geometry.index.count/3;
+      else if(o.geometry?.attributes.position) trisCount+=o.geometry.attributes.position.count/3;
+      [].concat(o.material).forEach(m=>matsSet.add(m.uuid));
+    });
+    const short = name.length>14 ? name.slice(0,12)+'…' : name;
+    $('pbrStatModel').textContent = short;
+    $('pbrStatMesh').textContent  = meshCount;
+    $('pbrStatTris').textContent  = Math.round(trisCount).toLocaleString();
+    $('pbrStatMats').textContent  = matsSet.size;
+    $('pbrTbInfo').innerHTML = `<span>${name}</span> · ${meshCount} mallas · ${Math.round(trisCount).toLocaleString()} tri`;
+  }
+
+  async function loadModelFromUrl(url, nombre, extension){
+    showLoader('Cargando modelo 3D...');
+    try {
+      if(loadedModel){ scene.remove(loadedModel); loadedModel=null; }
+      const ext = extension || url.toLowerCase().match(/\.\w+$/)?.[0];
+      let obj;
+      if(ext==='.glb'||ext==='.gltf'){ const g=await new GLTFLoader().loadAsync(url); obj=g.scene; }
+      else if(ext==='.obj') obj = await new OBJLoader().loadAsync(url);
+      else if(ext==='.fbx') obj = await new FBXLoader().loadAsync(url);
+      else throw new Error('Formato no soportado: '+ext);
+
+      ensurePBRMaterials(obj);
+      loadedModel=obj; scene.add(obj); fitCamera(obj); applyMaterial();
+      updateStats(nombre||url.split('/').pop(), obj);
+    } catch(e){ console.error(e); alert('Error al cargar modelo: '+e.message); }
+    finally{ hideLoader(); }
+  }
+
+  async function loadModelFromFile(file){
+    const url = URL.createObjectURL(file);
+    const ext = file.name.toLowerCase().match(/\.\w+$/)?.[0];
+    await loadModelFromUrl(url, file.name.replace(/\.\w+$/,''), ext);
+    URL.revokeObjectURL(url);
+  }
+
+  function ensurePBRMaterials(obj){
+    obj.traverse(o=>{
+      if(!o.isMesh) return;
+      o.castShadow=true; o.receiveShadow=true;
+      const mats=[].concat(o.material);
+      mats.forEach((m,i)=>{
+        if(!(m instanceof THREE.MeshStandardMaterial)){
+          const nm=new THREE.MeshStandardMaterial({ color:m.color||0xffffff, map:m.map||null, roughness:0.5, metalness:0.0 });
+          if(m.normalMap) nm.normalMap=m.normalMap;
+          Array.isArray(o.material)?o.material[i]=nm:o.material=nm;
+        }
+      });
+    });
+  }
+
+  /* ── TEXTURE LOADING ──────────────────────────────────── */
+  function loadTexture(file, type){
+    const url=URL.createObjectURL(file);
+    const tex=new THREE.TextureLoader().load(url,()=>{ URL.revokeObjectURL(url); applyMaterial(); });
+    tex.wrapS=tex.wrapT=THREE.RepeatWrapping;
+    TX[type]=tex;
+    const fr=new FileReader();
+    fr.onload=e=>{
+      const th=$('pbrThumb'+cap(type));
+      th.innerHTML=`<img src="${e.target.result}">`;
+    };
+    fr.readAsDataURL(file);
+    $('pbrName'+cap(type)).textContent = file.name.length>16?file.name.slice(0,14)+'…':file.name;
+    $('pbrClr'+cap(type)).classList.add('vis');
+  }
+
+  function clearTexture(type){
+    TX[type]=null;
+    const icons={albedo:'🎨',normal:'↗',roughMetal:'◈',ao:'◐',emissive:'✦'};
+    const labels={albedo:'Albedo / Color',normal:'Normal Map',roughMetal:'Rough / Metal',ao:'AO Map',emissive:'Emissive Map'};
+    const th=$('pbrThumb'+cap(type));
+    th.innerHTML=''; th.textContent=icons[type];
+    $('pbrName'+cap(type)).textContent=labels[type];
+    $('pbrClr'+cap(type)).classList.remove('vis');
+    applyMaterial();
+  }
+
+  const cap = s => s.charAt(0).toUpperCase()+s.slice(1);
+
+  /* ── DISPOSE ──────────────────────────────────────────── */
+  function dispose(){
     if(rafId){ cancelAnimationFrame(rafId); rafId=null; }
     if(resObs){ resObs.disconnect(); resObs=null; }
     if(renderer){
-      scene.traverse(o=>{ if(o.isMesh){ o.geometry?.dispose(); [].concat(o.material).forEach(m=>m?.dispose()); } });
-      renderer.dispose();
-      scene=null; camera=null; renderer=null; controls=null; sky=null; ambL=null; dirL=null; loadedObj=null;
+      if(scene) scene.traverse(o=>{ if(o.isMesh){ o.geometry?.dispose(); [].concat(o.material).forEach(m=>m?.dispose()); }});
+      renderer.dispose(); renderer=null;
     }
-  };
+    scene=null; camera=null; controls=null; sky=null; loadedModel=null; pmremGen=null;
+    gridHelper=null; ambLight=null; dirLight=null;
+  }
+
+  /* ── BIND CONTROLS ────────────────────────────────────── */
+  function bindControls(){
+    // sliders
+    const sl=(id,vid2,key,fix=2)=>{
+      const el=$('pbrSl'+id), vl=$('pbrV'+id);
+      el.addEventListener('input',()=>{ const v=parseFloat(el.value); MS[key]=v; vl.textContent=v.toFixed(fix); applyMaterial(); });
+    };
+    sl('Rough','VRough','roughness');
+    sl('Metal','VMetal','metalness');
+    sl('AO','VAO','aoIntensity');
+    sl('Norm','VNorm','normalScale');
+    sl('Emissive','VEmissive','emissiveIntensity',1);
+    sl('EnvInt','VEnvInt','envMapIntensity');
+
+    $('pbrSlExposure').addEventListener('input',e=>{ renderer.toneMappingExposure=parseFloat(e.target.value); $('pbrVExposure').textContent=parseFloat(e.target.value).toFixed(2); });
+    $('pbrSlAmb').addEventListener('input',e=>{ if(ambLight) ambLight.intensity=parseFloat(e.target.value); $('pbrVAmb').textContent=parseFloat(e.target.value).toFixed(2); });
+    $('pbrSlDir').addEventListener('input',e=>{ if(dirLight) dirLight.intensity=parseFloat(e.target.value); $('pbrVDir').textContent=parseFloat(e.target.value).toFixed(2); });
+    $('pbrColDir').addEventListener('input',e=>{ if(dirLight) dirLight.color.set(e.target.value); });
+    $('pbrColAlbedo').addEventListener('input',e=>{ MS.albedo=e.target.value; applyMaterial(); });
+    $('pbrColEmissive').addEventListener('input',e=>{ MS.emissive=e.target.value; applyMaterial(); });
+    $('pbrColBg').addEventListener('input',e=>{ if(currentEnv==='solid') scene.background=new THREE.Color(e.target.value); });
+
+    // env
+    document.querySelectorAll('.pbr-ebtn').forEach(b=>b.addEventListener('click',()=>setEnv(b.dataset.env)));
+    $('pbrBtnHdr').addEventListener('click',()=>setEnv('hdr'));
+
+    // model file input (local)
+    $('pbrFileModel').addEventListener('change',e=>{ if(e.target.files[0]) loadModelFromFile(e.target.files[0]); });
+
+    // texture files
+    const texMap={pbrFileAlbedo:'albedo',pbrFileNormal:'normal',pbrFileRoughMetal:'roughMetal',pbrFileAO:'ao',pbrFileEmissive:'emissive'};
+    Object.entries(texMap).forEach(([id,type])=>$(id).addEventListener('change',e=>{ if(e.target.files[0]) loadTexture(e.target.files[0],type); }));
+
+    // clear texture buttons
+    ['Albedo','Normal','RoughMetal','AO','Emissive'].forEach(n=>{
+      $('pbrClr'+n).addEventListener('click',e=>{ e.stopPropagation(); clearTexture(n.charAt(0).toLowerCase()+n.slice(1)); });
+    });
+
+    // toolbar
+    $('pbrBtnResetCam').addEventListener('click',()=>{ if(loadedModel) fitCamera(loadedModel); });
+    $('pbrBtnWire').addEventListener('click',()=>{
+      wireMode=!wireMode;
+      $('pbrBtnWire').style.color=wireMode?'#e63946':'';
+      applyMaterial();
+    });
+    $('pbrBtnGrid').addEventListener('click',()=>{
+      gridVisible=!gridVisible;
+      if(gridHelper) gridHelper.visible=gridVisible;
+      $('pbrBtnGrid').style.color=gridVisible?'':'#e63946';
+    });
+
+    // reset material
+    $('pbrBtnReset').addEventListener('click',()=>{
+      MS.roughness=0.5; MS.metalness=0.0; MS.aoIntensity=1.0; MS.normalScale=1.0;
+      MS.albedo='#ffffff'; MS.emissive='#000000'; MS.emissiveIntensity=0.0; MS.envMapIntensity=1.0;
+      $('pbrSlRough').value=0.5;    $('pbrVRough').textContent='0.50';
+      $('pbrSlMetal').value=0.0;    $('pbrVMetal').textContent='0.00';
+      $('pbrSlAO').value=1.0;       $('pbrVAO').textContent='1.00';
+      $('pbrSlNorm').value=1.0;     $('pbrVNorm').textContent='1.00';
+      $('pbrSlEmissive').value=0;   $('pbrVEmissive').textContent='0.0';
+      $('pbrSlEnvInt').value=1.0;   $('pbrVEnvInt').textContent='1.0';
+      $('pbrColAlbedo').value='#ffffff';
+      $('pbrColEmissive').value='#000000';
+      applyMaterial();
+    });
+
+    // drag & drop on canvas area
+    const area=$('pbrCanvasArea'); let dc=0;
+    area.addEventListener('dragenter',e=>{ e.preventDefault(); dc++; $('pbrDrop').classList.add('on'); });
+    area.addEventListener('dragleave',e=>{ e.preventDefault(); dc--; if(dc<=0){dc=0;$('pbrDrop').classList.remove('on');} });
+    area.addEventListener('dragover',e=>e.preventDefault());
+    area.addEventListener('drop',e=>{
+      e.preventDefault(); dc=0; $('pbrDrop').classList.remove('on');
+      const file=e.dataTransfer.files[0]; if(!file) return;
+      const ext=file.name.toLowerCase().match(/\.\w+$/)?.[0];
+      if(['.glb','.gltf','.obj','.fbx'].includes(ext)) loadModelFromFile(file);
+      else if(file.type.startsWith('image/')){
+        const t=e.shiftKey?'normal':e.ctrlKey?'roughMetal':'albedo';
+        loadTexture(file,t);
+      }
+    });
+  }
+
+  let initialized=false;
 
   return {
     MODEL_THUMB: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnBg6cLuer28Z5mIhmk2pdS8Nsz-mPjxwXWw&s',
-    initSliders() {},
+
     async open(modelData){
       document.getElementById('modal3DTitle').textContent = modelData.nombre;
       document.getElementById('modal3D').classList.add('active');
-      await new Promise(r=>setTimeout(r,60));
 
-      const canvas = document.getElementById('threeCanvas');
-      const wrap   = document.getElementById('threeWrap');
-      const w = wrap.clientWidth, h = Math.max(wrap.clientHeight, 500);
+      await new Promise(r=>setTimeout(r,80)); // wait for modal layout
 
-      scene    = new THREE.Scene();
-      camera   = new THREE.PerspectiveCamera(60, w/h, 0.001, 100000);
-      renderer = new THREE.WebGLRenderer({canvas, antialias:true, preserveDrawingBuffer:true});
-      renderer.setSize(w, h, false);
-      renderer.setPixelRatio(devicePixelRatio);
-      renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = params.exposure;
+      if(!initialized){
+        initThree();
+        bindControls();
+        initialized=true;
+        setEnv('hdr');
+      } else {
+        // re-check size after modal opened
+        resize();
+      }
 
-      ambL = new THREE.AmbientLight(0xffffff, params.ambientIntensity);
-      dirL = new THREE.DirectionalLight(0xffffff, params.dirIntensity);
-      dirL.position.set(5,10,5);
-      scene.add(ambL, dirL);
-
-      controls = new OrbitControls(camera, renderer.domElement);
-      controls.enableDamping = true;
-      controls.dampingFactor = 0.05;
-
-      buildGUI();
-      params.envMap = 'HDR';
-      loadHDR(params.hdrUrl);
-
-      document.getElementById('loadingScreen').style.display='flex';
-      document.querySelector('.loading-text').textContent='Cargando modelo 3D...';
-      try {
-        const ext = modelData.extension;
-        const loaderMap = {'.glb':GLTFLoader,'.gltf':GLTFLoader,'.obj':OBJLoader,'.fbx':FBXLoader};
-        const Loader = loaderMap[ext];
-        if(!Loader) throw new Error('Formato no soportado: '+ext);
-        const loader = new Loader();
-        let obj;
-        if(ext==='.glb'||ext==='.gltf'){ const gg=await loader.loadAsync(modelData.url); obj=gg.scene; }
-        else { obj = await loader.loadAsync(modelData.url); }
-
-        obj.traverse(o => {
-          if(!o.isMesh) return;
-          if(!o.material) o.material = new THREE.MeshStandardMaterial({color:0xffffff,roughness:.5,metalness:0});
-          const mats = [].concat(o.material);
-          mats.forEach((m,i) => {
-            if(!(m instanceof THREE.MeshStandardMaterial)){
-              const nm = new THREE.MeshStandardMaterial({color:0xffffff,roughness:.5,metalness:0,map:m.map||null});
-              Array.isArray(o.material) ? o.material[i]=nm : o.material=nm;
-            }
-          });
-        });
-
-        loadedObj = obj;
-        scene.add(obj);
-        renderer.render(scene, camera);
-        fitCamera(obj);
-
-        const animate = () => { rafId=requestAnimationFrame(animate); controls.update(); renderer.render(scene,camera); };
-        animate();
-
-        resObs = new ResizeObserver(()=>{
-          const nw=wrap.clientWidth, nh=wrap.clientHeight;
-          camera.aspect=nw/nh; camera.updateProjectionMatrix(); renderer.setSize(nw,nh,false);
-        });
-        resObs.observe(wrap);
-      } catch(e){ alert('Error al cargar modelo: '+e.message); this.close(); }
-      finally { document.getElementById('loadingScreen').style.display='none'; }
+      // load the model from URL passed by gallery card
+      await loadModelFromUrl(modelData.url, modelData.nombre, modelData.extension);
     },
-    close(){ dispose(); document.getElementById('modal3D').classList.remove('active'); }
+
+    close(){
+      document.getElementById('modal3D').classList.remove('active');
+      // don't dispose — keep renderer alive for next open (faster)
+      // just clear the loaded model from scene
+      if(loadedModel){ scene?.remove(loadedModel); loadedModel=null; }
+      $('pbrStatModel').textContent='—'; $('pbrStatMesh').textContent='0';
+      $('pbrStatTris').textContent='0';  $('pbrStatMats').textContent='0';
+      $('pbrTbInfo').textContent='drag & drop GLB / OBJ / FBX';
+      $('modal3DTitle').textContent='Modelo 3D';
+    }
   };
 })();
 
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PINTARESTA GALLERY CLASS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 class PintarestaGallery {
   constructor(){
     this.todasLasUrls=[];
     this.urlsFiltradas=[];
     this.loteActual=0;
     this.imagenesPorLote=30;
-    this.todosLosRepositorios = [
-
-
-
-      {id: 'repjob', owner:'unonibes4a', name:'repjob'},
-      {id: 'suelos', owner:'unonibes4a', name:'imgrocassuelos'},
-      {id: 'scenes', owner:'unonibes4a', name:'scenelugares'},
-      {id: 'maquinas', owner:'unonibes4a', name:'Maquinas'}, 
-      {id: 'idimgfamilia', owner:'unonibes4a', name:'imgfamilia'},
-       {id: 'idmetales', owner:'unonibes4a', name:'metales'},
-
-        {id: 'idnormals', owner:'unonibes4a', name:'normalMaps'},
-        
-       
-
-       
-
-      {id: 'id1', owner:'unonibes4a',name:'newImgs'},
-      {id: 'id2',owner:'unonibes4a',name:'newimg2'},
-      {id: 'id3',owner:'unonibes4a',name:'newimg3'},
-      {id: 'id4',owner:'unonibes4a',name:'newimg4'},
-      {id: 'id5',owner:'unonibes4a',name:'newimg5'},
-      {id: 'id6',owner:'unonibes4a',name:'storeImg'},
-      {id: 'id7',owner:'unonibes4a',name:'newimg'},
-      {id: 'id8',owner:'unonibes4a',name:'newimg6'}  ,
-      {id: 'idrepjob',owner:'unonibes4a',name:'repjob'} ,
-      {id: 'iparedes',owner:'unonibes4a',name:'paredimg'} ,
-      {id: 'idmaderas',owner:'unonibes4a',name:'maderas'} 
-        
-       
-       
+    this.todosLosRepositorios=[
+      {id:'repjob',    owner:'unonibes4a',name:'repjob'},
+      {id:'suelos',    owner:'unonibes4a',name:'imgrocassuelos'},
+      {id:'scenes',    owner:'unonibes4a',name:'scenelugares'},
+      {id:'maquinas',  owner:'unonibes4a',name:'Maquinas'},
+      {id:'idimgfamilia',owner:'unonibes4a',name:'imgfamilia'},
+      {id:'idmetales', owner:'unonibes4a',name:'metales'},
+      {id:'idnormals', owner:'unonibes4a',name:'normalMaps'},
+      {id:'id1',       owner:'unonibes4a',name:'newImgs'},
+      {id:'id2',       owner:'unonibes4a',name:'newimg2'},
+      {id:'id3',       owner:'unonibes4a',name:'newimg3'},
+      {id:'id4',       owner:'unonibes4a',name:'newimg4'},
+      {id:'id5',       owner:'unonibes4a',name:'newimg5'},
+      {id:'id6',       owner:'unonibes4a',name:'storeImg'},
+      {id:'id7',       owner:'unonibes4a',name:'newimg'},
+      {id:'id8',       owner:'unonibes4a',name:'newimg6'},
+      {id:'idrepjob',  owner:'unonibes4a',name:'repjob'},
+      {id:'iparedes',  owner:'unonibes4a',name:'paredimg'},
+      {id:'idmaderas', owner:'unonibes4a',name:'maderas'}
     ];
-    this.repositoriosActivos = [...this.todosLosRepositorios];
     this.extensionesValidas={
       imagen:['.jpg','.jpeg','.png','.gif','.bmp','.webp','.svg','.tiff','.tif','.ico','.heic','.heif'],
       video:['.mp4','.webm','.avi','.mov','.mkv','.flv','.wmv','.m4v','.mpeg','.mpg','.3gp'],
@@ -632,39 +975,44 @@ class PintarestaGallery {
   obtenerNombreArchivo(p){return p.split('/').pop().replace(/\.[^/.]+$/,'');}
   formatBytes(b){if(!b)return '0 B';const k=1024,s=['B','KB','MB','GB'],i=Math.floor(Math.log(b)/Math.log(k));return parseFloat((b/Math.pow(k,i)).toFixed(2))+' '+s[i];}
   barajarArray(a){const s=[...a];for(let i=s.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[s[i],s[j]]=[s[j],s[i]];}return s;}
+
   async cargarDesdeDirectorio(url,rutaBase='',repoName=''){
     const urls=[];
-    try{const r=await fetch(url);if(!r.ok)return urls;const data=await r.json();
+    try{
+      const r=await fetch(url); if(!r.ok)return urls;
+      const data=await r.json();
       for(const item of data){
         if(item.type==='file'&&this.esMediaValido(item.name)){
           const tipo=this.esImagen(item.name)?'imagen':this.esVideo(item.name)?'video':'model';
           urls.push({url:item.download_url,nombre:this.obtenerNombreArchivo(item.name),repo:repoName,tipo,extension:item.name.toLowerCase().substring(item.name.lastIndexOf('.'))});
-        }else if(item.type==='dir'){urls.push(...await this.cargarDesdeDirectorio(item.url,`${rutaBase}${item.name}/`,repoName));}
+        }else if(item.type==='dir'){
+          urls.push(...await this.cargarDesdeDirectorio(item.url,`${rutaBase}${item.name}/`,repoName));
+        }
       }
     }catch(e){}
     return urls;
   }
+
   async cargarDesdeRepositorio(repo){
-    try{
-        return await this.cargarDesdeDirectorio(`https://api.github.com/repos/${repo.owner}/${repo.name}/contents`,'',repo.name);
-    }catch(e){
-        return [];
-    }
+    try{ return await this.cargarDesdeDirectorio(`https://api.github.com/repos/${repo.owner}/${repo.name}/contents`,'',repo.name); }
+    catch(e){ return []; }
   }
+
   async cargarRepositoriosEspecificos(reposACargar){
     this.mostrarCargando(true,'Cargando repositorios...');
     try{
-        const todos=(await Promise.all(reposACargar.map(r=>this.cargarDesdeRepositorio(r)))).flat();
-        if(!todos.length) {
-            document.getElementById('pinsContainer').innerHTML=`<div style="text-align:center;padding:40px;color:#767676"><h3>Error</h3><p>No se encontraron archivos en los repositorios seleccionados o hubo un problema al cargarlos.</p></div>`;
-            return [];
-        }
-        return this.barajarArray(todos);
+      const todos=(await Promise.all(reposACargar.map(r=>this.cargarDesdeRepositorio(r)))).flat();
+      if(!todos.length){
+        document.getElementById('pinsContainer').innerHTML=`<div style="text-align:center;padding:40px;color:#767676"><h3>Sin archivos</h3></div>`;
+        return [];
+      }
+      return this.barajarArray(todos);
     }catch(e){
-        document.getElementById('pinsContainer').innerHTML=`<div style="text-align:center;padding:40px;color:#767676"><h3>Error</h3><p>${e.message}</p></div>`;
-        return[];
-    }finally{this.mostrarCargando(false);}
+      document.getElementById('pinsContainer').innerHTML=`<div style="text-align:center;padding:40px;color:#767676"><p>${e.message}</p></div>`;
+      return [];
+    }finally{ this.mostrarCargando(false); }
   }
+
   async procesarArchivosLocales(files){
     const validos=[],promesas=[];let img=0,vid=0,mod=0;
     for(const file of files){
@@ -684,31 +1032,38 @@ class PintarestaGallery {
     this.jsonData={fecha_generacion:new Date().toISOString(),total_archivos:validos.length,imagenes:img,videos:vid,modelos:mod,archivos:validos.map(a=>({nombre:a.nombre,nombreCompleto:a.nombreCompleto,ruta:a.ruta,tipo:a.tipo,extension:a.extension,tamaño:a.tamañoLegible,fechaModificacion:new Date(a.fechaModificacion).toISOString()}))};
     return validos;
   }
+
   async cargarArchivosLocales(files){
-    this.mostrarCargando(true,'Procesando archivos y generando miniaturas...');
-    try{const local=await this.procesarArchivosLocales(files);if(!local.length){alert('No se encontraron archivos válidos');return;}
+    this.mostrarCargando(true,'Procesando archivos...');
+    try{
+      const local=await this.procesarArchivosLocales(files);
+      if(!local.length){alert('No se encontraron archivos válidos');return;}
       this.todasLasUrls=this.barajarArray(local);this.urlsFiltradas=[...this.todasLasUrls];this.loteActual=0;this.mostrarLote();
       document.getElementById('btnViewJSON').style.display='block';
-      alert(`Cargados ${local.length} archivos\nImagenes: ${this.jsonData.imagenes}\nVideos: ${this.jsonData.videos}\nModelos 3D: ${this.jsonData.modelos}`);
-    }catch(e){alert('Error: '+e.message);}finally{this.mostrarCargando(false);}
+      alert(`Cargados ${local.length} archivos\nImágenes: ${this.jsonData.imagenes}\nVideos: ${this.jsonData.videos}\nModelos 3D: ${this.jsonData.modelos}`);
+    }catch(e){alert('Error: '+e.message);}
+    finally{this.mostrarCargando(false);}
   }
+
   mostrarJSON(){
     if(!this.jsonData){alert('Primero carga una carpeta');return;}
-    document.getElementById('statsContainer').innerHTML=`<h3>Estadisticas</h3><div class="stats-grid"><div class="stat-item"><div class="stat-number">${this.jsonData.total_archivos}</div><div class="stat-label">Total</div></div><div class="stat-item"><div class="stat-number">${this.jsonData.imagenes}</div><div class="stat-label">Imagenes</div></div><div class="stat-item"><div class="stat-number">${this.jsonData.videos}</div><div class="stat-label">Videos</div></div><div class="stat-item"><div class="stat-number">${this.jsonData.modelos}</div><div class="stat-label">Modelos 3D</div></div></div>`;
+    document.getElementById('statsContainer').innerHTML=`<h3>Estadísticas</h3><div class="stats-grid"><div class="stat-item"><div class="stat-number">${this.jsonData.total_archivos}</div><div class="stat-label">Total</div></div><div class="stat-item"><div class="stat-number">${this.jsonData.imagenes}</div><div class="stat-label">Imágenes</div></div><div class="stat-item"><div class="stat-number">${this.jsonData.videos}</div><div class="stat-label">Videos</div></div><div class="stat-item"><div class="stat-number">${this.jsonData.modelos}</div><div class="stat-label">Modelos 3D</div></div></div>`;
     document.getElementById('jsonPreview').textContent=JSON.stringify(this.jsonData,null,2);
     document.getElementById('modalJSON').classList.add('active');
   }
   descargarJSON(){if(!this.jsonData)return;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(this.jsonData,null,2)],{type:'application/json'}));a.download=`galeria_${Date.now()}.json`;document.body.appendChild(a);a.click();document.body.removeChild(a);}
   copiarJSON(){if(!this.jsonData)return;navigator.clipboard.writeText(JSON.stringify(this.jsonData,null,2)).then(()=>alert('JSON copiado')).catch(()=>alert('Error al copiar'));}
   mostrarCargando(show,msg='Cargando...'){document.getElementById('loadingScreen').style.display=show?'flex':'none';document.querySelector('.loading-text').textContent=msg;}
+
   crearPinElement(mediaData){
     const pin=document.createElement('div');pin.className='pin';
     const alturas=['h-280','h-320','h-360','h-400','h-440'];
     const alt=alturas[Math.floor(Math.random()*alturas.length)];
     const esLocal=mediaData.repo==='Local';
-    const av=esLocal?'PC':'GH',cr=esLocal?'Mi PC':'GitHub';
+    const av=esLocal?'PC':'GH', cr=esLocal?'Mi PC':'GitHub';
     const desc=mediaData.repo+(esLocal&&mediaData.tamañoLegible?' - '+mediaData.tamañoLegible:'');
     const infoHTML=`<div class="pin-info"><div class="pin-title">${mediaData.nombre}</div><div class="pin-description">${desc}</div><div class="pin-creator"><div class="creator-avatar">${av}</div><div class="creator-name">${cr}</div></div></div>`;
+
     if(mediaData.tipo==='video'){
       pin.innerHTML=`<div class="pin-image-container"><video class="pin-image ${alt}" ${esLocal?'src':'data-src'}="${mediaData.url}" muted loop playsinline preload="none"></video><div class="media-badge">VIDEO</div><button class="save-btn">Guardar</button></div>${infoHTML}`;
       const v=pin.querySelector('video');
@@ -716,21 +1071,23 @@ class PintarestaGallery {
       v.addEventListener('mouseenter',()=>v.play().catch(()=>{}));
       v.addEventListener('mouseleave',()=>{v.pause();v.currentTime=0;});
       v.onclick=e=>{e.stopPropagation();VideoModal.open(mediaData.url,mediaData.nombre);};
-    }else if(mediaData.tipo==='imagen'){
+    } else if(mediaData.tipo==='imagen'){
       pin.innerHTML=`<div class="pin-image-container"><img class="pin-image ${alt}" ${esLocal?'src':'data-src'}="${mediaData.url}" alt="${mediaData.nombre}" loading="lazy"><button class="save-btn">Guardar</button></div>${infoHTML}`;
       const img=pin.querySelector('img');
       if(!esLocal&&img.dataset.src){const ob=new IntersectionObserver(e=>{if(e[0].isIntersecting&&img.dataset.src){img.src=img.dataset.src;img.removeAttribute('data-src');ob.unobserve(img);}});ob.observe(img);}
       img.onclick=e=>{e.stopPropagation();if(window.appEditorgioBasico?.parentElement){window.appEditorgioBasico.setImage(img.src);window.appEditorgioBasico.openappf();}};
       img.onerror=function(){this.style.background='#f0f0f0';this.alt='Error';};
-    }else if(mediaData.tipo==='model'){
-      const thumb=ThreeModal.MODEL_THUMB;
-      pin.innerHTML=`<div class="pin-image-container"><img class="pin-image model-thumb ${alt}" src="${thumb}" alt="${mediaData.nombre}" data-model="${mediaData.nombre}" loading="lazy"><div class="media-badge">3D MODEL</div><button class="save-btn">Guardar</button></div>${infoHTML}`;
+    } else if(mediaData.tipo==='model'){
+      pin.innerHTML=`<div class="pin-image-container"><img class="pin-image model-thumb ${alt}" src="${ThreeModal.MODEL_THUMB}" alt="${mediaData.nombre}" loading="lazy"><div class="media-badge">3D MODEL</div><button class="save-btn">Guardar</button></div>${infoHTML}`;
+      /* ← ESTE es el click que abre el visor PBR con la URL del modelo */
       pin.querySelector('img').onclick=e=>{e.stopPropagation();ThreeModal.open(mediaData);};
     }
+
     const saveBtn=pin.querySelector('.save-btn');
     if(saveBtn)saveBtn.onclick=e=>{e.stopPropagation();const a=document.createElement('a');a.href=mediaData.url;a.download=mediaData.nombreCompleto||`${mediaData.nombre}${mediaData.extension}`;document.body.appendChild(a);a.click();document.body.removeChild(a);};
     return pin;
   }
+
   obtenerLoteActual(){const i=this.loteActual*this.imagenesPorLote;return this.barajarArray(this.urlsFiltradas.slice(i,i+this.imagenesPorLote));}
   actualizarBotones(){
     const total=Math.ceil(this.urlsFiltradas.length/this.imagenesPorLote);
@@ -757,34 +1114,23 @@ class PintarestaGallery {
   async siguienteLote(){if(this.loteActual<Math.ceil(this.urlsFiltradas.length/this.imagenesPorLote)-1){this.loteActual++;this.mostrarLote();}}
   async loteAnterior(){if(this.loteActual>0){this.loteActual--;this.mostrarLote();}}
   async recargar(){this.loteActual=0;await this.iniciar();}
-  
-  async iniciar(repos = this.todosLosRepositorios){
+  async iniciar(repos=this.todosLosRepositorios){
     const urls=await this.cargarRepositoriosEspecificos(repos);
-    if(urls.length){
-      this.todasLasUrls=urls;
-      this.urlsFiltradas=[...urls];
-      this.loteActual=0;
-      this.mostrarLote();
-    }
+    if(urls.length){this.todasLasUrls=urls;this.urlsFiltradas=[...urls];this.loteActual=0;this.mostrarLote();}
   }
-
-  async cargarCategoria(categoryId) {
-    const repo = this.todosLosRepositorios.find(r => r.id === categoryId);
-    if (repo) {
-      document.getElementById('pinsContainer').innerHTML = '';
-      this.todasLasUrls = [];
-      this.urlsFiltradas = [];
-      this.loteActual = 0;
-      await this.iniciar([repo]);
-    } else {
-      document.getElementById('pinsContainer').innerHTML=`<div style="text-align:center;padding:40px;color:#767676"><h3>Atención</h3><p>La categoría "${categoryId}" no tiene un repositorio asociado.</p></div>`;
-    }
+  async cargarCategoria(categoryId){
+    const repo=this.todosLosRepositorios.find(r=>r.id===categoryId);
+    if(repo){document.getElementById('pinsContainer').innerHTML='';this.todasLasUrls=[];this.urlsFiltradas=[];this.loteActual=0;await this.iniciar([repo]);}
+    else document.getElementById('pinsContainer').innerHTML=`<div style="text-align:center;padding:40px;color:#767676"><h3>Sin repositorio para "${categoryId}"</h3></div>`;
   }
 }
 
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   INIT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 document.addEventListener('DOMContentLoaded',()=>{
-  ThreeModal.initSliders();
   const g=new PintarestaGallery();
+
   document.getElementById('btnLogo').onclick=()=>g.recargar();
   document.getElementById('btnBack').onclick=()=>g.loteAnterior();
   document.getElementById('btnNext').onclick=()=>g.siguienteLote();
@@ -799,7 +1145,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('modalVideo').onclick=e=>{if(e.target===document.getElementById('modalVideo'))VideoModal.close();};
   document.getElementById('btnClose3D').onclick=()=>ThreeModal.close();
   document.getElementById('modal3D').onclick=e=>{if(e.target===document.getElementById('modal3D'))ThreeModal.close();};
+
   let t;document.getElementById('searchInput').oninput=e=>{clearTimeout(t);t=setTimeout(()=>g.filtrarMedia(e.target.value),300);};
+
   document.addEventListener('keydown',e=>{
     if(document.getElementById('modal3D').classList.contains('active')){if(e.key==='Escape')ThreeModal.close();return;}
     if(document.getElementById('modalVideo').classList.contains('active')){if(e.key==='Escape')VideoModal.close();return;}
@@ -809,26 +1157,19 @@ document.addEventListener('DOMContentLoaded',()=>{
     else if(e.key==='ArrowRight')g.siguienteLote();
     else if(e.key==='r'||e.key==='R')g.recargar();
   });
-  
-  document.getElementById('btnsuelos').onclick = () => g.cargarCategoria('suelos');
-  document.getElementById('btscenes').onclick = () => g.cargarCategoria('scenes');
-  document.getElementById('btnmaquinas').onclick = () => g.cargarCategoria('maquinas');
-  document.getElementById('btnparedes').onclick = () => g.cargarCategoria('paredes');
-  document.getElementById('btmaderas').onclick = () => g.cargarCategoria('idmaderas');
-  document.getElementById('btnmetales').onclick = () => g.cargarCategoria('idmetales');
-  document.getElementById('btnNormalsmap').onclick = () => g.cargarCategoria('idnormals');
-  document.getElementById('btnidrepjob').onclick = () => g.cargarCategoria('idrepjob');
-   
 
-   
-   
-   
-   
+  document.getElementById('btnsuelos').onclick  = ()=>g.cargarCategoria('suelos');
+  document.getElementById('btscenes').onclick   = ()=>g.cargarCategoria('scenes');
+  document.getElementById('btnmaquinas').onclick = ()=>g.cargarCategoria('maquinas');
+  document.getElementById('btnparedes').onclick  = ()=>g.cargarCategoria('iparedes');
+  document.getElementById('btmaderas').onclick   = ()=>g.cargarCategoria('idmaderas');
+  document.getElementById('btnmetales').onclick  = ()=>g.cargarCategoria('idmetales');
+  document.getElementById('btnNormalsmap').onclick=()=>g.cargarCategoria('idnormals');
+  document.getElementById('btnidrepjob').onclick = ()=>g.cargarCategoria('idrepjob');
 
   g.iniciar();
   window.galeriaPintaresta=g;
 });
-  
 </script>
 </body>
 </html>
