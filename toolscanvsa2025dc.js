@@ -423,8 +423,10 @@ styleefectoseditorglfx.textContent = `
       }
 
       .giodefaultimgeditor-canvas {
-        max-width: 90%;
-        max-height: 80vh;
+     
+          width: 100%;
+  height: 100%;   /* o una altura fija */
+  display: block;
       }
 
       .giodefaultimgeditor-hamburger-btn {
@@ -1914,11 +1916,18 @@ class AppEditorDefaultImg {
   }
   openappf=()=>{
      const soporteApp =this.parentElement;
-        soporteApp.style.display = soporteApp.style.display === 'none' ? 'block' : 'none';  
+        soporteApp.style.display = soporteApp.style.display === 'none' ? 'block' : 'none'; 
+        this.onOpenEditor(); 
+       
+      
+  }
+  onOpenEditor=(e)=>{
+       
   }
 closeappf= (e) => {
       var soporteApp = this.parentElement;
       soporteApp.style.display = soporteApp.style.display === 'none' ? 'block' : 'none';
+    
     }
   _initResponsive() {
     this._handleResize();
@@ -1954,7 +1963,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.appEditorgioBasico = new AppEditorDefaultImg( 'app1', "Edit");
   setTimeout(() => {
      window.appEditorgioBasico .closeappf();
-  }, 20);
+  }, 3);
 });   
 /* fin de filtros efectfgx otros */
 
@@ -2987,5 +2996,4 @@ addCssClassToElement=(element, classNameToAdd) =>{
         });
       };
     }
-
 
