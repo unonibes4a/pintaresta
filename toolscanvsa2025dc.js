@@ -327,7 +327,7 @@ styleefectoseditorglfx.textContent = `
       height: auto;
       border-radius: 16px;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-      background: #fff;
+      background: #ffffff00;
     }
 
     .giodefaultimgeditor-drop-zone {
@@ -1845,6 +1845,7 @@ class AppEditorDefaultImg {
     this.idGenerico = idGenerico;
     this.parentElement = parentElement;
     this.textoedi = textEdi;
+    this.currentImagenUrlInOpenEdit="";
  
       this.parentElement=document.createElement("div"); 
    this.parentElement.id=idGenerico+"idSoporteApp";
@@ -1917,7 +1918,7 @@ class AppEditorDefaultImg {
   openappf=()=>{
      const soporteApp =this.parentElement;
         soporteApp.style.display = soporteApp.style.display === 'none' ? 'block' : 'none'; 
-        this.onOpenEditor(); 
+        this.onOpenEditor(this.currentImagenUrlInOpenEdit); 
        
       
   }
@@ -1953,6 +1954,7 @@ closeappf= (e) => {
   }
 
   async setImage(imageSource) {
+    this.currentImagenUrlInOpenEdit=imageSource;
     await this.filterManager.setImage(imageSource);
   }
 }

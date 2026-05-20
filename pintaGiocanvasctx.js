@@ -1,16 +1,45 @@
+/**
+ * GioCanvasPaint - Professional Canvas Paint Engine
+ * A GIMP/Photoshop-inspired canvas painting library
+ *
+ * Usage:
+ *   const paint = new GioCanvasPaint(canvasElement);
+ *   paint.setCanvas(otherCanvasElement); // redirect drawing to another canvas
+ *
+ * Features:
+ *   - Brush engine with grayscale brush loading (like GIMP/Photoshop)
+ *   - Color picker, eyedropper, eraser, fill bucket
+ *   - Image loading: Ctrl+Click (file dialog), drag & drop, clipboard paste
+ *   - Image brush (paint using pixels of a loaded image)
+ *   - Layer manager: add, delete, toggle, merge layers
+ */
+
+/* ─────────────────────────────────────────────
+   GioLayerManager — manages multiple canvas layers
+   ───────────────────────────────────────────── */
 class GioLayerManager {
+  /**
+   * @param {HTMLElement} container  – DOM node that will hold layer canvases
+   * @param {number}      width
+   * @param {number}      height
+   * @param {Function}    onUpdate   – called whenever layers change
+   */
   constructor(container, width, height, onUpdate) {
     this.container = container;
     this.width = width;
     this.height = height;
     this.onUpdate = onUpdate || (() => {});
-    this.layers = [];
+    this.layers = [];       // [{ id, name, canvas, ctx, visible, opacity, blendMode }]
     this.activeIndex = 0;
     this._idCounter = 0;
 
+    // Add default layer silently (no onUpdate during construction)
     this._addLayerSilent('Background');
   }
 
+  /* ── Internal helpers ── */
+
+  /** Add a layer without calling onUpdate (safe to use in constructor) */
   _addLayerSilent(name) {
     const canvas = this._makeLayerCanvas();
     const layer = {
@@ -29,13 +58,18 @@ class GioLayerManager {
 
   _makeLayerCanvas() {
     const c = document.createElement('canvas');
-    c.width = this.width;
+    c.width  = this.width;
     c.height = this.height;
+    // Canvas elements start transparent by default (alpha=0).
+    // We do NOT fill with any color — layers are fully transparent until painted.
     return c;
   }
 
   _nextId() { return ++this._idCounter; }
 
+  /* ── Public API ── */
+
+  /** Add a new transparent layer on top */
   addLayer(name) {
     const canvas = this._makeLayerCanvas();
     const layer = {
@@ -53,13 +87,15 @@ class GioLayerManager {
     return layer;
   }
 
+  /** Delete layer at index */
   deleteLayer(index) {
-    if (this.layers.length <= 1) return;
+    if (this.layers.length <= 1) return; // keep at least one
     this.layers.splice(index, 1);
     this.activeIndex = Math.min(this.activeIndex, this.layers.length - 1);
     this.onUpdate();
   }
 
+  /** Toggle visibility */
   toggleVisibility(index) {
     if (this.layers[index]) {
       this.layers[index].visible = !this.layers[index].visible;
@@ -67,6 +103,7 @@ class GioLayerManager {
     }
   }
 
+  /** Set opacity [0..1] */
   setOpacity(index, opacity) {
     if (this.layers[index]) {
       this.layers[index].opacity = Math.max(0, Math.min(1, opacity));
@@ -74,6 +111,7 @@ class GioLayerManager {
     }
   }
 
+  /** Merge layer at index down into index-1 */
   mergeDown(index) {
     if (index < 1 || index >= this.layers.length) return;
     const top = this.layers[index];
@@ -86,12 +124,14 @@ class GioLayerManager {
     this.deleteLayer(index);
   }
 
+  /** Flatten all layers into the bottom layer */
   flattenAll() {
     for (let i = this.layers.length - 1; i >= 1; i--) {
       this.mergeDown(i);
     }
   }
 
+  /** Move layer up */
   moveUp(index) {
     if (index >= this.layers.length - 1) return;
     [this.layers[index], this.layers[index + 1]] =
@@ -100,6 +140,7 @@ class GioLayerManager {
     this.onUpdate();
   }
 
+  /** Move layer down */
   moveDown(index) {
     if (index <= 0) return;
     [this.layers[index], this.layers[index - 1]] =
@@ -108,14 +149,17 @@ class GioLayerManager {
     this.onUpdate();
   }
 
+  /** Return the active layer's ctx */
   get activeCtx() {
     return this.layers[this.activeIndex]?.ctx || null;
   }
 
+  /** Return the active layer's canvas */
   get activeCanvas() {
     return this.layers[this.activeIndex]?.canvas || null;
   }
 
+  /** Resize all layers */
   resize(width, height) {
     this.width = width;
     this.height = height;
@@ -128,6 +172,10 @@ class GioLayerManager {
     this.onUpdate();
   }
 
+  /**
+   * Composite all visible layers onto a destination ctx
+   * @param {CanvasRenderingContext2D} destCtx
+   */
   composite(destCtx) {
     destCtx.clearRect(0, 0, this.width, this.height);
     for (const layer of this.layers) {
@@ -142,17 +190,21 @@ class GioLayerManager {
 }
 
 
+/* ─────────────────────────────────────────────
+   GioBrushEngine — grayscale brush stamp engine
+   ───────────────────────────────────────────── */
 class GioBrushEngine {
   constructor() {
-    this.brushCanvas = null;
+    this.brushCanvas = null;   // the loaded grayscale brush canvas
     this.brushCtx = null;
-    this.spacing = 0.25;
+    this.spacing = 0.25;       // fraction of brush size
     this._lastPos = null;
     this._distBuffer = 0;
     this.useImageBrush = false;
     this.imageBrushCanvas = null;
   }
 
+  /** Load a grayscale PNG as brush tip */
   loadBrushFromFile(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -177,6 +229,7 @@ class GioBrushEngine {
     });
   }
 
+  /** Load an image as the color source for the brush (image brush) */
   loadImageBrush(imgElement) {
     const c = document.createElement('canvas');
     c.width = imgElement.naturalWidth || imgElement.width;
@@ -192,6 +245,17 @@ class GioBrushEngine {
     this.useImageBrush = false;
   }
 
+  /**
+   * Stamp the brush at canvas coords (x,y)
+   * @param {CanvasRenderingContext2D} ctx   – destination layer ctx
+   * @param {number} x
+   * @param {number} y
+   * @param {number} size     – brush diameter in px
+   * @param {string} color    – CSS color (used when no brush image)
+   * @param {number} opacity  – [0..1]
+   * @param {number} hardness – [0..1]  (0=feathered, 1=hard)
+   * @param {number} angle    – rotation in radians
+   */
   stamp(ctx, x, y, size, color, opacity, hardness, angle = 0) {
     const r = size / 2;
     ctx.save();
@@ -200,6 +264,7 @@ class GioBrushEngine {
     if (angle) ctx.rotate(angle);
 
     if (this.brushCanvas && !this.useImageBrush) {
+      // --- Grayscale brush tip: use the grayscale value as alpha mask ---
       const bw = this.brushCanvas.width;
       const bh = this.brushCanvas.height;
       const off = document.createElement('canvas');
@@ -207,19 +272,23 @@ class GioBrushEngine {
       off.height = bh;
       const offCtx = off.getContext('2d');
 
+      // Fill with the paint color
       offCtx.fillStyle = color;
       offCtx.fillRect(0, 0, bw, bh);
       offCtx.globalCompositeOperation = 'destination-in';
 
+      // Use the grayscale brush as alpha
       offCtx.drawImage(this.brushCanvas, 0, 0);
       offCtx.restore && offCtx.restore();
 
       ctx.drawImage(off, -size / 2, -size / 2, size, size);
 
     } else if (this.useImageBrush && this.imageBrushCanvas) {
+      // --- Image brush: sample colors from source image at stamp point ---
       ctx.drawImage(this.imageBrushCanvas, -r, -r, size, size);
 
     } else {
+      // --- Soft/hard round brush (default) ---
       const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, r);
       const innerRadius = r * hardness;
       const stopHard = innerRadius / r;
@@ -235,11 +304,15 @@ class GioBrushEngine {
     ctx.restore();
   }
 
+  /** Begin a new stroke */
   beginStroke(x, y) {
     this._lastPos = { x, y };
     this._distBuffer = 0;
   }
 
+  /**
+   * Interpolate stamps along the stroke path (respects spacing)
+   */
   stroke(ctx, x, y, size, color, opacity, hardness, angle = 0) {
     if (!this._lastPos) {
       this.beginStroke(x, y);
@@ -272,8 +345,15 @@ class GioBrushEngine {
 }
 
 
+/* ─────────────────────────────────────────────
+   GioCanvasPaint — main painting class
+   ───────────────────────────────────────────── */
 class GioCanvasPaint {
+  /**
+   * @param {HTMLCanvasElement|string} canvasOrId
+   */
   constructor(canvasOrId) {
+    // Resolve canvas reference
     if (typeof canvasOrId === 'string') {
       this._displayCanvas = document.getElementById(canvasOrId);
     } else if (canvasOrId instanceof HTMLCanvasElement) {
@@ -286,19 +366,23 @@ class GioCanvasPaint {
       throw new Error('GioCanvasPaint: canvas element not found');
     }
 
+    // The "target" canvas (can be swapped via setCanvas)
     this._targetCanvas = this._displayCanvas;
     this._targetCtx = this._targetCanvas.getContext('2d');
 
-    this.width = this._targetCanvas.width;
+    this.width  = this._targetCanvas.width;
     this.height = this._targetCanvas.height;
 
-    this._cachedRect = null;
-    this._scaleX = 1;
-    this._scaleY = 1;
-    this._resizeObserver = null;
+    // Coordinate mapping cache — invalidated by ResizeObserver / IntersectionObserver
+    this._cachedRect           = null;
+    this._scaleX               = 1;   // canvas.width  / rect.width  (CSS scale)
+    this._scaleY               = 1;   // canvas.height / rect.height (CSS scale)
+    this._resizeObserver       = null;
     this._intersectionObserver = null;
+    // Observers are attached after _buildUI (DOM must exist first)
 
-    this.tool = 'brush';
+    // Tool state
+    this.tool = 'brush'; // brush | eraser | fill | eyedropper
     this.color = '#000000';
     this.secondaryColor = '#ffffff';
     this.brushSize = 20;
@@ -307,9 +391,12 @@ class GioCanvasPaint {
     this.brushAngle = 0;
     this.brushSpacing = 0.25;
 
+    // Brush engine
     this._brush = new GioBrushEngine();
     this._brush.spacing = this.brushSpacing;
 
+    // Layer manager — the onUpdate callback is guarded so _composite is only
+    // called after _layerManager is fully assigned (avoids circular init error).
     this._layerContainer = document.createElement('div');
     this._layerManager = null;
     this._layerManager = new GioLayerManager(
@@ -319,51 +406,91 @@ class GioCanvasPaint {
       () => { if (this._layerManager && this._targetCtx) this._composite(); }
     );
 
+    // ── Captura el contenido previo del canvas en la capa base ──
+    // Si el canvas ya tenía algo dibujado (imagen, dibujo previo, etc.)
+    // lo copiamos a la capa "Background" para que sea visible y no se pierda.
+    // La capa actúa como fondo de referencia; las capas nuevas van encima en alpha 0.
+    const existingImageData = this._targetCtx.getImageData(0, 0, this.width, this.height);
+    const hasContent = existingImageData.data.some(v => v !== 0);
+    if (hasContent) {
+      this._layerManager.layers[0].ctx.putImageData(existingImageData, 0, 0);
+      this._layerManager.layers[0].name = 'Background (original)';
+    }
+
+    // Interaction state
     this._painting = false;
     this._eyedropperCB = null;
 
+    // History (undo/redo per layer)
     this._history = [];
     this._historyIndex = -1;
     this._maxHistory = 30;
 
     this._buildUI();
     this._bindEvents();
-    this._initResizeObserver(this._displayCanvas);
-    this._composite();
+    this._initResizeObserver(this._displayCanvas); // must be after DOM is ready
+    this._composite(); // initial render
   }
 
+  /* ══════════════════════════════════════════════════════════════
+     PUBLIC API
+     ══════════════════════════════════════════════════════════════ */
+
+  /**
+   * Redirect all drawing to a different canvas element.
+   * The layer system paints onto its internal offscreen canvases,
+   * then composites the result into this target canvas.
+   */
+  /**
+   * Redirige el output compuesto hacia otro canvas.
+   *
+   * _displayCanvas  → canvas original: recibe eventos de mouse, tiene la UI,
+   *                   NUNCA cambia después de la construcción.
+   * _targetCanvas   → canvas destino: recibe los pixels del composite.
+   *                   Puede cambiar en cualquier momento con setCanvas().
+   *
+   * @param {HTMLCanvasElement} htmlCanvas  canvas destino del output
+   */
   setCanvas(htmlCanvas) {
     if (!(htmlCanvas instanceof HTMLCanvasElement)) {
       throw new Error('setCanvas: expected an HTMLCanvasElement');
     }
 
+    // Solo cambia el destino del output — _displayCanvas NUNCA se toca aquí
     this._targetCanvas = htmlCanvas;
-    this._targetCtx = htmlCanvas.getContext('2d');
+    this._targetCtx    = htmlCanvas.getContext('2d');
 
-    htmlCanvas.width = this.width;
+    // Sincronizar dimensiones del canvas destino con las del proyecto
+    htmlCanvas.width  = this.width;
     htmlCanvas.height = this.height;
 
+    // El rect a recalcular siempre es el del _displayCanvas (donde está el mouse)
+    // No hay nada que re-observar: los observers ya están sobre _displayCanvas
     this._cachedRect = null;
     this.setRecalcularRect();
 
     this._composite();
   }
 
+  /** Programmatically set the active tool */
   setTool(name) {
     this.tool = name;
     this._updateToolUI();
   }
 
+  /** Set primary color */
   setColor(cssColor) {
     this.color = cssColor;
     if (this._uiColorPicker) this._uiColorPicker.value = cssColor;
   }
 
+  /** Set brush size */
   setBrushSize(px) {
     this.brushSize = px;
     if (this._uiBrushSize) this._uiBrushSize.value = px;
   }
 
+  /** Load image onto the active layer */
   loadImage(src) {
     return new Promise((resolve, reject) => {
       const img = new Image();
@@ -379,6 +506,328 @@ class GioCanvasPaint {
     });
   }
 
+  /**
+   * Carga una imagen desde una URL y la pone en una NUEVA capa encima de las existentes.
+   *
+   * La imagen se escala para llenar el canvas manteniendo proporciones (object-fit: contain).
+   * La nueva capa queda activa para poder pintar sobre ella inmediatamente.
+   *
+   * @param {string}  url         URL de la imagen (debe tener CORS habilitado)
+   * @param {string}  [nombre]    Nombre de la capa (default: el filename de la URL)
+   * @param {boolean} [fit=true]  true=contain (no deforma), false=stretch (llena todo)
+   * @returns {Promise<{ layer, width, height }>}
+   */
+  setUrlCreaCapa(url, nombre, fit = true) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+
+      img.onload = () => {
+        // Nombre de capa: parámetro o extraído de la URL
+        const layerName = nombre || url.split('/').pop().split('?')[0] || 'URL Layer';
+        const layer = this._layerManager.addLayer(layerName);
+
+        if (fit) {
+          // contain: escalar manteniendo proporción, centrar en el canvas
+          const scale = Math.min(this.width / img.width, this.height / img.height);
+          const dw = img.width  * scale;
+          const dh = img.height * scale;
+          const dx = (this.width  - dw) / 2;
+          const dy = (this.height - dh) / 2;
+          layer.ctx.drawImage(img, dx, dy, dw, dh);
+        } else {
+          // stretch: llenar todo el canvas
+          layer.ctx.drawImage(img, 0, 0, this.width, this.height);
+        }
+
+        this._composite();
+        this._renderLayerList();
+        this._saveHistory();
+
+        resolve({ layer, width: img.width, height: img.height });
+      };
+
+      img.onerror = () => reject(new Error(`setUrlCreaCapa: no se pudo cargar "${url}"`));
+      img.src = url;
+    });
+  }
+
+  /**
+   * Crea una nueva capa a partir de un ImageData existente.
+   *
+   * Útil para recibir datos de otro contexto 2D:
+   *   paint.setImagenData(otroCanvas.getContext('2d').getImageData(0, 0, w, h))
+   *   paint.setImagenData(otroCtx.getImageData(0, 0, w, h), 'Mi capa')
+   *
+   * Si el ImageData tiene distinto tamaño al canvas, se escala automáticamente.
+   *
+   * @param {ImageData} imageData  datos de píxeles
+   * @param {string}    [nombre]   nombre de la nueva capa
+   * @returns {{ layer, imageData }}
+   */
+  setImagenData(imageData, nombre = 'ImageData Layer') {
+    if (!(imageData instanceof ImageData)) {
+      throw new TypeError('setImagenData: el primer argumento debe ser un ImageData');
+    }
+
+    const layer = this._layerManager.addLayer(nombre);
+
+    if (imageData.width === this.width && imageData.height === this.height) {
+      // Mismo tamaño → put directo
+      layer.ctx.putImageData(imageData, 0, 0);
+    } else {
+      // Tamaño distinto → pasar por canvas offscreen y escalar con drawImage
+      const off = document.createElement('canvas');
+      off.width  = imageData.width;
+      off.height = imageData.height;
+      off.getContext('2d').putImageData(imageData, 0, 0);
+      layer.ctx.drawImage(off, 0, 0, this.width, this.height);
+    }
+
+    this._composite();
+    this._renderLayerList();
+    this._saveHistory();
+
+    return { layer, imageData };
+  }
+
+  /**
+   * Separa la imagen de la capa activa (o de un ImageData dado) en 4 canales RGBA,
+   * creando una nueva capa por canal en escala de grises:
+   *
+   *   Capa "Canal R" → solo rojos  → gris donde había rojo
+   *   Capa "Canal G" → solo verdes → gris donde había verde
+   *   Capa "Canal B" → solo azules → gris donde había azul
+   *   Capa "Canal A" → solo alpha  → gris donde había opacidad
+   *
+   * Cada capa es independiente y puede ocultarse, mezclarse o exportarse.
+   *
+   * @param {ImageData} [sourceImageData]  si se omite, usa la capa activa actual
+   * @returns {{ R: layer, G: layer, B: layer, A: layer }}
+   */
+  /**
+   * Separa la imagen de la capa activa (o de un ImageData dado) en 4 canales RGBA,
+   * creando una nueva capa por canal. Cada canal se muestra en su color real
+   * (rojo, verde, azul, gris) para facilitar la identificación de mapas PBR.
+   *
+   * Uso para texturas PBR ORM (Occlusion/Roughness/Metallic):
+   *   const { R, G, B, A } = paint.separateChannels();
+   *   // R → AO (occlusion)     → capa roja
+   *   // G → Roughness          → capa verde
+   *   // B → Metallic           → capa azul
+   *   // A → Alpha              → capa gris
+   *
+   * Cada capa guarda su canal de origen en layer._channel ('R'|'G'|'B'|'A')
+   * para que combineChannels() pueda reconstruir la imagen correctamente.
+   *
+   * Las capas se crean VISIBLES y en su tinte de color para poder verlas
+   * y editarlas individualmente. Podés ocultarlas desde el panel de capas.
+   *
+   * @param {ImageData} [sourceImageData]  si se omite, usa la capa activa
+   * @param {object}    [labels]           nombres custom para cada canal
+   *   labels = { R: 'AO', G: 'Roughness', B: 'Metallic', A: 'Alpha' }
+   * @returns {{ R: layer, G: layer, B: layer, A: layer }}
+   */
+  separateChannels(sourceImageData, labels = {}) {
+    // ── Fuente de píxeles ──
+    let src;
+    if (sourceImageData instanceof ImageData) {
+      src = sourceImageData;
+    } else {
+      src = this._layerManager.activeCtx.getImageData(0, 0, this.width, this.height);
+    }
+
+    const w      = this.width;
+    const h      = this.height;
+    const pixels = src.data;
+
+    const nameR = labels.R || 'Canal R';
+    const nameG = labels.G || 'Canal G';
+    const nameB = labels.B || 'Canal B';
+    const nameA = labels.A || 'Canal A';
+
+    // ── Crear ImageData para cada canal ──
+    const rData = new ImageData(w, h);
+    const gData = new ImageData(w, h);
+    const bData = new ImageData(w, h);
+    const aData = new ImageData(w, h);
+
+    for (let i = 0; i < pixels.length; i += 4) {
+      const r = pixels[i];
+      const g = pixels[i + 1];
+      const b = pixels[i + 2];
+      const a = pixels[i + 3];
+
+      // Canal R → tinte rojo (R=valor, G=0, B=0) con alpha original
+      rData.data[i]     = r;
+      rData.data[i + 1] = 0;
+      rData.data[i + 2] = 0;
+      rData.data[i + 3] = 255;
+
+      // Canal G → tinte verde (R=0, G=valor, B=0) con alpha original
+      gData.data[i]     = 0;
+      gData.data[i + 1] = g;
+      gData.data[i + 2] = 0;
+      gData.data[i + 3] = 255;
+
+      // Canal B → tinte azul (R=0, G=0, B=valor) con alpha original
+      bData.data[i]     = 0;
+      bData.data[i + 1] = 0;
+      bData.data[i + 2] = b;
+      bData.data[i + 3] = 255;
+
+      // Canal A → escala de grises del alpha (siempre opaco para poder verlo)
+      aData.data[i]     = a;
+      aData.data[i + 1] = a;
+      aData.data[i + 2] = a;
+      aData.data[i + 3] = 255;
+    }
+
+    // ── Crear capas ──
+    const layerR = this._layerManager.addLayer(nameR);
+    layerR.ctx.putImageData(rData, 0, 0);
+    layerR._channel     = 'R';
+    layerR._channelSrc  = src; // referencia a la fuente original para combineChannels
+    layerR.visible      = true;
+
+    const layerG = this._layerManager.addLayer(nameG);
+    layerG.ctx.putImageData(gData, 0, 0);
+    layerG._channel    = 'G';
+    layerG._channelSrc = src;
+    layerG.visible     = true;
+
+    const layerB = this._layerManager.addLayer(nameB);
+    layerB.ctx.putImageData(bData, 0, 0);
+    layerB._channel    = 'B';
+    layerB._channelSrc = src;
+    layerB.visible     = true;
+
+    const layerA = this._layerManager.addLayer(nameA);
+    layerA.ctx.putImageData(aData, 0, 0);
+    layerA._channel    = 'A';
+    layerA._channelSrc = src;
+    layerA.visible     = true;
+
+    this._composite();
+    this._renderLayerList();
+    this._saveHistory();
+
+    return { R: layerR, G: layerG, B: layerB, A: layerA };
+  }
+
+  /**
+   * Recombina capas o ImageDatas en una nueva capa RGBA compuesta.
+   *
+   * Indicás qué capa (o ImageData) irá a cada canal del resultado.
+   * Ideal para reconstruir una textura PBR después de editar los canales por separado.
+   *
+   * Uso básico — usar las capas devueltas por separateChannels():
+   *   const { R, G, B, A } = paint.separateChannels();
+   *   // ... editar capas ...
+   *   paint.combineChannels({ R, G, B, A });
+   *
+   * Uso avanzado — reasignar canales entre capas distintas:
+   *   paint.combineChannels({
+   *     R: capaAO,          // AO  → canal rojo
+   *     G: capaRoughness,   // Roughness → canal verde
+   *     B: capaMetallic,    // Metallic  → canal azul
+   *     A: null,            // Alpha → 255 (opaco) si se pasa null
+   *   }, 'ORM_combined');
+   *
+   * Fuentes aceptadas por canal: layer (objeto capa), ImageData, o null (255).
+   *
+   * Qué canal se lee de cada fuente:
+   *   - Si la fuente es una capa con _channel definido (de separateChannels),
+   *     se usa ese canal original (R de rData, G de gData, etc.) para precisión.
+   *   - Si es una capa genérica, se lee el canal R del ImageData (luminancia).
+   *   - Si es un ImageData directamente, se lee el canal R.
+   *   - Si es null, el canal queda en 255.
+   *
+   * @param {{ R, G, B, A }} sources  fuentes para cada canal (layer | ImageData | null)
+   * @param {string} [nombre]         nombre de la capa resultante
+   * @returns {{ layer, imageData }}
+   */
+  combineChannels({ R = null, G = null, B = null, A = null } = {}, nombre = 'Combined') {
+    const w = this.width;
+    const h = this.height;
+
+    // ── Helper: extraer el valor escalar de un canal a un Uint8Array ──
+    const extractChannel = (source, channel) => {
+      if (!source) return null; // null → usará 255
+
+      let imageData;
+
+      if (source instanceof ImageData) {
+        imageData = source;
+      } else if (source && source.canvas) {
+        // Es una capa del layer manager
+        if (source._channelSrc instanceof ImageData) {
+          // Tiene fuente original de separateChannels → leer con precisión total
+          imageData = source._channelSrc;
+        } else {
+          imageData = source.ctx.getImageData(0, 0, w, h);
+        }
+      } else {
+        return null;
+      }
+
+      // Escalar si el ImageData tiene distinto tamaño
+      let data = imageData.data;
+      if (imageData.width !== w || imageData.height !== h) {
+        const off = document.createElement('canvas');
+        off.width = w; off.height = h;
+        const tmpOff = document.createElement('canvas');
+        tmpOff.width = imageData.width; tmpOff.height = imageData.height;
+        tmpOff.getContext('2d').putImageData(imageData, 0, 0);
+        off.getContext('2d').drawImage(tmpOff, 0, 0, w, h);
+        data = off.getContext('2d').getImageData(0, 0, w, h).data;
+      }
+
+      // Qué índice dentro del grupo RGBA leer
+      const idx = { R: 0, G: 1, B: 2, A: 3 }[channel] ?? 0;
+
+      // Si la capa viene de separateChannels, sabemos qué canal es canónico
+      const srcChannel = (source._channel) ? { R: 0, G: 1, B: 2, A: 3 }[source._channel] : idx;
+
+      const out = new Uint8Array(w * h);
+      for (let i = 0, j = 0; i < data.length; i += 4, j++) {
+        out[j] = data[i + srcChannel];
+      }
+      return out;
+    };
+
+    const rVals = extractChannel(R, 'R');
+    const gVals = extractChannel(G, 'G');
+    const bVals = extractChannel(B, 'B');
+    const aVals = extractChannel(A, 'A');
+
+    // ── Construir el ImageData combinado ──
+    const result = new ImageData(w, h);
+    const d      = result.data;
+
+    for (let i = 0, j = 0; i < d.length; i += 4, j++) {
+      d[i]     = rVals ? rVals[j] : 255;
+      d[i + 1] = gVals ? gVals[j] : 255;
+      d[i + 2] = bVals ? bVals[j] : 255;
+      d[i + 3] = aVals ? aVals[j] : 255;
+    }
+
+    // ── Crear capa con el resultado ──
+    const layer = this._layerManager.addLayer(nombre);
+    layer.ctx.putImageData(result, 0, 0);
+    layer._isCombined = true;
+
+    this._composite();
+    this._renderLayerList();
+    this._saveHistory();
+
+    console.info(`GioCanvasPaint.combineChannels(): capa "${nombre}" creada.`,
+      `R←${R?._channel||'null'} G←${G?._channel||'null'} B←${B?._channel||'null'} A←${A?._channel||'null'}`);
+
+    return { layer, imageData: result };
+  }
+
+  /** Get flat composite as data URL */
   toDataURL(type = 'image/png') {
     const off = document.createElement('canvas');
     off.width = this.width;
@@ -387,7 +836,12 @@ class GioCanvasPaint {
     return off.toDataURL(type);
   }
 
+  /* ══════════════════════════════════════════════════════════════
+     UI BUILDING
+     ══════════════════════════════════════════════════════════════ */
+
   _buildUI() {
+    // Find or create a wrapper around the canvas
     let wrapper = this._displayCanvas.parentElement;
     if (!wrapper || wrapper.dataset.gioRoot) {
       wrapper = document.createElement('div');
@@ -399,6 +853,7 @@ class GioCanvasPaint {
     wrapper.style.display = 'inline-flex';
     wrapper.style.gap = '0';
 
+    // ── Toolbar (left side) ──
     const toolbar = document.createElement('div');
     toolbar.className = 'gio-toolbar';
     toolbar.innerHTML = `
@@ -470,6 +925,7 @@ class GioCanvasPaint {
         }
         .gio-label { font-size: 9px; text-align: center; color: var(--gio-text); margin-top: 1px; }
 
+        /* Right panel */
         .gio-panel-right {
           display: flex;
           flex-direction: column;
@@ -532,6 +988,7 @@ class GioCanvasPaint {
         .gio-btn:hover { background: var(--gio-hover); color: var(--gio-text-bright); }
         .gio-btn.danger:hover { background: #e94560; color: #fff; border-color: #e94560; }
 
+        /* Layer panel */
         .gio-layer-list {
           max-height: 200px;
           overflow-y: auto;
@@ -579,6 +1036,7 @@ class GioCanvasPaint {
         .gio-layer-vis:hover { opacity: 1; }
         .gio-layer-actions { display: flex; gap: 3px; flex-wrap: wrap; }
 
+        /* Brush presets */
         .gio-brush-presets {
           display: flex;
           flex-wrap: wrap;
@@ -602,6 +1060,7 @@ class GioCanvasPaint {
         .gio-brush-preset.active { border-color: var(--gio-accent); background: rgba(233,69,96,0.15); }
         .gio-brush-preset canvas { display: block; }
 
+        /* Cursor indicator */
         .gio-cursor-overlay {
           position: absolute;
           pointer-events: none;
@@ -613,11 +1072,13 @@ class GioCanvasPaint {
           z-index: 100;
         }
 
+        /* Scrollbar */
         .gio-layer-list::-webkit-scrollbar { width: 4px; }
         .gio-layer-list::-webkit-scrollbar-track { background: var(--gio-bg); }
         .gio-layer-list::-webkit-scrollbar-thumb { background: var(--gio-border); border-radius: 2px; }
       </style>
 
+      <!-- TOOLS -->
       <div class="gio-tool-btn active" data-tool="brush" data-tip="Brush (B)" title="Brush (B)">🖌️</div>
       <div class="gio-tool-btn" data-tool="eraser" title="Eraser (E)">🧹</div>
       <div class="gio-tool-btn" data-tool="fill" title="Fill Bucket (F)">🪣</div>
@@ -625,11 +1086,13 @@ class GioCanvasPaint {
 
       <div class="gio-separator"></div>
 
+      <!-- Primary Color -->
       <div class="gio-color-swatch" id="gio-primary-swatch" title="Primary Color" style="background:#000">
         <input type="color" id="gio-color-picker" value="#000000">
       </div>
       <div class="gio-label">FG</div>
 
+      <!-- Secondary Color -->
       <div class="gio-color-swatch" id="gio-secondary-swatch" title="Secondary Color (right-click)" style="background:#fff">
         <input type="color" id="gio-color-picker-bg" value="#ffffff">
       </div>
@@ -637,12 +1100,15 @@ class GioCanvasPaint {
 
       <div class="gio-separator"></div>
 
+      <!-- Swap colors -->
       <div class="gio-tool-btn" id="gio-swap-colors" title="Swap colors (X)">⇄</div>
     `;
 
+    // ── Right panel ──
     const panelRight = document.createElement('div');
     panelRight.className = 'gio-panel-right';
     panelRight.innerHTML = `
+      <!-- BRUSH OPTIONS -->
       <div class="gio-section">
         <div class="gio-section-title">Brush</div>
         <div class="gio-row">
@@ -672,6 +1138,7 @@ class GioCanvasPaint {
         </div>
       </div>
 
+      <!-- BRUSH PRESETS -->
       <div class="gio-section">
         <div class="gio-section-title">Brush Tip Presets</div>
         <div class="gio-brush-presets" id="gio-brush-presets"></div>
@@ -684,6 +1151,7 @@ class GioCanvasPaint {
         </div>
       </div>
 
+      <!-- IMAGE LOAD -->
       <div class="gio-section">
         <div class="gio-section-title">Load Image</div>
         <div class="gio-row" style="flex-wrap:wrap;gap:4px">
@@ -697,6 +1165,7 @@ class GioCanvasPaint {
         </div>
       </div>
 
+      <!-- HISTORY -->
       <div class="gio-section">
         <div class="gio-section-title">History</div>
         <div class="gio-row" style="gap:4px">
@@ -706,6 +1175,7 @@ class GioCanvasPaint {
         </div>
       </div>
 
+      <!-- LAYERS -->
       <div class="gio-section" style="flex:1;overflow:hidden;display:flex;flex-direction:column">
         <div class="gio-section-title">Layers</div>
         <div class="gio-layer-list" id="gio-layer-list"></div>
@@ -718,6 +1188,7 @@ class GioCanvasPaint {
       </div>
     `;
 
+    // Cursor overlay on display canvas
     this._cursorOverlay = document.createElement('div');
     this._cursorOverlay.className = 'gio-cursor-overlay';
     this._displayCanvas.parentElement
@@ -726,6 +1197,7 @@ class GioCanvasPaint {
     this._displayCanvas.style.position = 'relative';
     this._displayCanvas.style.cursor = 'crosshair';
 
+    // Insert panels into parent
     const canvasParent = this._displayCanvas.parentElement || document.body;
     canvasParent.insertBefore(toolbar, this._displayCanvas);
     canvasParent.appendChild(panelRight);
@@ -733,6 +1205,7 @@ class GioCanvasPaint {
       canvasParent.appendChild(this._cursorOverlay);
     }
 
+    // Store refs
     this._toolbar = toolbar;
     this._panelRight = panelRight;
     this._uiColorPicker = document.getElementById('gio-color-picker');
@@ -743,6 +1216,7 @@ class GioCanvasPaint {
     this._renderLayerList();
   }
 
+  /* ── Built-in brush presets ── */
   _buildBuiltinBrushPresets() {
     const container = document.getElementById('gio-brush-presets');
     if (!container) return;
@@ -750,9 +1224,9 @@ class GioCanvasPaint {
     const presets = [
       { label: 'Round Soft', fn: this._makeRoundSoftBrush.bind(this) },
       { label: 'Round Hard', fn: this._makeRoundHardBrush.bind(this) },
-      { label: 'Flat', fn: this._makeFlatBrush.bind(this) },
-      { label: 'Scatter', fn: this._makeScatterBrush.bind(this) },
-      { label: 'Texture', fn: this._makeTextureBrush.bind(this) },
+      { label: 'Flat',       fn: this._makeFlatBrush.bind(this) },
+      { label: 'Scatter',    fn: this._makeScatterBrush.bind(this) },
+      { label: 'Texture',    fn: this._makeTextureBrush.bind(this) },
     ];
 
     this._brushPresets = presets.map((p, i) => {
@@ -778,7 +1252,7 @@ class GioCanvasPaint {
     });
 
     this._activeBrushPreset = 0;
-    this._currentPresetFn = null;
+    this._currentPresetFn = null; // null = default round
   }
 
   _makeRoundSoftBrush(ctx, size) {
@@ -824,17 +1298,20 @@ class GioCanvasPaint {
     }
   }
 
+  /* ── Layer list rendering ── */
   _renderLayerList() {
     const list = document.getElementById('gio-layer-list');
     if (!list) return;
     list.innerHTML = '';
 
     const layers = this._layerManager.layers;
+    // render reversed (top layer first visually)
     for (let i = layers.length - 1; i >= 0; i--) {
       const layer = layers[i];
       const item = document.createElement('div');
       item.className = 'gio-layer-item' + (i === this._layerManager.activeIndex ? ' active' : '');
 
+      // Thumbnail
       const thumbCanvas = document.createElement('canvas');
       thumbCanvas.width = 24;
       thumbCanvas.height = 24;
@@ -852,6 +1329,7 @@ class GioCanvasPaint {
       name.textContent = layer.name;
       name.title = layer.name;
 
+      // Opacity mini-slider
       const opSlider = document.createElement('input');
       opSlider.type = 'range';
       opSlider.min = 0;
@@ -865,6 +1343,7 @@ class GioCanvasPaint {
       item.appendChild(name);
       item.appendChild(opSlider);
 
+      // Click to activate
       item.addEventListener('click', e => {
         if (e.target === vis || e.target === opSlider) return;
         this._layerManager.activeIndex = i;
@@ -886,29 +1365,35 @@ class GioCanvasPaint {
     }
   }
 
+  /* ══════════════════════════════════════════════════════════════
+     EVENT BINDING
+     ══════════════════════════════════════════════════════════════ */
+
   _bindEvents() {
+    // Store bound references so they can be removed when switching canvas
     this._h = {
-      mousedown: this._onMouseDown.bind(this),
-      mousemove: this._onMouseMove.bind(this),
-      mouseup: this._onMouseUp.bind(this),
-      mouseleave: this._onMouseLeave.bind(this),
-      contextmenu: e => { e.preventDefault(); this._onRightClick(e); },
-      click: e => { if (e.ctrlKey || e.metaKey) document.getElementById('gio-load-image')?.click(); },
-      dragover: e => { e.preventDefault(); this._displayCanvas.style.outline = '2px dashed #e94560'; },
-      dragleave: () => { this._displayCanvas.style.outline = ''; },
-      drop: e => {
+      mousedown:   this._onMouseDown.bind(this),
+      mousemove:   this._onMouseMove.bind(this),
+      mouseup:     this._onMouseUp.bind(this),
+      mouseleave:  this._onMouseLeave.bind(this),
+      contextmenu: e => this._onRightClick(e),
+      click:       e => { if (e.ctrlKey || e.metaKey) document.getElementById('gio-load-image')?.click(); },
+      dragover:    e => { e.preventDefault(); this._displayCanvas.style.outline = '2px dashed #e94560'; },
+      dragleave:   () => { this._displayCanvas.style.outline = ''; },
+      drop:        e => {
         e.preventDefault();
         this._displayCanvas.style.outline = '';
         const file = e.dataTransfer.files[0];
         if (file && file.type.startsWith('image/')) this._loadImageFile(file);
       },
-      touchstart: this._onTouchStart.bind(this),
-      touchmove: this._onTouchMove.bind(this),
-      touchend: this._onTouchEnd.bind(this),
+      touchstart:  this._onTouchStart.bind(this),
+      touchmove:   this._onTouchMove.bind(this),
+      touchend:    this._onTouchEnd.bind(this),
     };
 
     this._bindCanvasEvents(this._displayCanvas);
 
+    // ── Clipboard paste (document-level, always active) ──
     document.addEventListener('paste', e => {
       if (!document.body.contains(this._displayCanvas)) return;
       const items = e.clipboardData?.items || [];
@@ -917,6 +1402,7 @@ class GioCanvasPaint {
       }
     });
 
+    // ── Keyboard shortcuts ──
     document.addEventListener('keydown', e => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
       if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); this._undo(); }
@@ -932,10 +1418,12 @@ class GioCanvasPaint {
       }
     });
 
+    // ── Toolbar tool buttons ──
     this._toolbar.querySelectorAll('[data-tool]').forEach(btn => {
       btn.addEventListener('click', () => this.setTool(btn.dataset.tool));
     });
 
+    // ── Color pickers ──
     document.getElementById('gio-color-picker')?.addEventListener('input', e => {
       this.color = e.target.value;
       document.getElementById('gio-primary-swatch').style.background = this.color;
@@ -946,6 +1434,7 @@ class GioCanvasPaint {
     });
     document.getElementById('gio-swap-colors')?.addEventListener('click', () => this._swapColors());
 
+    // ── Sliders ──
     this._bindSlider('gio-brush-size', 'gio-brush-size-val', v => {
       this.brushSize = v;
     }, v => v + 'px');
@@ -966,15 +1455,19 @@ class GioCanvasPaint {
       this.brushAngle = (v * Math.PI) / 180;
     }, v => v + '°');
 
+    // ── Load brush file(s) ──
     document.getElementById('gio-load-brush')?.addEventListener('change', e => {
       const files = Array.from(e.target.files || []);
       if (!files.length) return;
+      // Load first file as active brush
       this._brush.loadBrushFromFile(files[0]).then(() => {
+        // Deactivate presets
         document.querySelectorAll('.gio-brush-preset').forEach(el => el.classList.remove('active'));
       });
       e.target.value = '';
     });
 
+    // ── Image brush ──
     document.getElementById('gio-load-img-brush')?.addEventListener('change', e => {
       const file = e.target.files[0];
       if (!file) return;
@@ -992,12 +1485,14 @@ class GioCanvasPaint {
       this._brush.clearImageBrush();
     });
 
+    // ── Load image ──
     document.getElementById('gio-load-image')?.addEventListener('change', e => {
       const file = e.target.files[0];
       if (file) this._loadImageFile(file);
       e.target.value = '';
     });
 
+    // ── Paste ──
     document.getElementById('gio-paste-clipboard')?.addEventListener('click', async () => {
       try {
         const items = await navigator.clipboard.read();
@@ -1009,9 +1504,10 @@ class GioCanvasPaint {
             break;
           }
         }
-      } catch { }
+      } catch { /* not supported or no image */ }
     });
 
+    // ── Export ──
     document.getElementById('gio-export')?.addEventListener('click', () => {
       const a = document.createElement('a');
       a.download = 'painting.png';
@@ -1019,6 +1515,7 @@ class GioCanvasPaint {
       a.click();
     });
 
+    // ── Undo / Redo / Clear ──
     document.getElementById('gio-undo')?.addEventListener('click', () => this._undo());
     document.getElementById('gio-redo')?.addEventListener('click', () => this._redo());
     document.getElementById('gio-clear')?.addEventListener('click', () => {
@@ -1028,6 +1525,7 @@ class GioCanvasPaint {
       this._composite();
     });
 
+    // ── Layer actions ──
     document.getElementById('gio-add-layer')?.addEventListener('click', () => {
       this._layerManager.addLayer();
       this._renderLayerList();
@@ -1046,36 +1544,38 @@ class GioCanvasPaint {
     });
   }
 
+  /** Attach all canvas-local event listeners to `canvas` */
   _bindCanvasEvents(canvas) {
     const h = this._h;
-    canvas.addEventListener('mousedown', h.mousedown);
-    canvas.addEventListener('mousemove', h.mousemove);
-    canvas.addEventListener('mouseup', h.mouseup);
-    canvas.addEventListener('mouseleave', h.mouseleave);
+    canvas.addEventListener('mousedown',   h.mousedown);
+    canvas.addEventListener('mousemove',   h.mousemove);
+    canvas.addEventListener('mouseup',     h.mouseup);
+    canvas.addEventListener('mouseleave',  h.mouseleave);
     canvas.addEventListener('contextmenu', h.contextmenu);
-    canvas.addEventListener('click', h.click);
-    canvas.addEventListener('dragover', h.dragover);
-    canvas.addEventListener('dragleave', h.dragleave);
-    canvas.addEventListener('drop', h.drop);
-    canvas.addEventListener('touchstart', h.touchstart, { passive: false });
-    canvas.addEventListener('touchmove', h.touchmove, { passive: false });
-    canvas.addEventListener('touchend', h.touchend);
+    canvas.addEventListener('click',       h.click);
+    canvas.addEventListener('dragover',    h.dragover);
+    canvas.addEventListener('dragleave',   h.dragleave);
+    canvas.addEventListener('drop',        h.drop);
+    canvas.addEventListener('touchstart',  h.touchstart, { passive: false });
+    canvas.addEventListener('touchmove',   h.touchmove,  { passive: false });
+    canvas.addEventListener('touchend',    h.touchend);
   }
 
+  /** Remove all canvas-local event listeners from `canvas` */
   _unbindCanvasEvents(canvas) {
     const h = this._h;
-    canvas.removeEventListener('mousedown', h.mousedown);
-    canvas.removeEventListener('mousemove', h.mousemove);
-    canvas.removeEventListener('mouseup', h.mouseup);
-    canvas.removeEventListener('mouseleave', h.mouseleave);
+    canvas.removeEventListener('mousedown',   h.mousedown);
+    canvas.removeEventListener('mousemove',   h.mousemove);
+    canvas.removeEventListener('mouseup',     h.mouseup);
+    canvas.removeEventListener('mouseleave',  h.mouseleave);
     canvas.removeEventListener('contextmenu', h.contextmenu);
-    canvas.removeEventListener('click', h.click);
-    canvas.removeEventListener('dragover', h.dragover);
-    canvas.removeEventListener('dragleave', h.dragleave);
-    canvas.removeEventListener('drop', h.drop);
-    canvas.removeEventListener('touchstart', h.touchstart);
-    canvas.removeEventListener('touchmove', h.touchmove);
-    canvas.removeEventListener('touchend', h.touchend);
+    canvas.removeEventListener('click',       h.click);
+    canvas.removeEventListener('dragover',    h.dragover);
+    canvas.removeEventListener('dragleave',   h.dragleave);
+    canvas.removeEventListener('drop',        h.drop);
+    canvas.removeEventListener('touchstart',  h.touchstart);
+    canvas.removeEventListener('touchmove',   h.touchmove);
+    canvas.removeEventListener('touchend',    h.touchend);
   }
 
   _bindSlider(id, valId, setter, fmt) {
@@ -1089,67 +1589,155 @@ class GioCanvasPaint {
     });
   }
 
+  /* ══════════════════════════════════════════════════════════════
+     MOUSE / TOUCH HANDLERS
+     ══════════════════════════════════════════════════════════════ */
+
+  /**
+   * Fuerza un recálculo inmediato del BoundingClientRect del canvas.
+   *
+   * Se llama automáticamente cuando:
+   *  - ResizeObserver detecta cambio de tamaño
+   *  - IntersectionObserver detecta que el canvas pasa de oculto a visible
+   *  - El primer mousedown tras un rect inválido (rect.width === 0)
+   *
+   * También podés llamarla manualmente ante scroll, transiciones CSS, etc.
+   * Preferí usar setRecalcularManualmente() para llamadas explícitas desde tu código.
+   *
+   * @returns {DOMRect}
+   */
+  /**
+   * Fuerza un recálculo inmediato del BoundingClientRect del canvas.
+   * Guarda también los factores de escala CSS→canvas para _getCanvasPos.
+   *
+   * Se llama automáticamente por ResizeObserver e IntersectionObserver.
+   * Para llamadas manuales preferí setRecalcularManualmente().
+   *
+   * @returns {DOMRect}
+   */
   setRecalcularRect() {
     const canvas = this._displayCanvas;
-    const rect = canvas.getBoundingClientRect();
+    const rect   = canvas.getBoundingClientRect();
 
-    this._scaleX = rect.width > 0 ? canvas.width / rect.width : 1;
+    // ── Factores de escala CSS → píxeles internos del canvas ──
+    // getBoundingClientRect devuelve el tamaño CSS (puede ser menor que
+    // canvas.width/height si hay max-width, max-height, transform, zoom, etc.)
+    // Guardamos los factores para no recalcularlos en cada mousemove.
+    this._scaleX = rect.width  > 0 ? canvas.width  / rect.width  : 1;
     this._scaleY = rect.height > 0 ? canvas.height / rect.height : 1;
 
     this._cachedRect = rect;
     return rect;
   }
 
+  /**
+   * Recalcula manualmente la posición y escala CSS del canvas.
+   *
+   * Llamá esto siempre que el canvas cambie de posición o tamaño visual
+   * sin que el ResizeObserver lo detecte: div oculto que se muestra,
+   * zoom del navegador, panel que se expande, scroll, transiciones CSS.
+   *
+   * Uso típico con canvas achicado por CSS (max-width / max-height):
+   *
+   *   // El CSS achica el canvas visualmente pero el interno sigue siendo 825×825
+   *   // Después de cualquier cambio de layout:
+   *   paint.setRecalcularManualmente();
+   *
+   *   // Al mostrar el div que contenía el canvas oculto:
+   *   miDiv.style.display = 'block';
+   *   requestAnimationFrame(() => paint.setRecalcularManualmente());
+   *
+   * @returns {{ rect: DOMRect, scaleX: number, scaleY: number }}
+   */
   setRecalcularManualmente() {
     const rect = this.setRecalcularRect();
     return { rect, scaleX: this._scaleX, scaleY: this._scaleY };
   }
 
+  /**
+   * Sincroniza el tamaño INTERNO del canvas (width/height en píxeles)
+   * con el tamaño CSS real que ocupa en pantalla.
+   *
+   * Usá esto cuando el canvas está achicado por CSS (max-width, max-height,
+   * width:100%, etc.) y querés que los píxeles internos coincidan exactamente
+   * con los píxeles visuales — eliminando cualquier desface de coordenadas.
+   *
+   * Qué hace:
+   *   1. Lee el tamaño CSS actual con getBoundingClientRect()
+   *   2. Redimensiona canvas.width y canvas.height a ese tamaño
+   *   3. Redimensiona todas las capas internas (GioLayerManager)
+   *   4. Actualiza this.width / this.height
+   *   5. Recalcula rect y escala (scaleX/scaleY quedan en 1.0)
+   *   6. Repinta el composite
+   *
+   * Uso típico:
+   *   // CSS: max-width:90% hace que el canvas de 825px quede en ~740px visual
+   *   paint.setCanvasStyleSize();
+   *   // Ahora canvas.width === 740, scaleX === 1.0, pintura perfectamente alineada
+   *
+   *   // También al hacer resize de ventana:
+   *   window.addEventListener('resize', () => paint.setCanvasStyleSize());
+   *
+   * ATENCIÓN: redimensionar el canvas borra su contenido. El método preserva
+   * el contenido de cada capa reescalándolo, pero habrá pérdida de calidad
+   * si el nuevo tamaño es muy diferente al original.
+   *
+   * @param {boolean} [preserveContent=true]  si false, limpia las capas al redimensionar
+   * @returns {{ width: number, height: number, scaleX: number, scaleY: number }}
+   */
   setCanvasStyleSize(preserveContent = true) {
     const canvas = this._displayCanvas;
-    const rect = canvas.getBoundingClientRect();
+    const rect   = canvas.getBoundingClientRect();
 
     const newW = Math.round(rect.width);
     const newH = Math.round(rect.height);
 
+    // Si el rect es inválido (canvas oculto) no hacer nada — esperar a que sea visible
     if (newW <= 0 || newH <= 0) {
       console.warn('GioCanvasPaint.setCanvasStyleSize(): el canvas no es visible aún (rect inválido). Llamalo después de mostrarlo.');
       return { width: this.width, height: this.height, scaleX: this._scaleX, scaleY: this._scaleY };
     }
 
+    // Si el tamaño no cambió, solo recalcular rect y salir
     if (newW === this.width && newH === this.height) {
       return { width: newW, height: newH, ...this.setRecalcularManualmente() };
     }
 
     if (preserveContent) {
+      // Preservar contenido de cada capa: copiar a offscreen → redimensionar → restaurar
       const snapshots = this._layerManager.layers.map(layer => {
         const off = document.createElement('canvas');
-        off.width = layer.canvas.width;
+        off.width  = layer.canvas.width;
         off.height = layer.canvas.height;
         off.getContext('2d').drawImage(layer.canvas, 0, 0);
         return { layer, off };
       });
 
+      // Redimensionar capas y restaurar contenido escalado
       snapshots.forEach(({ layer, off }) => {
-        layer.canvas.width = newW;
+        layer.canvas.width  = newW;
         layer.canvas.height = newH;
         layer.ctx.drawImage(off, 0, 0, off.width, off.height, 0, 0, newW, newH);
       });
     } else {
+      // Solo redimensionar (borra contenido)
       this._layerManager.layers.forEach(layer => {
-        layer.canvas.width = newW;
+        layer.canvas.width  = newW;
         layer.canvas.height = newH;
       });
     }
 
-    canvas.width = newW;
+    // Actualizar dimensiones internas del canvas display
+    canvas.width  = newW;
     canvas.height = newH;
 
-    this.width = newW;
+    // Actualizar dimensiones del proyecto
+    this.width  = newW;
     this.height = newH;
-    this._layerManager.width = newW;
+    this._layerManager.width  = newW;
     this._layerManager.height = newH;
 
+    // Con tamaño interno === tamaño CSS, la escala queda en exactamente 1.0
     this._scaleX = 1;
     this._scaleY = 1;
     this._cachedRect = canvas.getBoundingClientRect();
@@ -1160,14 +1748,20 @@ class GioCanvasPaint {
     return { width: newW, height: newH, scaleX: 1, scaleY: 1 };
   }
 
+  /**
+   * Imprime en consola el estado actual del rect y la escala.
+   * Útil para debuggear por qué las brochas no pintan donde se hace click.
+   *
+   * Uso: paint.debugRect()
+   */
   debugRect() {
-    const c = this._displayCanvas;
+    const c    = this._displayCanvas;
     const rect = c.getBoundingClientRect();
     console.group('GioCanvasPaint · debugRect()');
     console.log('canvas interno (px):   ', c.width, '×', c.height);
     console.log('canvas CSS (px):       ', rect.width.toFixed(1), '×', rect.height.toFixed(1));
     console.log('posición en pantalla:  ', 'top:', rect.top.toFixed(1), ' left:', rect.left.toFixed(1));
-    console.log('scaleX (int/css):      ', (c.width / (rect.width || 1)).toFixed(4));
+    console.log('scaleX (int/css):      ', (c.width / (rect.width  || 1)).toFixed(4));
     console.log('scaleY (int/css):      ', (c.height / (rect.height || 1)).toFixed(4));
     console.log('rect cacheado válido:  ', this._isRectValid(this._cachedRect));
     if (!this._isRectValid(this._cachedRect)) {
@@ -1181,6 +1775,10 @@ class GioCanvasPaint {
     return { rect, scaleX: this._scaleX, scaleY: this._scaleY };
   }
 
+  /**
+   * Devuelve true si el rect cacheado es válido (canvas visible y posicionado).
+   * Un rect con width===0 significa que el canvas estaba oculto cuando se midió.
+   */
   _isRectValid(rect) {
     return rect && rect.width > 0 && rect.height > 0;
   }
@@ -1188,24 +1786,31 @@ class GioCanvasPaint {
   _getCanvasPos(e) {
     let rect = this._cachedRect;
 
+    // Si el rect es inválido (canvas oculto al init, o nunca se midió),
+    // recalcular ahora — el usuario ya está interactuando, canvas visible.
     if (!this._isRectValid(rect)) {
       rect = this.setRecalcularRect();
     }
 
-    const scaleX = this._scaleX || (this.width / (rect.width || this.width));
+    // Usar los factores de escala precalculados (CSS → píxeles internos).
+    // Esto cubre: max-width, max-height, zoom, transform:scale, window.devicePixelRatio.
+    const scaleX = this._scaleX || (this.width  / (rect.width  || this.width));
     const scaleY = this._scaleY || (this.height / (rect.height || this.height));
 
     return {
       x: (e.clientX - rect.left) * scaleX,
-      y: (e.clientY - rect.top) * scaleY,
+      y: (e.clientY - rect.top)  * scaleY,
     };
   }
 
+  /** Attach a ResizeObserver + IntersectionObserver to `canvas` */
   _initResizeObserver(canvas) {
+    // ── Tear down previous observers ──
     if (this._resizeObserver) { this._resizeObserver.disconnect(); this._resizeObserver = null; }
     if (this._intersectionObserver) { this._intersectionObserver.disconnect(); this._intersectionObserver = null; }
     this._cachedRect = null;
 
+    // ── ResizeObserver: detecta cambios de TAMAÑO del canvas ──
     if (typeof ResizeObserver !== 'undefined') {
       this._resizeObserver = new ResizeObserver(() => {
         this.setRecalcularRect();
@@ -1214,35 +1819,43 @@ class GioCanvasPaint {
       this._resizeObserver.observe(canvas);
     }
 
+    // ── IntersectionObserver: detecta cuando el canvas pasa de OCULTO a VISIBLE ──
+    // Esto cubre el caso de divs con display:none, tabs, modales, acordeones, etc.
+    // Cuando isIntersecting cambia a true el canvas acaba de aparecer en pantalla
+    // y el rect anterior (todo ceros) ya no sirve.
     if (typeof IntersectionObserver !== 'undefined') {
       this._intersectionObserver = new IntersectionObserver((entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) {
+            // El canvas acaba de hacerse visible — recalcular en el próximo frame
+            // (requestAnimationFrame garantiza que el layout ya terminó)
             requestAnimationFrame(() => {
               this.setRecalcularRect();
               this._cursorOverlay && (this._cursorOverlay.style.display = 'none');
             });
           } else {
+            // Canvas oculto — invalidar para forzar recálculo cuando vuelva
             this._cachedRect = null;
           }
         }
-      }, { threshold: 0 });
+      }, { threshold: 0 }); // threshold:0 = dispara en cualquier pixel visible
       this._intersectionObserver.observe(canvas);
     }
   }
 
   _onMouseDown(e) {
-    if (e.ctrlKey || e.metaKey) return;
+    if (e.ctrlKey || e.metaKey) return; // handled by click → file dialog
+    if (e.button === 2) return;         // right-click → handled by _onRightClick (copy)
+
     const pos = this._getCanvasPos(e);
-    const isRight = e.button === 2;
 
     if (this.tool === 'eyedropper') {
-      this._pickColor(pos.x, pos.y, isRight);
+      this._pickColor(pos.x, pos.y);
       return;
     }
     if (this.tool === 'fill') {
       this._saveHistory();
-      this._floodFill(pos.x, pos.y, isRight ? this.secondaryColor : this.color);
+      this._floodFill(pos.x, pos.y, this.color);
       this._composite();
       return;
     }
@@ -1257,7 +1870,7 @@ class GioCanvasPaint {
       ctx.globalCompositeOperation = 'destination-out';
     }
     this._brush.stamp(ctx, pos.x, pos.y, this.brushSize,
-      isRight ? this.secondaryColor : this.color, this.opacity, this.hardness, this.brushAngle);
+      this.color, this.opacity, this.hardness, this.brushAngle);
     ctx.restore();
     this._composite();
   }
@@ -1265,37 +1878,90 @@ class GioCanvasPaint {
   _onMouseMove(e) {
     const pos = this._getCanvasPos(e);
 
+    // Update cursor overlay — reuse the same cached rect _getCanvasPos already read
     const rect = this._cachedRect || this._displayCanvas.getBoundingClientRect();
-    const cssW = rect.width || this.width;
+    const cssW  = rect.width  || this.width;
     const scaleX = cssW / this.width;
     const co = this._cursorOverlay;
     const displaySize = this.brushSize * scaleX;
     co.style.display = 'block';
-    co.style.left = (e.clientX - rect.left) + 'px';
-    co.style.top = (e.clientY - rect.top) + 'px';
-    co.style.width = displaySize + 'px';
+    co.style.left   = (e.clientX - rect.left) + 'px';
+    co.style.top    = (e.clientY - rect.top)  + 'px';
+    co.style.width  = displaySize + 'px';
     co.style.height = displaySize + 'px';
 
     if (!this._painting) return;
-    const isRight = e.buttons === 2;
     const ctx = this._layerManager.activeCtx;
     ctx.save();
     if (this.tool === 'eraser') ctx.globalCompositeOperation = 'destination-out';
     this._brush.stroke(ctx, pos.x, pos.y, this.brushSize,
-      isRight ? this.secondaryColor : this.color, this.opacity, this.hardness, this.brushAngle);
+      this.color, this.opacity, this.hardness, this.brushAngle);
     ctx.restore();
     this._composite();
   }
 
-  _onMouseUp() { this._painting = false; this._brush.endStroke(); this._renderLayerList(); }
-  _onMouseLeave() {
-    this._painting = false; this._brush.endStroke();
-    this._cursorOverlay.style.display = 'none';
+  _onMouseUp()    { this._painting = false; this._brush.endStroke(); this._renderLayerList(); }
+  _onMouseLeave() { this._painting = false; this._brush.endStroke();
+    this._cursorOverlay.style.display = 'none'; }
+
+  /**
+   * Click derecho → copia la imagen compuesta (todas las capas) al portapapeles.
+   * Muestra un flash visual en el canvas para confirmar la copia.
+   */
+  _onRightClick(e) {
+    e.preventDefault();
+
+    // Composite todas las capas en un canvas offscreen
+    const off = document.createElement('canvas');
+    off.width  = this.width;
+    off.height = this.height;
+    this._layerManager.composite(off.getContext('2d'));
+
+    // Copiar al portapapeles usando la Clipboard API
+    off.toBlob(blob => {
+      if (!blob) return;
+      try {
+        navigator.clipboard.write([
+          new ClipboardItem({ 'image/png': blob })
+        ]).then(() => {
+          this._flashCopied();
+        }).catch(() => {
+          // Fallback: abrir en nueva pestaña si clipboard API no está disponible
+          const url = URL.createObjectURL(blob);
+          window.open(url, '_blank');
+          setTimeout(() => URL.revokeObjectURL(url), 10000);
+        });
+      } catch {
+        const url = URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        setTimeout(() => URL.revokeObjectURL(url), 10000);
+      }
+    }, 'image/png');
   }
 
-  _onRightClick(e) {
-    const pos = this._getCanvasPos(e);
-    if (this.tool === 'eyedropper') this._pickColor(pos.x, pos.y, true);
+  /** Flash visual sobre el canvas para confirmar que se copió */
+  _flashCopied() {
+    const dc = this._displayCanvas;
+    const flash = document.createElement('div');
+    flash.textContent = '📋 Copiado al portapapeles';
+    flash.style.cssText = `
+      position:absolute;
+      top:50%; left:50%;
+      transform:translate(-50%,-50%);
+      background:rgba(0,0,0,0.75);
+      color:#fff;
+      padding:10px 20px;
+      border-radius:8px;
+      font:700 14px/1 'Segoe UI',sans-serif;
+      pointer-events:none;
+      z-index:9999;
+      transition:opacity 0.4s;
+    `;
+    const parent = dc.parentElement || document.body;
+    parent.style.position = parent.style.position || 'relative';
+    parent.appendChild(flash);
+    setTimeout(() => { flash.style.opacity = '0'; }, 800);
+    setTimeout(() => { flash.remove(); }, 1300);
   }
 
   _onTouchStart(e) {
@@ -1310,7 +1976,12 @@ class GioCanvasPaint {
   }
   _onTouchEnd(e) { this._onMouseUp(); }
 
+  /* ══════════════════════════════════════════════════════════════
+     TOOLS
+     ══════════════════════════════════════════════════════════════ */
+
   _pickColor(x, y, secondary = false) {
+    // Sample from the composite (flattened view)
     const off = document.createElement('canvas');
     off.width = this.width;
     off.height = this.height;
@@ -1329,6 +2000,9 @@ class GioCanvasPaint {
     }
   }
 
+  /**
+   * Flood fill (scanline algorithm)
+   */
   _floodFill(startX, startY, fillColor) {
     const ctx = this._layerManager.activeCtx;
     const imageData = ctx.getImageData(0, 0, this.width, this.height);
@@ -1345,6 +2019,7 @@ class GioCanvasPaint {
     const tB = data[targetIdx + 2];
     const tA = data[targetIdx + 3];
 
+    // Parse fill color
     const tmp = document.createElement('canvas').getContext('2d');
     tmp.canvas.width = tmp.canvas.height = 1;
     tmp.fillStyle = fillColor;
@@ -1358,9 +2033,9 @@ class GioCanvasPaint {
       if (x < 0 || x >= w || y < 0 || y >= h) return false;
       const i = idx(x, y);
       return Math.abs(data[i] - tR) <= tolerance &&
-        Math.abs(data[i + 1] - tG) <= tolerance &&
-        Math.abs(data[i + 2] - tB) <= tolerance &&
-        Math.abs(data[i + 3] - tA) <= tolerance;
+             Math.abs(data[i+1] - tG) <= tolerance &&
+             Math.abs(data[i+2] - tB) <= tolerance &&
+             Math.abs(data[i+3] - tA) <= tolerance;
     };
 
     const stack = [[sx, sy]];
@@ -1373,22 +2048,31 @@ class GioCanvasPaint {
       if (visited[vi] || !matches(x, y)) continue;
       visited[vi] = 1;
       const i = idx(x, y);
-      data[i] = fc[0];
-      data[i + 1] = fc[1];
-      data[i + 2] = fc[2];
-      data[i + 3] = Math.round(this.opacity * 255);
-      stack.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
+      data[i]   = fc[0];
+      data[i+1] = fc[1];
+      data[i+2] = fc[2];
+      data[i+3] = Math.round(this.opacity * 255);
+      stack.push([x+1,y],[x-1,y],[x,y+1],[x,y-1]);
     }
 
     ctx.putImageData(imageData, 0, 0);
   }
 
+  /* ══════════════════════════════════════════════════════════════
+     COMPOSITE
+     ══════════════════════════════════════════════════════════════ */
+
   _composite() {
     this._layerManager.composite(this._targetCtx);
+    // Also update display canvas if different from target
     if (this._targetCanvas !== this._displayCanvas) {
       this._layerManager.composite(this._displayCanvas.getContext('2d'));
     }
   }
+
+  /* ══════════════════════════════════════════════════════════════
+     HISTORY
+     ══════════════════════════════════════════════════════════════ */
 
   _saveHistory() {
     const snapshot = this._layerManager.layers.map(l => ({
@@ -1422,6 +2106,10 @@ class GioCanvasPaint {
     this._renderLayerList();
   }
 
+  /* ══════════════════════════════════════════════════════════════
+     HELPERS
+     ══════════════════════════════════════════════════════════════ */
+
   _swapColors() {
     [this.color, this.secondaryColor] = [this.secondaryColor, this.color];
     document.getElementById('gio-primary-swatch').style.background = this.color;
@@ -1437,6 +2125,7 @@ class GioCanvasPaint {
       img.onload = () => {
         this._saveHistory();
         const ctx = this._layerManager.activeCtx;
+        // Scale to fit canvas
         const scale = Math.min(this.width / img.width, this.height / img.height, 1);
         const dw = img.width * scale;
         const dh = img.height * scale;
@@ -1455,6 +2144,7 @@ class GioCanvasPaint {
     this._toolbar.querySelectorAll('[data-tool]').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.tool === this.tool);
     });
+    // Change cursor
     const cursors = {
       brush: 'crosshair', eraser: 'cell',
       fill: 'copy', eyedropper: 'zoom-in',
@@ -1463,6 +2153,7 @@ class GioCanvasPaint {
   }
 }
 
+// Export for module use or make global
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { GioCanvasPaint, GioLayerManager, GioBrushEngine };
 } else {
