@@ -1,10 +1,12 @@
 
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-<script src="https://unonibes4a.github.io/pintaresta/toolscanvsa2025dc.js"></script>
+<script src="./toolscanvsa2025dc.js"></script>
+<script src="pintaGiocanvasctx.js"></script>
 <title>Pintaresta Gallery</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -1169,7 +1171,21 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   g.iniciar();
   window.galeriaPintaresta=g;
+  inipaintPintaresta();
 });
+
+
+function inipaintPintaresta(){
+  const paint2d = new GioCanvasPaint(document.getElementById('Edit_canvas'));
+
+    window.appEditorgioBasico.onOpenEditor=()=>{
+      setTimeout(()=>{ paint2d.setCanvasStyleSize();
+      },10);
+   
+     
+    }
+    window.addEventListener('resize', () => paint2d.setCanvasStyleSize());
+}
 </script>
 </body>
 </html>
