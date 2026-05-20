@@ -496,10 +496,20 @@ class GioCanvasPaint {
       const img = new Image();
       img.crossOrigin = 'anonymous';
       img.onload = () => {
+        const imgW = img.naturalWidth  || img.width;
+        const imgH = img.naturalHeight || img.height;
+
+        // Redimensionar el proyecto a la resolución nativa
+        if (imgW > this.width || imgH > this.height) {
+          this._resizeProject(imgW, imgH);
+        }
+
         const ctx = this._layerManager.activeCtx;
-        ctx.drawImage(img, 0, 0, this.width, this.height);
+        const dx  = Math.round((this.width  - imgW) / 2);
+        const dy  = Math.round((this.height - imgH) / 2);
+        ctx.drawImage(img, dx, dy, imgW, imgH);
         this._composite();
-        resolve();
+        resolve({ width: imgW, height: imgH });
       };
       img.onerror = reject;
       img.src = src;
@@ -523,28 +533,37 @@ class GioCanvasPaint {
       img.crossOrigin = 'anonymous';
 
       img.onload = () => {
-        // Nombre de capa: parámetro o extraído de la URL
         const layerName = nombre || url.split('/').pop().split('?')[0] || 'URL Layer';
+
+        const imgW = img.naturalWidth  || img.width;
+        const imgH = img.naturalHeight || img.height;
+
+        // Redimensionar el proyecto a la resolución nativa si la imagen es mayor
+        if (imgW > this.width || imgH > this.height) {
+          this._resizeProject(imgW, imgH);
+        }
+
         const layer = this._layerManager.addLayer(layerName);
 
         if (fit) {
           // contain: escalar manteniendo proporción, centrar en el canvas
-          const scale = Math.min(this.width / img.width, this.height / img.height);
-          const dw = img.width  * scale;
-          const dh = img.height * scale;
-          const dx = (this.width  - dw) / 2;
-          const dy = (this.height - dh) / 2;
+          const scale = Math.min(this.width / imgW, this.height / imgH, 1);
+          const dw = Math.round(imgW * scale);
+          const dh = Math.round(imgH * scale);
+          const dx = Math.round((this.width  - dw) / 2);
+          const dy = Math.round((this.height - dh) / 2);
           layer.ctx.drawImage(img, dx, dy, dw, dh);
         } else {
-          // stretch: llenar todo el canvas
-          layer.ctx.drawImage(img, 0, 0, this.width, this.height);
+          // 1:1 píxeles, centrado
+          const dx = Math.round((this.width  - imgW) / 2);
+          const dy = Math.round((this.height - imgH) / 2);
+          layer.ctx.drawImage(img, dx, dy, imgW, imgH);
         }
 
         this._composite();
         this._renderLayerList();
         this._saveHistory();
-
-        resolve({ layer, width: img.width, height: img.height });
+        resolve({ layer, width: imgW, height: imgH });
       };
 
       img.onerror = () => reject(new Error(`setUrlCreaCapa: no se pudo cargar "${url}"`));
@@ -570,18 +589,24 @@ class GioCanvasPaint {
       throw new TypeError('setImagenData: el primer argumento debe ser un ImageData');
     }
 
+    const imgW = imageData.width;
+    const imgH = imageData.height;
+
+    // Redimensionar el proyecto si el ImageData es mayor al canvas actual
+    if (imgW > this.width || imgH > this.height) {
+      this._resizeProject(imgW, imgH);
+    }
+
     const layer = this._layerManager.addLayer(nombre);
 
-    if (imageData.width === this.width && imageData.height === this.height) {
-      // Mismo tamaño → put directo
+    if (imgW === this.width && imgH === this.height) {
+      // Mismo tamaño → put directo, sin ninguna interpolación
       layer.ctx.putImageData(imageData, 0, 0);
     } else {
-      // Tamaño distinto → pasar por canvas offscreen y escalar con drawImage
-      const off = document.createElement('canvas');
-      off.width  = imageData.width;
-      off.height = imageData.height;
-      off.getContext('2d').putImageData(imageData, 0, 0);
-      layer.ctx.drawImage(off, 0, 0, this.width, this.height);
+      // Tamaño distinto → centrar a 1:1 si cabe, o escalar si es menor
+      const dx = Math.round((this.width  - imgW) / 2);
+      const dy = Math.round((this.height - imgH) / 2);
+      layer.ctx.putImageData(imageData, dx, dy);
     }
 
     this._composite();
@@ -2118,27 +2143,92 @@ class GioCanvasPaint {
     if (this._uiColorPickerBg) this._uiColorPickerBg.value = this.secondaryColor;
   }
 
-  _loadImageFile(file) {
+  /**
+   * Redimensiona el proyecto (canvas + todas las capas) al nuevo tamaño.
+   * Preserva el contenido existente escalándolo al nuevo tamaño.
+   * @param {number} newW
+   * @param {number} newH
+   */
+  _resizeProject(newW, newH) {
+    if (newW === this.width && newH === this.height) return;
+
+    // Preservar cada capa
+    this._layerManager.layers.forEach(layer => {
+      const off = document.createElement('canvas');
+      off.width  = layer.canvas.width;
+      off.height = layer.canvas.height;
+      off.getContext('2d').drawImage(layer.canvas, 0, 0);
+      layer.canvas.width  = newW;
+      layer.canvas.height = newH;
+      layer.ctx.clearRect(0, 0, newW, newH);
+      layer.ctx.drawImage(off, 0, 0, off.width, off.height, 0, 0, newW, newH);
+    });
+
+    this._layerManager.width  = newW;
+    this._layerManager.height = newH;
+    this.width  = newW;
+    this.height = newH;
+
+    // Ajustar el canvas display y target a la nueva resolución interna
+    this._displayCanvas.width = newW;
+    this._displayCanvas.height = newH;
+    if (this._targetCanvas !== this._displayCanvas) {
+      this._targetCanvas.width  = newW;
+      this._targetCanvas.height = newH;
+    }
+
+    // Invalidar rect cacheado — el canvas cambió de tamaño
+    this._cachedRect = null;
+    this.setRecalcularRect();
+  }
+
+  /**
+   * Carga un archivo de imagen en la capa activa a resolución nativa.
+   *
+   * Si la imagen es más grande que el canvas actual, el proyecto se
+   * redimensiona para alojarla sin pérdida de calidad.
+   * Si es más chica, se inserta centrada a su tamaño real (1:1 píxeles).
+   *
+   * @param {File|Blob} file
+   * @param {object}    [opts]
+   * @param {boolean}   [opts.resize=true]   redimensionar el proyecto si la imagen es mayor
+   * @param {boolean}   [opts.newLayer=false] crear nueva capa en lugar de usar la activa
+   */
+  _loadImageFile(file, opts = {}) {
+    const { resize = true, newLayer = false } = opts;
     const reader = new FileReader();
+
     reader.onload = e => {
       const img = new Image();
       img.onload = () => {
         this._saveHistory();
-        const ctx = this._layerManager.activeCtx;
-        // Scale to fit canvas
-        const scale = Math.min(this.width / img.width, this.height / img.height, 1);
-        const dw = img.width * scale;
-        const dh = img.height * scale;
-        const dx = (this.width - dw) / 2;
-        const dy = (this.height - dh) / 2;
-        ctx.drawImage(img, dx, dy, dw, dh);
+
+        const imgW = img.naturalWidth  || img.width;
+        const imgH = img.naturalHeight || img.height;
+
+        // ── Redimensionar proyecto a la resolución nativa de la imagen ──
+        if (resize && (imgW > this.width || imgH > this.height)) {
+          this._resizeProject(imgW, imgH);
+        }
+
+        const ctx = newLayer
+          ? this._layerManager.addLayer(file.name || 'Imagen').ctx
+          : this._layerManager.activeCtx;
+
+        // Dibujar a 1:1 píxeles, centrado si el canvas es mayor que la imagen
+        const dx = Math.round((this.width  - imgW) / 2);
+        const dy = Math.round((this.height - imgH) / 2);
+        ctx.drawImage(img, dx, dy, imgW, imgH);
+
         this._composite();
         this._renderLayerList();
+        console.info(`Imagen cargada: ${imgW}×${imgH}px → canvas: ${this.width}×${this.height}px`);
       };
       img.src = e.target.result;
     };
     reader.readAsDataURL(file);
   }
+
 
   _updateToolUI() {
     this._toolbar.querySelectorAll('[data-tool]').forEach(btn => {
