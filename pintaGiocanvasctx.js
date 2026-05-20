@@ -1068,6 +1068,24 @@ class GioCanvasPaint {
           gap: 4px;
           margin-bottom: 6px;
         }
+               .postcl2005{
+        position: relative;
+    
+          }
+            .clbt200520262{
+           cursor: pointer;
+            border-radius: 12px; 
+    width: 35px;
+    height: 35px;
+    background-color: #000;
+    color:#1a68dd;
+    font-size: 10px;
+    display:  flex;
+    align-items: center;
+    justify-content: center;
+  
+    
+  }
         .gio-brush-preset {
           display: flex;
           align-items: center;
@@ -1135,6 +1153,7 @@ class GioCanvasPaint {
     panelRight.innerHTML = `
       <!-- BRUSH OPTIONS -->
       <div class="gio-section">
+          <div class="clbt200520262 postcl2005" id="botoneditcurvas"></div>
         <div class="gio-section-title">Brush</div>
         <div class="gio-row">
           <label>Size</label>
@@ -1236,6 +1255,7 @@ class GioCanvasPaint {
     this._uiColorPicker = document.getElementById('gio-color-picker');
     this._uiColorPickerBg = document.getElementById('gio-color-picker-bg');
     this._uiBrushSize = document.getElementById('gio-brush-size');
+     this._editorcurvasBT= document.getElementById('botoneditcurvas'); 
 
     this._buildBuiltinBrushPresets();
     this._renderLayerList();
@@ -1447,6 +1467,28 @@ class GioCanvasPaint {
     this._toolbar.querySelectorAll('[data-tool]').forEach(btn => {
       btn.addEventListener('click', () => this.setTool(btn.dataset.tool));
     });
+        if(EditorCurvas){
+   this.editorCurvas  = new  EditorCurvas();
+this.editorCurvas .setCanvas(this._targetCanvas);
+        }
+
+     this._editorcurvasBT.onclick=()=>{
+     
+        
+        if(this.editorCurvas){
+    this.editorCurvas.toggle();
+           console.log( this.editorCurvas,"intro");
+
+        }
+        else{
+        if(EditorCurvas){
+   this.editorCurvas  = new  EditorCurvas();
+this.editorCurvas .setCanvas(this._targetCanvas);
+        }
+                
+        }
+
+    }
 
     // ── Color pickers ──
     document.getElementById('gio-color-picker')?.addEventListener('input', e => {
