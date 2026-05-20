@@ -1176,11 +1176,17 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 
 function inipaintPintaresta(){
+  var f1=async(e)=>{
+       await paint2d.setUrlCreaCapa(e);
+  }
   const paint2d = new GioCanvasPaint(document.getElementById('Edit_canvas'));
 
-    window.appEditorgioBasico.onOpenEditor=()=>{
+    window.appEditorgioBasico.onOpenEditor=async(e)=>{
       setTimeout(()=>{ paint2d.setCanvasStyleSize();
+        f1(e);
+   
       },10);
+          
    
      
     }
