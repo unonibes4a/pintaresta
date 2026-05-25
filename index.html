@@ -1443,7 +1443,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   g.iniciar();
   window.galeriaPintaresta = g;
+
+  inipaintPintaresta()
 });
+
+function inipaintPintaresta() {
+  const paint2d = new GioCanvasPaint(document.getElementById('Edit_canvas'));
+  window.appEditorgioBasico.onOpenEditor = async e => {
+    setTimeout(() => {
+      paint2d.setCanvasStyleSize();
+      paint2d.setUrlCreaCapa(e);
+    }, 10);
+  };
+  window.addEventListener('resize', () => paint2d.setCanvasStyleSize());
+}
 </script>
 
 </body>
