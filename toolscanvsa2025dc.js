@@ -1778,15 +1778,20 @@ class FilterManager {
     let width = img.width;
     let height = img.height;
     const aspectRatio = width / height;
+    let stwidth=1;
+    let stheight=1;
+     
 
-    if (width > maxWidth) {
-      width = maxWidth;
-      height = width / aspectRatio;
+     if (width > maxWidth) {
+      stwidth = maxWidth;
+      stwidth = width / aspectRatio;
     }
     if (height > maxHeight) {
-      height = maxHeight;
-      width = height * aspectRatio;
-    }
+      stheight = maxHeight;
+      stwidth = stheight * aspectRatio;
+    } 
+      this.canvas.style.width = stwidth;
+    this.canvas.style.height = stheight;
 
     this.canvas.width = width;
     this.canvas.height = height;
