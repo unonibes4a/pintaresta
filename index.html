@@ -241,6 +241,13 @@ class MinimalWebGPUViewer {
 		this.objLoader = new OBJLoader();
 		this.fbxLoader = new FBXLoader();
 
+		this.clock = new THREE.Clock();
+		this.mixer = null;
+		this.animClips = [];
+		this.currentAction = null;
+		this.animSpeed = 1;
+		this.animPlaying = false;
+
 		this.MODEL_THUMB = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCa39qS__3H5AX35rW9Me1h3rPWa5gUkELiYU4r3KOg3fzWndo55VNfWCj&s=10';
 
 		this.injectCSS();
@@ -282,6 +289,10 @@ class MinimalWebGPUViewer {
 			.wg-control-group { display: flex; flex-direction: column; gap: 4px; font-size: 11px; color: #bbb; }
 			.wg-control-group .wg-row { display: flex; justify-content: space-between; align-items: center; }
 			.wg-sidebar input[type="range"] { width: 100%; accent-color: #aaa; cursor: pointer; }
+			.wg-anim-btns { display: flex; gap: 6px; }
+			.wg-anim-btns button { flex: 1; padding: 6px 4px; }
+			.wg-anim-btns button.active { background: #00d084; border-color: #00d084; }
+			.wg-empty-note { font-size: 10px; color: #777; text-align: center; font-style: italic; }
 			
 			.wg-drag-overlay {
 				position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -305,6 +316,21 @@ class MinimalWebGPUViewer {
 
 			<button id="wg-btn-clear" style="margin-top: 5px;">Limpiar Escena</button>
 			<button id="wg-btn-download">Descargar (GLB)</button>
+
+			<h3 style="margin-top: 10px;">Animaciones</h3>
+			<select id="wg-anim-select">
+				<option value="__none__">Sin animación</option>
+			</select>
+			<div class="wg-anim-btns">
+				<button id="wg-anim-play" title="Play">&#9654; Play</button>
+				<button id="wg-anim-pause" title="Pause">&#10073;&#10073; Pausa</button>
+				<button id="wg-anim-stop" title="Stop">&#9632; Stop</button>
+			</div>
+			<div class="wg-control-group">
+				<div class="wg-row"><label>Velocidad</label><span id="wg-val-animspeed">1.00x</span></div>
+				<input type="range" id="wg-anim-speed" min="-2" max="2" step="0.05" value="1">
+			</div>
+			<div class="wg-empty-note" id="wg-anim-empty">El modelo cargado no tiene animaciones</div>
 			
 			<h3 style="margin-top: 10px;">Iluminación Global</h3>
 			
@@ -371,8 +397,11 @@ class MinimalWebGPUViewer {
 		this.setupEnvironment();
 		this.setupSSGI();
 		this.setupEvents();
+		this.setupAnimationEvents();
 
 		this.renderer.setAnimationLoop(() => {
+			const delta = this.clock.getDelta();
+			if (this.mixer && this.animPlaying) this.mixer.update(delta);
 			this.controls.update();
 			if (this.renderPipeline) this.renderPipeline.render();
 		});
@@ -459,6 +488,161 @@ class MinimalWebGPUViewer {
 		elTemp.addEventListener('change', updatePipeline);
 	}
 
+	// ---------- Sistema de animaciones ----------
+
+	setupAnimationEvents() {
+		const q = (id) => this.container.querySelector(id);
+		const select   = q('#wg-anim-select');
+		const speedEl  = q('#wg-anim-speed');
+		const btnPlay  = q('#wg-anim-play');
+		const btnPause = q('#wg-anim-pause');
+		const btnStop  = q('#wg-anim-stop');
+
+		select.addEventListener('change', () => this.selectAnimation(select.value));
+
+		speedEl.addEventListener('input', (e) => {
+			const v = parseFloat(e.target.value);
+			this.setAnimationSpeed(v);
+		});
+
+		btnPlay.addEventListener('click', () => this.playAnimation());
+		btnPause.addEventListener('click', () => this.pauseAnimation());
+		btnStop.addEventListener('click', () => this.stopAnimation());
+
+		this.updateAnimUIState();
+	}
+
+	// Detecta animaciones de un modelo recién cargado (GLTF/GLB, FBX; OBJ no soporta).
+	// clips puede venir de gltf.animations o directamente de model.animations (FBX).
+	setupModelAnimations(model, clips) {
+		this.disposeMixer();
+
+		this.animClips = Array.isArray(clips) ? clips : [];
+
+		const q = (id) => this.container.querySelector(id);
+		const select = q('#wg-anim-select');
+		const emptyNote = q('#wg-anim-empty');
+
+		select.innerHTML = '<option value="__none__">Sin animación</option>';
+
+		if (this.animClips.length > 0) {
+			this.mixer = new THREE.AnimationMixer(model);
+			this.animClips.forEach((clip, i) => {
+				const opt = document.createElement('option');
+				opt.value = String(i);
+				opt.textContent = clip.name || `Animación ${i + 1}`;
+				select.appendChild(opt);
+			});
+			emptyNote.style.display = 'none';
+			select.disabled = false;
+			// Selecciona y reproduce automáticamente la primera animación
+			select.value = '0';
+			this.selectAnimation('0');
+		} else {
+			this.mixer = null;
+			emptyNote.style.display = 'block';
+			select.disabled = true;
+		}
+
+		this.updateAnimUIState();
+	}
+
+	selectAnimation(value) {
+		if (this.currentAction) {
+			this.currentAction.stop();
+			this.currentAction = null;
+		}
+
+		if (value === '__none__' || !this.mixer) {
+			this.animPlaying = false;
+			this.updateAnimUIState();
+			return;
+		}
+
+		const idx = parseInt(value, 10);
+		const clip = this.animClips[idx];
+		if (!clip) return;
+
+		const action = this.mixer.clipAction(clip);
+		action.reset();
+		action.setLoop(THREE.LoopRepeat, Infinity);
+		action.clampWhenFinished = false;
+		action.timeScale = this.animSpeed;
+		action.play();
+
+		this.currentAction = action;
+		this.animPlaying = true;
+		this.updateAnimUIState();
+	}
+
+	playAnimation() {
+		if (!this.mixer) return;
+		if (!this.currentAction) {
+			// Si no hay animación seleccionada, selecciona la primera disponible
+			const q = (id) => this.container.querySelector(id);
+			const select = q('#wg-anim-select');
+			if (select && select.options.length > 1) {
+				select.value = '0';
+				this.selectAnimation('0');
+				return;
+			}
+			return;
+		}
+		this.currentAction.paused = false;
+		this.animPlaying = true;
+		this.updateAnimUIState();
+	}
+
+	pauseAnimation() {
+		if (!this.currentAction) return;
+		this.currentAction.paused = true;
+		this.animPlaying = false;
+		this.updateAnimUIState();
+	}
+
+	stopAnimation() {
+		if (this.currentAction) {
+			this.currentAction.stop();
+		}
+		this.animPlaying = false;
+		this.updateAnimUIState();
+	}
+
+	setAnimationSpeed(v) {
+		this.animSpeed = v;
+		if (this.currentAction) this.currentAction.timeScale = v;
+		const q = (id) => this.container.querySelector(id);
+		q('#wg-val-animspeed').textContent = `${v.toFixed(2)}x${v < 0 ? ' (inversa)' : ''}`;
+	}
+
+	updateAnimUIState() {
+		const q = (id) => this.container.querySelector(id);
+		const btnPlay  = q('#wg-anim-play');
+		const btnPause = q('#wg-anim-pause');
+		const btnStop  = q('#wg-anim-stop');
+		const hasClips = this.animClips.length > 0;
+
+		btnPlay.disabled  = !hasClips;
+		btnPause.disabled = !hasClips;
+		btnStop.disabled  = !hasClips;
+
+		btnPlay.classList.toggle('active', this.animPlaying);
+		btnPause.classList.toggle('active', hasClips && this.currentAction && this.currentAction.paused);
+	}
+
+	disposeMixer() {
+		if (this.mixer) {
+			this.mixer.stopAllAction();
+			this.mixer.uncacheRoot(this.mixer.getRoot());
+			this.mixer = null;
+		}
+		this.currentAction = null;
+		this.animClips = [];
+		this.animPlaying = false;
+	}
+
+	// ---------------------------------------------
+
 	processLoadedModel(object) {
 		let model = object.scene || object;
 		
@@ -481,6 +665,12 @@ class MinimalWebGPUViewer {
 			center.y + size.y, 
 			center.z + Math.max(size.x, size.z) * 1.5
 		);
+
+		// Detectar animaciones: en GLTF vienen en el objeto raíz (object.animations),
+		// en FBX vienen directamente en el group (model.animations)
+		const clips = (object.animations && object.animations.length ? object.animations
+			: (model.animations && model.animations.length ? model.animations : []));
+		this.setupModelAnimations(model, clips);
 	}
 
 	loadModelFromUrl(url, explicitExtension = null) {
@@ -513,6 +703,17 @@ class MinimalWebGPUViewer {
 	}
 
 	clearScene() {
+		this.disposeMixer();
+		const q = (id) => this.container.querySelector(id);
+		const select = q('#wg-anim-select');
+		if (select) {
+			select.innerHTML = '<option value="__none__">Sin animación</option>';
+			select.disabled = true;
+		}
+		const emptyNote = q('#wg-anim-empty');
+		if (emptyNote) emptyNote.style.display = 'block';
+		this.updateAnimUIState();
+
 		while (this.loadedModelsGroup.children.length > 0) {
 			const obj = this.loadedModelsGroup.children[0];
 			this.loadedModelsGroup.remove(obj);
