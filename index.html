@@ -177,9 +177,10 @@ video.pin-image::-webkit-media-controls{display:none!important}
 </div>
 
 <div class="modal-overlay" id="modal3D">
-  <div class="modal-content lg" style="background:#111; padding:0; position:relative;">
+  <div class="modal-content lg" style="background:#111; padding:0; position:relative; display:flex; flex-direction:column;">
     <button class="btn-modal secondary" id="btnClose3D" style="position:absolute; top:15px; right:15px; z-index:9999; background:rgba(255,255,255,0.2); color:#fff; border:none;">✕</button>
-    <div id="webgpu-container" style="width:100%; height:100%;"></div>
+    <div id="webgpu-container" style="width:100%; flex:1; min-height:0; position:relative;"></div>
+    <div id="wg-timeline-panel" style="display:none; flex-shrink:0;"></div>
   </div>
 </div>
 
@@ -242,11 +243,30 @@ class MinimalWebGPUViewer {
 		this.fbxLoader = new FBXLoader();
 
 		this.clock = new THREE.Clock();
+		this.isVisible = false;
 		this.mixer = null;
 		this.animClips = [];
 		this.currentAction = null;
+		this.currentAnimIndex = null;
 		this.animSpeed = 1;
 		this.animPlaying = false;
+
+		// ---- Editor de Audio / Timeline ----
+		this.audioCtx = null;
+		this.audioBuffer = null;
+		this.audioFileName = '';
+		this.audioSourceNode = null;
+		this.audioPlaybackStartCtxTime = 0;
+		this.audioPlaybackStartOffset = 0;
+		this.timelinePlayhead = 0;
+		this.timelinePlaying = false;
+		this.timelineZoom = 80; // pixeles por segundo
+		this.timelineSelection = null; // {start, end} en segundos
+		this.audioClipboard = null; // AudioBuffer
+		this.timelinePanelOpen = false;
+		this._tlDragging = false;
+		this._tlDragMoved = false;
+		this._tlDragStartTime = 0;
 
 		this.MODEL_THUMB = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCa39qS__3H5AX35rW9Me1h3rPWa5gUkELiYU4r3KOg3fzWndo55VNfWCj&s=10';
 
@@ -293,7 +313,41 @@ class MinimalWebGPUViewer {
 			.wg-anim-btns button { flex: 1; padding: 6px 4px; }
 			.wg-anim-btns button.active { background: #00d084; border-color: #00d084; }
 			.wg-empty-note { font-size: 10px; color: #777; text-align: center; font-style: italic; }
-			
+
+			/* ---- Editor de Audio / Timeline ---- */
+			#wg-timeline-panel {
+				background: #16171a; border-top: 1px solid #2a2a2e; height: 300px;
+				display: flex; flex-direction: column; font-family: system-ui, sans-serif; color: #ddd;
+			}
+			.wg-tl-toolbar {
+				display: flex; align-items: center; gap: 6px; padding: 8px 10px;
+				background: #1d1e22; border-bottom: 1px solid #2a2a2e; flex-wrap: wrap; flex-shrink: 0;
+			}
+			.wg-tl-toolbar .wg-tl-sep { width: 1px; height: 22px; background: #333; margin: 0 4px; }
+			.wg-tl-toolbar button {
+				background: #2b2c31; color: #eee; border: 1px solid #3a3b40; border-radius: 4px;
+				padding: 6px 10px; font-size: 11px; cursor: pointer; white-space: nowrap;
+			}
+			.wg-tl-toolbar button:hover:not(:disabled) { background: #3a3b40; }
+			.wg-tl-toolbar button:disabled { opacity: .35; cursor: not-allowed; }
+			.wg-tl-toolbar button.wg-tl-primary { background: #00d084; border-color: #00d084; color: #06251a; font-weight: 600; }
+			.wg-tl-toolbar button.wg-tl-primary:hover { background: #00b872; }
+			.wg-tl-filename { font-size: 11px; color: #999; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+			.wg-tl-time { font-size: 11px; font-family: 'Courier New', monospace; color: #0f9; min-width: 128px; text-align: center; }
+			.wg-tl-spacer { flex: 1; }
+			.wg-tl-scroll { flex: 1; overflow-x: auto; overflow-y: hidden; position: relative; background: #0c0d0f; }
+			.wg-tl-track { position: relative; height: 100%; min-width: 100%; }
+			#wg-tl-canvas { display: block; }
+			.wg-tl-selection {
+				position: absolute; top: 0; bottom: 0; background: rgba(0, 208, 132, 0.18);
+				border-left: 1px solid #00d084; border-right: 1px solid #00d084; pointer-events: none; z-index: 3;
+			}
+			.wg-tl-playhead {
+				position: absolute; top: 0; bottom: 0; width: 2px; background: #e60023; z-index: 4;
+				pointer-events: none; box-shadow: 0 0 4px rgba(230,0,35,.8);
+			}
+			.wg-tl-empty-note { padding: 40px; text-align: center; color: #666; font-size: 12px; }
+
 			.wg-drag-overlay {
 				position: absolute; top: 0; left: 0; width: 100%; height: 100%;
 				background: rgba(0, 0, 0, 0.6); color: white; display: none;
@@ -331,7 +385,8 @@ class MinimalWebGPUViewer {
 				<input type="range" id="wg-anim-speed" min="-2" max="2" step="0.05" value="1">
 			</div>
 			<div class="wg-empty-note" id="wg-anim-empty">El modelo cargado no tiene animaciones</div>
-			
+			<button id="wg-timeline-toggle" style="margin-top:4px;">🎚️ Editor de Audio / Timeline</button>
+
 			<h3 style="margin-top: 10px;">Iluminación Global</h3>
 			
 			<div class="wg-control-group">
@@ -398,10 +453,19 @@ class MinimalWebGPUViewer {
 		this.setupSSGI();
 		this.setupEvents();
 		this.setupAnimationEvents();
+		this.buildTimelineUI();
+		this.setupTimelineEvents();
 
 		this.renderer.setAnimationLoop(() => {
+			// No renderizar si el modal está cerrado o el contenedor todavía no tiene
+			// un tamaño válido (evita "swapchain texture de tamaño 0" en WebGPU).
+			if (!this.isVisible || !this.container.clientWidth || !this.container.clientHeight) {
+				this.clock.getDelta(); // evita que se acumule un delta gigante al reabrir
+				return;
+			}
 			const delta = this.clock.getDelta();
-			if (this.mixer && this.animPlaying) this.mixer.update(delta);
+			if (this.mixer && this.animPlaying && !this.timelinePlaying) this.mixer.update(delta);
+			if (this.timelinePlaying) this.stepTimeline(delta);
 			this.controls.update();
 			if (this.renderPipeline) this.renderPipeline.render();
 		});
@@ -545,6 +609,7 @@ class MinimalWebGPUViewer {
 		}
 
 		this.updateAnimUIState();
+		if (this.timelinePanelOpen) this.redrawTimeline();
 	}
 
 	selectAnimation(value) {
@@ -552,16 +617,19 @@ class MinimalWebGPUViewer {
 			this.currentAction.stop();
 			this.currentAction = null;
 		}
+		this.currentAnimIndex = null;
 
 		if (value === '__none__' || !this.mixer) {
 			this.animPlaying = false;
 			this.updateAnimUIState();
+			if (this.timelinePanelOpen) this.redrawTimeline();
 			return;
 		}
 
 		const idx = parseInt(value, 10);
 		const clip = this.animClips[idx];
 		if (!clip) return;
+		this.currentAnimIndex = idx;
 
 		const action = this.mixer.clipAction(clip);
 		action.reset();
@@ -571,6 +639,7 @@ class MinimalWebGPUViewer {
 		action.play();
 
 		this.currentAction = action;
+		if (this.timelinePanelOpen) this.redrawTimeline();
 		this.animPlaying = true;
 		this.updateAnimUIState();
 	}
@@ -588,7 +657,15 @@ class MinimalWebGPUViewer {
 			}
 			return;
 		}
-		this.currentAction.paused = false;
+		// stop() desactiva la acción en el mixer (no solo la pausa), así que
+		// si viene de un Stop hay que reactivarla con play(), no basta con paused=false.
+		if (!this.currentAction.isRunning()) {
+			this.currentAction.reset();
+			this.currentAction.timeScale = this.animSpeed;
+			this.currentAction.play();
+		} else {
+			this.currentAction.paused = false;
+		}
 		this.animPlaying = true;
 		this.updateAnimUIState();
 	}
@@ -637,11 +714,583 @@ class MinimalWebGPUViewer {
 			this.mixer = null;
 		}
 		this.currentAction = null;
+		this.currentAnimIndex = null;
 		this.animClips = [];
 		this.animPlaying = false;
 	}
 
 	// ---------------------------------------------
+
+	// ================= Editor de Audio / Timeline =================
+
+	buildTimelineUI() {
+		const panel = document.getElementById('wg-timeline-panel');
+		if (!panel) return;
+
+		panel.innerHTML = `
+			<div class="wg-tl-toolbar">
+				<button id="wg-tl-load-btn">Cargar Audio</button>
+				<input type="file" id="wg-tl-audio-input" accept=".mp3,.ogg,.wav,audio/*" style="display:none">
+				<span class="wg-tl-filename" id="wg-tl-filename">Sin audio</span>
+				<div class="wg-tl-sep"></div>
+				<button id="wg-tl-zoom-out" title="Alejar">−</button>
+				<button id="wg-tl-zoom-in" title="Acercar">+</button>
+				<div class="wg-tl-sep"></div>
+				<button id="wg-tl-prev-kf" title="Keyframe anterior">⏮ KF</button>
+				<button id="wg-tl-next-kf" title="Keyframe siguiente">KF ⏭</button>
+				<div class="wg-tl-sep"></div>
+				<button id="wg-tl-play" class="wg-tl-primary" title="Play sincronizado">▶ Play</button>
+				<button id="wg-tl-stop" title="Stop">■ Stop</button>
+				<div class="wg-tl-sep"></div>
+				<button id="wg-tl-cut" disabled>✂ Cortar</button>
+				<button id="wg-tl-copy" disabled>⧉ Copiar</button>
+				<button id="wg-tl-paste" disabled>📋 Pegar</button>
+				<button id="wg-tl-delete" disabled>🗑 Eliminar</button>
+				<div class="wg-tl-sep"></div>
+				<button id="wg-tl-download">⬇ Descargar WAV</button>
+				<div class="wg-tl-spacer"></div>
+				<span class="wg-tl-time" id="wg-tl-time">0:00.000 / 0:00.000</span>
+			</div>
+			<div class="wg-tl-scroll" id="wg-tl-scroll">
+				<div class="wg-tl-track" id="wg-tl-track">
+					<canvas id="wg-tl-canvas"></canvas>
+					<div class="wg-tl-selection" id="wg-tl-selection" style="display:none;"></div>
+					<div class="wg-tl-playhead" id="wg-tl-playhead" style="left:0px;"></div>
+				</div>
+			</div>
+		`;
+
+		this.redrawTimeline();
+	}
+
+	toggleTimelinePanel(forceOpen) {
+		const panel = document.getElementById('wg-timeline-panel');
+		if (!panel) return;
+		this.timelinePanelOpen = forceOpen !== undefined ? forceOpen : !this.timelinePanelOpen;
+		panel.style.display = this.timelinePanelOpen ? 'flex' : 'none';
+		if (this.timelinePanelOpen) {
+			setTimeout(() => { this.resize(); this.redrawTimeline(); }, 30);
+		}
+	}
+
+	ensureAudioContext() {
+		if (!this.audioCtx) this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+		if (this.audioCtx.state === 'suspended') this.audioCtx.resume();
+		return this.audioCtx;
+	}
+
+	async loadAudioFile(file) {
+		const ctx = this.ensureAudioContext();
+		this.stopAudioPlayback();
+		try {
+			const arrayBuffer = await file.arrayBuffer();
+			const decoded = await ctx.decodeAudioData(arrayBuffer.slice(0));
+			this.audioBuffer = decoded;
+			this.audioFileName = file.name;
+			this.timelineSelection = null;
+			document.getElementById('wg-tl-filename').textContent = file.name;
+			this.updateTimelineButtonsState();
+			this.redrawTimeline();
+		} catch (e) {
+			console.error('Error decodificando audio:', e);
+			alert('No se pudo cargar el audio. Formato no soportado o archivo dañado.');
+		}
+	}
+
+	getCurrentClipDuration() {
+		if (this.currentAnimIndex === null || this.currentAnimIndex === undefined) return 0;
+		const clip = this.animClips[this.currentAnimIndex];
+		return clip ? clip.duration : 0;
+	}
+
+	getTimelineDuration() {
+		const animDur = this.getCurrentClipDuration();
+		const audioDur = this.audioBuffer ? this.audioBuffer.duration : 0;
+		return Math.max(animDur, audioDur, 1);
+	}
+
+	getCurrentClipKeyframeTimes() {
+		if (this.currentAnimIndex === null || this.currentAnimIndex === undefined) return [];
+		const clip = this.animClips[this.currentAnimIndex];
+		if (!clip) return [];
+		const set = new Set();
+		clip.tracks.forEach(track => {
+			for (let i = 0; i < track.times.length; i++) set.add(Math.round(track.times[i] * 1000) / 1000);
+		});
+		return Array.from(set).sort((a, b) => a - b);
+	}
+
+	timeToPixel(t) { return t * this.timelineZoom; }
+	pixelToTime(px) { return Math.max(0, px / this.timelineZoom); }
+
+	fmtTimeMs(s) {
+		if (isNaN(s) || s < 0) s = 0;
+		const m = Math.floor(s / 60);
+		const sec = s - m * 60;
+		return `${m}:${sec.toFixed(3).padStart(6, '0')}`;
+	}
+
+	redrawTimeline() {
+		const canvas = document.getElementById('wg-tl-canvas');
+		const track = document.getElementById('wg-tl-track');
+		const scroll = document.getElementById('wg-tl-scroll');
+		if (!canvas || !track || !scroll) return;
+
+		const duration = this.getTimelineDuration();
+		const width = Math.max(scroll.clientWidth, Math.ceil(duration * this.timelineZoom) + 40);
+		const height = scroll.clientHeight || 260;
+		const dpr = window.devicePixelRatio || 1;
+
+		canvas.style.width = width + 'px';
+		canvas.style.height = height + 'px';
+		canvas.width = Math.floor(width * dpr);
+		canvas.height = Math.floor(height * dpr);
+		track.style.width = width + 'px';
+
+		const ctx = canvas.getContext('2d');
+		ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+		ctx.clearRect(0, 0, width, height);
+
+		const rulerH = 28;
+		const kfH = 14;
+		const waveTop = rulerH + kfH;
+		const waveH = height - waveTop;
+
+		// Fondo regla
+		ctx.fillStyle = '#1a1b1f';
+		ctx.fillRect(0, 0, width, rulerH);
+		ctx.fillStyle = '#0f1012';
+		ctx.fillRect(0, rulerH, width, kfH);
+		ctx.fillStyle = '#0a0b0d';
+		ctx.fillRect(0, waveTop, width, waveH);
+
+		// Marcas de tiempo (regla, como una cinta métrica)
+		const pxPerSec = this.timelineZoom;
+		let step = 1;
+		if (pxPerSec < 25) step = 5;
+		else if (pxPerSec < 50) step = 2;
+		else if (pxPerSec > 250) step = 0.1;
+		else if (pxPerSec > 120) step = 0.25;
+		else if (pxPerSec > 60) step = 0.5;
+
+		ctx.strokeStyle = '#3a3b40';
+		ctx.fillStyle = '#999';
+		ctx.font = '10px monospace';
+		ctx.textBaseline = 'middle';
+		for (let t = 0; t <= duration + step; t += step) {
+			const x = this.timeToPixel(t);
+			const isMajor = Math.abs(Math.round(t / (step * 5)) * (step * 5) - t) < 1e-6;
+			ctx.beginPath();
+			ctx.moveTo(x + 0.5, isMajor ? rulerH - 16 : rulerH - 9);
+			ctx.lineTo(x + 0.5, rulerH);
+			ctx.stroke();
+			if (isMajor || step >= 1) {
+				ctx.fillText(this.fmtTimeMs(t).replace(/\.\d+$/, ''), x + 3, rulerH - 18 < 0 ? 8 : 9);
+			}
+		}
+
+		// Keyframes de la animación seleccionada
+		const keyframes = this.getCurrentClipKeyframeTimes();
+		ctx.fillStyle = '#ffb020';
+		keyframes.forEach(t => {
+			const x = this.timeToPixel(t);
+			ctx.beginPath();
+			ctx.moveTo(x, rulerH);
+			ctx.lineTo(x - 4, rulerH + kfH);
+			ctx.lineTo(x + 4, rulerH + kfH);
+			ctx.closePath();
+			ctx.fill();
+		});
+		// Línea de duración del clip de animación
+		const animDur = this.getCurrentClipDuration();
+		if (animDur > 0) {
+			ctx.strokeStyle = 'rgba(255,176,32,.5)';
+			ctx.beginPath();
+			ctx.moveTo(this.timeToPixel(animDur) + 0.5, rulerH);
+			ctx.lineTo(this.timeToPixel(animDur) + 0.5, height);
+			ctx.stroke();
+		}
+
+		// Forma de onda
+		if (this.audioBuffer) {
+			const data = this.audioBuffer.getChannelData(0);
+			const samplesPerPixel = Math.max(1, Math.floor(data.length / (this.audioBuffer.duration * pxPerSec)));
+			const mid = waveTop + waveH / 2;
+			ctx.strokeStyle = '#00d084';
+			ctx.beginPath();
+			const totalPx = Math.ceil(this.audioBuffer.duration * pxPerSec);
+			for (let px = 0; px < totalPx; px++) {
+				const startSample = Math.floor((px / pxPerSec) * this.audioBuffer.sampleRate);
+				const endSample = Math.min(data.length, startSample + Math.max(1, Math.floor(this.audioBuffer.sampleRate / pxPerSec)));
+				let min = 1, max = -1;
+				for (let i = startSample; i < endSample; i++) {
+					const v = data[i];
+					if (v < min) min = v;
+					if (v > max) max = v;
+				}
+				if (min > max) { min = 0; max = 0; }
+				const y1 = mid - max * (waveH / 2 - 4);
+				const y2 = mid - min * (waveH / 2 - 4);
+				ctx.moveTo(px + 0.5, y1);
+				ctx.lineTo(px + 0.5, y2);
+			}
+			ctx.stroke();
+		} else {
+			ctx.fillStyle = '#555';
+			ctx.font = '12px system-ui, sans-serif';
+			ctx.fillText('Cargá un audio (mp3 / ogg / wav) para ver la forma de onda aquí', 12, waveTop + waveH / 2);
+		}
+
+		this.updateSelectionUI();
+		this.updateTimelinePlayheadUI();
+		this.updateTimeDisplay();
+	}
+
+	updateSelectionUI() {
+		const sel = document.getElementById('wg-tl-selection');
+		if (!sel) return;
+		if (this.timelineSelection) {
+			const { start, end } = this.timelineSelection;
+			sel.style.display = 'block';
+			sel.style.left = this.timeToPixel(start) + 'px';
+			sel.style.width = Math.max(1, this.timeToPixel(end - start)) + 'px';
+		} else {
+			sel.style.display = 'none';
+		}
+	}
+
+	updateTimelinePlayheadUI() {
+		const ph = document.getElementById('wg-tl-playhead');
+		if (ph) ph.style.left = this.timeToPixel(this.timelinePlayhead) + 'px';
+	}
+
+	updateTimeDisplay() {
+		const el = document.getElementById('wg-tl-time');
+		if (el) el.textContent = `${this.fmtTimeMs(this.timelinePlayhead)} / ${this.fmtTimeMs(this.getTimelineDuration())}`;
+	}
+
+	updateTimelineButtonsState() {
+		const hasSel = !!this.timelineSelection && (this.timelineSelection.end - this.timelineSelection.start) > 0.001;
+		const q = (id) => document.getElementById(id);
+		if (q('wg-tl-cut')) q('wg-tl-cut').disabled = !hasSel || !this.audioBuffer;
+		if (q('wg-tl-copy')) q('wg-tl-copy').disabled = !hasSel || !this.audioBuffer;
+		if (q('wg-tl-delete')) q('wg-tl-delete').disabled = !hasSel || !this.audioBuffer;
+		if (q('wg-tl-paste')) q('wg-tl-paste').disabled = !this.audioClipboard;
+	}
+
+	setPlayhead(t, opts = {}) {
+		const duration = this.getTimelineDuration();
+		t = Math.max(0, Math.min(duration, t));
+		this.timelinePlayhead = t;
+
+		// Sincroniza la pose de la animación con el playhead
+		if (this.currentAction) {
+			const dur = this.getCurrentClipDuration();
+			this.currentAction.time = dur > 0 ? (t % dur) : 0;
+			this.mixer.update(0);
+		}
+
+		// Si estaba sonando audio, reinicia la reproducción desde el nuevo punto
+		if (opts.seekAudio !== false) {
+			if (this.timelinePlaying && this.audioBuffer) {
+				this.playAudioFrom(t);
+			} else {
+				this.audioPlaybackStartOffset = t;
+			}
+		}
+
+		this.updateTimelinePlayheadUI();
+		this.updateTimeDisplay();
+	}
+
+	stepTimeline(delta) {
+		const duration = this.getTimelineDuration();
+		let t = this.timelinePlayhead + delta;
+		if (t >= duration) {
+			t = duration;
+			this.timelineStop();
+		}
+		this.timelinePlayhead = t;
+		if (this.currentAction) {
+			const dur = this.getCurrentClipDuration();
+			this.currentAction.time = dur > 0 ? (t % dur) : 0;
+			this.mixer.update(0);
+		}
+		this.updateTimelinePlayheadUI();
+		this.updateTimeDisplay();
+	}
+
+	timelinePlayToggle() {
+		if (this.timelinePlaying) {
+			this.timelinePause();
+		} else {
+			this.timelinePlayStart();
+		}
+	}
+
+	timelinePlayStart() {
+		this.timelinePlaying = true;
+		this.clock.getDelta(); // evita salto de delta acumulado
+		if (this.audioBuffer) this.playAudioFrom(this.timelinePlayhead);
+		const btn = document.getElementById('wg-tl-play');
+		if (btn) btn.innerHTML = '⏸ Pausa';
+	}
+
+	timelinePause() {
+		this.timelinePlaying = false;
+		this.stopAudioPlayback();
+		const btn = document.getElementById('wg-tl-play');
+		if (btn) btn.innerHTML = '▶ Play';
+	}
+
+	timelineStop() {
+		this.timelinePlaying = false;
+		this.stopAudioPlayback();
+		const btn = document.getElementById('wg-tl-play');
+		if (btn) btn.innerHTML = '▶ Play';
+		this.setPlayhead(0);
+	}
+
+	playAudioFrom(offset) {
+		this.stopAudioPlayback();
+		if (!this.audioBuffer) return;
+		const ctx = this.ensureAudioContext();
+		if (offset >= this.audioBuffer.duration) return;
+		const source = ctx.createBufferSource();
+		source.buffer = this.audioBuffer;
+		source.connect(ctx.destination);
+		source.start(0, offset);
+		source.onended = () => { if (this.audioSourceNode === source) this.audioSourceNode = null; };
+		this.audioSourceNode = source;
+		this.audioPlaybackStartCtxTime = ctx.currentTime;
+		this.audioPlaybackStartOffset = offset;
+	}
+
+	stopAudioPlayback() {
+		if (this.audioSourceNode) {
+			try { this.audioSourceNode.onended = null; this.audioSourceNode.stop(); } catch (e) {}
+			try { this.audioSourceNode.disconnect(); } catch (e) {}
+			this.audioSourceNode = null;
+		}
+	}
+
+	jumpToKeyframe(direction) {
+		const keyframes = this.getCurrentClipKeyframeTimes();
+		if (!keyframes.length) return;
+		const t = this.timelinePlayhead;
+		let target = null;
+		if (direction > 0) target = keyframes.find(k => k > t + 0.005);
+		else target = [...keyframes].reverse().find(k => k < t - 0.005);
+		if (target === undefined) target = null;
+		if (target !== null) this.setPlayhead(target);
+	}
+
+	zoomTimeline(factor) {
+		this.timelineZoom = Math.max(15, Math.min(800, this.timelineZoom * factor));
+		this.redrawTimeline();
+	}
+
+	// ---- Edición de audio: cortar / copiar / pegar / eliminar ----
+
+	sliceAudioBuffer(buffer, startSec, endSec) {
+		const ctx = this.ensureAudioContext();
+		const sr = buffer.sampleRate;
+		const startSample = Math.max(0, Math.min(buffer.length, Math.floor(startSec * sr)));
+		const endSample = Math.max(startSample, Math.min(buffer.length, Math.floor(endSec * sr)));
+		const length = Math.max(1, endSample - startSample);
+		const out = ctx.createBuffer(buffer.numberOfChannels, length, sr);
+		for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
+			out.getChannelData(ch).set(buffer.getChannelData(ch).subarray(startSample, endSample));
+		}
+		return out;
+	}
+
+	concatAudioBuffers(buffers) {
+		const valid = buffers.filter(b => b && b.length > 0);
+		if (!valid.length) return null;
+		const ctx = this.ensureAudioContext();
+		const sr = valid[0].sampleRate;
+		const numChannels = Math.max(...valid.map(b => b.numberOfChannels));
+		const totalLength = valid.reduce((s, b) => s + b.length, 0);
+		const out = ctx.createBuffer(numChannels, totalLength, sr);
+		let offset = 0;
+		valid.forEach(b => {
+			for (let ch = 0; ch < numChannels; ch++) {
+				const srcData = ch < b.numberOfChannels ? b.getChannelData(ch) : b.getChannelData(0);
+				out.getChannelData(ch).set(srcData, offset);
+			}
+			offset += b.length;
+		});
+		return out;
+	}
+
+	copySelection() {
+		if (!this.audioBuffer || !this.timelineSelection) return;
+		const { start, end } = this.timelineSelection;
+		this.audioClipboard = this.sliceAudioBuffer(this.audioBuffer, start, end);
+		this.updateTimelineButtonsState();
+	}
+
+	cutSelection() {
+		if (!this.audioBuffer || !this.timelineSelection) return;
+		const { start, end } = this.timelineSelection;
+		this.audioClipboard = this.sliceAudioBuffer(this.audioBuffer, start, end);
+		this.deleteSelection();
+	}
+
+	deleteSelection() {
+		if (!this.audioBuffer || !this.timelineSelection) return;
+		const { start, end } = this.timelineSelection;
+		const before = this.sliceAudioBuffer(this.audioBuffer, 0, start);
+		const after = this.sliceAudioBuffer(this.audioBuffer, end, this.audioBuffer.duration);
+		const result = this.concatAudioBuffers([before, after]);
+		this.audioBuffer = result || before;
+		this.timelineSelection = null;
+		this.setPlayhead(start, { seekAudio: false });
+		this.updateTimelineButtonsState();
+		this.redrawTimeline();
+	}
+
+	pasteAtPlayhead() {
+		if (!this.audioClipboard) return;
+		const at = this.timelinePlayhead;
+		if (!this.audioBuffer) {
+			this.audioBuffer = this.audioClipboard;
+			this.setPlayhead(this.audioClipboard.duration, { seekAudio: false });
+		} else {
+			const before = this.sliceAudioBuffer(this.audioBuffer, 0, at);
+			const after = this.sliceAudioBuffer(this.audioBuffer, at, this.audioBuffer.duration);
+			this.audioBuffer = this.concatAudioBuffers([before, this.audioClipboard, after]);
+			this.setPlayhead(at + this.audioClipboard.duration, { seekAudio: false });
+		}
+		this.updateTimelineButtonsState();
+		this.redrawTimeline();
+	}
+
+	audioBufferToWav(buffer) {
+		const numChannels = buffer.numberOfChannels;
+		const sampleRate = buffer.sampleRate;
+		const bitDepth = 16;
+		const bytesPerSample = bitDepth / 8;
+		const blockAlign = numChannels * bytesPerSample;
+		const dataLength = buffer.length * blockAlign;
+		const arrBuffer = new ArrayBuffer(44 + dataLength);
+		const view = new DataView(arrBuffer);
+
+		const writeStr = (offset, str) => { for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i)); };
+
+		writeStr(0, 'RIFF');
+		view.setUint32(4, 36 + dataLength, true);
+		writeStr(8, 'WAVE');
+		writeStr(12, 'fmt ');
+		view.setUint32(16, 16, true);
+		view.setUint16(20, 1, true); // PCM
+		view.setUint16(22, numChannels, true);
+		view.setUint32(24, sampleRate, true);
+		view.setUint32(28, sampleRate * blockAlign, true);
+		view.setUint16(32, blockAlign, true);
+		view.setUint16(34, bitDepth, true);
+		writeStr(36, 'data');
+		view.setUint32(40, dataLength, true);
+
+		const channelData = [];
+		for (let ch = 0; ch < numChannels; ch++) channelData.push(buffer.getChannelData(ch));
+
+		let offset = 44;
+		for (let i = 0; i < buffer.length; i++) {
+			for (let ch = 0; ch < numChannels; ch++) {
+				let sample = Math.max(-1, Math.min(1, channelData[ch][i]));
+				sample = sample < 0 ? sample * 0x8000 : sample * 0x7fff;
+				view.setInt16(offset, sample, true);
+				offset += 2;
+			}
+		}
+		return new Blob([arrBuffer], { type: 'audio/wav' });
+	}
+
+	downloadWav() {
+		if (!this.audioBuffer) { alert('Primero cargá o generá un audio en el timeline'); return; }
+		const blob = this.audioBufferToWav(this.audioBuffer);
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = (this.audioFileName ? this.audioFileName.replace(/\.[^/.]+$/, '') : 'audio_sincronizado') + '.wav';
+		document.body.appendChild(a); a.click(); document.body.removeChild(a);
+		URL.revokeObjectURL(url);
+	}
+
+	setupTimelineEvents() {
+		const q = (id) => document.getElementById(id);
+
+		const toggleBtn = q('wg-timeline-toggle');
+		if (toggleBtn) toggleBtn.addEventListener('click', () => this.toggleTimelinePanel());
+
+		q('wg-tl-load-btn').addEventListener('click', () => q('wg-tl-audio-input').click());
+		q('wg-tl-audio-input').addEventListener('change', (e) => {
+			if (e.target.files.length) this.loadAudioFile(e.target.files[0]);
+			e.target.value = '';
+		});
+
+		q('wg-tl-zoom-in').addEventListener('click', () => this.zoomTimeline(1.4));
+		q('wg-tl-zoom-out').addEventListener('click', () => this.zoomTimeline(1 / 1.4));
+
+		q('wg-tl-prev-kf').addEventListener('click', () => this.jumpToKeyframe(-1));
+		q('wg-tl-next-kf').addEventListener('click', () => this.jumpToKeyframe(1));
+
+		q('wg-tl-play').addEventListener('click', () => this.timelinePlayToggle());
+		q('wg-tl-stop').addEventListener('click', () => this.timelineStop());
+
+		q('wg-tl-cut').addEventListener('click', () => this.cutSelection());
+		q('wg-tl-copy').addEventListener('click', () => this.copySelection());
+		q('wg-tl-paste').addEventListener('click', () => this.pasteAtPlayhead());
+		q('wg-tl-delete').addEventListener('click', () => this.deleteSelection());
+		q('wg-tl-download').addEventListener('click', () => this.downloadWav());
+
+		const track = q('wg-tl-track');
+		const scroll = q('wg-tl-scroll');
+
+		const getTimeFromEvent = (e) => {
+			const rect = track.getBoundingClientRect();
+			const x = e.clientX - rect.left + scroll.scrollLeft;
+			return this.pixelToTime(x);
+		};
+
+		track.addEventListener('mousedown', (e) => {
+			this._tlDragging = true;
+			this._tlDragMoved = false;
+			this._tlDragStartTime = getTimeFromEvent(e);
+			this.timelineSelection = { start: this._tlDragStartTime, end: this._tlDragStartTime };
+			this.updateSelectionUI();
+		});
+
+		window.addEventListener('mousemove', (e) => {
+			if (!this._tlDragging) return;
+			const t = getTimeFromEvent(e);
+			if (Math.abs(t - this._tlDragStartTime) > 0.02) this._tlDragMoved = true;
+			this.timelineSelection = {
+				start: Math.min(this._tlDragStartTime, t),
+				end: Math.max(this._tlDragStartTime, t)
+			};
+			this.updateSelectionUI();
+		});
+
+		window.addEventListener('mouseup', (e) => {
+			if (!this._tlDragging) return;
+			this._tlDragging = false;
+			if (!this._tlDragMoved) {
+				// Fue un click simple: mover playhead, sin selección
+				this.timelineSelection = null;
+				this.setPlayhead(this._tlDragStartTime);
+				this.updateSelectionUI();
+			} else {
+				this.setPlayhead(this.timelineSelection.start, { seekAudio: false });
+			}
+			this.updateTimelineButtonsState();
+		});
+
+		const resizeObserver = new ResizeObserver(() => this.redrawTimeline());
+		if (scroll) resizeObserver.observe(scroll);
+	}
 
 	processLoadedModel(object) {
 		let model = object.scene || object;
@@ -713,6 +1362,15 @@ class MinimalWebGPUViewer {
 		const emptyNote = q('#wg-anim-empty');
 		if (emptyNote) emptyNote.style.display = 'block';
 		this.updateAnimUIState();
+
+		// Reinicia el timeline (mantiene el audio cargado, solo detiene playback)
+		this.timelinePlaying = false;
+		this.stopAudioPlayback();
+		this.timelinePlayhead = 0;
+		this.timelineSelection = null;
+		const playBtn = document.getElementById('wg-tl-play');
+		if (playBtn) playBtn.innerHTML = '▶ Play';
+		if (this.timelinePanelOpen) this.redrawTimeline();
 
 		while (this.loadedModelsGroup.children.length > 0) {
 			const obj = this.loadedModelsGroup.children[0];
@@ -791,13 +1449,20 @@ class MinimalWebGPUViewer {
 
 	async open(mediaData) {
 		document.getElementById('modal3D').classList.add('active');
+		this.isVisible = true;
+		// Resize inmediato (por si el layout ya está listo) + uno demorado como
+		// respaldo para cuando el navegador todavía no terminó de reflowear el modal.
+		this.resize();
+		requestAnimationFrame(() => this.resize());
 		setTimeout(() => this.resize(), 50);
+		this.clock.getDelta(); // descarta el tiempo acumulado mientras estaba cerrado
 		this.clearScene();
 		this.loadModelFromUrl(mediaData.url, mediaData.extension.replace('.', ''));
 	}
 
 	close() {
 		document.getElementById('modal3D').classList.remove('active');
+		this.isVisible = false;
 		this.clearScene();
 	}
 }
