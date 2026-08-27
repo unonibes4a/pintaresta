@@ -1034,7 +1034,7 @@ class EscalaDeGrisFilter {
     section.className = 'giodefaultimgeditor-filter-section';
     section.innerHTML = `
       <button class="giodefaultimgeditor-filter-toggle-btn" id="${this.idToggleBtn}">
-       saturation
+       saturation  
       </button>
       <div class="giodefaultimgeditor-filter-controls" id="${this.prefix}_grayscale_controls">
       </div>
@@ -1420,6 +1420,223 @@ class NormalMapFilter {
 
 /*  end normal map  */
 
+/* straks */
+class StreaksBloomFilter {
+  constructor(canvas, onUpdate, idPrefix) {
+    this.prefix = idPrefix;
+    this.idSection = `${this.prefix}_streaksbloom_sect`;
+    this.idToggleBtn = `${this.prefix}_streaksbloom_toggle_btn`;
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d', { willReadFrequently: true });
+    this.onUpdate = onUpdate;
+    this.controls = {};
+    this.isActive = false;
+    this.controlsContainer = null;
+  }
+
+  createUI(parentElement) {
+    const section = document.createElement('div');
+    section.id = this.idSection;
+    section.className = 'giodefaultimgeditor-filter-section';
+    section.innerHTML = `
+      <button class="giodefaultimgeditor-filter-toggle-btn" id="${this.idToggleBtn}">
+        Streaks Bloom
+      </button>
+      <div class="giodefaultimgeditor-filter-controls" id="${this.prefix}_streaksbloom_controls" style="display: none;">
+      </div>
+    `;
+    parentElement.appendChild(section);
+    this.controlsContainer = document.getElementById(`${this.prefix}_streaksbloom_controls`);
+    document.getElementById(this.idToggleBtn).addEventListener('click', () => this.toggle());
+    this._createControls();
+  }
+
+  _createControls() {
+    const onChange = () => this.isActive && this.onUpdate?.();
+
+ 
+    this.controls.threshold = new GioUISliderBasico(
+      this.controlsContainer, 100, 254, { onChange },
+      `${this.prefix}_streaks_threshold`, 'Umbral Brillo', 220, 1
+    );
+ 
+    this.controls.length = new GioUISliderBasico(
+      this.controlsContainer, 20, 400, { onChange },
+      `${this.prefix}_streaks_length`, 'Longitud Streak', 120, 1
+    );
+
+  
+    this.controls.angle = new GioUISliderBasico(
+      this.controlsContainer, -90, 90, { onChange },
+      `${this.prefix}_streaks_angle`, 'Ángulo (°)', 0, 1
+    );
+
+   
+    this.controls.intensity = new GioUISliderBasico(
+      this.controlsContainer, 0.3, 3.0, { onChange },
+      `${this.prefix}_streaks_intensity`, 'Intensidad', 1.0, 0.05
+    );
+
+ 
+    this.controls.spread = new GioUISliderBasico(
+      this.controlsContainer, 1, 24, { onChange },
+      `${this.prefix}_streaks_spread`, 'Dispersión', 6, 1
+    );
+
+ 
+    const infoText = document.createElement('div');
+    infoText.style.fontSize = '11px';
+    infoText.style.color = 'rgba(255,255,255,0.5)';
+    infoText.style.marginTop = '10px';
+    infoText.style.padding = '8px';
+    infoText.style.background = 'rgba(0,0,0,0.2)';
+    infoText.style.borderRadius = '4px';
+    infoText.innerHTML = `
+      <strong>Streaks Bloom:</strong> Genera destellos de luz direccionales en las áreas más brillantes de la imagen.
+    `;
+    this.controlsContainer.appendChild(infoText);
+  }
+
+  toggle() {
+    this.isActive = !this.isActive;
+    if (this.controlsContainer) {
+      this.controlsContainer.style.display = this.isActive ? 'block' : 'none';
+    }
+    const btn = document.getElementById(this.idToggleBtn);
+    btn?.classList.toggle('giodefaultimgeditor-active', this.isActive);
+    this.onUpdate?.();
+  }
+
+  applyFilter(imageData) {
+    if (!this.isActive) return imageData;
+
+    const width = imageData.width;
+    const height = imageData.height;
+    const srcData = imageData.data;
+
+    const threshold = this.controls.threshold.getValue();
+    const streakLen = this.controls.length.getValue();
+    const angleDeg = this.controls.angle.getValue();
+    const intensity = this.controls.intensity.getValue();
+    const spread = this.controls.spread.getValue();
+
+    const angleRad = (angleDeg * Math.PI) / 180;
+    const dx = Math.cos(angleRad);
+    const dy = Math.sin(angleRad);
+
+    const bloom = new Float32Array(width * height * 4);
+    const brightPixels = [];
+
+    
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const i = (y * width + x) * 4;
+        const r = srcData[i], g = srcData[i + 1], b = srcData[i + 2];
+        const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        const dv = Math.min(r, g, b) / (Math.max(r, g, b) + 0.000001);
+
+        if (lum >= threshold && dv <= 0.4) {
+          const excess = (lum - threshold) / (255 - threshold);
+          brightPixels.push({ x, y, r, g, b, excess });
+        }
+      }
+    }
+
+     
+    for (let k = 0; k < brightPixels.length; k++) {
+      const { x, y, r, g, b, excess } = brightPixels[k];
+      const streakAlpha = Math.min(1, excess * intensity);
+
+      for (let s = 0; s < spread; s++) {
+        const offset = (s - spread / 2) * 0.7;
+        const perpX = -dy * offset;
+        const perpY = dx * offset;
+        const fadeWidth = spread * 0.8;
+        const spreadFade = Math.exp(-(offset * offset) / (2 * fadeWidth * fadeWidth));
+
+     
+        for (let t = 0; t < streakLen; t++) {
+          const fadeIn = Math.min(1, t / (streakLen * 0.08));
+          const fadeOut = Math.pow(1 - t / streakLen, 2.2);
+          const decay = fadeIn * fadeOut;
+          const nx = Math.round(x + dx * t + perpX);
+          const ny = Math.round(y + dy * t + perpY);
+          if (nx < 0 || nx >= width || ny < 0 || ny >= height) break;
+          const alpha = Math.min(1, streakAlpha * decay * spreadFade * intensity);
+          const bi = (ny * width + nx) * 4;
+          bloom[bi]     += r * alpha;
+          bloom[bi + 1] += g * alpha;
+          bloom[bi + 2] += b * alpha;
+          bloom[bi + 3] += alpha;
+        }
+
+  
+        const backLen = Math.round(streakLen * 0.35);
+        for (let t = 1; t < backLen; t++) {
+          const fadeIn = Math.min(1, t / (backLen * 0.1));
+          const fadeOut = Math.pow(1 - t / backLen, 2.2);
+          const decay = fadeIn * fadeOut;
+          const nx = Math.round(x - dx * t + perpX);
+          const ny = Math.round(y - dy * t + perpY);
+          if (nx < 0 || nx >= width || ny < 0 || ny >= height) break;
+          const alpha = Math.min(1, streakAlpha * decay * spreadFade * 0.4 * intensity);
+          const bi = (ny * width + nx) * 4;
+          bloom[bi]     += r * alpha;
+          bloom[bi + 1] += g * alpha;
+          bloom[bi + 2] += b * alpha;
+          bloom[bi + 3] += alpha;
+        }
+
+   
+        const glowR = Math.max(2, Math.ceil(spread / 2));
+        const glowAlpha = Math.min(1, streakAlpha * 0.9);
+        for (let gy = -glowR; gy <= glowR; gy++) {
+          for (let gx = -glowR; gx <= glowR; gx++) {
+            const dist = Math.sqrt(gx * gx + gy * gy);
+            if (dist > glowR) continue;
+            const nx = x + gx + Math.round(perpX);
+            const ny2 = y + gy + Math.round(perpY);
+            if (nx < 0 || nx >= width || ny2 < 0 || ny2 >= height) continue;
+            const falloff = (1 - dist / glowR) * glowAlpha * spreadFade;
+            const bi = (ny2 * width + nx) * 4;
+            bloom[bi]     += r * falloff;
+            bloom[bi + 1] += g * falloff;
+            bloom[bi + 2] += b * falloff;
+            bloom[bi + 3] += falloff;
+          }
+        }
+      }
+    }
+
+ 
+    const outputData = new Uint8ClampedArray(srcData);
+
+    for (let i = 0; i < width * height; i++) {
+      const bi = i * 4;
+      const a = bloom[bi + 3];
+      if (a <= 0) continue;
+
+      const bR = Math.min(255, bloom[bi] / (a + 0.001) * Math.min(a, 1));
+      const bG = Math.min(255, bloom[bi + 1] / (a + 0.001) * Math.min(a, 1));
+      const bB = Math.min(255, bloom[bi + 2] / (a + 0.001) * Math.min(a, 1));
+
+      const baseR = outputData[bi];
+      const baseG = outputData[bi + 1];
+      const baseB = outputData[bi + 2];
+
+ 
+      outputData[bi]     = Math.min(255, Math.round(255 - (255 - baseR) * (255 - bR) / 255));
+      outputData[bi + 1] = Math.min(255, Math.round(255 - (255 - baseG) * (255 - bG) / 255));
+      outputData[bi + 2] = Math.min(255, Math.round(255 - (255 - baseB) * (255 - bB) / 255));
+    }
+
+    return new ImageData(outputData, width, height);
+  }
+}
+ 
+
+/* fin straks */
+
 class GLFXFilterManager {
   constructor(onUpdate, idPrefix) {
     this.prefix = idPrefix;
@@ -1743,6 +1960,133 @@ class GLFXFilterManager {
   }
 }
 
+ class PixelArtFilter {
+  constructor(canvas, onUpdate, idPrefix) {
+    this.prefix = idPrefix;
+    this.idSection = `${this.prefix}_pixelart_sect`;
+    this.idToggleBtn = `${this.prefix}_pixelart_toggle_btn`;
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d', { willReadFrequently: true });
+    this.onUpdate = onUpdate;
+    this.controls = {};
+    this.isActive = false;
+    this.controlsContainer = null;
+  }
+
+  createUI(parentElement) {
+    const section = document.createElement('div');
+    section.id = this.idSection;
+    section.className = 'giodefaultimgeditor-filter-section';
+    section.innerHTML = `
+      <button class="giodefaultimgeditor-filter-toggle-btn" id="${this.idToggleBtn}">
+        Pixel Art
+      </button>
+      <div class="giodefaultimgeditor-filter-controls" id="${this.prefix}_pixelart_controls" style="display: none;">
+      </div>
+    `;
+    parentElement.appendChild(section);
+    this.controlsContainer = document.getElementById(`${this.prefix}_pixelart_controls`);
+    document.getElementById(this.idToggleBtn).addEventListener('click', () => this.toggle());
+    this._createControls();
+  }
+
+  _createControls() {
+    const onChange = () => this.isActive && this.onUpdate?.();
+
+    // Slider de tamaño de píxel (de 1 a 40)
+    this.controls.pixelSize = new GioUISliderBasico(
+      this.controlsContainer, 1, 40, { onChange },
+      `${this.prefix}_pixelart_size`, 'Tamaño de Píxel', 4, 1
+    );
+
+    // Info explicativa opcional
+    const infoText = document.createElement('div');
+    infoText.style.fontSize = '11px';
+    infoText.style.color = 'rgba(255,255,255,0.5)';
+    infoText.style.marginTop = '10px';
+    infoText.style.padding = '8px';
+    infoText.style.background = 'rgba(0,0,0,0.2)';
+    infoText.style.borderRadius = '4px';
+    infoText.innerHTML = `
+      <strong>Pixel Art:</strong> Agrupa bloques de píxeles y promedia su color para dar un aspecto retro/8-bit.
+    `;
+    this.controlsContainer.appendChild(infoText);
+  }
+
+  toggle() {
+    this.isActive = !this.isActive;
+    if (this.controlsContainer) {
+      this.controlsContainer.style.display = this.isActive ? 'block' : 'none';
+    }
+    const btn = document.getElementById(this.idToggleBtn);
+    btn?.classList.toggle('giodefaultimgeditor-active', this.isActive);
+    this.onUpdate?.();
+  }
+
+  applyFilter(imageData) {
+    if (!this.isActive) return imageData;
+
+    const pixelSize = Math.max(1, Math.floor(this.controls.pixelSize.getValue()));
+    if (pixelSize === 1) return imageData; // Si el tamaño es 1, no hace falta procesar
+
+    const width = imageData.width;
+    const height = imageData.height;
+    const data = new Uint8ClampedArray(imageData.data);
+
+    // Recorrer la imagen por bloques de tamaño "pixelSize"
+    for (let y = 0; y < height; y += pixelSize) {
+      for (let x = 0; x < width; x += pixelSize) {
+        const pixelColor = this._getAverageColor(data, x, y, pixelSize, width, height);
+        this._fillPixel(data, x, y, pixelSize, pixelColor, width, height);
+      }
+    }
+
+    return new ImageData(data, width, height);
+  }
+
+  // Obtiene el color promedio de un bloque de píxeles
+  _getAverageColor(data, x, y, size, width, height) {
+    let r = 0, g = 0, b = 0, count = 0;
+    const maxY = Math.min(y + size, height);
+    const maxX = Math.min(x + size, width);
+
+    for (let j = y; j < maxY; j++) {
+      for (let i = x; i < maxX; i++) {
+        const index = (j * width + i) * 4;
+        r += data[index];
+        g += data[index + 1];
+        b += data[index + 2];
+        count++;
+      }
+    }
+
+    return {
+      r: Math.round(r / count),
+      g: Math.round(g / count),
+      b: Math.round(b / count)
+    };
+  }
+
+  // Rena todo el bloque de píxeles con el color promedio
+  _fillPixel(data, x, y, size, color, width, height) {
+    const maxY = Math.min(y + size, height);
+    const maxX = Math.min(x + size, width);
+
+    for (let j = y; j < maxY; j++) {
+      for (let i = x; i < maxX; i++) {
+        const index = (j * width + i) * 4;
+        data[index]     = color.r;
+        data[index + 1] = color.g;
+        data[index + 2] = color.b;
+        data[index + 3] = 255; // Opacidad total
+      }
+    }
+  }
+}
+
+
+/*  */
+
 class FilterManager {
   constructor(idPrefix) {
     this.prefix = idPrefix;
@@ -1785,6 +2129,12 @@ class FilterManager {
     this.escalaDeGrisFilter.createUI(filtersContainer);
   this.normalMapFilter =   new NormalMapFilter(this.canvas, () => this._updateCanvas(), this.prefix);
      this.normalMapFilter .createUI(filtersContainer);
+
+      this.streaksBloomFilter = new StreaksBloomFilter(this.canvas, () => this._updateCanvas(), this.prefix);
+    this.streaksBloomFilter.createUI(filtersContainer);
+   
+    this.pixelArtFilter = new PixelArtFilter(this.canvas, () => this._updateCanvas(), this.prefix);
+    this.pixelArtFilter.createUI(filtersContainer);
   }
 
   async setImage(imageSource) {
@@ -1864,19 +2214,19 @@ class FilterManager {
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
       this.ctx.drawImage(this.originalImage, 0, 0, this.canvas.width, this.canvas.height);
 
-      if (this.escalaDeGrisFilter.isActive) {
+      if (this.escalaDeGrisFilter?.isActive) {
         let imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         imageData = this.escalaDeGrisFilter.applyFilter(imageData);
         this.ctx.putImageData(imageData, 0, 0);
       }
 
-      if (this.carbonFilter.isActive) {
+      if (this.carbonFilter?.isActive) {
         let imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         imageData = this.carbonFilter.applyFilter(imageData);
         this.ctx.putImageData(imageData, 0, 0);
       }
 
-      if (this.glfxManager.isActive && this.glfxManager.currentFilter) {
+      if (this.glfxManager?.isActive && this.glfxManager.currentFilter) {
         if (!this.glfxManager.glfxCanvas) {
           this.glfxManager.initGLFX(this.canvas.width, this.canvas.height);
         }
@@ -1887,15 +2237,33 @@ class FilterManager {
           this.ctx.drawImage(resultCanvas, 0, 0);
         }
       }
-        if (this.normalMapFilter.isActive) {
+
+      if (this.normalMapFilter?.isActive) {
         let imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         imageData = this.normalMapFilter.applyFilter(imageData);
         this.ctx.putImageData(imageData, 0, 0);
       }
+
+      // --- FILTRO: Streaks Bloom ---
+      if (this.streaksBloomFilter?.isActive) {
+        let imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+        imageData = this.streaksBloomFilter.applyFilter(imageData);
+        this.ctx.putImageData(imageData, 0, 0);
+      }
+
+      // --- FILTRO: Pixel Art ---
+      if (this.pixelArtFilter?.isActive) {
+        let imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+        imageData = this.pixelArtFilter.applyFilter(imageData);
+        this.ctx.putImageData(imageData, 0, 0);
+      }
+
     } catch (error) {
       console.error('Error updating canvas:', error);
     }
   }
+
+  
 }
 
 class AppEditorDefaultImg {
