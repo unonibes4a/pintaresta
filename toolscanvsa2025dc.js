@@ -22,10 +22,51 @@ function loadGLFX2025() {
 loadGLFX2025();
 
  
-const styleefectoseditorglfx = document.createElement('style');
+var styleefectoseditorglfx = document.createElement('style');
+styleefectoseditorglfx.id="unidstyleefectoseditorglfx"
 
  
 styleefectoseditorglfx.textContent = `
+
+  
+
+.cldivcont {
+  position: absolute;
+        bottom:  0%;
+        left: 15%;
+  display: flex;
+     height: 100px;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 9990000;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  
+  /* Cambiado a flex-start para evitar que el contenido oculto a la izquierda 
+     no se pueda scrollar al usar 'center' */
+  justify-content: flex-start; 
+  
+  align-items: center;
+  align-content: center;
+  
+  /* Propiedades necesarias para el scroll */
+  overflow-x: auto; /* Activa el scroll horizontal si el contenido se sale */
+  width: 70%;      /* Asegura que ocupe el ancho disponible */
+  gap: 10px;        /* Opcional: agrega separación entre las imágenes */
+    cursor: pointer;
+}
+
+.cldivcont img {
+  width: 70px;
+  height: 70px;      /* Puede ajustar el alto según requiera o usar 'auto' */
+  object-fit: cover;  /* Mantiene la proporción de la imagen sin distorsionarla */
+  flex-shrink: 0;     /* Evita que flexbox reduzca el tamaño de las imágenes para hacerlas caber */
+}
+  .cldivcont img:hover {   
+  scale: 1.2;  
+  z-index: 10; 
+}
+
+
    .aps {
       position: fixed;
       top: 0%;
@@ -99,7 +140,9 @@ styleefectoseditorglfx.textContent = `
     }
 
     .giodefaultimgeditor-app-container {
-      position: relative;
+ position: relative;
+        top: 0%;
+        left: 0%;
       width: 100%;
       min-height: 100vh;
       display: flex;
@@ -297,6 +340,9 @@ styleefectoseditorglfx.textContent = `
     }
 
     .giodefaultimgeditor-main-content {
+     position: relative;
+        top: 0%;
+        left: 0%;
       flex-grow: 1;
       display: flex;
       align-items: center;
@@ -312,9 +358,11 @@ styleefectoseditorglfx.textContent = `
     }
 
     .giodefaultimgeditor-canvas-wrapper {
-      position: relative;
+position: relative;
+        top: -7%;
+        left: 0%;
       max-width: 100%;
-      max-height: calc(100vh - 80px);
+      max-height: calc(100vh - 300px);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -325,6 +373,7 @@ styleefectoseditorglfx.textContent = `
       max-height: 100%;
       width: auto;
       height: auto;
+       max-height: 80%;
       border-radius: 16px;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
       background: #ffffff00;
@@ -410,6 +459,9 @@ styleefectoseditorglfx.textContent = `
       }
 
       .giodefaultimgeditor-main-content {
+      position: relative;
+        top: 0%;
+        left: 0%;
         margin-left: 0;
         padding: 20px;
         width: 100%;
@@ -421,11 +473,12 @@ styleefectoseditorglfx.textContent = `
       .giodefaultimgeditor-main-content.sidebar-hidden {
         margin-left: 0;
       }
+    
 
       .giodefaultimgeditor-canvas {
      
           width: 100%;
-  height: 100%;   /* o una altura fija */
+  height: 90%;   /* o una altura fija */
   display: block;
       }
 
@@ -1851,6 +1904,8 @@ class AppEditorDefaultImg {
     this.parentElement = parentElement;
     this.textoedi = textEdi;
     this.currentImagenUrlInOpenEdit="";
+    this.contenedorimgsl;
+    this.currenurlHover="";
  
       this.parentElement=document.createElement("div"); 
    this.parentElement.id=idGenerico+"idSoporteApp";
@@ -1893,12 +1948,16 @@ class AppEditorDefaultImg {
         <div class="giodefaultimgeditor-main-content" id="${this.idGenerico}_main_content">
           <div class="giodefaultimgeditor-canvas-wrapper">
             <canvas class="giodefaultimgeditor-canvas" id="${this.idGenerico}_canvas" width="800" height="600"></canvas>
+              
+              
           </div>
-        </div>
+         </div>
 
         <div class="giodefaultimgeditor-drop-zone" id="${this.idGenerico}_drop_zone">
           <div class="giodefaultimgeditor-drop-message">Drop the image here</div>
         </div>
+        <div class="cldivcont" id="${this.idGenerico}minislider">   </div>
+          
       </div>
     `;
 
@@ -1914,12 +1973,68 @@ class AppEditorDefaultImg {
     this.filterManager.init();
     this.LabelEdit = document.getElementById(`${this.idGenerico}textoedi`);
     this.botonCloseEditor = document.getElementById(`${this.idGenerico}closeImageEditor`);
+      this.contenedorimgsl = document.getElementById(`${this.idGenerico}minislider`);
+     
+
+if (this.contenedorimgsl) {
+  // Detectar entrada del cursor
+  this.contenedorimgsl.addEventListener('mouseover', (event) => {
+    if (event.target.tagName === 'IMG') {
+      const imagen = event.target;
+       this.setImageHover(imagen.src);
+    }
+  });
+
+  // Detectar salida del cursor
+  this.contenedorimgsl.addEventListener('mouseout', (event) => {
+    if (event.target.tagName === 'IMG') {
+      
+    this.setImageHover( );
+    }
+  });
+}
+ 
     this.botonCloseEditor.onclick = (e) => {
      
       this.closeappf();
     }
     this._initResponsive();
   }
+    cargarImagenes(listaImagenes ) {
+  var contenedor =this.contenedorimgsl;//; document.querySelector(selectorContenedor);
+  
+  if (!contenedor) {
+    return;
+  }
+
+  listaImagenes.forEach((elemento) => {
+    if (elemento && elemento.url) {
+      const nuevaImagen = document.createElement('img');
+      nuevaImagen.src = elemento.url;
+      nuevaImagen.alt = elemento.nombre || 'Imagen';  
+      contenedor.appendChild(nuevaImagen);
+    }
+  });
+}
+
+    cargarImagenesSimple=(listaImagenes,booClear =false)=> { 
+      if(booClear){this.contenedorimgsl.innerHTML="";}
+ var contenedor =this.contenedorimgsl;
+
+  listaImagenes.forEach((elemento) => {
+    if (elemento && elemento.url) {
+      const nuevaImagen = document.createElement('img');
+      nuevaImagen.src = elemento.url;
+      nuevaImagen.alt = 'Imagen';
+      nuevaImagen.onclick=()=>{
+        this.setImage(nuevaImagen.src )
+
+      }
+
+      contenedor.appendChild(nuevaImagen);
+    }
+  });
+}
   openappf=()=>{
      const soporteApp =this.parentElement;
         soporteApp.style.display = soporteApp.style.display === 'none' ? 'block' : 'none'; 
@@ -1957,10 +2072,19 @@ closeappf= (e) => {
     this.hamburgerBtn.classList.toggle('active');
     this.mainContent.classList.toggle('sidebar-hidden');
   }
-
-  async setImage(imageSource) {
+    async setImageHover(imageSource=this.currenurlHover) {    
     this.currentImagenUrlInOpenEdit=imageSource;
     await this.filterManager.setImage(imageSource);
+  }
+
+  async setImage(imageSource) {
+    this.currenurlHover=imageSource;
+    this.currentImagenUrlInOpenEdit=imageSource;
+    await this.filterManager.setImage(imageSource);
+  }
+  async setArrayImg(array) {
+    this.arrayImgs=array;
+  
   }
 }
 
@@ -3004,3 +3128,4 @@ addCssClassToElement=(element, classNameToAdd) =>{
       };
     }
 
+   
