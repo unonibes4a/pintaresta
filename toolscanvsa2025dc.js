@@ -15,7 +15,7 @@ function loadGLFX2025() {
  
   document.head.appendChild(script);
   
-  console.log('GLFX.js cargando...');
+ 
 }
 
  
@@ -129,14 +129,25 @@ styleefectoseditorglfx.textContent = `
       position: absolute;
       right: 2%;
       top: 2%;
+        width: 33px;
+        height: 33px;
+        border-radius: 7px;
+         cursor: pointer;
+       
+      font-size: 18px;
+      background-color:#32476a;
+      color: #949494;
+
+      border: 3px solid #ffffff13;
       display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      justify-content: flex-start;
-      align-items: stretch;
-      align-content: stretch;
-      font-size: 14px;
-      color: #fff;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: center;
+	align-items: stretch;
+	align-content: center;
+    }
+     .giodefaultimgeditor-classlesfttext:hover{
+       color: rgb(255, 254, 252);
     }
 
     .giodefaultimgeditor-app-container {
@@ -369,11 +380,11 @@ position: relative;
     }
 
     .giodefaultimgeditor-canvas {
-      max-width: 100%;
-      max-height: 100%;
+      max-width:700px;
+   
       width: auto;
       height: auto;
-       max-height: 80%;
+       max-height: 700px;
       border-radius: 16px;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
       background: #ffffff00;
@@ -558,6 +569,7 @@ class ImageLoader {
     this.idDropZone = `${this.prefix}_drop_zone`;
     this.callbacks = callbacks;
     this.originalImage = null;
+    
   }
 
   init() {
@@ -616,7 +628,8 @@ class ImageLoader {
     for (let i = 0; i < items.length; i++) {
       if (items[i].type.indexOf('image') !== -1) {
         const blob = items[i].getAsFile();
-        this._loadImageFromFile(blob);
+        this._loadImageFromFile(blob,true);
+       
         break;
       }
     }
@@ -628,8 +641,8 @@ class ImageLoader {
       for (const item of clipboardItems) {
         for (const type of item.types) {
           if (type.startsWith('image/')) {
-            const blob = await item.getType(type);
-            this._loadImageFromFile(blob);
+            const blob = await item.getType(type);            
+            this._loadImageFromFile(blob,true);
             return;
           }
         }
@@ -643,17 +656,19 @@ class ImageLoader {
   _handleImageUpload(e) {
     const file = e.target.files[0];
     if (file) {
-      this._loadImageFromFile(file);
+      this._loadImageFromFile(file,true);
     }
   }
 
-  _loadImageFromFile(file) {
+  _loadImageFromFile(file,bool) {
     const reader = new FileReader();
     reader.onload = event => {
       const img = new Image();
       img.onload = () => {
         this.originalImage = img;
-        this.callbacks.onImageLoad?.(img);
+        this.callbacks.onImageLoad?.(img,bool);
+       
+ 
       };
       img.src = event.target.result;
     };
@@ -2088,7 +2103,7 @@ class GLFXFilterManager {
 /*  */
 
 class FilterManager {
-  constructor(idPrefix) {
+  constructor(idPrefix, callbackIMgLoad) {
     this.prefix = idPrefix;
     this.idCanvas = `${this.prefix}_canvas`;
     this.idFiltersContainer = `${this.prefix}_filters_container`;
@@ -2102,6 +2117,12 @@ class FilterManager {
     this.tempCanvas = null;
     this.tempCtx = null;
     this.normalMapFilter= null;
+    this.callbackIMgLoad=callbackIMgLoad;
+      this.imagencreada= new Image();
+         this.imagencreada.crossOrigin = 'anonymous';
+         this.imagencreada.onload=()=>{
+          this._onImageLoaded(this.imagencreada);
+         }
   }
 
   init() {
@@ -2112,7 +2133,11 @@ class FilterManager {
     this.tempCtx = this.tempCanvas.getContext('2d', { willReadFrequently: true });
 
     this.imageLoader = new ImageLoader({
-      onImageLoad: img => this._onImageLoaded(img)
+      onImageLoad: (img,bool)=>{ //this._onImageLoaded(img,bool);
+this.setImageHtml(img);
+ 
+       if(this.callbackIMgLoad){ this.callbackIMgLoad(img,bool ); console.log(bool,'onImageLoad: (img,bool)=>{');}
+      }
     }, this.prefix);
 
     this.imageLoader.init();
@@ -2137,8 +2162,10 @@ class FilterManager {
     this.pixelArtFilter.createUI(filtersContainer);
   }
 
-  async setImage(imageSource) {
+  async setImageNo(imageSource) {
+    
     let img = new Image();
+   let  bool=false;
     if (typeof imageSource === 'string') {
       img.crossOrigin = 'anonymous';
       img.src = imageSource;
@@ -2151,6 +2178,8 @@ class FilterManager {
         resolve();
       });
       await img.decode();
+      bool=true;
+     
     } else if (imageSource instanceof HTMLImageElement) {
       img = imageSource;
     } else if (imageSource instanceof ImageData) {
@@ -2163,16 +2192,32 @@ class FilterManager {
       img.src = imageSource.toDataURL();
       await img.decode();
     } else {
-      console.error("Unsupported image source type.");
-      return;
+      img.src=imageSource;
+      
+      return img;
     }
-    this._onImageLoaded(img);
+    this._onImageLoaded(img,bool);
+  }
+  async setImage(imageSource,bool) {
+    
+   
+    this.imagencreada.src=imageSource;
+   
+   return this.imagencreada;
+  }
+     setImageHtml(img,bool) {   
+      this.originalImage = img;
+    this._resizeCanvas(img);
+    this._updateCanvas();
   }
 
-  _onImageLoaded(img) {
+  _onImageLoaded(img,bool) {
+    
     this.originalImage = img;
     this._resizeCanvas(img);
     this._updateCanvas();
+    //if(this.callbackIMgLoad){ this.callbackIMgLoad(this.originalImage,bool ); console.log(bool,'bool filter');}
+    
   }
 
   _resizeCanvas(img) {
@@ -2291,7 +2336,7 @@ class AppEditorDefaultImg {
         
         <div class="giodefaultimgeditor-sidebar" id="${this.idGenerico}_sidebar">
           <div class="giodefaultimgeditor-sidebar-header">
-            <div class="giodefaultimgeditor-sidebar-titl giodefaultimgeditor-classlesfttext" id="${this.idGenerico}textoedi">${this.textoedi}</div>
+            <div class="giodefaultimgeditor-classlesfttext" id="${this.idGenerico}textoedi">X</div>
             <div class="giodefaultimgeditor-sidebar-subtitle giodefaultimgeditor-classlesfttextR">Load and apply professional effects</div>
           </div>
 
@@ -2337,11 +2382,21 @@ class AppEditorDefaultImg {
 
     this.hamburgerBtn.addEventListener('click', () => this.toggleSidebar());
 
-    this.filterManager = new FilterManager(this.idGenerico);
+    this.filterManager = new FilterManager(this.idGenerico,(img,bool)=>{
+      if(bool){ this.currenurlHover=img.src;
+    this.currentImagenUrlInOpenEdit=img.src;
+    console.log(bool,'this.filterManager = new FilterManager');}
+      
+ 
+    });
     this.filterManager.init();
     this.LabelEdit = document.getElementById(`${this.idGenerico}textoedi`);
     this.botonCloseEditor = document.getElementById(`${this.idGenerico}closeImageEditor`);
       this.contenedorimgsl = document.getElementById(`${this.idGenerico}minislider`);
+
+      this.LabelEdit.onclick=()=>{
+        this.botonCloseEditor .click();
+      }
      
 
 if (this.contenedorimgsl) {
@@ -2395,7 +2450,7 @@ if (this.contenedorimgsl) {
       nuevaImagen.src = elemento.url;
       nuevaImagen.alt = 'Imagen';
       nuevaImagen.onclick=()=>{
-        this.setImage(nuevaImagen.src )
+        this.setImage(nuevaImagen.src );
 
       }
 
@@ -2448,7 +2503,12 @@ closeappf= (e) => {
   async setImage(imageSource) {
     this.currenurlHover=imageSource;
     this.currentImagenUrlInOpenEdit=imageSource;
-    await this.filterManager.setImage(imageSource);
+    try {
+        await this.filterManager.setImage(imageSource);
+    } catch (error) {
+      
+    }
+   
   }
   async setArrayImg(array) {
     this.arrayImgs=array;
@@ -2583,8 +2643,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let ctx2 = this.canvas2.getContext("2d");
 
         this.loading.style.display = 'flex';
-        console.log("Iniciando eliminación de fondo...");
-
+        
         try {
           const removeBackground = await this.cargarLibreria();
 
@@ -2842,7 +2901,7 @@ addCssClassToElement=(element, classNameToAdd) =>{
 
       clickTocanvasArray = (callback) => {
         this.count = 0;
-        console.log(this.arrayCanvas, ' this.arrayCanvas f');
+       
         Object.values(this.arrayCanvas).forEach(element => {
              this.addCssClassToElement(element,"bodercolorcanvas" )  
 
