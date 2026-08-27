@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -1751,7 +1752,9 @@ class PintarestaGallery {
       }
 
       this.todasLasUrls  = this.barajarArray(todos);
+	  console.log(this.todasLasUrls,'this.todasLasUrls');
       this.urlsFiltradas = [...this.todasLasUrls];
+	   window.appEditorgioBasico.cargarImagenesSimple(this.urlsFiltradas ,true );
       this.loteActual    = 0;
       this.mostrarLote();
 
@@ -1808,6 +1811,9 @@ class PintarestaGallery {
       if (!local.length) { alert('No se encontraron archivos válidos'); return; }
       this.todasLasUrls  = this.barajarArray(local);
       this.urlsFiltradas = [...this.todasLasUrls];
+	  console.log(this.todasLasUrls,'this.todasLasUrls');
+	     
+   window.appEditorgioBasico.cargarImagenesSimple(this.urlsFiltradas ,false );
       this.loteActual    = 0;
       this.mostrarLote();
       document.getElementById('btnViewJSON').style.display = 'block';
@@ -1815,6 +1821,27 @@ class PintarestaGallery {
     } catch(e) { alert('Error: ' + e.message); }
     finally { this.mostrarCargando(false); }
   }
+   async cargarArchivosLocalesno(files) {
+  this.mostrarCargando(true, 'Procesando archivos...');
+  try {
+    const local = await this.procesarArchivosLocales(files);
+    if (!local.length) { alert('No se encontraron archivos válidos'); return; }
+    const objetosDeImagenes = local.filter(archivo => archivo.tipo === 'imagen');
+     
+    window.appEditorgioBasico.cargarImagenes(objetosDeImagenes );
+	
+    this.todasLasUrls  = this.barajarArray(local);
+    this.urlsFiltradas = [...this.todasLasUrls];
+    this.loteActual    = 0;
+    this.actualizarBotones();
+    document.getElementById('btnViewJSON').style.display = 'block';
+    alert(`Cargados ${local.length} archivos\nImágenes: ${this.jsonData.imagenes}`);
+  } catch(e) { 
+    alert('Error: ' + e.message); 
+  } finally { 
+    this.mostrarCargando(false); 
+  }
+}
 
   mostrarJSON() {
     if (!this.jsonData) { alert('Primero carga una carpeta'); return; }
@@ -1916,6 +1943,7 @@ class PintarestaGallery {
     c.appendChild(frag);
     this.actualizarBotones();
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.appEditorgioBasico.cargarImagenesSimple(this.urlsFiltradas,true ); 
   }
 
   filtrarMedia(q) {
@@ -1923,11 +1951,13 @@ class PintarestaGallery {
     this.urlsFiltradas = b ? this.todasLasUrls.filter(m => m.nombre.toLowerCase().includes(b) || m.repo.toLowerCase().includes(b) || (m.tipo === 'model' && '3d model'.includes(b))) : [...this.todasLasUrls];
     this.loteActual = 0;
     this.mostrarLote();
+	 
   }
 
   async siguienteLote() { if (this.loteActual < Math.ceil(this.urlsFiltradas.length / this.imagenesPorLote) - 1) { this.loteActual++; this.mostrarLote(); } }
-  async loteAnterior()  { if (this.loteActual > 0) { this.loteActual--; this.mostrarLote(); } }
-  async recargar()      { this.loteActual = 0; await this.iniciar(); }
+  async loteAnterior()  { if (this.loteActual > 0) { this.loteActual--; this.mostrarLote(); }  
+		 }
+  async recargar()      { this.loteActual = 0; await this.iniciar();  }
 
   async iniciar(repos = this.todosLosRepositorios) {
     const urls = await this.cargarRepositoriosEspecificos(repos);
