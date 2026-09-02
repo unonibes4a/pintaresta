@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -252,7 +251,6 @@ class MinimalWebGPUViewer {
 		this.animSpeed = 1;
 		this.animPlaying = false;
 
-		// ---- Editor de Audio / Timeline ----
 		this.audioCtx = null;
 		this.audioBuffer = null;
 		this.audioFileName = '';
@@ -261,9 +259,9 @@ class MinimalWebGPUViewer {
 		this.audioPlaybackStartOffset = 0;
 		this.timelinePlayhead = 0;
 		this.timelinePlaying = false;
-		this.timelineZoom = 80; // pixeles por segundo
-		this.timelineSelection = null; // {start, end} en segundos
-		this.audioClipboard = null; // AudioBuffer
+		this.timelineZoom = 80;
+		this.timelineSelection = null;
+		this.audioClipboard = null;
 		this.timelinePanelOpen = false;
 		this._tlDragging = false;
 		this._tlDragMoved = false;
@@ -274,6 +272,7 @@ class MinimalWebGPUViewer {
 		this.injectCSS();
 		this.buildUI();
 		this.initThree();
+		this.setupDropSky();
 	}
 
 	injectCSS() {
@@ -315,7 +314,6 @@ class MinimalWebGPUViewer {
 			.wg-anim-btns button.active { background: #00d084; border-color: #00d084; }
 			.wg-empty-note { font-size: 10px; color: #777; text-align: center; font-style: italic; }
 
-			/* ---- Editor de Audio / Timeline ---- */
 			#wg-timeline-panel {
 				background: #16171a; border-top: 1px solid #2a2a2e; height: 300px;
 				display: flex; flex-direction: column; font-family: system-ui, sans-serif; color: #ddd;
@@ -425,6 +423,65 @@ class MinimalWebGPUViewer {
 		this.container.appendChild(dragOverlay);
 	}
 
+	setupDropSky() {
+		const dropHandler = (e) => {
+			e.preventDefault();
+			e.stopPropagation();
+			
+			if (!this.isVisible) return;
+			
+			const files = e.dataTransfer.files;
+			for (const file of files) {
+				if (file.type.startsWith('image/')) {
+					this.loadSkyFromFile(file);
+					return;
+				}
+			}
+		};
+
+		document.body.addEventListener('dragover', (e) => {
+			if (this.isVisible) {
+				e.preventDefault();
+				e.dataTransfer.dropEffect = 'copy';
+			}
+		});
+
+		document.body.addEventListener('drop', dropHandler);
+	}
+
+	loadSkyFromFile(file) {
+		const reader = new FileReader();
+		reader.onload = (e) => {
+			const dataUrl = e.target.result;
+			const textureLoader = new THREE.TextureLoader();
+			const texture = textureLoader.load(dataUrl);
+			texture.mapping = THREE.EquirectangularReflectionMapping;
+			texture.colorSpace = THREE.SRGBColorSpace;
+
+			this.scene.background = texture;
+
+			const pmremGenerator = new THREE.PMREMGenerator(this.renderer);
+			const envMap = pmremGenerator.fromEquirectangular(texture).texture;
+			pmremGenerator.dispose();
+
+			this.scene.environment = envMap;
+
+			this.scene.traverse((child) => {
+				if (child.isMesh) {
+					const materials = Array.isArray(child.material) ? child.material : [child.material];
+					materials.forEach(mat => {
+						if (mat.isStandardMaterial || mat.isPhysicalMaterial) {
+							mat.envMap = envMap;
+							mat.envMapIntensity = 2.0;
+							mat.needsUpdate = true;
+						}
+					});
+				}
+			});
+		};
+		reader.readAsDataURL(file);
+	}
+
 	initThree() {
 		const width = this.container.clientWidth;
 		const height = this.container.clientHeight;
@@ -458,10 +515,8 @@ class MinimalWebGPUViewer {
 		this.setupTimelineEvents();
 
 		this.renderer.setAnimationLoop(() => {
-			// No renderizar si el modal está cerrado o el contenedor todavía no tiene
-			// un tamaño válido (evita "swapchain texture de tamaño 0" en WebGPU).
 			if (!this.isVisible || !this.container.clientWidth || !this.container.clientHeight) {
-				this.clock.getDelta(); // evita que se acumule un delta gigante al reabrir
+				this.clock.getDelta();
 				return;
 			}
 			const delta = this.clock.getDelta();
@@ -553,8 +608,6 @@ class MinimalWebGPUViewer {
 		elTemp.addEventListener('change', updatePipeline);
 	}
 
-	// ---------- Sistema de animaciones ----------
-
 	setupAnimationEvents() {
 		const q = (id) => this.container.querySelector(id);
 		const select   = q('#wg-anim-select');
@@ -577,8 +630,6 @@ class MinimalWebGPUViewer {
 		this.updateAnimUIState();
 	}
 
-	// Detecta animaciones de un modelo recién cargado (GLTF/GLB, FBX; OBJ no soporta).
-	// clips puede venir de gltf.animations o directamente de model.animations (FBX).
 	setupModelAnimations(model, clips) {
 		this.disposeMixer();
 
@@ -600,7 +651,6 @@ class MinimalWebGPUViewer {
 			});
 			emptyNote.style.display = 'none';
 			select.disabled = false;
-			// Selecciona y reproduce automáticamente la primera animación
 			select.value = '0';
 			this.selectAnimation('0');
 		} else {
@@ -648,7 +698,6 @@ class MinimalWebGPUViewer {
 	playAnimation() {
 		if (!this.mixer) return;
 		if (!this.currentAction) {
-			// Si no hay animación seleccionada, selecciona la primera disponible
 			const q = (id) => this.container.querySelector(id);
 			const select = q('#wg-anim-select');
 			if (select && select.options.length > 1) {
@@ -658,8 +707,6 @@ class MinimalWebGPUViewer {
 			}
 			return;
 		}
-		// stop() desactiva la acción en el mixer (no solo la pausa), así que
-		// si viene de un Stop hay que reactivarla con play(), no basta con paused=false.
 		if (!this.currentAction.isRunning()) {
 			this.currentAction.reset();
 			this.currentAction.timeScale = this.animSpeed;
@@ -719,10 +766,6 @@ class MinimalWebGPUViewer {
 		this.animClips = [];
 		this.animPlaying = false;
 	}
-
-	// ---------------------------------------------
-
-	// ================= Editor de Audio / Timeline =================
 
 	buildTimelineUI() {
 		const panel = document.getElementById('wg-timeline-panel');
@@ -857,7 +900,6 @@ class MinimalWebGPUViewer {
 		const waveTop = rulerH + kfH;
 		const waveH = height - waveTop;
 
-		// Fondo regla
 		ctx.fillStyle = '#1a1b1f';
 		ctx.fillRect(0, 0, width, rulerH);
 		ctx.fillStyle = '#0f1012';
@@ -865,7 +907,6 @@ class MinimalWebGPUViewer {
 		ctx.fillStyle = '#0a0b0d';
 		ctx.fillRect(0, waveTop, width, waveH);
 
-		// Marcas de tiempo (regla, como una cinta métrica)
 		const pxPerSec = this.timelineZoom;
 		let step = 1;
 		if (pxPerSec < 25) step = 5;
@@ -890,7 +931,6 @@ class MinimalWebGPUViewer {
 			}
 		}
 
-		// Keyframes de la animación seleccionada
 		const keyframes = this.getCurrentClipKeyframeTimes();
 		ctx.fillStyle = '#ffb020';
 		keyframes.forEach(t => {
@@ -902,7 +942,6 @@ class MinimalWebGPUViewer {
 			ctx.closePath();
 			ctx.fill();
 		});
-		// Línea de duración del clip de animación
 		const animDur = this.getCurrentClipDuration();
 		if (animDur > 0) {
 			ctx.strokeStyle = 'rgba(255,176,32,.5)';
@@ -912,7 +951,6 @@ class MinimalWebGPUViewer {
 			ctx.stroke();
 		}
 
-		// Forma de onda
 		if (this.audioBuffer) {
 			const data = this.audioBuffer.getChannelData(0);
 			const samplesPerPixel = Math.max(1, Math.floor(data.length / (this.audioBuffer.duration * pxPerSec)));
@@ -984,14 +1022,12 @@ class MinimalWebGPUViewer {
 		t = Math.max(0, Math.min(duration, t));
 		this.timelinePlayhead = t;
 
-		// Sincroniza la pose de la animación con el playhead
 		if (this.currentAction) {
 			const dur = this.getCurrentClipDuration();
 			this.currentAction.time = dur > 0 ? (t % dur) : 0;
 			this.mixer.update(0);
 		}
 
-		// Si estaba sonando audio, reinicia la reproducción desde el nuevo punto
 		if (opts.seekAudio !== false) {
 			if (this.timelinePlaying && this.audioBuffer) {
 				this.playAudioFrom(t);
@@ -1031,7 +1067,7 @@ class MinimalWebGPUViewer {
 
 	timelinePlayStart() {
 		this.timelinePlaying = true;
-		this.clock.getDelta(); // evita salto de delta acumulado
+		this.clock.getDelta();
 		if (this.audioBuffer) this.playAudioFrom(this.timelinePlayhead);
 		const btn = document.getElementById('wg-tl-play');
 		if (btn) btn.innerHTML = '⏸ Pausa';
@@ -1090,8 +1126,6 @@ class MinimalWebGPUViewer {
 		this.timelineZoom = Math.max(15, Math.min(800, this.timelineZoom * factor));
 		this.redrawTimeline();
 	}
-
-	// ---- Edición de audio: cortar / copiar / pegar / eliminar ----
 
 	sliceAudioBuffer(buffer, startSec, endSec) {
 		const ctx = this.ensureAudioContext();
@@ -1185,7 +1219,7 @@ class MinimalWebGPUViewer {
 		writeStr(8, 'WAVE');
 		writeStr(12, 'fmt ');
 		view.setUint32(16, 16, true);
-		view.setUint16(20, 1, true); // PCM
+		view.setUint16(20, 1, true);
 		view.setUint16(22, numChannels, true);
 		view.setUint32(24, sampleRate, true);
 		view.setUint32(28, sampleRate * blockAlign, true);
@@ -1279,7 +1313,6 @@ class MinimalWebGPUViewer {
 			if (!this._tlDragging) return;
 			this._tlDragging = false;
 			if (!this._tlDragMoved) {
-				// Fue un click simple: mover playhead, sin selección
 				this.timelineSelection = null;
 				this.setPlayhead(this._tlDragStartTime);
 				this.updateSelectionUI();
@@ -1316,8 +1349,6 @@ class MinimalWebGPUViewer {
 			center.z + Math.max(size.x, size.z) * 1.5
 		);
 
-		// Detectar animaciones: en GLTF vienen en el objeto raíz (object.animations),
-		// en FBX vienen directamente en el group (model.animations)
 		const clips = (object.animations && object.animations.length ? object.animations
 			: (model.animations && model.animations.length ? model.animations : []));
 		this.setupModelAnimations(model, clips);
@@ -1347,8 +1378,8 @@ class MinimalWebGPUViewer {
 		} else if (extension === 'fbx') {
 			this.fbxLoader.load(url, onLoad, onProgress, onError);
 		} else {
-			console.error('Formato no soportado:', extension);
-			alert('Formato no soportado. Solo GLB, GLTF, OBJ, FBX.');
+			 
+			 
 		}
 	}
 
@@ -1364,7 +1395,6 @@ class MinimalWebGPUViewer {
 		if (emptyNote) emptyNote.style.display = 'block';
 		this.updateAnimUIState();
 
-		// Reinicia el timeline (mantiene el audio cargado, solo detiene playback)
 		this.timelinePlaying = false;
 		this.stopAudioPlayback();
 		this.timelinePlayhead = 0;
@@ -1451,12 +1481,10 @@ class MinimalWebGPUViewer {
 	async open(mediaData) {
 		document.getElementById('modal3D').classList.add('active');
 		this.isVisible = true;
-		// Resize inmediato (por si el layout ya está listo) + uno demorado como
-		// respaldo para cuando el navegador todavía no terminó de reflowear el modal.
 		this.resize();
 		requestAnimationFrame(() => this.resize());
 		setTimeout(() => this.resize(), 50);
-		this.clock.getDelta(); // descarta el tiempo acumulado mientras estaba cerrado
+		this.clock.getDelta();
 		this.clearScene();
 		this.loadModelFromUrl(mediaData.url, mediaData.extension.replace('.', ''));
 	}
