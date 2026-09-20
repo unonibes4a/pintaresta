@@ -3,93 +3,490 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-<title>Pintaresta Gallery - WebGPU</title>
-<script src="./toolscanvsa2025dc.js"></script>
+<title>Pintaresta Dark UI</title>
+<script src="a.js"></script>
+<script src="toolscanvsa2025dc.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif}
-.header{position:fixed;top:0;left:0;right:0;background:#fff;padding:16px 24px;z-index:1000;box-shadow:0 1px 0 rgba(0,0,0,.08)}
-.header-content{max-width:1640px;margin:0 auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.logo{font-size:24px;font-weight:700;color:#e60023;text-decoration:none;padding:12px 16px;border-radius:24px;transition:background .2s;cursor:pointer}
-.logo:hover{background:#f0f0f0}
-.search-container{flex:1;max-width:800px}
-.search-bar{display:flex;align-items:center;background:#efefef;border-radius:24px;padding:12px 16px}
-.search-bar input{flex:1;border:none;background:transparent;outline:none;font-size:16px;color:#333;padding:0 8px}
-.nav-buttons{display:flex;gap:8px;flex-wrap:wrap}
-.nav-btn{background:#efefef;border:none;padding:10px 20px;border-radius:24px;font-weight:600;font-size:14px;cursor:pointer;transition:all .2s;color:#211922;position:relative}
-.nav-btn:hover:not(:disabled){background:#e1e1e1}
-.nav-btn:disabled{opacity:.4;cursor:not-allowed}
-.nav-btn.upload-btn{background:#00d084;color:#fff}
-.nav-btn.upload-btn:hover{background:#00b872}
-.nav-btn input[type=file]{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer}
-.lote-info{padding:8px 16px;background:#efefef;border-radius:24px;font-size:12px;color:#5f5f5f;font-weight:500}
-.main-content{margin-top:80px;padding:0 16px}
-.pins-container{column-count:5;column-gap:16px;max-width:1640px;margin:0 auto}
-@media(max-width:1536px){.pins-container{column-count:4}}
-@media(max-width:1280px){.pins-container{column-count:3}}
-@media(max-width:900px){.pins-container{column-count:2}}
-@media(max-width:600px){.pins-container{column-count:1}}
-.pin{break-inside:avoid;margin-bottom:16px;cursor:pointer;border-radius:16px;overflow:hidden;transition:all .3s;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.05)}
-.pin:hover{transform:scale(1.02);box-shadow:0 0 30px rgba(0,0,0,.1)}
-.pin-image-container{position:relative;width:100%;overflow:hidden;border-radius:16px;background:#e0e0e0;display:flex;align-items:center;justify-content:center}
-.pin-image{width:100%;display:block;transition:transform .3s;object-fit:cover}
-.pin:hover .pin-image{transform:scale(1.03)}
-.pin-image.model-thumb{width:100%;height:280px;object-fit:cover}
-video.pin-image{background:#000}
-video.pin-image::-webkit-media-controls{display:none!important}
-.save-btn{position:absolute;top:12px;right:12px;background:#e60023;color:#fff;border:none;padding:10px 16px;border-radius:24px;font-weight:600;font-size:14px;cursor:pointer;opacity:0;transform:translateY(-4px);transition:all .2s;z-index:2}
-.pin:hover .save-btn{opacity:1;transform:translateY(0)}
-.save-btn:hover{background:#ad081b}
-.pin-info{padding:12px;background:#fff}
-.pin-title{font-size:14px;font-weight:600;color:#211922;margin-bottom:4px}
-.pin-description{font-size:12px;color:#5f5f5f}
-.pin-creator{display:flex;align-items:center;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid #efefef}
-.creator-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#e60023,#ff006e);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:12px}
-.creator-name{font-size:12px;color:#211922;font-weight:500}
+:root {
+  --ui-bg-base: #121212;
+  --ui-bg-panel: #1e1e1e;
+  --ui-bg-surface: #242424;
+  --ui-border: #333333;
+  --ui-accent: #8d8c8c;
+  --ui-text-bright: #ffffff;
+  --ui-text-muted: #8e8e8e;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+  background-color: var(--ui-bg-base) !important;
+  color: #eee;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(24, 24, 24, 0.95);
+  backdrop-filter: blur(12px);
+  padding: 10px 20px;
+  z-index: 1000;
+  border-bottom: 1px solid var(--ui-border);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+.header-content {
+  max-width: 1700px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--ui-accent);
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 20px;
+  transition: all 0.2s;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+}
+
+.logo:hover {
+  background: #282828;
+}
+
+.search-container {
+  flex: 1;
+  max-width: 700px;
+  min-width: 220px;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: #1f1f1f;
+  border: 1px solid var(--ui-border);
+  border-radius: 24px;
+  padding: 6px 14px;
+  transition: border-color 0.2s;
+}
+
+.search-bar:focus-within {
+  border-color: var(--ui-accent);
+}
+
+.search-bar input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 13px;
+  color: #fff;
+  padding: 4px 8px;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.lote-info {
+  padding: 6px 14px;
+  background: #1c1c1c;
+  border: 1px solid var(--ui-border);
+  border-radius: 20px;
+  font-size: 11px;
+  color: var(--ui-text-muted);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.file-upload-wrapper {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.file-upload-wrapper input[type=file] {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.main-content {
+  margin-top: 75px;
+  padding: 16px 24px;
+}
+
+.pins-container {
+  column-count: 5;
+  column-gap: 16px;
+  max-width: 1700px;
+  margin: 0 auto;
+}
+
+@media(max-width: 1536px) { .pins-container { column-count: 4; } }
+@media(max-width: 1280px) { .pins-container { column-count: 3; } }
+@media(max-width: 900px)  { .pins-container { column-count: 2; } }
+@media(max-width: 600px)  { .pins-container { column-count: 1; } }
+
+.pin {
+  break-inside: avoid;
+  margin-bottom: 16px;
+  cursor: pointer;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s;
+  background: var(--ui-bg-panel);
+  border: 1px solid var(--ui-border);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  position: relative;
+}
+
+.pin:hover {
+  transform: translateY(-4px);
+  border-color: #444;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+.pin-image-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: #151515;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pin-image {
+  width: 100%;
+  display: block;
+  transition: transform 0.3s;
+  object-fit: cover;
+}
+
+.pin:hover .pin-image {
+  transform: scale(1.02);
+}
+
+.pin-image.model-thumb {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+}
+
+video.pin-image {
+  background: #000;
+}
+
+video.pin-image::-webkit-media-controls {
+  display: none !important;
+}
+
+.save-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--ui-accent);
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: all 0.2s;
+  z-index: 2;
+}
+
+.pin:hover .save-btn {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.save-btn:hover {
+  background: #888888b2;
+}
+
+.pin-info {
+  padding: 10px 12px;
+  background: var(--ui-bg-panel);
+}
+
+.pin-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ui-text-bright);
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pin-description {
+  font-size: 11px;
+  color: var(--ui-text-muted);
+}
+
+.pin-creator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #282828;
+}
+
+.creator-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #00000054;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 10px;
+}
+
+.creator-name {
+  font-size: 11px;
+  color: #bbb;
+  font-weight: 500;
+}
+
 .h-280{height:280px}.h-320{height:320px}.h-360{height:360px}.h-400{height:400px}.h-440{height:440px}
-.media-badge{position:absolute;top:10px;left:10px;background:rgba(230,0,35,.9);color:#fff;padding:4px 8px;border-radius:12px;font-size:12px;font-weight:600;z-index:2}
-.loading-screen{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,.95);display:flex;align-items:center;justify-content:center;z-index:3000;flex-direction:column;gap:20px}
-.loading-spinner{width:50px;height:50px;border:4px solid #efefef;border-top:4px solid #e60023;border-radius:50%;animation:spin 1s linear infinite}
-@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-.loading-text{font-size:16px;color:#5f5f5f}
-.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:2000;align-items:center;justify-content:center;padding:20px}
-.modal-overlay.active{display:flex}
-.modal-content{background:#fff;border-radius:16px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column}
-.modal-content.sm{max-width:800px}
-.modal-content.lg{max-width:95vw;height:90vh}
-.modal-header{padding:16px 20px;border-bottom:1px solid #efefef;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;flex-shrink:0}
-.modal-header h2{margin:0;color:#211922;font-size:16px;font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.modal-body{padding:0;overflow:hidden;flex:1;display:flex;flex-direction:column;min-height:0}
-.modal-footer{padding:16px 20px;border-top:1px solid #efefef;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;flex-shrink:0}
-.btn-modal{padding:8px 18px;border:none;border-radius:24px;font-weight:600;cursor:pointer;transition:all .2s;font-size:13px}
-.btn-modal.primary{background:#e60023;color:#fff}
-.btn-modal.primary:hover{background:#ad081b}
-.btn-modal.secondary{background:#efefef;color:#211922}
-.btn-modal.secondary:hover{background:#e1e1e1}
-.json-preview{background:#f5f5f5;padding:15px;border-radius:8px;font-family:'Courier New',monospace;font-size:12px;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word}
-.stats-box{background:#f0f7ff;padding:15px;border-radius:8px;margin-bottom:15px}
-.stats-box h3{margin:0 0 10px;color:#0066ff;font-size:14px}
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.stat-item{text-align:center}
-.stat-number{font-size:22px;font-weight:bold;color:#211922}
-.stat-label{font-size:11px;color:#5f5f5f;margin-top:4px}
-.video-wrap{background:#000;flex:1;display:flex;align-items:center;justify-content:center;min-height:0;overflow:hidden}
-.video-wrap video{max-width:100%;max-height:100%;display:block}
-.video-controls{background:#111;padding:12px 16px;display:flex;flex-direction:column;gap:10px;flex-shrink:0}
-.timeline-wrap{display:flex;align-items:center;gap:10px}
-.timeline-wrap span{color:#aaa;font-size:12px;font-family:monospace;min-width:44px;text-align:center}
-.timeline{flex:1;-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;background:#444;outline:none;cursor:pointer}
-.timeline::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#e60023;cursor:pointer}
-.vol-row{display:flex;align-items:center;gap:10px}
-.vc-btn{background:none;border:none;color:#fff;cursor:pointer;font-size:18px;padding:4px 8px;border-radius:6px;transition:background .2s;line-height:1}
-.vc-btn:hover{background:#333}
-.vol-slider{width:80px;-webkit-appearance:none;appearance:none;height:3px;border-radius:2px;background:#555;outline:none;cursor:pointer}
-.vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:#fff;cursor:pointer}
-.speed-select{background:#222;color:#fff;border:1px solid #444;border-radius:6px;padding:4px 8px;font-size:12px;cursor:pointer;outline:none}
-.vc-spacer{flex:1}
-.nav-btn2{position:relative;background-color:#efefef;color:#212121;border-radius:12px;width:80%;font-size:12px;border:none;height:37px;cursor:pointer;margin-top:4px;margin-bottom:4px;left:10%}
-.nav-btn2:hover{background-color:#00d08457}
-#idboxmenuitems{width:120px;height:600px;background-color:#23242767;z-index:99999;position:fixed;top:20%;right:0%;border-left:4px;border-color:#232427a6}
+
+.media-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  z-index: 2;
+  backdrop-filter: blur(4px);
+}
+
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  background: rgba(18, 18, 18, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.loading-spinner {
+  width: 42px;
+  height: 42px;
+  border: 3px solid #2a2a2a;
+  border-top: 3px solid var(--ui-accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 13px;
+  color: #aaa;
+  font-weight: 500;
+}
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-content {
+  background: var(--ui-bg-panel);
+  border: 1px solid var(--ui-border);
+  border-radius: 14px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+}
+
+.modal-content.sm { max-width: 750px; }
+.modal-content.lg { max-width: 95vw; height: 92vh; }
+
+.modal-header {
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--ui-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  background: var(--ui-bg-surface);
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #ddd;
+  font-size: 14px;
+  font-weight: 600;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modal-body {
+  padding: 0;
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.modal-footer {
+  padding: 12px 18px;
+  border-top: 1px solid var(--ui-border);
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  background: var(--ui-bg-surface);
+}
+
+.json-preview {
+  background: #141414;
+  padding: 12px;
+  border-radius: 6px;
+  font-family: 'SF Mono', Consolas, monospace;
+  font-size: 11px;
+  color: #00d0845d;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  border: 1px solid var(--ui-border);
+}
+
+.stats-box {
+  background: #171b21;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  border: 1px solid #1f2a38;
+}
+
+.stats-box h3 {
+  margin: 0 0 10px;
+  color: #4da3ff;
+  font-size: 12px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.stat-item { text-align: center; }
+.stat-number { font-size: 18px; font-weight: bold; color: #fff; }
+.stat-label { font-size: 10px; color: #888; margin-top: 2px; }
+
+.video-wrap {
+  background: #000;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.video-wrap video { max-width: 100%; max-height: 100%; display: block; }
+
+.video-controls {
+  background: #141414;
+  padding: 10px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid var(--ui-border);
+}
+
+.timeline-wrap { display: flex; align-items: center; gap: 10px; }
+.timeline-wrap span { color: #888; font-size: 11px; font-family: monospace; min-width: 40px; text-align: center; }
+.timeline { flex: 1; -webkit-appearance: none; appearance: none; height: 4px; border-radius: 2px; background: #333; outline: none; cursor: pointer; }
+.timeline::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: var(--ui-accent); cursor: pointer; }
+.vol-row { display: flex; align-items: center; gap: 8px; }
+.vc-btn { background: none; border: none; color: #aaa; cursor: pointer; font-size: 16px; padding: 4px 6px; border-radius: 4px; transition: all 0.2s; line-height: 1; }
+.vc-btn:hover { background: #282828; color: #fff; }
+.vol-slider { width: 70px; -webkit-appearance: none; appearance: none; height: 3px; border-radius: 2px; background: #444; outline: none; cursor: pointer; }
+.vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 10px; height: 10px; border-radius: 50%; background: #eee; cursor: pointer; }
+.speed-select { background: #1c1c1c; color: #ccc; border: 1px solid var(--ui-border); border-radius: 4px; padding: 3px 6px; font-size: 11px; outline: none; }
+.vc-spacer { flex: 1; }
+
+#panel-category-dock {
+  position: fixed;
+  top: 90px;
+  right: 15px;
+  width: 130px;
+  z-index: 990;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: rgba(26, 26, 26, 0.85);
+  border: 1px solid var(--ui-border);
+  border-radius: 12px;
+  padding: 8px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.5);
+}
 </style>
 
 <script type="importmap">
@@ -106,15 +503,43 @@ video.pin-image::-webkit-media-controls{display:none!important}
 </head>
 <body>
 
-<div id="idboxmenuitems">
-  <button class="nav-btn2" id="btnmaquinas">Maquinas</button>
-  <button class="nav-btn2" id="btnsuelos">Suelos</button>
-  <button class="nav-btn2" id="btscenes">Scenes</button>
-  <button class="nav-btn2" id="btmaderas">Maderas</button>
-  <button class="nav-btn2" id="btnparedes">Paredes</button>
-  <button class="nav-btn2" id="btnmetales">Metales</button>
-  <button class="nav-btn2" id="btnNormalsmap">Normals</button>
-  <button class="nav-btn2" id="btnidrepjob">3D</button>
+<div class="header">
+  <div class="header-content">
+    <a class="logo" id="btnLogo">PINTARESTA</a>
+    <div class="search-container">
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Filtrar por nombre, extensión o repo...">
+      </div>
+    </div>
+    <div class="lote-info" id="loteInfo">Cargando...</div>
+    <div class="nav-buttons" id="ui-nav-bar">
+      <div class="file-upload-wrapper">
+        <button class="ui-btn ui-btn-primary" style="background:#73737448;   color:#fff;">
+          Cargar Carpeta
+        </button>
+        <input type="file" id="fileInput" webkitdirectory directory multiple accept="image/*,video/*,model/*">
+      </div>
+      <button class="ui-btn" id="btnViewJSON" style="display:none">JSON</button>
+      <button class="ui-btn" id="btnBack" disabled>◀ Atrás</button>
+      <button class="ui-btn" id="btnReload">↻ Home</button>
+      <button class="ui-btn" id="btnNext" disabled>Siguiente ▶</button>
+    </div>
+  </div>
+</div>
+
+<div id="panel-category-dock">
+  <button class="ui-btn" id="btnmaquinas" style="width:100%;">Máquinas</button>
+  <button class="ui-btn" id="btnsuelos" style="width:100%;">Suelos</button>
+  <button class="ui-btn" id="btscenes" style="width:100%;">Scenes</button>
+  <button class="ui-btn" id="btmaderas" style="width:100%;">Maderas</button>
+  <button class="ui-btn" id="btnparedes" style="width:100%;">Paredes</button>
+  <button class="ui-btn" id="btnmetales" style="width:100%;">Metales</button>
+  <button class="ui-btn" id="btnNormalsmap" style="width:100%;">Normals</button>
+  <button class="ui-btn" id="btnidrepjob" style="width:100%;">3D</button>
+</div>
+
+<div class="main-content">
+  <div class="pins-container" id="pinsContainer"></div>
 </div>
 
 <div class="loading-screen" id="loadingScreen" style="display:none">
@@ -126,24 +551,24 @@ video.pin-image::-webkit-media-controls{display:none!important}
   <div class="modal-content sm">
     <div class="modal-header">
       <h2>JSON de Archivos</h2>
-      <button class="btn-modal secondary" id="btnCloseModal">✕</button>
+      <button class="ui-icon-btn" id="btnCloseModal">✕</button>
     </div>
-    <div class="modal-body" style="padding:20px;overflow-y:auto">
+    <div class="modal-body" style="padding:16px; overflow-y:auto;">
       <div class="stats-box" id="statsContainer"></div>
       <div class="json-preview" id="jsonPreview"></div>
     </div>
     <div class="modal-footer">
-      <button class="btn-modal secondary" id="btnCopyJSON">Copiar JSON</button>
-      <button class="btn-modal primary" id="btnDownloadJSON">Descargar JSON</button>
+      <button class="ui-btn" id="btnCopyJSON">Copiar JSON</button>
+      <button class="ui-btn ui-btn-primary" id="btnDownloadJSON">Descargar JSON</button>
     </div>
   </div>
 </div>
 
 <div class="modal-overlay" id="modalVideo">
-  <div class="modal-content sm" style="max-width:900px;background:#000">
-    <div class="modal-header" style="background:#111;border-color:#222">
-      <h2 id="videoModalTitle" style="color:#fff">Video</h2>
-      <button class="btn-modal secondary" id="btnCloseVideo" style="background:#333;color:#fff">✕</button>
+  <div class="modal-content sm" style="max-width:900px; background:#000;">
+    <div class="modal-header" style="background:#141414;">
+      <h2 id="videoModalTitle">Video</h2>
+      <button class="ui-icon-btn" id="btnCloseVideo">✕</button>
     </div>
     <div class="modal-body">
       <div class="video-wrap"><video id="modalVideoEl" preload="metadata"></video></div>
@@ -178,38 +603,10 @@ video.pin-image::-webkit-media-controls{display:none!important}
 
 <div class="modal-overlay" id="modal3D">
   <div class="modal-content lg" style="background:#111; padding:0; position:relative; display:flex; flex-direction:column;">
-    <button class="btn-modal secondary" id="btnClose3D" style="position:absolute; top:15px; right:15px; z-index:9999; background:rgba(255,255,255,0.2); color:#fff; border:none;">✕</button>
+    <button class="ui-icon-btn" id="btnClose3D" style="position:absolute; top:12px; right:12px; z-index:9999; background:rgba(0,0,0,0.6); width:28px; height:28px;">✕</button>
     <div id="webgpu-container" style="width:100%; flex:1; min-height:0; position:relative;"></div>
     <div id="wg-timeline-panel" style="display:none; flex-shrink:0;"></div>
   </div>
-</div>
-
-<div class="header">
-  <div class="header-content">
-    <a class="logo" id="btnLogo">PINTARESTA</a>
-    <div class="search-container">
-      <div class="search-bar">
-        <span>Buscar</span>
-        <input type="text" id="searchInput" placeholder="Buscar media...">
-      </div>
-    </div>
-    <div class="lote-info" id="loteInfo">Cargando...</div>
-    <div class="nav-buttons">
-      <button class="nav-btn upload-btn">
-        Cargar Carpeta
-        <input type="file" id="fileInput" webkitdirectory directory multiple accept="image/*,video/*,model/*">
-      </button>
-      <button class="nav-btn" id="btnViewJSON" style="display:none">Ver JSON</button>
-      <button class="nav-btn" id="btnBack" disabled>Atras</button>
-      <button class="nav-btn" id="btnReload">Home</button>
-      <button class="nav-btn" id="btnNext" disabled>Siguiente</button>
-      <button class="nav-btn" id="btnItems" disabled>Items</button>
-    </div>
-  </div>
-</div>
-
-<div class="main-content">
-  <div class="pins-container" id="pinsContainer"></div>
 </div>
 
 <script type="module">
@@ -226,7 +623,7 @@ import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 class MinimalWebGPUViewer {
 	constructor(containerId) {
 		this.container = document.getElementById(containerId);
-		if (!this.container) throw new Error(`Container #${containerId} not found`);
+		if (!this.container) throw new Error(`Container #${containerId} no encontrado`);
 		
 		this.container.style.position = 'relative';
 		this.container.style.overflow = 'hidden';
@@ -283,56 +680,32 @@ class MinimalWebGPUViewer {
 		style.id = styleId;
 		style.textContent = `
 			.wg-sidebar {
-				position: absolute; top: 15px; left: 15px; width: 240px; max-height: 90%;
-				overflow-y: auto; background: rgba(20, 20, 20, 0.85); backdrop-filter: blur(8px);
-				border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 15px;
-				display: flex; flex-direction: column; gap: 12px;
+				position: absolute; top: 12px; left: 12px; width: 250px; max-height: 92%;
+				overflow-y: auto; background: rgba(26, 26, 26, 0.88); backdrop-filter: blur(10px);
+				border: 1px solid var(--ui-border); border-radius: 10px; padding: 12px;
+				display: flex; flex-direction: column; gap: 10px;
 				font-family: system-ui, sans-serif; color: #eee;
-				box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 10;
+				box-shadow: 0 8px 32px rgba(0,0,0,0.6); z-index: 10;
 			}
-			.wg-sidebar::-webkit-scrollbar { width: 6px; }
-			.wg-sidebar::-webkit-scrollbar-thumb { background: #555; border-radius: 3px; }
-			.wg-sidebar h3 { margin: 0; font-size: 14px; font-weight: 500; text-align: center; color: #ccc; border-bottom: 1px solid #333; padding-bottom: 5px; }
-			.wg-sidebar input[type="file"], .wg-sidebar input[type="text"], .wg-sidebar select {
-				font-size: 11px; color: #aaa; background: rgba(0, 0, 0, 0.3); padding: 6px;
-				border-radius: 4px; border: 1px dashed rgba(255, 255, 255, 0.2);
-				cursor: pointer; width: 100%; box-sizing: border-box; outline: none;
-			}
-			.wg-sidebar input[type="text"] { border: 1px solid rgba(255, 255, 255, 0.2); cursor: text; }
-			.wg-sidebar select { border: 1px solid rgba(255, 255, 255, 0.2); }
-			.wg-sidebar button {
-				background: #333; color: #fff; border: 1px solid rgba(255,255,255,0.1);
-				padding: 8px; border-radius: 4px; cursor: pointer; font-size: 12px; transition: 0.2s;
-			}
-			.wg-sidebar button:hover { background: #555; }
-			.wg-sidebar button:active { background: #222; }
+			.wg-sidebar h3 { margin: 0; font-size: 12px; font-weight: 600; text-align: left; color: #aaa; border-bottom: 1px solid #333; padding-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
 			.wg-control-group { display: flex; flex-direction: column; gap: 4px; font-size: 11px; color: #bbb; }
 			.wg-control-group .wg-row { display: flex; justify-content: space-between; align-items: center; }
-			.wg-sidebar input[type="range"] { width: 100%; accent-color: #aaa; cursor: pointer; }
+			.wg-sidebar input[type="range"] { width: 100%; accent-color: var(--ui-accent); cursor: pointer; }
 			.wg-anim-btns { display: flex; gap: 6px; }
-			.wg-anim-btns button { flex: 1; padding: 6px 4px; }
-			.wg-anim-btns button.active { background: #00d084; border-color: #00d084; }
-			.wg-empty-note { font-size: 10px; color: #777; text-align: center; font-style: italic; }
+			.wg-anim-btns button { flex: 1; }
+			.wg-empty-note { font-size: 10px; color: #666; text-align: center; font-style: italic; }
 
 			#wg-timeline-panel {
-				background: #16171a; border-top: 1px solid #2a2a2e; height: 300px;
+				background: #16171a; border-top: 1px solid #2a2a2e; height: 260px;
 				display: flex; flex-direction: column; font-family: system-ui, sans-serif; color: #ddd;
 			}
 			.wg-tl-toolbar {
 				display: flex; align-items: center; gap: 6px; padding: 8px 10px;
 				background: #1d1e22; border-bottom: 1px solid #2a2a2e; flex-wrap: wrap; flex-shrink: 0;
 			}
-			.wg-tl-toolbar .wg-tl-sep { width: 1px; height: 22px; background: #333; margin: 0 4px; }
-			.wg-tl-toolbar button {
-				background: #2b2c31; color: #eee; border: 1px solid #3a3b40; border-radius: 4px;
-				padding: 6px 10px; font-size: 11px; cursor: pointer; white-space: nowrap;
-			}
-			.wg-tl-toolbar button:hover:not(:disabled) { background: #3a3b40; }
-			.wg-tl-toolbar button:disabled { opacity: .35; cursor: not-allowed; }
-			.wg-tl-toolbar button.wg-tl-primary { background: #00d084; border-color: #00d084; color: #06251a; font-weight: 600; }
-			.wg-tl-toolbar button.wg-tl-primary:hover { background: #00b872; }
+			.wg-tl-toolbar .wg-tl-sep { width: 1px; height: 20px; background: #333; margin: 0 4px; }
 			.wg-tl-filename { font-size: 11px; color: #999; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-			.wg-tl-time { font-size: 11px; font-family: 'Courier New', monospace; color: #0f9; min-width: 128px; text-align: center; }
+			.wg-tl-time { font-size: 11px; font-family: monospace; color: #00d084; min-width: 120px; text-align: center; }
 			.wg-tl-spacer { flex: 1; }
 			.wg-tl-scroll { flex: 1; overflow-x: auto; overflow-y: hidden; position: relative; background: #0c0d0f; }
 			.wg-tl-track { position: relative; height: 100%; min-width: 100%; }
@@ -342,16 +715,13 @@ class MinimalWebGPUViewer {
 				border-left: 1px solid #00d084; border-right: 1px solid #00d084; pointer-events: none; z-index: 3;
 			}
 			.wg-tl-playhead {
-				position: absolute; top: 0; bottom: 0; width: 2px; background: #e60023; z-index: 4;
-				pointer-events: none; box-shadow: 0 0 4px rgba(230,0,35,.8);
+				position: absolute; top: 0; bottom: 0; width: 2px; background: var(--ui-accent); z-index: 4;
+				pointer-events: none; box-shadow: 0 0 6px var(--ui-accent);
 			}
-			.wg-tl-empty-note { padding: 40px; text-align: center; color: #666; font-size: 12px; }
-
 			.wg-drag-overlay {
-				position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-				background: rgba(0, 0, 0, 0.6); color: white; display: none;
-				align-items: center; justify-content: center; font-size: 24px;
-				font-family: system-ui, sans-serif; z-index: 20; pointer-events: none;
+				position: absolute; inset: 0; background: rgba(0, 0, 0, 0.7); color: #fff;
+				display: none; align-items: center; justify-content: center; font-size: 18px;
+				z-index: 20; pointer-events: none;
 			}
 		`;
 		document.head.appendChild(style);
@@ -362,55 +732,50 @@ class MinimalWebGPUViewer {
 		sidebar.className = 'wg-sidebar';
 		sidebar.innerHTML = `
 			<h3>Modelos 3D</h3>
-			<input type="file" id="wg-file-input" accept=".glb,.gltf,.obj,.fbx">
-			
-			<input type="text" id="wg-url-input" placeholder="Pegar URL del modelo...">
-			<button id="wg-btn-load-url">Cargar desde URL</button>
+			<input type="file" id="wg-file-input" class="ui-input" accept=".glb,.gltf,.obj,.fbx">
+			<input type="text" id="wg-url-input" class="ui-input" placeholder="Pegar URL del modelo...">
+			<button class="ui-btn" id="wg-btn-load-url">Cargar URL</button>
+			<button class="ui-btn ui-btn-danger" id="wg-btn-clear">Limpiar Escena</button>
+			<button class="ui-btn ui-btn-primary" id="wg-btn-download">Descargar GLB</button>
 
-			<button id="wg-btn-clear" style="margin-top: 5px;">Limpiar Escena</button>
-			<button id="wg-btn-download">Descargar (GLB)</button>
-
-			<h3 style="margin-top: 10px;">Animaciones</h3>
-			<select id="wg-anim-select">
+			<h3 style="margin-top: 8px;">Animaciones</h3>
+			<select id="wg-anim-select" class="speed-select" style="width:100%; padding:6px;">
 				<option value="__none__">Sin animación</option>
 			</select>
 			<div class="wg-anim-btns">
-				<button id="wg-anim-play" title="Play">&#9654; Play</button>
-				<button id="wg-anim-pause" title="Pause">&#10073;&#10073; Pausa</button>
-				<button id="wg-anim-stop" title="Stop">&#9632; Stop</button>
+				<button class="ui-btn" id="wg-anim-play">&#9654;</button>
+				<button class="ui-btn" id="wg-anim-pause">&#10073;&#10073;</button>
+				<button class="ui-btn" id="wg-anim-stop">&#9632;</button>
 			</div>
 			<div class="wg-control-group">
 				<div class="wg-row"><label>Velocidad</label><span id="wg-val-animspeed">1.00x</span></div>
 				<input type="range" id="wg-anim-speed" min="-2" max="2" step="0.05" value="1">
 			</div>
-			<div class="wg-empty-note" id="wg-anim-empty">El modelo cargado no tiene animaciones</div>
-			<button id="wg-timeline-toggle" style="margin-top:4px;">🎚️ Editor de Audio / Timeline</button>
+			<div class="wg-empty-note" id="wg-anim-empty">Sin animaciones activas</div>
+			<button class="ui-btn" id="wg-timeline-toggle">🎚️ Audio / Timeline</button>
 
-			<h3 style="margin-top: 10px;">Iluminación Global</h3>
-			
+			<h3 style="margin-top: 8px;">Iluminación SSGI</h3>
 			<div class="wg-control-group">
 				<div class="wg-row"><label>AO Intensity</label><span id="wg-val-ao">2.0</span></div>
 				<input type="range" id="wg-ssgi-ao" min="0" max="8" step="0.1" value="2.0">
 			</div>
-
 			<div class="wg-control-group">
 				<div class="wg-row"><label>GI Intensity</label><span id="wg-val-gi">15</span></div>
 				<input type="range" id="wg-ssgi-gi" min="0" max="100" step="1" value="15">
 			</div>
-
 			<div class="wg-control-group">
 				<div class="wg-row"><label>Radius</label><span id="wg-val-rad">8</span></div>
 				<input type="range" id="wg-ssgi-radius" min="1" max="25" step="1" value="8">
 			</div>
-
 			<div class="wg-control-group">
-				<div class="wg-row"><label>Pasos (Calidad)</label><span id="wg-val-steps">8</span></div>
+				<div class="wg-row"><label>Pasos</label><span id="wg-val-steps">8</span></div>
 				<input type="range" id="wg-ssgi-steps" min="1" max="32" step="1" value="8">
 			</div>
-
 			<div class="wg-control-group">
-				<label class="wg-row" style="cursor: pointer; justify-content: flex-start; gap: 8px;">
-					<input type="checkbox" id="wg-ssgi-temporal" checked> Suavizado Temporal (TRAA)
+				<label class="ui-checkbox checked" style="margin:4px 0;">
+					<input type="checkbox" id="wg-ssgi-temporal" checked style="display:none;">
+					<div class="ui-checkbox-box"><div class="ui-checkbox-mark" style="display:block;"></div></div>
+					<span class="ui-label">Suavizado TRAA</span>
 				</label>
 			</div>
 		`;
@@ -419,7 +784,7 @@ class MinimalWebGPUViewer {
 		const dragOverlay = document.createElement('div');
 		dragOverlay.className = 'wg-drag-overlay';
 		dragOverlay.id = 'wg-drag-overlay';
-		dragOverlay.innerText = 'Suelta el archivo aquí...';
+		dragOverlay.innerText = 'Suelta el modelo 3D o HDR aquí';
 		this.container.appendChild(dragOverlay);
 	}
 
@@ -427,9 +792,7 @@ class MinimalWebGPUViewer {
 		const dropHandler = (e) => {
 			e.preventDefault();
 			e.stopPropagation();
-			
 			if (!this.isVisible) return;
-			
 			const files = e.dataTransfer.files;
 			for (const file of files) {
 				if (file.type.startsWith('image/')) {
@@ -445,7 +808,6 @@ class MinimalWebGPUViewer {
 				e.dataTransfer.dropEffect = 'copy';
 			}
 		});
-
 		document.body.addEventListener('drop', dropHandler);
 	}
 
@@ -457,7 +819,6 @@ class MinimalWebGPUViewer {
 			const texture = textureLoader.load(dataUrl);
 			texture.mapping = THREE.EquirectangularReflectionMapping;
 			texture.colorSpace = THREE.SRGBColorSpace;
-
 			this.scene.background = texture;
 
 			const pmremGenerator = new THREE.PMREMGenerator(this.renderer);
@@ -465,7 +826,6 @@ class MinimalWebGPUViewer {
 			pmremGenerator.dispose();
 
 			this.scene.environment = envMap;
-
 			this.scene.traverse((child) => {
 				if (child.isMesh) {
 					const materials = Array.isArray(child.material) ? child.material : [child.material];
@@ -548,7 +908,7 @@ class MinimalWebGPUViewer {
 	}
 
 	setupSSGI() {
-		const { pass, mrt, output, normalView, diffuseColor, velocity, add, vec3, vec4, packNormalToRGB, unpackRGBToNormal, sample } = TSL;
+		const { pass, mrt, output, normalView, diffuseColor, velocity, add, vec4, packNormalToRGB, unpackRGBToNormal, sample } = TSL;
 
 		this.renderPipeline = new THREE.RenderPipeline(this.renderer);
 
@@ -584,55 +944,36 @@ class MinimalWebGPUViewer {
 		this.renderPipeline.outputNode = traaPass;
 
 		const q = (id) => this.container.querySelector(id);
-		
-		const elAO = q('#wg-ssgi-ao');
-		const elGI = q('#wg-ssgi-gi');
-		const elRad = q('#wg-ssgi-radius');
-		const elSteps = q('#wg-ssgi-steps');
-		const elTemp = q('#wg-ssgi-temporal');
-
 		const updateDisplay = (id, val) => q(id).textContent = val;
 
-		elAO.addEventListener('input', (e) => { giPass.aoIntensity.value = parseFloat(e.target.value); updateDisplay('#wg-val-ao', e.target.value); });
-		elGI.addEventListener('input', (e) => { giPass.giIntensity.value = parseFloat(e.target.value); updateDisplay('#wg-val-gi', e.target.value); });
-		elRad.addEventListener('input', (e) => { giPass.radius.value = parseFloat(e.target.value); updateDisplay('#wg-val-rad', e.target.value); });
-		elSteps.addEventListener('input', (e) => { giPass.stepCount.value = parseFloat(e.target.value); updateDisplay('#wg-val-steps', e.target.value); });
+		q('#wg-ssgi-ao').addEventListener('input', (e) => { giPass.aoIntensity.value = parseFloat(e.target.value); updateDisplay('#wg-val-ao', e.target.value); });
+		q('#wg-ssgi-gi').addEventListener('input', (e) => { giPass.giIntensity.value = parseFloat(e.target.value); updateDisplay('#wg-val-gi', e.target.value); });
+		q('#wg-ssgi-radius').addEventListener('input', (e) => { giPass.radius.value = parseFloat(e.target.value); updateDisplay('#wg-val-rad', e.target.value); });
+		q('#wg-ssgi-steps').addEventListener('input', (e) => { giPass.stepCount.value = parseFloat(e.target.value); updateDisplay('#wg-val-steps', e.target.value); });
 
-		const updatePipeline = () => {
-			const useTraa = elTemp.checked;
-			giPass.useTemporalFiltering = useTraa;
-			this.renderPipeline.outputNode = useTraa ? traaPass : compositePass;
+		const chkTemp = q('#wg-ssgi-temporal');
+		chkTemp.parentElement.addEventListener('click', () => {
+			chkTemp.checked = !chkTemp.checked;
+			chkTemp.parentElement.classList.toggle('checked', chkTemp.checked);
+			chkTemp.parentElement.querySelector('.ui-checkbox-mark').style.display = chkTemp.checked ? 'block' : 'none';
+			giPass.useTemporalFiltering = chkTemp.checked;
+			this.renderPipeline.outputNode = chkTemp.checked ? traaPass : compositePass;
 			this.renderPipeline.needsUpdate = true;
-		};
-
-		elTemp.addEventListener('change', updatePipeline);
+		});
 	}
 
 	setupAnimationEvents() {
 		const q = (id) => this.container.querySelector(id);
-		const select   = q('#wg-anim-select');
-		const speedEl  = q('#wg-anim-speed');
-		const btnPlay  = q('#wg-anim-play');
-		const btnPause = q('#wg-anim-pause');
-		const btnStop  = q('#wg-anim-stop');
-
-		select.addEventListener('change', () => this.selectAnimation(select.value));
-
-		speedEl.addEventListener('input', (e) => {
-			const v = parseFloat(e.target.value);
-			this.setAnimationSpeed(v);
-		});
-
-		btnPlay.addEventListener('click', () => this.playAnimation());
-		btnPause.addEventListener('click', () => this.pauseAnimation());
-		btnStop.addEventListener('click', () => this.stopAnimation());
-
+		q('#wg-anim-select').addEventListener('change', (e) => this.selectAnimation(e.target.value));
+		q('#wg-anim-speed').addEventListener('input', (e) => this.setAnimationSpeed(parseFloat(e.target.value)));
+		q('#wg-anim-play').addEventListener('click', () => this.playAnimation());
+		q('#wg-anim-pause').addEventListener('click', () => this.pauseAnimation());
+		q('#wg-anim-stop').addEventListener('click', () => this.stopAnimation());
 		this.updateAnimUIState();
 	}
 
 	setupModelAnimations(model, clips) {
 		this.disposeMixer();
-
 		this.animClips = Array.isArray(clips) ? clips : [];
 
 		const q = (id) => this.container.querySelector(id);
@@ -698,22 +1039,14 @@ class MinimalWebGPUViewer {
 	playAnimation() {
 		if (!this.mixer) return;
 		if (!this.currentAction) {
-			const q = (id) => this.container.querySelector(id);
-			const select = q('#wg-anim-select');
+			const select = this.container.querySelector('#wg-anim-select');
 			if (select && select.options.length > 1) {
 				select.value = '0';
 				this.selectAnimation('0');
-				return;
 			}
 			return;
 		}
-		if (!this.currentAction.isRunning()) {
-			this.currentAction.reset();
-			this.currentAction.timeScale = this.animSpeed;
-			this.currentAction.play();
-		} else {
-			this.currentAction.paused = false;
-		}
+		this.currentAction.paused = false;
 		this.animPlaying = true;
 		this.updateAnimUIState();
 	}
@@ -726,9 +1059,7 @@ class MinimalWebGPUViewer {
 	}
 
 	stopAnimation() {
-		if (this.currentAction) {
-			this.currentAction.stop();
-		}
+		if (this.currentAction) this.currentAction.stop();
 		this.animPlaying = false;
 		this.updateAnimUIState();
 	}
@@ -736,23 +1067,15 @@ class MinimalWebGPUViewer {
 	setAnimationSpeed(v) {
 		this.animSpeed = v;
 		if (this.currentAction) this.currentAction.timeScale = v;
-		const q = (id) => this.container.querySelector(id);
-		q('#wg-val-animspeed').textContent = `${v.toFixed(2)}x${v < 0 ? ' (inversa)' : ''}`;
+		this.container.querySelector('#wg-val-animspeed').textContent = `${v.toFixed(2)}x${v < 0 ? ' (inv)' : ''}`;
 	}
 
 	updateAnimUIState() {
 		const q = (id) => this.container.querySelector(id);
-		const btnPlay  = q('#wg-anim-play');
-		const btnPause = q('#wg-anim-pause');
-		const btnStop  = q('#wg-anim-stop');
 		const hasClips = this.animClips.length > 0;
-
-		btnPlay.disabled  = !hasClips;
-		btnPause.disabled = !hasClips;
-		btnStop.disabled  = !hasClips;
-
-		btnPlay.classList.toggle('active', this.animPlaying);
-		btnPause.classList.toggle('active', hasClips && this.currentAction && this.currentAction.paused);
+		q('#wg-anim-play').disabled = !hasClips;
+		q('#wg-anim-pause').disabled = !hasClips;
+		q('#wg-anim-stop').disabled = !hasClips;
 	}
 
 	disposeMixer() {
@@ -773,25 +1096,17 @@ class MinimalWebGPUViewer {
 
 		panel.innerHTML = `
 			<div class="wg-tl-toolbar">
-				<button id="wg-tl-load-btn">Cargar Audio</button>
+				<button class="ui-btn" id="wg-tl-load-btn">Audio</button>
 				<input type="file" id="wg-tl-audio-input" accept=".mp3,.ogg,.wav,audio/*" style="display:none">
 				<span class="wg-tl-filename" id="wg-tl-filename">Sin audio</span>
 				<div class="wg-tl-sep"></div>
-				<button id="wg-tl-zoom-out" title="Alejar">−</button>
-				<button id="wg-tl-zoom-in" title="Acercar">+</button>
+				<button class="ui-btn" id="wg-tl-zoom-out">−</button>
+				<button class="ui-btn" id="wg-tl-zoom-in">+</button>
 				<div class="wg-tl-sep"></div>
-				<button id="wg-tl-prev-kf" title="Keyframe anterior">⏮ KF</button>
-				<button id="wg-tl-next-kf" title="Keyframe siguiente">KF ⏭</button>
+				<button class="ui-btn" id="wg-tl-play">▶ Play</button>
+				<button class="ui-btn" id="wg-tl-stop">■</button>
 				<div class="wg-tl-sep"></div>
-				<button id="wg-tl-play" class="wg-tl-primary" title="Play sincronizado">▶ Play</button>
-				<button id="wg-tl-stop" title="Stop">■ Stop</button>
-				<div class="wg-tl-sep"></div>
-				<button id="wg-tl-cut" disabled>✂ Cortar</button>
-				<button id="wg-tl-copy" disabled>⧉ Copiar</button>
-				<button id="wg-tl-paste" disabled>📋 Pegar</button>
-				<button id="wg-tl-delete" disabled>🗑 Eliminar</button>
-				<div class="wg-tl-sep"></div>
-				<button id="wg-tl-download">⬇ Descargar WAV</button>
+				<button class="ui-btn" id="wg-tl-download">Descargar WAV</button>
 				<div class="wg-tl-spacer"></div>
 				<span class="wg-tl-time" id="wg-tl-time">0:00.000 / 0:00.000</span>
 			</div>
@@ -803,7 +1118,6 @@ class MinimalWebGPUViewer {
 				</div>
 			</div>
 		`;
-
 		this.redrawTimeline();
 	}
 
@@ -828,21 +1142,19 @@ class MinimalWebGPUViewer {
 		this.stopAudioPlayback();
 		try {
 			const arrayBuffer = await file.arrayBuffer();
-			const decoded = await ctx.decodeAudioData(arrayBuffer.slice(0));
-			this.audioBuffer = decoded;
+			this.audioBuffer = await ctx.decodeAudioData(arrayBuffer.slice(0));
 			this.audioFileName = file.name;
 			this.timelineSelection = null;
 			document.getElementById('wg-tl-filename').textContent = file.name;
-			this.updateTimelineButtonsState();
 			this.redrawTimeline();
 		} catch (e) {
-			console.error('Error decodificando audio:', e);
-			alert('No se pudo cargar el audio. Formato no soportado o archivo dañado.');
+			console.error(e);
+			alert('No se pudo decodificar el archivo de audio');
 		}
 	}
 
 	getCurrentClipDuration() {
-		if (this.currentAnimIndex === null || this.currentAnimIndex === undefined) return 0;
+		if (this.currentAnimIndex === null) return 0;
 		const clip = this.animClips[this.currentAnimIndex];
 		return clip ? clip.duration : 0;
 	}
@@ -851,17 +1163,6 @@ class MinimalWebGPUViewer {
 		const animDur = this.getCurrentClipDuration();
 		const audioDur = this.audioBuffer ? this.audioBuffer.duration : 0;
 		return Math.max(animDur, audioDur, 1);
-	}
-
-	getCurrentClipKeyframeTimes() {
-		if (this.currentAnimIndex === null || this.currentAnimIndex === undefined) return [];
-		const clip = this.animClips[this.currentAnimIndex];
-		if (!clip) return [];
-		const set = new Set();
-		clip.tracks.forEach(track => {
-			for (let i = 0; i < track.times.length; i++) set.add(Math.round(track.times[i] * 1000) / 1000);
-		});
-		return Array.from(set).sort((a, b) => a - b);
 	}
 
 	timeToPixel(t) { return t * this.timelineZoom; }
@@ -882,7 +1183,7 @@ class MinimalWebGPUViewer {
 
 		const duration = this.getTimelineDuration();
 		const width = Math.max(scroll.clientWidth, Math.ceil(duration * this.timelineZoom) + 40);
-		const height = scroll.clientHeight || 260;
+		const height = scroll.clientHeight || 220;
 		const dpr = window.devicePixelRatio || 1;
 
 		canvas.style.width = width + 'px';
@@ -895,65 +1196,36 @@ class MinimalWebGPUViewer {
 		ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 		ctx.clearRect(0, 0, width, height);
 
-		const rulerH = 28;
-		const kfH = 14;
-		const waveTop = rulerH + kfH;
+		const rulerH = 24;
+		const waveTop = rulerH;
 		const waveH = height - waveTop;
 
-		ctx.fillStyle = '#1a1b1f';
+		ctx.fillStyle = '#18191c';
 		ctx.fillRect(0, 0, width, rulerH);
 		ctx.fillStyle = '#0f1012';
-		ctx.fillRect(0, rulerH, width, kfH);
-		ctx.fillStyle = '#0a0b0d';
 		ctx.fillRect(0, waveTop, width, waveH);
 
 		const pxPerSec = this.timelineZoom;
 		let step = 1;
-		if (pxPerSec < 25) step = 5;
-		else if (pxPerSec < 50) step = 2;
-		else if (pxPerSec > 250) step = 0.1;
-		else if (pxPerSec > 120) step = 0.25;
-		else if (pxPerSec > 60) step = 0.5;
+		if (pxPerSec < 30) step = 5;
+		else if (pxPerSec > 120) step = 0.5;
 
-		ctx.strokeStyle = '#3a3b40';
-		ctx.fillStyle = '#999';
+		ctx.strokeStyle = '#333';
+		ctx.fillStyle = '#888';
 		ctx.font = '10px monospace';
 		ctx.textBaseline = 'middle';
+
 		for (let t = 0; t <= duration + step; t += step) {
 			const x = this.timeToPixel(t);
-			const isMajor = Math.abs(Math.round(t / (step * 5)) * (step * 5) - t) < 1e-6;
 			ctx.beginPath();
-			ctx.moveTo(x + 0.5, isMajor ? rulerH - 16 : rulerH - 9);
+			ctx.moveTo(x + 0.5, rulerH - 8);
 			ctx.lineTo(x + 0.5, rulerH);
 			ctx.stroke();
-			if (isMajor || step >= 1) {
-				ctx.fillText(this.fmtTimeMs(t).replace(/\.\d+$/, ''), x + 3, rulerH - 18 < 0 ? 8 : 9);
-			}
-		}
-
-		const keyframes = this.getCurrentClipKeyframeTimes();
-		ctx.fillStyle = '#ffb020';
-		keyframes.forEach(t => {
-			const x = this.timeToPixel(t);
-			ctx.beginPath();
-			ctx.moveTo(x, rulerH);
-			ctx.lineTo(x - 4, rulerH + kfH);
-			ctx.lineTo(x + 4, rulerH + kfH);
-			ctx.closePath();
-			ctx.fill();
-		});
-		const animDur = this.getCurrentClipDuration();
-		if (animDur > 0) {
-			ctx.strokeStyle = 'rgba(255,176,32,.5)';
-			ctx.beginPath();
-			ctx.moveTo(this.timeToPixel(animDur) + 0.5, rulerH);
-			ctx.lineTo(this.timeToPixel(animDur) + 0.5, height);
-			ctx.stroke();
+			ctx.fillText(this.fmtTimeMs(t).replace(/\.\d+$/, ''), x + 3, 10);
 		}
 
 		if (this.audioBuffer) {
 			const data = this.audioBuffer.getChannelData(0);
-			const samplesPerPixel = Math.max(1, Math.floor(data.length / (this.audioBuffer.duration * pxPerSec)));
 			const mid = waveTop + waveH / 2;
 			ctx.strokeStyle = '#00d084';
 			ctx.beginPath();
@@ -968,34 +1240,14 @@ class MinimalWebGPUViewer {
 					if (v > max) max = v;
 				}
 				if (min > max) { min = 0; max = 0; }
-				const y1 = mid - max * (waveH / 2 - 4);
-				const y2 = mid - min * (waveH / 2 - 4);
-				ctx.moveTo(px + 0.5, y1);
-				ctx.lineTo(px + 0.5, y2);
+				ctx.moveTo(px + 0.5, mid - max * (waveH / 2 - 4));
+				ctx.lineTo(px + 0.5, mid - min * (waveH / 2 - 4));
 			}
 			ctx.stroke();
-		} else {
-			ctx.fillStyle = '#555';
-			ctx.font = '12px system-ui, sans-serif';
-			ctx.fillText('Cargá un audio (mp3 / ogg / wav) para ver la forma de onda aquí', 12, waveTop + waveH / 2);
 		}
 
-		this.updateSelectionUI();
 		this.updateTimelinePlayheadUI();
 		this.updateTimeDisplay();
-	}
-
-	updateSelectionUI() {
-		const sel = document.getElementById('wg-tl-selection');
-		if (!sel) return;
-		if (this.timelineSelection) {
-			const { start, end } = this.timelineSelection;
-			sel.style.display = 'block';
-			sel.style.left = this.timeToPixel(start) + 'px';
-			sel.style.width = Math.max(1, this.timeToPixel(end - start)) + 'px';
-		} else {
-			sel.style.display = 'none';
-		}
 	}
 
 	updateTimelinePlayheadUI() {
@@ -1008,34 +1260,18 @@ class MinimalWebGPUViewer {
 		if (el) el.textContent = `${this.fmtTimeMs(this.timelinePlayhead)} / ${this.fmtTimeMs(this.getTimelineDuration())}`;
 	}
 
-	updateTimelineButtonsState() {
-		const hasSel = !!this.timelineSelection && (this.timelineSelection.end - this.timelineSelection.start) > 0.001;
-		const q = (id) => document.getElementById(id);
-		if (q('wg-tl-cut')) q('wg-tl-cut').disabled = !hasSel || !this.audioBuffer;
-		if (q('wg-tl-copy')) q('wg-tl-copy').disabled = !hasSel || !this.audioBuffer;
-		if (q('wg-tl-delete')) q('wg-tl-delete').disabled = !hasSel || !this.audioBuffer;
-		if (q('wg-tl-paste')) q('wg-tl-paste').disabled = !this.audioClipboard;
-	}
-
-	setPlayhead(t, opts = {}) {
+	setPlayhead(t) {
 		const duration = this.getTimelineDuration();
-		t = Math.max(0, Math.min(duration, t));
-		this.timelinePlayhead = t;
+		this.timelinePlayhead = Math.max(0, Math.min(duration, t));
 
 		if (this.currentAction) {
 			const dur = this.getCurrentClipDuration();
 			this.currentAction.time = dur > 0 ? (t % dur) : 0;
 			this.mixer.update(0);
 		}
-
-		if (opts.seekAudio !== false) {
-			if (this.timelinePlaying && this.audioBuffer) {
-				this.playAudioFrom(t);
-			} else {
-				this.audioPlaybackStartOffset = t;
-			}
+		if (this.timelinePlaying && this.audioBuffer) {
+			this.playAudioFrom(t);
 		}
-
 		this.updateTimelinePlayheadUI();
 		this.updateTimeDisplay();
 	}
@@ -1058,11 +1294,7 @@ class MinimalWebGPUViewer {
 	}
 
 	timelinePlayToggle() {
-		if (this.timelinePlaying) {
-			this.timelinePause();
-		} else {
-			this.timelinePlayStart();
-		}
+		this.timelinePlaying ? this.timelinePause() : this.timelinePlayStart();
 	}
 
 	timelinePlayStart() {
@@ -1070,338 +1302,104 @@ class MinimalWebGPUViewer {
 		this.clock.getDelta();
 		if (this.audioBuffer) this.playAudioFrom(this.timelinePlayhead);
 		const btn = document.getElementById('wg-tl-play');
-		if (btn) btn.innerHTML = '⏸ Pausa';
+		if (btn) btn.textContent = '⏸ Pausa';
 	}
 
 	timelinePause() {
 		this.timelinePlaying = false;
 		this.stopAudioPlayback();
 		const btn = document.getElementById('wg-tl-play');
-		if (btn) btn.innerHTML = '▶ Play';
+		if (btn) btn.textContent = '▶ Play';
 	}
 
 	timelineStop() {
 		this.timelinePlaying = false;
 		this.stopAudioPlayback();
 		const btn = document.getElementById('wg-tl-play');
-		if (btn) btn.innerHTML = '▶ Play';
+		if (btn) btn.textContent = '▶ Play';
 		this.setPlayhead(0);
 	}
 
 	playAudioFrom(offset) {
 		this.stopAudioPlayback();
-		if (!this.audioBuffer) return;
+		if (!this.audioBuffer || offset >= this.audioBuffer.duration) return;
 		const ctx = this.ensureAudioContext();
-		if (offset >= this.audioBuffer.duration) return;
 		const source = ctx.createBufferSource();
 		source.buffer = this.audioBuffer;
 		source.connect(ctx.destination);
 		source.start(0, offset);
-		source.onended = () => { if (this.audioSourceNode === source) this.audioSourceNode = null; };
 		this.audioSourceNode = source;
-		this.audioPlaybackStartCtxTime = ctx.currentTime;
-		this.audioPlaybackStartOffset = offset;
 	}
 
 	stopAudioPlayback() {
 		if (this.audioSourceNode) {
-			try { this.audioSourceNode.onended = null; this.audioSourceNode.stop(); } catch (e) {}
+			try { this.audioSourceNode.stop(); } catch (e) {}
 			try { this.audioSourceNode.disconnect(); } catch (e) {}
 			this.audioSourceNode = null;
 		}
 	}
 
-	jumpToKeyframe(direction) {
-		const keyframes = this.getCurrentClipKeyframeTimes();
-		if (!keyframes.length) return;
-		const t = this.timelinePlayhead;
-		let target = null;
-		if (direction > 0) target = keyframes.find(k => k > t + 0.005);
-		else target = [...keyframes].reverse().find(k => k < t - 0.005);
-		if (target === undefined) target = null;
-		if (target !== null) this.setPlayhead(target);
-	}
-
-	zoomTimeline(factor) {
-		this.timelineZoom = Math.max(15, Math.min(800, this.timelineZoom * factor));
-		this.redrawTimeline();
-	}
-
-	sliceAudioBuffer(buffer, startSec, endSec) {
-		const ctx = this.ensureAudioContext();
-		const sr = buffer.sampleRate;
-		const startSample = Math.max(0, Math.min(buffer.length, Math.floor(startSec * sr)));
-		const endSample = Math.max(startSample, Math.min(buffer.length, Math.floor(endSec * sr)));
-		const length = Math.max(1, endSample - startSample);
-		const out = ctx.createBuffer(buffer.numberOfChannels, length, sr);
-		for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
-			out.getChannelData(ch).set(buffer.getChannelData(ch).subarray(startSample, endSample));
-		}
-		return out;
-	}
-
-	concatAudioBuffers(buffers) {
-		const valid = buffers.filter(b => b && b.length > 0);
-		if (!valid.length) return null;
-		const ctx = this.ensureAudioContext();
-		const sr = valid[0].sampleRate;
-		const numChannels = Math.max(...valid.map(b => b.numberOfChannels));
-		const totalLength = valid.reduce((s, b) => s + b.length, 0);
-		const out = ctx.createBuffer(numChannels, totalLength, sr);
-		let offset = 0;
-		valid.forEach(b => {
-			for (let ch = 0; ch < numChannels; ch++) {
-				const srcData = ch < b.numberOfChannels ? b.getChannelData(ch) : b.getChannelData(0);
-				out.getChannelData(ch).set(srcData, offset);
-			}
-			offset += b.length;
-		});
-		return out;
-	}
-
-	copySelection() {
-		if (!this.audioBuffer || !this.timelineSelection) return;
-		const { start, end } = this.timelineSelection;
-		this.audioClipboard = this.sliceAudioBuffer(this.audioBuffer, start, end);
-		this.updateTimelineButtonsState();
-	}
-
-	cutSelection() {
-		if (!this.audioBuffer || !this.timelineSelection) return;
-		const { start, end } = this.timelineSelection;
-		this.audioClipboard = this.sliceAudioBuffer(this.audioBuffer, start, end);
-		this.deleteSelection();
-	}
-
-	deleteSelection() {
-		if (!this.audioBuffer || !this.timelineSelection) return;
-		const { start, end } = this.timelineSelection;
-		const before = this.sliceAudioBuffer(this.audioBuffer, 0, start);
-		const after = this.sliceAudioBuffer(this.audioBuffer, end, this.audioBuffer.duration);
-		const result = this.concatAudioBuffers([before, after]);
-		this.audioBuffer = result || before;
-		this.timelineSelection = null;
-		this.setPlayhead(start, { seekAudio: false });
-		this.updateTimelineButtonsState();
-		this.redrawTimeline();
-	}
-
-	pasteAtPlayhead() {
-		if (!this.audioClipboard) return;
-		const at = this.timelinePlayhead;
-		if (!this.audioBuffer) {
-			this.audioBuffer = this.audioClipboard;
-			this.setPlayhead(this.audioClipboard.duration, { seekAudio: false });
-		} else {
-			const before = this.sliceAudioBuffer(this.audioBuffer, 0, at);
-			const after = this.sliceAudioBuffer(this.audioBuffer, at, this.audioBuffer.duration);
-			this.audioBuffer = this.concatAudioBuffers([before, this.audioClipboard, after]);
-			this.setPlayhead(at + this.audioClipboard.duration, { seekAudio: false });
-		}
-		this.updateTimelineButtonsState();
-		this.redrawTimeline();
-	}
-
-	audioBufferToWav(buffer) {
-		const numChannels = buffer.numberOfChannels;
-		const sampleRate = buffer.sampleRate;
-		const bitDepth = 16;
-		const bytesPerSample = bitDepth / 8;
-		const blockAlign = numChannels * bytesPerSample;
-		const dataLength = buffer.length * blockAlign;
-		const arrBuffer = new ArrayBuffer(44 + dataLength);
-		const view = new DataView(arrBuffer);
-
-		const writeStr = (offset, str) => { for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i)); };
-
-		writeStr(0, 'RIFF');
-		view.setUint32(4, 36 + dataLength, true);
-		writeStr(8, 'WAVE');
-		writeStr(12, 'fmt ');
-		view.setUint32(16, 16, true);
-		view.setUint16(20, 1, true);
-		view.setUint16(22, numChannels, true);
-		view.setUint32(24, sampleRate, true);
-		view.setUint32(28, sampleRate * blockAlign, true);
-		view.setUint16(32, blockAlign, true);
-		view.setUint16(34, bitDepth, true);
-		writeStr(36, 'data');
-		view.setUint32(40, dataLength, true);
-
-		const channelData = [];
-		for (let ch = 0; ch < numChannels; ch++) channelData.push(buffer.getChannelData(ch));
-
-		let offset = 44;
-		for (let i = 0; i < buffer.length; i++) {
-			for (let ch = 0; ch < numChannels; ch++) {
-				let sample = Math.max(-1, Math.min(1, channelData[ch][i]));
-				sample = sample < 0 ? sample * 0x8000 : sample * 0x7fff;
-				view.setInt16(offset, sample, true);
-				offset += 2;
-			}
-		}
-		return new Blob([arrBuffer], { type: 'audio/wav' });
-	}
-
-	downloadWav() {
-		if (!this.audioBuffer) { alert('Primero cargá o generá un audio en el timeline'); return; }
-		const blob = this.audioBufferToWav(this.audioBuffer);
-		const url = URL.createObjectURL(blob);
-		const a = document.createElement('a');
-		a.href = url;
-		a.download = (this.audioFileName ? this.audioFileName.replace(/\.[^/.]+$/, '') : 'audio_sincronizado') + '.wav';
-		document.body.appendChild(a); a.click(); document.body.removeChild(a);
-		URL.revokeObjectURL(url);
-	}
-
 	setupTimelineEvents() {
 		const q = (id) => document.getElementById(id);
-
-		const toggleBtn = q('wg-timeline-toggle');
-		if (toggleBtn) toggleBtn.addEventListener('click', () => this.toggleTimelinePanel());
-
-		q('wg-tl-load-btn').addEventListener('click', () => q('wg-tl-audio-input').click());
-		q('wg-tl-audio-input').addEventListener('change', (e) => {
+		q('wg-timeline-toggle')?.addEventListener('click', () => this.toggleTimelinePanel());
+		q('wg-tl-load-btn')?.addEventListener('click', () => q('wg-tl-audio-input').click());
+		q('wg-tl-audio-input')?.addEventListener('change', (e) => {
 			if (e.target.files.length) this.loadAudioFile(e.target.files[0]);
-			e.target.value = '';
 		});
 
-		q('wg-tl-zoom-in').addEventListener('click', () => this.zoomTimeline(1.4));
-		q('wg-tl-zoom-out').addEventListener('click', () => this.zoomTimeline(1 / 1.4));
-
-		q('wg-tl-prev-kf').addEventListener('click', () => this.jumpToKeyframe(-1));
-		q('wg-tl-next-kf').addEventListener('click', () => this.jumpToKeyframe(1));
-
-		q('wg-tl-play').addEventListener('click', () => this.timelinePlayToggle());
-		q('wg-tl-stop').addEventListener('click', () => this.timelineStop());
-
-		q('wg-tl-cut').addEventListener('click', () => this.cutSelection());
-		q('wg-tl-copy').addEventListener('click', () => this.copySelection());
-		q('wg-tl-paste').addEventListener('click', () => this.pasteAtPlayhead());
-		q('wg-tl-delete').addEventListener('click', () => this.deleteSelection());
-		q('wg-tl-download').addEventListener('click', () => this.downloadWav());
+		q('wg-tl-zoom-in')?.addEventListener('click', () => { this.timelineZoom = Math.min(800, this.timelineZoom * 1.3); this.redrawTimeline(); });
+		q('wg-tl-zoom-out')?.addEventListener('click', () => { this.timelineZoom = Math.max(15, this.timelineZoom / 1.3); this.redrawTimeline(); });
+		q('wg-tl-play')?.addEventListener('click', () => this.timelinePlayToggle());
+		q('wg-tl-stop')?.addEventListener('click', () => this.timelineStop());
 
 		const track = q('wg-tl-track');
 		const scroll = q('wg-tl-scroll');
 
-		const getTimeFromEvent = (e) => {
+		track?.addEventListener('mousedown', (e) => {
 			const rect = track.getBoundingClientRect();
 			const x = e.clientX - rect.left + scroll.scrollLeft;
-			return this.pixelToTime(x);
-		};
-
-		track.addEventListener('mousedown', (e) => {
-			this._tlDragging = true;
-			this._tlDragMoved = false;
-			this._tlDragStartTime = getTimeFromEvent(e);
-			this.timelineSelection = { start: this._tlDragStartTime, end: this._tlDragStartTime };
-			this.updateSelectionUI();
+			this.setPlayhead(this.pixelToTime(x));
 		});
-
-		window.addEventListener('mousemove', (e) => {
-			if (!this._tlDragging) return;
-			const t = getTimeFromEvent(e);
-			if (Math.abs(t - this._tlDragStartTime) > 0.02) this._tlDragMoved = true;
-			this.timelineSelection = {
-				start: Math.min(this._tlDragStartTime, t),
-				end: Math.max(this._tlDragStartTime, t)
-			};
-			this.updateSelectionUI();
-		});
-
-		window.addEventListener('mouseup', (e) => {
-			if (!this._tlDragging) return;
-			this._tlDragging = false;
-			if (!this._tlDragMoved) {
-				this.timelineSelection = null;
-				this.setPlayhead(this._tlDragStartTime);
-				this.updateSelectionUI();
-			} else {
-				this.setPlayhead(this.timelineSelection.start, { seekAudio: false });
-			}
-			this.updateTimelineButtonsState();
-		});
-
-		const resizeObserver = new ResizeObserver(() => this.redrawTimeline());
-		if (scroll) resizeObserver.observe(scroll);
 	}
 
 	processLoadedModel(object) {
 		let model = object.scene || object;
-		
 		model.traverse((child) => {
 			if (child.isMesh) {
 				child.castShadow = true;
 				child.receiveShadow = true;
 			}
 		});
-		
 		this.loadedModelsGroup.add(model);
-		
+
 		const box = new THREE.Box3().setFromObject(model);
 		const center = box.getCenter(new THREE.Vector3());
 		const size = box.getSize(new THREE.Vector3());
-		
-		this.controls.target.copy(center);
-		this.camera.position.set(
-			center.x, 
-			center.y + size.y, 
-			center.z + Math.max(size.x, size.z) * 1.5
-		);
 
-		const clips = (object.animations && object.animations.length ? object.animations
-			: (model.animations && model.animations.length ? model.animations : []));
+		this.controls.target.copy(center);
+		this.camera.position.set(center.x, center.y + size.y, center.z + Math.max(size.x, size.z) * 1.5);
+
+		const clips = (object.animations && object.animations.length ? object.animations : (model.animations || []));
 		this.setupModelAnimations(model, clips);
 	}
 
 	loadModelFromUrl(url, explicitExtension = null) {
 		const extension = explicitExtension || url.split('.').pop().split(/\#|\?/)[0].toLowerCase();
-
 		const onLoad = (object) => {
 			this.processLoadedModel(object);
 			if (url.startsWith('blob:')) URL.revokeObjectURL(url);
 		};
 
-		const onProgress = (xhr) => {
-			console.log(`Cargando modelo: ${(xhr.loaded / xhr.total * 100)}%`);
-		};
-
-		const onError = (error) => {
-			console.error('Error al cargar el modelo:', error);
-			alert('Error al cargar el modelo. Verifica la URL y CORS.');
-		};
-
-		if (extension === 'glb' || extension === 'gltf') {
-			this.gltfLoader.load(url, onLoad, onProgress, onError);
-		} else if (extension === 'obj') {
-			this.objLoader.load(url, onLoad, onProgress, onError);
-		} else if (extension === 'fbx') {
-			this.fbxLoader.load(url, onLoad, onProgress, onError);
-		} else {
-			 
-			 
-		}
+		if (extension === 'glb' || extension === 'gltf') this.gltfLoader.load(url, onLoad);
+		else if (extension === 'obj') this.objLoader.load(url, onLoad);
+		else if (extension === 'fbx') this.fbxLoader.load(url, onLoad);
 	}
 
 	clearScene() {
 		this.disposeMixer();
-		const q = (id) => this.container.querySelector(id);
-		const select = q('#wg-anim-select');
-		if (select) {
-			select.innerHTML = '<option value="__none__">Sin animación</option>';
-			select.disabled = true;
-		}
-		const emptyNote = q('#wg-anim-empty');
-		if (emptyNote) emptyNote.style.display = 'block';
-		this.updateAnimUIState();
-
 		this.timelinePlaying = false;
 		this.stopAudioPlayback();
 		this.timelinePlayhead = 0;
-		this.timelineSelection = null;
-		const playBtn = document.getElementById('wg-tl-play');
-		if (playBtn) playBtn.innerHTML = '▶ Play';
-		if (this.timelinePanelOpen) this.redrawTimeline();
 
 		while (this.loadedModelsGroup.children.length > 0) {
 			const obj = this.loadedModelsGroup.children[0];
@@ -1430,19 +1428,15 @@ class MinimalWebGPUViewer {
 
 	setupEvents() {
 		const q = (id) => this.container.querySelector(id);
-		
 		const resizeObserver = new ResizeObserver(() => this.resize());
 		resizeObserver.observe(this.container);
 
-		const processFile = (file) => {
-			const extension = file.name.split('.').pop().toLowerCase();
-			const url = URL.createObjectURL(file);
-			this.loadModelFromUrl(url, extension);
-		};
-
 		q('#wg-file-input').addEventListener('change', (e) => {
-			if (e.target.files.length > 0) processFile(e.target.files[0]);
-			e.target.value = ''; 
+			if (e.target.files.length > 0) {
+				const file = e.target.files[0];
+				const url = URL.createObjectURL(file);
+				this.loadModelFromUrl(url, file.name.split('.').pop().toLowerCase());
+			}
 		});
 
 		q('#wg-btn-load-url').addEventListener('click', () => {
@@ -1453,28 +1447,19 @@ class MinimalWebGPUViewer {
 			}
 		});
 
-		const dragOverlay = q('#wg-drag-overlay');
-		this.container.addEventListener('dragover', (e) => { e.preventDefault(); dragOverlay.style.display = 'flex'; });
-		this.container.addEventListener('dragleave', () => dragOverlay.style.display = 'none');
-		this.container.addEventListener('drop', (e) => {
-			e.preventDefault(); dragOverlay.style.display = 'none';
-			if (e.dataTransfer.files.length > 0) processFile(e.dataTransfer.files[0]);
-		});
-
 		q('#wg-btn-clear').addEventListener('click', () => this.clearScene());
 
 		q('#wg-btn-download').addEventListener('click', () => {
 			const exporter = new GLTFExporter();
 			exporter.parse(this.loadedModelsGroup, (result) => {
-				const output = result instanceof ArrayBuffer ? result : JSON.stringify(result);
-				const blob = new Blob([output], { type: result instanceof ArrayBuffer ? 'application/octet-stream' : 'text/plain' });
+				const blob = new Blob([result], { type: 'application/octet-stream' });
 				const url = URL.createObjectURL(blob);
 				const link = document.createElement('a');
 				link.href = url;
 				link.download = 'modelo_webgpu.glb';
 				link.click();
 				URL.revokeObjectURL(url);
-			}, (err) => console.error(err), { binary: true });
+			}, { binary: true });
 		});
 	}
 
@@ -1482,9 +1467,6 @@ class MinimalWebGPUViewer {
 		document.getElementById('modal3D').classList.add('active');
 		this.isVisible = true;
 		this.resize();
-		requestAnimationFrame(() => this.resize());
-		setTimeout(() => this.resize(), 50);
-		this.clock.getDelta();
 		this.clearScene();
 		this.loadModelFromUrl(mediaData.url, mediaData.extension.replace('.', ''));
 	}
@@ -1499,40 +1481,29 @@ class MinimalWebGPUViewer {
 const ThreeModal = new MinimalWebGPUViewer('webgpu-container');
 
 const VideoModal = (() => {
-  const vid      = document.getElementById('modalVideoEl');
-  const tl       = document.getElementById('vcTimeline');
-  const cur      = document.getElementById('vcCurrent');
-  const dur      = document.getElementById('vcDuration');
-  const btnPlay  = document.getElementById('vcPlay');
-  const btnMute  = document.getElementById('vcMute');
-  const volSl    = document.getElementById('vcVol');
+  const vid = document.getElementById('modalVideoEl');
+  const tl = document.getElementById('vcTimeline');
+  const cur = document.getElementById('vcCurrent');
+  const dur = document.getElementById('vcDuration');
+  const btnPlay = document.getElementById('vcPlay');
+  const btnMute = document.getElementById('vcMute');
+  const volSl = document.getElementById('vcVol');
   const speedSel = document.getElementById('vcSpeed');
-  let dragging   = false;
+  let dragging = false;
 
-  vid.ontimeupdate     = () => { if (!dragging) { tl.value = vid.currentTime; cur.textContent = fmtTime(vid.currentTime); } };
+  vid.ontimeupdate = () => { if (!dragging) { tl.value = vid.currentTime; cur.textContent = fmtTime(vid.currentTime); } };
   vid.onloadedmetadata = () => { tl.max = vid.duration; dur.textContent = fmtTime(vid.duration); };
-  vid.onplay           = () => btnPlay.innerHTML = '&#9646;&#9646;';
-  vid.onpause          = () => btnPlay.innerHTML = '&#9654;';
-  tl.oninput           = () => { dragging = true; cur.textContent = fmtTime(tl.value); };
-  tl.onchange          = () => { vid.currentTime = tl.value; dragging = false; };
-  btnPlay.onclick      = () => vid.paused ? vid.play() : vid.pause();
-  btnMute.onclick      = () => { vid.muted = !vid.muted; btnMute.innerHTML = vid.muted ? '&#128264;' : '&#128266;'; };
-  volSl.oninput        = () => { vid.volume = volSl.value; vid.muted = +volSl.value === 0; btnMute.innerHTML = vid.muted ? '&#128264;' : '&#128266;'; };
+  vid.onplay = () => btnPlay.innerHTML = '&#9646;&#9646;';
+  vid.onpause = () => btnPlay.innerHTML = '&#9654;';
+  tl.oninput = () => { dragging = true; cur.textContent = fmtTime(tl.value); };
+  tl.onchange = () => { vid.currentTime = tl.value; dragging = false; };
+  btnPlay.onclick = () => vid.paused ? vid.play() : vid.pause();
+  btnMute.onclick = () => { vid.muted = !vid.muted; btnMute.innerHTML = vid.muted ? '&#128264;' : '&#128266;'; };
+  volSl.oninput = () => { vid.volume = volSl.value; vid.muted = +volSl.value === 0; btnMute.innerHTML = vid.muted ? '&#128264;' : '&#128266;'; };
   document.getElementById('vcBack').onclick = () => vid.currentTime = Math.max(0, vid.currentTime - 5);
-  document.getElementById('vcFwd').onclick  = () => vid.currentTime = Math.min(vid.duration || 0, vid.currentTime + 10);
+  document.getElementById('vcFwd').onclick = () => vid.currentTime = Math.min(vid.duration || 0, vid.currentTime + 10);
   speedSel.onchange = () => vid.playbackRate = +speedSel.value;
-  document.getElementById('vcFs').onclick   = () => { const w = document.getElementById('modalVideo'); (w.requestFullscreen || w.webkitRequestFullscreen).call(w); };
-
-  document.addEventListener('keydown', e => {
-    if (!document.getElementById('modalVideo').classList.contains('active')) return;
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
-    if      (e.code === 'Space')      { e.preventDefault(); vid.paused ? vid.play() : vid.pause(); }
-    else if (e.code === 'ArrowLeft')  vid.currentTime = Math.max(0, vid.currentTime - 5);
-    else if (e.code === 'ArrowRight') vid.currentTime = Math.min(vid.duration || 0, vid.currentTime + 10);
-    else if (e.code === 'ArrowUp')    { vid.volume = Math.min(1, vid.volume + .1); volSl.value = vid.volume; }
-    else if (e.code === 'ArrowDown')  { vid.volume = Math.max(0, vid.volume - .1); volSl.value = vid.volume; }
-    else if (e.key === 'm' || e.key === 'M') { vid.muted = !vid.muted; btnMute.innerHTML = vid.muted ? '&#128264;' : '&#128266;'; }
-  });
+  document.getElementById('vcFs').onclick = () => { const w = document.getElementById('modalVideo'); (w.requestFullscreen || w.webkitRequestFullscreen).call(w); };
 
   return {
     open(url, nombre) {
@@ -1559,13 +1530,13 @@ function fmtTime(s) {
 
 class PintarestaGallery {
   constructor() {
-    this.todasLasUrls       = [];
-    this.urlsFiltradas      = [];
-    this.loteActual         = 0;
-    this.imagenesPorLote    = 30;
+    this.todasLasUrls = [];
+    this.urlsFiltradas = [];
+    this.loteActual = 0;
+    this.imagenesPorLote = 30;
     this.todosLosRepositorios = [
-      { id:'img1',        owner:'unonibes4a', name:'img1' }, 
-      { id:'MESH3D',        owner:'unonibes4a', name:'MESH3D' }, 
+      { id:'img1', owner:'unonibes4a', name:'img1' }, 
+      { id:'MESH3D', owner:'unonibes4a', name:'MESH3D' }, 
     ];
     this.extensionesValidas = {
       imagen: ['.jpg','.jpeg','.png','.gif','.bmp','.webp','.svg','.tiff','.tif','.ico','.heic','.heif'],
@@ -1573,131 +1544,20 @@ class PintarestaGallery {
       model:  ['.glb','.gltf','.obj','.fbx']
     };
     this.jsonData = null;
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-    window.todosLosRepositorios = this.todosLosRepositorios;
-    
-    document.addEventListener("keydown", this.handleKeyDown);
 
     const body = document.body;
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName) => {
-      body.addEventListener(eventName, (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-      });
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach((ev) => {
+      body.addEventListener(ev, (e) => { e.preventDefault(); e.stopPropagation(); });
     });
 
     body.addEventListener('drop', (e) => {
       const files = e.dataTransfer.files;
-      if (files.length > 0) {
-        const file = files[0];
-        if (file.type === 'application/json' || file.name.endsWith('.json')) {
-          const reader = new FileReader();
-          reader.onload = async (event) => {
-            await this.cargarDesdeJSON(event.target.result);
-          };
-          reader.readAsText(file);
-        }
+      if (files.length > 0 && files[0].name.endsWith('.json')) {
+        const reader = new FileReader();
+        reader.onload = async (ev) => await this.cargarDesdeJSON(ev.target.result);
+        reader.readAsText(files[0]);
       }
     });
-  }
-
-  async handleKeyDown(event) {
-    if (event.ctrlKey && event.key === "ArrowDown") {
-      event.preventDefault();
-      const unidos = confirm("¿Deseas descargar los JSON de todos los repositorios unidos en un solo archivo?\n\n[Aceptar] = Un solo archivo (Todos unidos)\n[Cancelar] = Archivos separados por repositorio");
-      await this.descargarJSONRepositorios(window.todosLosRepositorios, unidos);
-    }
-  }
-
-  descargarArchivoJSON(data, filename) {
-	const jsonString = JSON.stringify(data, null, 2);
-	const blob = new Blob([jsonString], { type: "application/json" });
-	const url = URL.createObjectURL(blob);
-	const a = document.createElement("a");
-	a.href = url;
-	a.download = filename;
-	document.body.appendChild(a);
-	a.click();
-	document.body.removeChild(a);
-	URL.revokeObjectURL(url);
-  }
-
-  exportarArrayAJson = (arrayDeObjetos) => {
-	if (!arrayDeObjetos || !Array.isArray(arrayDeObjetos) || arrayDeObjetos.length === 0) return;
-    this.descargarArchivoJSON(arrayDeObjetos, `galeria_pintaresta_${Date.now()}.json`);
-  }
-
-  async descargarJSONRepositorios(repos, unidos) {
-    if (!repos || !Array.isArray(repos) || repos.length === 0) return;
-    
-    this.mostrarCargando(true, "Obteniendo datos de los repositorios...");
-    let jsonUnido = [];
-
-    for (const repoItem of repos) {
-      let owner = "", repoName = "", branch = "main";
-
-      if (typeof repoItem === "string") {
-        const parts = repoItem.replace("https://github.com/", "").split("/").filter(Boolean);
-        owner = parts[0];
-        repoName = parts[1];
-      } else if (typeof repoItem === "object") {
-        owner = repoItem.owner || repoItem.usuario || repoItem.user;
-        repoName = repoItem.repo || repoItem.nombre || repoItem.name;
-        branch = repoItem.branch || repoItem.rama || "main";
-      }
-
-      if (!owner || !repoName) continue;
-
-      try {
-        let apiUrl = `https://api.github.com/repos/${owner}/${repoName}/git/trees/${branch}?recursive=1`;
-        let response = await fetch(apiUrl);
-
-        if (!response.ok) {
-          branch = "master";
-          apiUrl = `https://api.github.com/repos/${owner}/${repoName}/git/trees/${branch}?recursive=1`;
-          response = await fetch(apiUrl);
-        }
-
-        if (!response.ok) continue;
-
-        const data = await response.json();
-        let repoResult = [];
-
-        if (data && data.tree) {
-          data.tree.forEach((file) => {
-            if (file.type === "blob" && this.esMediaValido(file.path)) {
-              const ext = file.path.substring(file.path.lastIndexOf(".")).toLowerCase();
-              const rawUrl = `https://github.com/${owner}/${repoName}/blob/${branch}/${file.path}?raw=true`;
-              
-              const itemData = {
-                repositorio: `${owner}/${repoName}`,
-                repo: repoName,
-                nombre: file.path.split("/").pop(),
-                path: file.path,
-                url: rawUrl,
-                extension: ext,
-                tipo: this.esImagen(file.path) ? 'imagen' : this.esVideo(file.path) ? 'video' : 'model'
-              };
-
-              repoResult.push(itemData);
-              if (unidos) jsonUnido.push(itemData);
-            }
-          });
-        }
-
-        if (!unidos && repoResult.length > 0) {
-          this.descargarArchivoJSON(repoResult, `repo_${repoName}_${Date.now()}.json`);
-        }
-      } catch (error) {
-        console.error(`Error procesando ${owner}/${repoName}:`, error);
-      }
-    }
-
-    if (unidos && jsonUnido.length > 0) {
-      this.descargarArchivoJSON(jsonUnido, `todos_los_repos_${Date.now()}.json`);
-    }
-
-    this.mostrarCargando(false);
   }
 
   esImagen(n)     { return this.extensionesValidas.imagen.includes(n.toLowerCase().substring(n.lastIndexOf('.'))); }
@@ -1705,11 +1565,13 @@ class PintarestaGallery {
   esModelo3D(n)   { return this.extensionesValidas.model.includes(n.toLowerCase().substring(n.lastIndexOf('.'))); }
   esMediaValido(n){ return this.esImagen(n) || this.esVideo(n) || this.esModelo3D(n); }
   obtenerNombreArchivo(p) { return p.split('/').pop().replace(/\.[^/.]+$/, ''); }
+
   formatBytes(b) {
     if (!b) return '0 B';
     const k = 1024, s = ['B','KB','MB','GB'], i = Math.floor(Math.log(b) / Math.log(k));
     return parseFloat((b / Math.pow(k, i)).toFixed(2)) + ' ' + s[i];
   }
+
   barajarArray(a) {
     const s = [...a];
     for (let i = s.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [s[i], s[j]] = [s[j], s[i]]; }
@@ -1736,60 +1598,35 @@ class PintarestaGallery {
 
   async cargarDesdeRepositorio(repo) {
     try { 
-		let a = await this.cargarDesdeDirectorio(`https://api.github.com/repos/${repo.owner}/${repo.name}/contents`, '', repo.name);
-      	return a;
-    }
-    catch(e) { return []; }
+      return await this.cargarDesdeDirectorio(`https://api.github.com/repos/${repo.owner}/${repo.name}/contents`, '', repo.name);
+    } catch(e) { return []; }
   }
 
   async cargarDesdeJSON(jsonData) {
-    this.mostrarCargando(true, 'Cargando imágenes desde JSON...');
+    this.mostrarCargando(true, 'Cargando JSON...');
     try {
-      let datos = jsonData;
-
-      if (typeof jsonData === 'string') {
-        datos = JSON.parse(jsonData);
-      }
-
-      if (datos && !Array.isArray(datos) && Array.isArray(datos.archivos)) {
-        datos = datos.archivos;
-      }
-
-      if (!datos || !Array.isArray(datos) || datos.length === 0) {
-        document.getElementById('pinsContainer').innerHTML = `<div style="text-align:center;padding:40px;color:#767676"><h3>JSON vacío o sin formato válido</h3></div>`;
-        return [];
-      }
+      let datos = typeof jsonData === 'string' ? JSON.parse(jsonData) : jsonData;
+      if (datos && !Array.isArray(datos) && Array.isArray(datos.archivos)) datos = datos.archivos;
+      if (!datos || !Array.isArray(datos)) return [];
 
       const todos = datos.map(item => {
         const ext = item.extension || (item.url ? item.url.substring(item.url.lastIndexOf('.')) : '.jpg');
         const tipo = item.tipo || (this.esImagen(ext) ? 'imagen' : this.esVideo(ext) ? 'video' : 'model');
-
         return {
           url: item.url,
           nombre: item.nombre || this.obtenerNombreArchivo(item.url || 'Sin título'),
           repo: item.repo || item.repositorio || 'JSON Local',
           tipo: tipo,
           extension: ext,
-          tamañoLegible: item.tamañoLegible || item.tamaño || ''
+          tamañoLegible: item.tamañoLegible || ''
         };
       }).filter(item => item.url);
 
-      if (!todos.length) {
-        document.getElementById('pinsContainer').innerHTML = `<div style="text-align:center;padding:40px;color:#767676"><h3>No se encontraron URLs válidas en el JSON</h3></div>`;
-        return [];
-      }
-
-      this.todasLasUrls  = this.barajarArray(todos);
-	  console.log(this.todasLasUrls,'this.todasLasUrls');
+      this.todasLasUrls = this.barajarArray(todos);
       this.urlsFiltradas = [...this.todasLasUrls];
-	   window.appEditorgioBasico.cargarImagenesSimple(this.urlsFiltradas ,true );
-      this.loteActual    = 0;
+      this.loteActual = 0;
       this.mostrarLote();
-
       return this.todasLasUrls;
-    } catch(e) {
-      document.getElementById('pinsContainer').innerHTML = `<div style="text-align:center;padding:40px;color:#767676"><p>Error al procesar el archivo JSON: ${e.message}</p></div>`;
-      return [];
     } finally { 
       this.mostrarCargando(false); 
     }
@@ -1799,14 +1636,7 @@ class PintarestaGallery {
     this.mostrarCargando(true, 'Cargando repositorios...');
     try {
       const todos = (await Promise.all(reposACargar.map(r => this.cargarDesdeRepositorio(r)))).flat();
-      if (!todos.length) {
-        document.getElementById('pinsContainer').innerHTML = `<div style="text-align:center;padding:40px;color:#767676"><h3>Sin archivos</h3></div>`;
-        return [];
-      }
       return this.barajarArray(todos);
-    } catch(e) {
-      document.getElementById('pinsContainer').innerHTML = `<div style="text-align:center;padding:40px;color:#767676"><p>${e.message}</p></div>`;
-      return [];
     } finally { this.mostrarCargando(false); }
   }
 
@@ -1818,62 +1648,35 @@ class PintarestaGallery {
       const tipo = this.esImagen(file.name) ? (img++, 'imagen') : this.esVideo(file.name) ? (vid++, 'video') : (mod++, 'model');
       promesas.push(new Promise(resolve => {
         const reader = new FileReader();
-        reader.onload = async e => {
+        reader.onload = e => {
           const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
-          const d = { url: e.target.result, nombre: this.obtenerNombreArchivo(file.name), nombreCompleto: file.name, repo: 'Local', tipo, extension: ext, tamaño: file.size, tamañoLegible: this.formatBytes(file.size), fechaModificacion: file.lastModified, ruta: file.webkitRelativePath || file.name };
-          validos.push(d);
+          validos.push({ url: e.target.result, nombre: this.obtenerNombreArchivo(file.name), nombreCompleto: file.name, repo: 'Local', tipo, extension: ext, tamañoLegible: this.formatBytes(file.size) });
           resolve();
         };
         reader.readAsDataURL(file);
       }));
     }
     await Promise.all(promesas);
-    this.jsonData = { fecha_generacion: new Date().toISOString(), total_archivos: validos.length, imagenes: img, videos: vid, modelos: mod, archivos: validos.map(a => ({ nombre: a.nombre, nombreCompleto: a.nombreCompleto, ruta: a.ruta, tipo: a.tipo, extension: a.extension, tamaño: a.tamañoLegible, fechaModificacion: new Date(a.fechaModificacion).toISOString() })) };
+    this.jsonData = { fecha_generacion: new Date().toISOString(), total_archivos: validos.length, imagenes: img, videos: vid, modelos: mod, archivos: validos };
     return validos;
   }
 
   async cargarArchivosLocales(files) {
-    this.mostrarCargando(true, 'Procesando archivos...');
+    this.mostrarCargando(true, 'Procesando archivos locales...');
     try {
       const local = await this.procesarArchivosLocales(files);
-      if (!local.length) { alert('No se encontraron archivos válidos'); return; }
-      this.todasLasUrls  = this.barajarArray(local);
+      if (!local.length) return;
+      this.todasLasUrls = this.barajarArray(local);
       this.urlsFiltradas = [...this.todasLasUrls];
-	  console.log(this.todasLasUrls,'this.todasLasUrls');
-	     
-   window.appEditorgioBasico.cargarImagenesSimple(this.urlsFiltradas ,false );
-      this.loteActual    = 0;
+      this.loteActual = 0;
       this.mostrarLote();
-      document.getElementById('btnViewJSON').style.display = 'block';
-      alert(`Cargados ${local.length} archivos\nImágenes: ${this.jsonData.imagenes}\nVideos: ${this.jsonData.videos}\nModelos 3D: ${this.jsonData.modelos}`);
-    } catch(e) { alert('Error: ' + e.message); }
-    finally { this.mostrarCargando(false); }
+      document.getElementById('btnViewJSON').style.display = 'inline-flex';
+    } finally { this.mostrarCargando(false); }
   }
-   async cargarArchivosLocalesno(files) {
-  this.mostrarCargando(true, 'Procesando archivos...');
-  try {
-    const local = await this.procesarArchivosLocales(files);
-    if (!local.length) { alert('No se encontraron archivos válidos'); return; }
-    const objetosDeImagenes = local.filter(archivo => archivo.tipo === 'imagen');
-     
-    window.appEditorgioBasico.cargarImagenes(objetosDeImagenes );
-	
-    this.todasLasUrls  = this.barajarArray(local);
-    this.urlsFiltradas = [...this.todasLasUrls];
-    this.loteActual    = 0;
-    this.actualizarBotones();
-    document.getElementById('btnViewJSON').style.display = 'block';
-    alert(`Cargados ${local.length} archivos\nImágenes: ${this.jsonData.imagenes}`);
-  } catch(e) { 
-    alert('Error: ' + e.message); 
-  } finally { 
-    this.mostrarCargando(false); 
-  }
-}
 
   mostrarJSON() {
-    if (!this.jsonData) { alert('Primero carga una carpeta'); return; }
-    document.getElementById('statsContainer').innerHTML = `<h3>Estadísticas</h3><div class="stats-grid"><div class="stat-item"><div class="stat-number">${this.jsonData.total_archivos}</div><div class="stat-label">Total</div></div><div class="stat-item"><div class="stat-number">${this.jsonData.imagenes}</div><div class="stat-label">Imágenes</div></div><div class="stat-item"><div class="stat-number">${this.jsonData.videos}</div><div class="stat-label">Videos</div></div><div class="stat-item"><div class="stat-number">${this.jsonData.modelos}</div><div class="stat-label">Modelos 3D</div></div></div>`;
+    if (!this.jsonData) return;
+    document.getElementById('statsContainer').innerHTML = `<h3>Estadísticas de Sesión</h3><div class="stats-grid"><div class="stat-item"><div class="stat-number">${this.jsonData.total_archivos}</div><div class="stat-label">Total</div></div><div class="stat-item"><div class="stat-number">${this.jsonData.imagenes}</div><div class="stat-label">Imágenes</div></div><div class="stat-item"><div class="stat-number">${this.jsonData.videos}</div><div class="stat-label">Videos</div></div><div class="stat-item"><div class="stat-number">${this.jsonData.modelos}</div><div class="stat-label">Modelos 3D</div></div></div>`;
     document.getElementById('jsonPreview').textContent = JSON.stringify(this.jsonData, null, 2);
     document.getElementById('modalJSON').classList.add('active');
   }
@@ -1883,14 +1686,13 @@ class PintarestaGallery {
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([JSON.stringify(this.jsonData, null, 2)], { type: 'application/json' }));
     a.download = `galeria_${Date.now()}.json`;
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    a.click();
+    URL.revokeObjectURL(a.href);
   }
 
   copiarJSON() {
     if (!this.jsonData) return;
-    navigator.clipboard.writeText(JSON.stringify(this.jsonData, null, 2))
-      .then(() => alert('JSON copiado'))
-      .catch(() => alert('Error al copiar'));
+    navigator.clipboard.writeText(JSON.stringify(this.jsonData, null, 2));
   }
 
   mostrarCargando(show, msg = 'Cargando...') {
@@ -1899,14 +1701,14 @@ class PintarestaGallery {
   }
 
   crearPinElement(mediaData) {
-    const pin    = document.createElement('div');
+    const pin = document.createElement('div');
     pin.className = 'pin';
     const alturas = ['h-280','h-320','h-360','h-400','h-440'];
-    const alt     = alturas[Math.floor(Math.random() * alturas.length)];
+    const alt = alturas[Math.floor(Math.random() * alturas.length)];
     const esLocal = mediaData.repo === 'Local';
-    const av      = esLocal ? 'PC' : 'GH';
-    const cr      = esLocal ? 'Mi PC' : 'GitHub';
-    const desc    = mediaData.repo + (esLocal && mediaData.tamañoLegible ? ' - ' + mediaData.tamañoLegible : '');
+    const av = esLocal ? 'PC' : 'GH';
+    const cr = esLocal ? 'Mi PC' : 'GitHub';
+    const desc = mediaData.repo + (esLocal && mediaData.tamañoLegible ? ' - ' + mediaData.tamañoLegible : '');
     const infoHTML = `<div class="pin-info"><div class="pin-title">${mediaData.nombre}</div><div class="pin-description">${desc}</div><div class="pin-creator"><div class="creator-avatar">${av}</div><div class="creator-name">${cr}</div></div></div>`;
 
     if (mediaData.tipo === 'video') {
@@ -1926,8 +1728,7 @@ class PintarestaGallery {
         const ob = new IntersectionObserver(e => { if (e[0].isIntersecting && img.dataset.src) { img.src = img.dataset.src; img.removeAttribute('data-src'); ob.unobserve(img); } });
         ob.observe(img);
       }
-      img.onclick  = e => { e.stopPropagation(); if (window.appEditorgioBasico?.parentElement) { window.appEditorgioBasico.setImage(img.src); window.appEditorgioBasico.openappf(); } };
-      img.onerror  = function() { this.style.background = '#f0f0f0'; this.alt = 'Error'; };
+      img.onclick = e => { e.stopPropagation(); if (window.appEditorgioBasico?.setImage) { window.appEditorgioBasico.setImage(img.src); window.appEditorgioBasico.openappf(); } };
     } else if (mediaData.tipo === 'model') {
       pin.innerHTML = `<div class="pin-image-container"><img class="pin-image model-thumb ${alt}" src="${ThreeModal.MODEL_THUMB}" alt="${mediaData.nombre}" loading="lazy"><div class="media-badge">3D MODEL</div><button class="save-btn">Guardar</button></div>${infoHTML}`;
       pin.querySelector('img').onclick = e => { e.stopPropagation(); ThreeModal.open(mediaData); };
@@ -1937,9 +1738,9 @@ class PintarestaGallery {
     if (saveBtn) saveBtn.onclick = e => {
       e.stopPropagation();
       const a = document.createElement('a');
-      a.href     = mediaData.url;
+      a.href = mediaData.url;
       a.download = mediaData.nombreCompleto || `${mediaData.nombre}${mediaData.extension}`;
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      a.click();
     };
     return pin;
   }
@@ -1953,39 +1754,36 @@ class PintarestaGallery {
     const total = Math.ceil(this.urlsFiltradas.length / this.imagenesPorLote);
     document.getElementById('btnBack').disabled = this.loteActual === 0;
     document.getElementById('btnNext').disabled = this.loteActual >= total - 1;
-    const i   = this.loteActual * this.imagenesPorLote + 1;
-    const f   = Math.min((this.loteActual + 1) * this.imagenesPorLote, this.urlsFiltradas.length);
-    const img = this.urlsFiltradas.filter(m => m.tipo === 'imagen').length;
-    const vid = this.urlsFiltradas.filter(m => m.tipo === 'video').length;
-    const mod = this.urlsFiltradas.filter(m => m.tipo === 'model').length;
-    document.getElementById('loteInfo').textContent = `${i}-${f} de ${this.urlsFiltradas.length} (IMG ${img} VID ${vid} 3D ${mod})`;
+    const i = this.loteActual * this.imagenesPorLote + 1;
+    const f = Math.min((this.loteActual + 1) * this.imagenesPorLote, this.urlsFiltradas.length);
+    document.getElementById('loteInfo').textContent = `${i}-${f} de ${this.urlsFiltradas.length}`;
   }
 
   mostrarLote() {
     const c = document.getElementById('pinsContainer');
     c.innerHTML = '';
     const archivos = this.obtenerLoteActual();
-    if (!archivos.length) { c.innerHTML = '<div style="text-align:center;padding:40px;color:#767676;grid-column:1/-1">No hay archivos</div>'; return; }
+    if (!archivos.length) { c.innerHTML = '<div style="text-align:center;padding:60px;color:#777;grid-column:1/-1">No hay archivos para mostrar</div>'; return; }
     const frag = document.createDocumentFragment();
     archivos.forEach(m => frag.appendChild(this.crearPinElement(m)));
     c.appendChild(frag);
     this.actualizarBotones();
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  window.appEditorgioBasico.cargarImagenesSimple(this.urlsFiltradas,true ); 
+    if (window.appEditorgioBasico?.cargarImagenesSimple) {
+      window.appEditorgioBasico.cargarImagenesSimple(this.urlsFiltradas, true);
+    }
   }
 
   filtrarMedia(q) {
     const b = q.toLowerCase().trim();
-    this.urlsFiltradas = b ? this.todasLasUrls.filter(m => m.nombre.toLowerCase().includes(b) || m.repo.toLowerCase().includes(b) || (m.tipo === 'model' && '3d model'.includes(b))) : [...this.todasLasUrls];
+    this.urlsFiltradas = b ? this.todasLasUrls.filter(m => m.nombre.toLowerCase().includes(b) || m.repo.toLowerCase().includes(b)) : [...this.todasLasUrls];
     this.loteActual = 0;
     this.mostrarLote();
-	 
   }
 
-  async siguienteLote() { if (this.loteActual < Math.ceil(this.urlsFiltradas.length / this.imagenesPorLote) - 1) { this.loteActual++; this.mostrarLote(); } }
-  async loteAnterior()  { if (this.loteActual > 0) { this.loteActual--; this.mostrarLote(); }  
-		 }
-  async recargar()      { this.loteActual = 0; await this.iniciar();  }
+  siguienteLote() { if (this.loteActual < Math.ceil(this.urlsFiltradas.length / this.imagenesPorLote) - 1) { this.loteActual++; this.mostrarLote(); } }
+  loteAnterior()  { if (this.loteActual > 0) { this.loteActual--; this.mostrarLote(); } }
+  async recargar() { this.loteActual = 0; await this.iniciar(); }
 
   async iniciar(repos = this.todosLosRepositorios) {
     const urls = await this.cargarRepositoriosEspecificos(repos);
@@ -1996,12 +1794,10 @@ class PintarestaGallery {
     const repo = this.todosLosRepositorios.find(r => r.id === categoryId);
     if (repo) {
       document.getElementById('pinsContainer').innerHTML = '';
-      this.todasLasUrls  = [];
+      this.todasLasUrls = [];
       this.urlsFiltradas = [];
-      this.loteActual    = 0;
+      this.loteActual = 0;
       await this.iniciar([repo]);
-    } else {
-      document.getElementById('pinsContainer').innerHTML = `<div style="text-align:center;padding:40px;color:#767676"><h3>Sin repositorio para "${categoryId}"</h3></div>`;
     }
   }
 }
@@ -2009,48 +1805,47 @@ class PintarestaGallery {
 document.addEventListener('DOMContentLoaded', () => {
   const g = new PintarestaGallery();
 
-  document.getElementById('btnLogo').onclick       = () => g.recargar();
-  document.getElementById('btnBack').onclick       = () => g.loteAnterior();
-  document.getElementById('btnNext').onclick       = () => g.siguienteLote();
-  document.getElementById('btnReload').onclick     = () => g.recargar();
-  document.getElementById('fileInput').onchange    = e => { if (e.target.files.length) g.cargarArchivosLocales(e.target.files); };
-  document.getElementById('btnViewJSON').onclick   = () => g.mostrarJSON();
+  document.getElementById('btnLogo').onclick = () => g.recargar();
+  document.getElementById('btnBack').onclick = () => g.loteAnterior();
+  document.getElementById('btnNext').onclick = () => g.siguienteLote();
+  document.getElementById('btnReload').onclick = () => g.recargar();
+  document.getElementById('fileInput').onchange = e => { if (e.target.files.length) g.cargarArchivosLocales(e.target.files); };
+  document.getElementById('btnViewJSON').onclick = () => g.mostrarJSON();
   document.getElementById('btnCloseModal').onclick = () => document.getElementById('modalJSON').classList.remove('active');
-  document.getElementById('btnCopyJSON').onclick   = () => g.copiarJSON();
+  document.getElementById('btnCopyJSON').onclick = () => g.copiarJSON();
   document.getElementById('btnDownloadJSON').onclick = () => g.descargarJSON();
-  document.getElementById('modalJSON').onclick     = e => { if (e.target === document.getElementById('modalJSON')) document.getElementById('modalJSON').classList.remove('active'); };
+  document.getElementById('modalJSON').onclick = e => { if (e.target === document.getElementById('modalJSON')) document.getElementById('modalJSON').classList.remove('active'); };
   
   document.getElementById('btnCloseVideo').onclick = () => VideoModal.close();
-  document.getElementById('modalVideo').onclick    = e => { if (e.target === document.getElementById('modalVideo')) VideoModal.close(); };
+  document.getElementById('modalVideo').onclick = e => { if (e.target === document.getElementById('modalVideo')) VideoModal.close(); };
   
-  document.getElementById('btnClose3D').onclick    = () => ThreeModal.close();
-  document.getElementById('modal3D').onclick       = e => { if (e.target === document.getElementById('modal3D')) ThreeModal.close(); };
+  document.getElementById('btnClose3D').onclick = () => ThreeModal.close();
+  document.getElementById('modal3D').onclick = e => { if (e.target === document.getElementById('modal3D')) ThreeModal.close(); };
 
   let t;
-  document.getElementById('searchInput').oninput = e => { clearTimeout(t); t = setTimeout(() => g.filtrarMedia(e.target.value), 300); };
+  document.getElementById('searchInput').oninput = e => { clearTimeout(t); t = setTimeout(() => g.filtrarMedia(e.target.value), 250); };
 
   document.addEventListener('keydown', e => {
-    if (document.getElementById('modal3D').classList.contains('active'))    { if (e.key === 'Escape') ThreeModal.close(); return; }
-    if (document.getElementById('modalVideo').classList.contains('active')) { if (e.key === 'Escape') VideoModal.close();  return; }
-    if (document.getElementById('modalJSON').classList.contains('active'))  { if (e.key === 'Escape') document.getElementById('modalJSON').classList.remove('active'); return; }
+    if (document.getElementById('modal3D').classList.contains('active')) { if (e.key === 'Escape') ThreeModal.close(); return; }
+    if (document.getElementById('modalVideo').classList.contains('active')) { if (e.key === 'Escape') VideoModal.close(); return; }
+    if (document.getElementById('modalJSON').classList.contains('active')) { if (e.key === 'Escape') document.getElementById('modalJSON').classList.remove('active'); return; }
     if (e.target.tagName === 'INPUT') return;
-    if      (e.key === 'ArrowLeft')          g.loteAnterior();
-    else if (e.key === 'ArrowRight')         g.siguienteLote();
-    else if (e.key === 'r' || e.key === 'R') g.recargar();
+    if (e.key === 'ArrowLeft') g.loteAnterior();
+    else if (e.key === 'ArrowRight') g.siguienteLote();
   });
 
-  document.getElementById('btnsuelos').onclick     = () => g.cargarCategoria('suelos');
-  document.getElementById('btscenes').onclick      = () => g.cargarCategoria('scenes');
-  document.getElementById('btnmaquinas').onclick   = () => g.cargarCategoria('maquinas');
-  document.getElementById('btnparedes').onclick    = () => g.cargarCategoria('iparedes');
-  document.getElementById('btmaderas').onclick     = () => g.cargarCategoria('idmaderas');
-  document.getElementById('btnmetales').onclick    = () => g.cargarCategoria('idmetales');
+  document.getElementById('btnsuelos').onclick = () => g.cargarCategoria('suelos');
+  document.getElementById('btscenes').onclick = () => g.cargarCategoria('scenes');
+  document.getElementById('btnmaquinas').onclick = () => g.cargarCategoria('maquinas');
+  document.getElementById('btnparedes').onclick = () => g.cargarCategoria('iparedes');
+  document.getElementById('btmaderas').onclick = () => g.cargarCategoria('idmaderas');
+  document.getElementById('btnmetales').onclick = () => g.cargarCategoria('idmetales');
   document.getElementById('btnNormalsmap').onclick = () => g.cargarCategoria('idnormals');
-  document.getElementById('btnidrepjob').onclick   = () => g.cargarCategoria('MESH3D');
+  document.getElementById('btnidrepjob').onclick = () => g.cargarCategoria('MESH3D');
 
   g.iniciar();
   window.galeriaPintaresta = g;
-}); 
+});
 </script>
 
 </body>
