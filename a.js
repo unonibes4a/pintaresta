@@ -341,7 +341,7 @@
                 box-shadow: var(--ui-shadow-panel);
                 position: absolute;
                 z-index: 100;
-                user-select: none;
+            /*     user-select: none; */
                 transition: border-color var(--ui-transition-fast), box-shadow var(--ui-transition-fast);
                 flex-shrink: 0;
                 margin: var(--ui-panel-margin);
@@ -482,7 +482,7 @@
                 font-weight: var(--ui-font-weight-medium); 
                 color: var(--ui-text-muted); 
                 white-space: nowrap; 
-                user-select: none; 
+           /*      user-select: none;  */
                 margin: var(--ui-label-margin);
             }
 
@@ -573,7 +573,7 @@
                 width: 100%;
                 min-width: 0; 
                 margin: var(--ui-input-margin);
-                user-select: none;
+              /*   user-select: none; */
             }
             .ui-select-trigger {
                 display: flex;
@@ -4257,7 +4257,7 @@
                     align-items: center;
                     justify-content: space-between;
                     padding: 0 12px;
-                    user-select: none;
+                    /* user-select: none; */
                     cursor: grab;
                 }
                 .ui-grid-card-header:active { cursor: grabbing; }
