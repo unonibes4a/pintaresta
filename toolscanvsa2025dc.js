@@ -1,6 +1,3 @@
-/* =========================================================================
-   ESTILOS BASE DEL EDITOR Y CONTENEDOR DE MINIATURAS
-   ========================================================================= */
 (function injectEditorStyles() {
   if (document.getElementById('editor-base-styles-gio')) return;
   const style = document.createElement('style');
@@ -26,7 +23,6 @@
       display: flex;
     }
 
-    /* BARRA LATERAL CONSTRUIDA CON TEMA UI */
     .giodefaultimgeditor-sidebar {
       width: 320px;
       height: 100%;
@@ -66,7 +62,6 @@
       background: repeating-conic-gradient(#1e1e1e 0% 25%, #141414 0% 50%) 50% / 20px 20px;
     }
 
-    /* CARRUSEL / MINISLIDER INFERIOR */
     .cldivcont {
       position: absolute;
       bottom: 12px;
@@ -131,11 +126,450 @@
   document.head.appendChild(style);
 })();
 
-/* =========================================================================
-   FILTROS TOTALMENTE ADAPTADOS AL MOTOR 'UI'
-   ========================================================================= */
+class FiltrosUnificados0920 {
+  constructor(canvas) {
+    this.canvas = typeof canvas === 'string' ? document.querySelector(canvas) : canvas;
+    if (!this.canvas) throw new Error('Se requiere un canvas válido.');
+    this.ctx = this.canvas.getContext('2d', { willReadFrequently: true });
+    this.originalImage = null;
+    this.aspectRatio = 1;
+  }
 
-// --- CARBON DRAWING ---
+  async cargarImagen(fuente) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        this.originalImage = img;
+        this.aspectRatio = img.width / img.height;
+        this.canvas.width = img.width;
+        this.canvas.height = img.height;
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.drawImage(img, 0, 0);
+        resolve(img);
+      };
+      img.onerror = reject;
+
+      if (fuente instanceof Blob) {
+        img.src = URL.createObjectURL(fuente);
+      } else if (typeof fuente === 'string') {
+        img.src = fuente;
+      } else if (fuente instanceof HTMLImageElement) {
+        img.src = fuente.src;
+      }
+    });
+  }
+
+  cambiarResolucion(ancho, alto, mantenerAspecto = false) {
+    if (!this.originalImage) return;
+    let w = ancho;
+    let h = alto;
+
+    if (mantenerAspecto) {
+      h = Math.round(w / this.aspectRatio);
+    }
+
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = this.canvas.width;
+    tempCanvas.height = this.canvas.height;
+    tempCanvas.getContext('2d').drawImage(this.canvas, 0, 0);
+
+    this.canvas.width = w;
+    this.canvas.height = h;
+    this.ctx.drawImage(tempCanvas, 0, 0, w, h);
+  }
+
+  centrarImagen(resolucion = 2048, margen = 45, colorFondo = '#000000') {
+    const tempCanvas = document.createElement('canvas');
+    const tempCtx = tempCanvas.getContext('2d');
+
+    tempCanvas.width = resolucion;
+    tempCanvas.height = resolucion;
+
+    tempCtx.fillStyle = colorFondo;
+    tempCtx.fillRect(0, 0, resolucion, resolucion);
+
+    const currentWidth = this.canvas.width;
+    const currentHeight = this.canvas.height;
+    const maxDimension = resolucion - (margen * 2);
+
+    let scaledWidth, scaledHeight;
+    if (currentWidth > currentHeight) {
+      scaledWidth = maxDimension;
+      scaledHeight = (currentHeight * maxDimension) / currentWidth;
+    } else {
+      scaledHeight = maxDimension;
+      scaledWidth = (currentWidth * maxDimension) / currentHeight;
+    }
+
+    const x = (resolucion - scaledWidth) / 2;
+    const y = (resolucion - scaledHeight) / 2;
+
+    tempCtx.drawImage(this.canvas, x, y, scaledWidth, scaledHeight);
+
+    this.canvas.width = resolucion;
+    this.canvas.height = resolucion;
+    this.ctx.clearRect(0, 0, resolucion, resolucion);
+    this.ctx.drawImage(tempCanvas, 0, 0);
+  }
+
+  aplicarFiltrosBasicos({ brillo = 100, contraste = 100, saturacion = 100, tono = 0, blur = 0 } = {}) {
+    if (!this.originalImage) return;
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = this.canvas.width;
+    tempCanvas.height = this.canvas.height;
+    tempCanvas.getContext('2d').drawImage(this.canvas, 0, 0);
+
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.filter = `brightness(${brillo}%) contrast(${contraste}%) saturate(${saturacion}%) hue-rotate(${tono}deg) blur(${blur}px)`;
+    this.ctx.drawImage(tempCanvas, 0, 0);
+    this.ctx.filter = 'none';
+  }
+
+  mejorarImagen() {
+    if (!this.originalImage) return;
+
+    const tempCanvas = document.createElement('canvas');
+    const tempCtx = tempCanvas.getContext('2d');
+    tempCanvas.width = this.canvas.width * 2;
+    tempCanvas.height = this.canvas.height * 2;
+
+    tempCtx.imageSmoothingEnabled = true;
+    tempCtx.imageSmoothingQuality = 'high';
+    tempCtx.filter = 'contrast(110%) brightness(105%) saturate(110%)';
+    tempCtx.drawImage(this.canvas, 0, 0, tempCanvas.width, tempCanvas.height);
+
+    this.canvas.width = tempCanvas.width;
+    this.canvas.height = tempCanvas.height;
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.drawImage(tempCanvas, 0, 0);
+  }
+
+  fillBlack() {
+    const tempCanvas = document.createElement('canvas');
+    const tempCtx = tempCanvas.getContext('2d');
+    tempCanvas.width = this.canvas.width;
+    tempCanvas.height = this.canvas.height;
+    tempCtx.fillStyle = '#000000';
+    tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+    tempCtx.drawImage(this.canvas, 0, 0);
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.drawImage(tempCanvas, 0, 0);
+  }
+
+  async removerFondo(onProgress = null) {
+    const { removeBackground } = await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.6.0/+esm');
+    const blob = await new Promise(res => this.canvas.toBlob(res, 'image/png'));
+    const blobResult = await removeBackground(blob, {
+      progress: (k, curr, tot) => {
+        if (onProgress) onProgress(curr, tot);
+      }
+    });
+    await this.cargarImagen(blobResult);
+  }
+
+  filtroNoFunciona(paso2 = false, sum = 0.1) {
+    let imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+    let data = imageData.data;
+    let rgba = { r: 0, g: 0, b: 0 };
+
+    for (let i = 0; i < data.length; i += 4) {
+      rgba.r = data[i] / 255;
+      rgba.g = data[i + 1] / 255;
+      rgba.b = data[i + 2] / 255;
+      let maxpx = Math.max(rgba.r, rgba.g, rgba.b);
+
+      if (!paso2) {
+        this._operacionMatematica(rgba, this._simpleLinealFuncion(1, -0.3, 0, sum, maxpx), "+");
+        for (let i2 = 0; i2 < 2; i2++) {
+          let dv = this._colorDivide(rgba);
+          this._saturationGio(rgba, 0.5 - dv);
+        }
+      } else {
+        this._operacionMatematica(rgba, this._simpleLinealFuncion(1, 0.67, 0, 1.5, this._limit(maxpx * 2, 0, 1)), "*");
+        this._operacionMatematica(rgba, (1 - maxpx) * (0.1 + sum) * maxpx, "+");
+        for (let i2 = 0; i2 < 2; i2++) {
+          let dv = this._colorDivide(rgba);
+          this._saturationGio(rgba, 0.5 - dv);
+        }
+      }
+
+      data[i] = rgba.r * 255;
+      data[i + 1] = rgba.g * 255;
+      data[i + 2] = rgba.b * 255;
+    }
+
+    this.ctx.putImageData(imageData, 0, 0);
+  }
+
+  meshPaintColor(noEsParaBlender = false) {
+    let imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+    let data = imageData.data;
+    let rgba = { r: 0, g: 0, b: 0 };
+
+    for (let i = 0; i < data.length; i += 4) {
+      rgba.r = data[i] / 255;
+      rgba.g = data[i + 1] / 255;
+      rgba.b = data[i + 2] / 255;
+
+      if (noEsParaBlender) {
+        let maxpx = Math.max(rgba.r, rgba.g, rgba.b);
+        this._operacionMatematica(rgba, this._simpleLinealFuncion(1, 0, 0, 0.2, maxpx), "+");
+        let dv = this._colorDivide(rgba);
+        this._saturationGio(rgba, 0.5 - dv);
+        maxpx = Math.max(rgba.r, rgba.g, rgba.b);
+        if (maxpx > 0.67) {
+          this._operacionMatematica(rgba, 0.67 / (maxpx + 0.000001), "*");
+        }
+        dv = this._colorDivide(rgba);
+        this._saturationGio(rgba, -dv * 0.3);
+      } else {
+        let maxpx = Math.max(rgba.r, rgba.g, rgba.b);
+        this._operacionMatematica(rgba, (1 - maxpx) * 0.2 * maxpx, "+");
+        maxpx = Math.max(rgba.r, rgba.g, rgba.b);
+        this._operacionMatematica(rgba, (1 - maxpx) * 0.2 * maxpx, "+");
+        maxpx = Math.max(rgba.r, rgba.g, rgba.b);
+        this._operacionMatematica(rgba, (maxpx) * 0.2 * -maxpx, "+");
+      }
+
+      data[i] = rgba.r * 255;
+      data[i + 1] = rgba.g * 255;
+      data[i + 2] = rgba.b * 255;
+    }
+
+    this.ctx.putImageData(imageData, 0, 0);
+  }
+
+  colorPasoColor3DMesh(esMultiplicacion = true) {
+    let imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+    let data = imageData.data;
+    let rgba = { r: 0, g: 0, b: 0 };
+
+    for (let i = 0; i < data.length; i += 4) {
+      rgba.r = data[i] / 255;
+      rgba.g = data[i + 1] / 255;
+      rgba.b = data[i + 2] / 255;
+      let maxpx = Math.max(rgba.r, rgba.g, rgba.b);
+
+      if (esMultiplicacion) {
+        this._operacionMatematica(rgba, this._simpleLinealFuncion(1, 0.7, 0, 0.09, maxpx) / (maxpx + 0.000001), "*");
+      } else {
+        this._operacionMatematica(rgba, 0.05, "+");
+        maxpx = Math.max(rgba.r, rgba.g, rgba.b);
+        if (maxpx > 0.5) {
+          this._operacionMatematica(rgba, 0.5 / (maxpx + 0.00001), "*");
+        }
+        let dv = this._colorDivide(rgba);
+        this._saturationGio(rgba, 0.3 - dv);
+        dv = this._colorDivide(rgba);
+        this._saturationGio(rgba, 0.3 - dv);
+      }
+
+      data[i] = rgba.r * 255;
+      data[i + 1] = rgba.g * 255;
+      data[i + 2] = rgba.b * 255;
+    }
+
+    this.ctx.putImageData(imageData, 0, 0);
+  }
+
+  saturacionIdeal() {
+    let imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+    let data = imageData.data;
+    let rgba = { r: 0, g: 0, b: 0 };
+
+    for (let i = 0; i < data.length; i += 4) {
+      rgba.r = data[i] / 255;
+      rgba.g = data[i + 1] / 255;
+      rgba.b = data[i + 2] / 255;
+      let maxpx = Math.max(rgba.r, rgba.g, rgba.b);
+      this._operacionMatematica(rgba, this._simpleLinealFuncion(1, 0.7, 0.0, 1.25, maxpx), "*");
+      let dv = this._colorDivide(rgba);
+      this._saturationGio(rgba, 0.28 - dv);
+      data[i] = rgba.r * 255;
+      data[i + 1] = rgba.g * 255;
+      data[i + 2] = rgba.b * 255;
+    }
+
+    this.ctx.putImageData(imageData, 0, 0);
+  }
+
+  crearNormalMap({ bias = 10, strength = 50, invert = false, useRed = true, useGreen = true } = {}) {
+    const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+    const data = imageData.data;
+    const newData = new Uint8ClampedArray(data.length);
+
+    const b = parseFloat(bias) / 100.0;
+    const s = parseFloat(strength) / 10.0;
+    const invR = invert ? -1.0 : 1.0;
+    const invG = invert ? -1.0 : 1.0;
+
+    const getR = (x, y) => {
+      if (x < 0 || x >= this.canvas.width || y < 0 || y >= this.canvas.height) return 0;
+      return data[(y * this.canvas.width + x) * 4];
+    };
+
+    for (let y = 0; y < this.canvas.height; y++) {
+      for (let x = 0; x < this.canvas.width; x++) {
+        const idx = (y * this.canvas.width + x) * 4;
+
+        const d1 = getR(x + 1, y) / 255.0;
+        const d2 = getR(x - 1, y) / 255.0;
+        const d3 = getR(x, y + 1) / 255.0;
+        const d4 = getR(x, y - 1) / 255.0;
+
+        let dx = (d2 - d1) * s * invR;
+        let dy = (d4 - d3) * s * invG;
+        const dz = 1.0 / Math.max(b, 0.01);
+
+        const len = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        const nx = dx / len;
+        const ny = dy / len;
+        const nz = dz / len;
+
+        newData[idx] = useRed ? Math.floor(Math.max(0, Math.min(255, (nx * 0.5 + 0.5) * 255))) : data[idx];
+        newData[idx + 1] = useGreen ? Math.floor(Math.max(0, Math.min(255, (ny * 0.5 + 0.5) * 255))) : data[idx + 1];
+        newData[idx + 2] = Math.floor(Math.max(0, Math.min(255, (nz * 0.5 + 0.5) * 255)));
+        newData[idx + 3] = 255;
+      }
+    }
+    this.ctx.putImageData(new ImageData(newData, this.canvas.width, this.canvas.height), 0, 0);
+  }
+
+  rotar(grados = 90) {
+    const rad = (grados * Math.PI) / 180;
+    const sin = Math.abs(Math.sin(rad));
+    const cos = Math.abs(Math.cos(rad));
+
+    const w = this.canvas.width;
+    const h = this.canvas.height;
+    const newW = Math.floor(w * cos + h * sin);
+    const newH = Math.floor(h * cos + w * sin);
+
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = newW;
+    tempCanvas.height = newH;
+    const tempCtx = tempCanvas.getContext('2d');
+
+    tempCtx.translate(newW / 2, newH / 2);
+    tempCtx.rotate(rad);
+    tempCtx.drawImage(this.canvas, -w / 2, -h / 2);
+
+    this.canvas.width = newW;
+    this.canvas.height = newH;
+    this.ctx.clearRect(0, 0, newW, newH);
+    this.ctx.drawImage(tempCanvas, 0, 0);
+  }
+
+  espejar(horizontal = true, vertical = false) {
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = this.canvas.width;
+    tempCanvas.height = this.canvas.height;
+    tempCanvas.getContext('2d').drawImage(this.canvas, 0, 0);
+
+    this.ctx.save();
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.scale(horizontal ? -1 : 1, vertical ? -1 : 1);
+    this.ctx.drawImage(
+      tempCanvas,
+      horizontal ? -this.canvas.width : 0,
+      vertical ? -this.canvas.height : 0
+    );
+    this.ctx.restore();
+  }
+
+  autoCrop(toleranciaAlfa = 0) {
+    const w = this.canvas.width;
+    const h = this.canvas.height;
+    const data = this.ctx.getImageData(0, 0, w, h).data;
+
+    let minX = w, minY = h, maxX = 0, maxY = 0;
+    let encontrado = false;
+
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const alpha = data[(y * w + x) * 4 + 3];
+        if (alpha > toleranciaAlfa) {
+          if (x < minX) minX = x;
+          if (x > maxX) maxX = x;
+          if (y < minY) minY = y;
+          if (y > maxY) maxY = y;
+          encontrado = true;
+        }
+      }
+    }
+
+    if (!encontrado) return;
+
+    const cropW = maxX - minX + 1;
+    const cropH = maxY - minY + 1;
+    const cutData = this.ctx.getImageData(minX, minY, cropW, cropH);
+
+    this.canvas.width = cropW;
+    this.canvas.height = cropH;
+    this.ctx.putImageData(cutData, 0, 0);
+  }
+
+  restablecer() {
+    if (!this.originalImage) return;
+    this.canvas.width = this.originalImage.width;
+    this.canvas.height = this.originalImage.height;
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.drawImage(this.originalImage, 0, 0);
+  }
+
+  descargar(nombreArchivo = 'imagen-procesada.png', tipo = 'image/png') {
+    const enlace = document.createElement('a');
+    enlace.download = nombreArchivo;
+    enlace.href = this.canvas.toDataURL(tipo);
+    enlace.click();
+  }
+
+  _saturationGio(tex_color, ec5) {
+    const valLim = x => Math.max(0.0, Math.min(1.0, x));
+    const maxx = Math.max(tex_color.r, tex_color.g, tex_color.b);
+    if (tex_color.r !== maxx) tex_color.r += (maxx - tex_color.r) * ec5;
+    if (tex_color.g !== maxx) tex_color.g += (maxx - tex_color.g) * ec5;
+    if (tex_color.b !== maxx) tex_color.b += (maxx - tex_color.b) * ec5;
+    tex_color.r = valLim(tex_color.r);
+    tex_color.g = valLim(tex_color.g);
+    tex_color.b = valLim(tex_color.b);
+    return tex_color;
+  }
+
+  _colorDivide(c) {
+    return (Math.min(c.r, c.g, c.b)) / (Math.max(c.r, c.g, c.b) + 0.000001);
+  }
+
+  _simpleLinealFuncion(x1, y1, x2, y2, val) {
+    let dx = (x2 - x1) + 0.00001;
+    let m = (y2 - y1) / dx;
+    return m * val + (y2 - m * x2);
+  }
+
+  _limit(num, min = 0.0, max = 1.0) {
+    return Math.max(min, Math.min(max, num));
+  }
+
+  _operacionMatematica(rgba, val, operacion) {
+    const v = x => Math.max(0, Math.min(1, x));
+    if (operacion === "*" || operacion === "multiplicar") {
+      rgba.r = v(rgba.r * val);
+      rgba.g = v(rgba.g * val);
+      rgba.b = v(rgba.b * val);
+    } else if (operacion === "+") {
+      rgba.r = v(rgba.r + val);
+      rgba.g = v(rgba.g + val);
+      rgba.b = v(rgba.b + val);
+    } else if (operacion === "pow" || operacion === "potencia") {
+      rgba.r = v(Math.pow(rgba.r, val));
+      rgba.g = v(Math.pow(rgba.g, val));
+      rgba.b = v(Math.pow(rgba.b, val));
+    }
+    return rgba;
+  }
+}
+
 class CarbonDrawingFilter {
   constructor(canvas, onUpdate, accordion) {
     this.canvas = canvas;
@@ -352,7 +786,6 @@ class CarbonDrawingFilter {
   }
 }
 
-// --- ESCALA DE GRISES & SATURACIÓN ---
 class EscalaDeGrisFilter {
   constructor(canvas, onUpdate, accordion) {
     this.canvas = canvas;
@@ -390,7 +823,6 @@ class EscalaDeGrisFilter {
   }
 }
 
-// --- NORMAL MAP ---
 class NormalMapFilter {
   constructor(canvas, onUpdate, accordion) {
     this.canvas = canvas;
@@ -523,7 +955,6 @@ class NormalMapFilter {
   }
 }
 
-// --- STREAKS BLOOM ---
 class StreaksBloomFilter {
   constructor(canvas, onUpdate, accordion) {
     this.canvas = canvas;
@@ -617,7 +1048,6 @@ class StreaksBloomFilter {
   }
 }
 
-// --- PIXEL ART ---
 class PixelArtFilter {
   constructor(canvas, onUpdate, accordion) {
     this.canvas = canvas;
@@ -675,10 +1105,145 @@ class PixelArtFilter {
   }
 }
 
-// --- GLFX GPU ---
- /* =========================================================================
-   CARGA OFICIAL DE GLFX.JS
-   ========================================================================= */
+class UnifiedToolboxFilter {
+  constructor(canvas, onUpdate, accordion) {
+    this.canvas = canvas;
+    this.onUpdate = onUpdate;
+    this.fu = new FiltrosUnificados0920(this.canvas);
+    this.item = accordion.addItem({ title: 'Filtros Unificados 0920', open: false });
+
+    this.btnCentrar = new UIButton({
+      text: 'Centrar Imagen',
+      onClick: () => {
+        const resolution = parseInt(prompt('Ingresa la resolución de salida:', '2048'));
+        if (isNaN(resolution) || resolution <= 0) {
+          alert('Por favor, ingresa una resolución válida.');
+          return;
+        }
+
+        const margin = parseInt(prompt('Ingresa el margen de centrado (en píxeles):', '45'));
+        if (isNaN(margin) || margin < 0) {
+          alert('Por favor, ingresa un margen válido.');
+          return;
+        }
+
+        const colorFondo = confirm("background white") ? '#ffffff' : '#000000';
+        this.fu.centrarImagen(resolution, margin, colorFondo);
+        this.onUpdate();
+
+        setTimeout(() => {
+          if (confirm("lineal saturacion")) {
+            this.fu.saturacionIdeal();
+            this.onUpdate();
+          }
+        }, 500);
+      }
+    });
+
+    this.btnFillBlack = new UIButton({
+      text: 'Fill Black',
+      onClick: () => {
+        this.fu.fillBlack();
+        this.onUpdate();
+      }
+    });
+
+    this.btnMejorar = new UIButton({
+      text: 'Mejorar Imagen (x2)',
+      onClick: () => {
+        this.fu.mejorarImagen();
+        this.onUpdate();
+      }
+    });
+
+    this.btnPasoMeshPaint = new UIButton({
+      text: 'paint3d272025Ymesh3d',
+      onClick: () => {
+        const vuelta = confirm("no espara blender");
+        this.fu.meshPaintColor(vuelta);
+        this.onUpdate();
+      }
+    });
+
+    this.btnPasoColor3D = new UIButton({
+      text: 'imgTo3dmeshCreator',
+      onClick: () => {
+        const mul = confirm("sum");
+        this.fu.colorPasoColor3DMesh(mul);
+        this.onUpdate();
+      }
+    });
+
+    this.btnFiltroGioP1 = new UIButton({
+      text: 'nofunciona',
+      onClick: () => {
+        const paso2 = confirm("mesh creator calcelar paint");
+        const sum = parseFloat(prompt("suma", "0.1"));
+        this.fu.filtroNoFunciona(paso2, isNaN(sum) ? 0.1 : sum);
+        this.onUpdate();
+      }
+    });
+
+    this.btnRemoverFondo = new UIButton({
+      text: 'Remover Fondo (IA)',
+      variant: 'secondary',
+      onClick: async () => {
+        await this.fu.removerFondo();
+        this.onUpdate();
+      }
+    });
+
+    this.btnRotar = new UIButton({
+      text: 'Rotar 90°',
+      onClick: () => {
+        this.fu.rotar(90);
+        this.onUpdate();
+      }
+    });
+
+    this.btnEspejoH = new UIButton({
+      text: 'Espejar H',
+      onClick: () => {
+        this.fu.espejar(true, false);
+        this.onUpdate();
+      }
+    });
+
+    this.btnAutoCrop = new UIButton({
+      text: 'Auto Crop',
+      onClick: () => {
+        this.fu.autoCrop(0);
+        this.onUpdate();
+      }
+    });
+
+    this.btnRestablecer = new UIButton({
+      text: 'Restablecer Base',
+      variant: 'danger',
+      onClick: () => {
+        this.fu.restablecer();
+        this.onUpdate();
+      }
+    });
+
+    this.item.append(this.btnCentrar);
+    this.item.append(this.btnFillBlack);
+    this.item.append(this.btnMejorar);
+    this.item.append(this.btnPasoMeshPaint);
+    this.item.append(this.btnPasoColor3D);
+    this.item.append(this.btnFiltroGioP1);
+    this.item.append(this.btnRemoverFondo);
+    this.item.append(this.btnRotar);
+    this.item.append(this.btnEspejoH);
+    this.item.append(this.btnAutoCrop);
+    this.item.append(this.btnRestablecer);
+  }
+
+  setImage(img) {
+    this.fu.cargarImagen(img);
+  }
+}
+
 function loadGLFX2025() {
   if (window.fx) return;
   const script = document.createElement('script');
@@ -689,9 +1254,6 @@ function loadGLFX2025() {
 }
 loadGLFX2025();
 
-/* =========================================================================
-   GESTOR GLFX CON LOS 19 FILTROS COMPLETOS (MOTOR UI)
-   ========================================================================= */
 class GLFXFilterManager {
   constructor(onUpdate, accordion) {
     this.onUpdate = onUpdate;
@@ -701,9 +1263,7 @@ class GLFXFilterManager {
     this.glfxCanvas = null;
     this.glfxTexture = null;
 
-    // LISTA COMPLETA ORIGINAL DE LOS 19 FILTROS
     this.filterDefinitions = {
-      // --- ADJUST ---
       'brightnessContrast': {
         name: 'Brightness / Contrast',
         category: 'Ajustes',
@@ -764,8 +1324,6 @@ class GLFXFilterManager {
           { id: 'amount', label: 'Cantidad', min: 0, max: 1, default: 0.5, step: 0.01 }
         ]
       },
-
-      // --- BLUR ---
       'zoomBlur': {
         name: 'Zoom Blur',
         category: 'Blur',
@@ -803,8 +1361,6 @@ class GLFXFilterManager {
           { id: 'angle', label: 'Ángulo', min: 0, max: 6.28, default: 0, step: 0.01 }
         ]
       },
-
-      // --- WARP ---
       'swirl': {
         name: 'Swirl',
         category: 'Warp',
@@ -825,8 +1381,6 @@ class GLFXFilterManager {
           { id: 'strength', label: 'Fuerza', min: -1, max: 1, default: 0.5, step: 0.01 }
         ]
       },
-
-      // --- FUN ---
       'ink': {
         name: 'Ink',
         category: 'Efectos',
@@ -878,7 +1432,6 @@ class GLFXFilterManager {
   initUI(accordion) {
     this.item = accordion.addItem({ title: 'Filtros GPU (GLFX)', open: false });
 
-    // Toggle para encender/apagar el motor GLFX
     this.toggle = new UIToggle({
       label: 'Activar Motor GLFX',
       value: false,
@@ -889,7 +1442,6 @@ class GLFXFilterManager {
     });
     this.item.append(this.toggle);
 
-    // Opciones del selector categorizadas
     const selectOptions = [{ value: '', label: '-- Selecciona un Filtro --' }];
     for (const [key, def] of Object.entries(this.filterDefinitions)) {
       selectOptions.push({
@@ -898,7 +1450,6 @@ class GLFXFilterManager {
       });
     }
 
-    // Selector usando el nuevo componente UISelect
     this.select = new UISelect({
       options: selectOptions,
       value: '',
@@ -906,7 +1457,6 @@ class GLFXFilterManager {
     });
     this.item.append(this.select);
 
-    // Contenedor dinámico donde se montarán los UIConfigurableSlider
     this.dynamicControls = document.createElement('div');
     this.dynamicControls.style.display = 'flex';
     this.dynamicControls.style.flexDirection = 'column';
@@ -927,7 +1477,6 @@ class GLFXFilterManager {
 
     const def = this.filterDefinitions[key];
 
-    // Creación dinámica de cada slider usando UIConfigurableSlider
     def.params.forEach(p => {
       const slider = new UIConfigurableSlider({
         label: p.label,
@@ -978,7 +1527,6 @@ class GLFXFilterManager {
       const def = this.filterDefinitions[this.currentFilter];
       if (!def) return sourceCanvas;
 
-      // Cálculo idéntico al original: convierte coordenadas relativas a absolutas
       const params = def.params.map(p => {
         const val = this.controls[p.id] ? this.controls[p.id].getValue() : p.default;
 
@@ -991,7 +1539,6 @@ class GLFXFilterManager {
         }
       });
 
-      // Ejecución del shader correspondiente en WebGL
       this.glfxCanvas[this.currentFilter](...params);
       this.glfxCanvas.update();
 
@@ -1002,9 +1549,7 @@ class GLFXFilterManager {
     }
   }
 }
-/* =========================================================================
-   GESTOR GENERAL DE FILTROS & PIPELINE
-   ========================================================================= */
+
 class FilterManager {
   constructor(canvas, parentAccordion, onUpdate) {
     this.canvas = canvas;
@@ -1012,6 +1557,7 @@ class FilterManager {
     this.onUpdateCallback = onUpdate;
     this.originalImage = null;
 
+    this.unifiedToolbox = new UnifiedToolboxFilter(this.canvas, () => this.updateCanvas(false), parentAccordion);
     this.escalaDeGrisFilter = new EscalaDeGrisFilter(this.canvas, () => this.updateCanvas(), parentAccordion);
     this.carbonFilter = new CarbonDrawingFilter(this.canvas, () => this.updateCanvas(), parentAccordion);
     this.normalMapFilter = new NormalMapFilter(this.canvas, () => this.updateCanvas(), parentAccordion);
@@ -1024,14 +1570,16 @@ class FilterManager {
     this.originalImage = img;
     this.canvas.width = img.width;
     this.canvas.height = img.height;
+    this.unifiedToolbox.setImage(img);
     this.updateCanvas();
   }
 
-  updateCanvas() {
-    if (!this.originalImage) return;
-
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.drawImage(this.originalImage, 0, 0);
+  updateCanvas(redrawOriginal = true) {
+    if (redrawOriginal) {
+      if (!this.originalImage) return;
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.ctx.drawImage(this.originalImage, 0, 0);
+    }
 
     let imgData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
 
@@ -1054,10 +1602,6 @@ class FilterManager {
   }
 }
 
-/* =========================================================================
-   APLICACIÓN PRINCIPAL: AppEditorDefaultImg
-   (TODOS TUS MÉTODOS Y EVENTOS CONECTADOS A LOS COMPONENTES 'UI')
-   ========================================================================= */
 class AppEditorDefaultImg {
   constructor(idGenerico = 'app1', textEdi = 'Gio', event = {}) {
     UI.Theme.inject();
@@ -1068,13 +1612,11 @@ class AppEditorDefaultImg {
     this.currenurlHover = "";
     this.arrayImgs = [];
 
-    // Contenedor soporte modal
     this.parentElement = document.createElement("div");
     this.parentElement.id = idGenerico + "idSoporteApp";
     this.parentElement.classList.add('aps');
     document.body.appendChild(this.parentElement);
 
-    // Estructura DOM
     this.parentElement.innerHTML = `
       <div class="giodefaultimgeditor-app-container">
         <button class="ui-square-btn giodefaultimgeditor-hamburger-btn" id="${this.idGenerico}_hamburger_btn">☰</button>
@@ -1104,7 +1646,6 @@ class AppEditorDefaultImg {
     this.contenedorimgsl = document.getElementById(`${this.idGenerico}minislider`);
     this.fileInput = document.getElementById(`${this.idGenerico}_file_input`);
 
-    // Botones con componentes UI
     const actionsContainer = document.getElementById(`${this.idGenerico}_action_buttons`);
     
     this.btnUpload = new UIButton({
@@ -1131,14 +1672,11 @@ class AppEditorDefaultImg {
     document.getElementById(`${this.idGenerico}_btn_close_header`).addEventListener('click', () => this.closeappf());
     this.hamburgerBtn.addEventListener('click', () => this.toggleSidebar());
 
-    // Acordeón UI para filtros
     this.accordion = new UIAccordion({ exclusive: true });
     this.accordion.mount(document.getElementById(`${this.idGenerico}_filters_accordion`));
 
-    // Gestor de Filtros
     this.filterManager = new FilterManager(this.canvas, this.accordion);
 
-    // Eventos Drag & Drop / File Input
     this.fileInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (file) this.loadImageFromFile(file);
@@ -1155,7 +1693,6 @@ class AppEditorDefaultImg {
       }
     });
 
-    // EVENTOS DEL MINISLIDER / CARRUSEL
     if (this.contenedorimgsl) {
       this.contenedorimgsl.addEventListener('mouseover', (event) => {
         if (event.target.tagName === 'IMG') {
@@ -1172,8 +1709,6 @@ class AppEditorDefaultImg {
 
     this._initResponsive();
   }
-
-  /* ===== TUS MÉTODOS TOTALMENTE PRESERVADOS ===== */
 
   cargarImagenes(listaImagenes) {
     var contenedor = this.contenedorimgsl;
@@ -1213,7 +1748,6 @@ class AppEditorDefaultImg {
   }
 
   onOpenEditor = (e) => {
-    // Hook personalizable
   }
 
   closeappf = (e) => {
@@ -1291,9 +1825,6 @@ class AppEditorDefaultImg {
   }
 }
 
-/* =========================================================================
-   INICIALIZACIÓN GLOBAL
-   ========================================================================= */
 window.appEditorgioBasico = null;
 document.addEventListener('DOMContentLoaded', () => {
   window.appEditorgioBasico = new AppEditorDefaultImg('app1', 'Gio');
