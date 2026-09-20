@@ -1140,42 +1140,22 @@ class UnifiedToolboxFilter {
       }
     });
 
-    this.btnFillBlack = new UIButton({
-      text: 'Fill Black',
-      onClick: () => {
-        this.fu.fillBlack();
-        this.onUpdate();
-      }
-    });
+   
 
     this.btnMejorar = new UIButton({
-      text: 'Mejorar Imagen (x2)',
+      text: 'Mejorar Imagen ',
       onClick: () => {
         this.fu.mejorarImagen();
         this.onUpdate();
       }
     });
 
-    this.btnPasoMeshPaint = new UIButton({
-      text: 'paint3d272025Ymesh3d',
-      onClick: () => {
-        const vuelta = confirm("no espara blender");
-        this.fu.meshPaintColor(vuelta);
-        this.onUpdate();
-      }
-    });
+ 
 
-    this.btnPasoColor3D = new UIButton({
-      text: 'imgTo3dmeshCreator',
-      onClick: () => {
-        const mul = confirm("sum");
-        this.fu.colorPasoColor3DMesh(mul);
-        this.onUpdate();
-      }
-    });
+ 
 
     this.btnFiltroGioP1 = new UIButton({
-      text: 'nofunciona',
+      text: 'img to hunyuan',
       onClick: () => {
         const paso2 = confirm("mesh creator calcelar paint");
         const sum = parseFloat(prompt("suma", "0.1"));
@@ -1201,13 +1181,7 @@ class UnifiedToolboxFilter {
       }
     });
 
-    this.btnEspejoH = new UIButton({
-      text: 'Espejar H',
-      onClick: () => {
-        this.fu.espejar(true, false);
-        this.onUpdate();
-      }
-    });
+  
 
     this.btnAutoCrop = new UIButton({
       text: 'Auto Crop',
@@ -1226,15 +1200,11 @@ class UnifiedToolboxFilter {
       }
     });
 
-    this.item.append(this.btnCentrar);
-    this.item.append(this.btnFillBlack);
-    this.item.append(this.btnMejorar);
-    this.item.append(this.btnPasoMeshPaint);
-    this.item.append(this.btnPasoColor3D);
+    this.item.append(this.btnCentrar); 
+    this.item.append(this.btnMejorar); 
     this.item.append(this.btnFiltroGioP1);
     this.item.append(this.btnRemoverFondo);
-    this.item.append(this.btnRotar);
-    this.item.append(this.btnEspejoH);
+    this.item.append(this.btnRotar); 
     this.item.append(this.btnAutoCrop);
     this.item.append(this.btnRestablecer);
   }
@@ -1605,6 +1575,7 @@ class FilterManager {
 class AppEditorDefaultImg {
   constructor(idGenerico = 'app1', textEdi = 'Gio', event = {}) {
     UI.Theme.inject();
+    this.boolactHover=false;
 
     this.idGenerico = idGenerico;
     this.textoedi = textEdi;
@@ -1645,6 +1616,15 @@ class AppEditorDefaultImg {
     this.canvas = document.getElementById(`${this.idGenerico}_canvas`);
     this.contenedorimgsl = document.getElementById(`${this.idGenerico}minislider`);
     this.fileInput = document.getElementById(`${this.idGenerico}_file_input`);
+    const chk = new UICheckbox({
+    label: 'activar Hover',
+    checked: false,
+    onChange: (valor, instancia) => {
+      this.boolactHover= valor;
+    }
+}); 
+ 
+chk.mount(this.sidebar);
 
     const actionsContainer = document.getElementById(`${this.idGenerico}_action_buttons`);
     
@@ -1695,7 +1675,7 @@ class AppEditorDefaultImg {
 
     if (this.contenedorimgsl) {
       this.contenedorimgsl.addEventListener('mouseover', (event) => {
-        if (event.target.tagName === 'IMG') {
+        if (event.target.tagName === 'IMG' && this.boolactHover) {
           this.setImageHover(event.target.src);
         }
       });
