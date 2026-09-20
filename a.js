@@ -13,1195 +13,1403 @@
     }
 
     class UITheme {
-    static set(themeObj = {}) {
-        const root = document.documentElement;
-        if (!root || typeof themeObj !== 'object') return;
-
-        for (let [key, val] of Object.entries(themeObj)) {
-            if (val === undefined || val === null) continue;
-            let cssVar = key.trim();
-            if (!cssVar.startsWith('--')) {
-                cssVar = cssVar.startsWith('ui-') ? `--${cssVar}` : `--ui-${cssVar}`;
+        static set(themeObj = {}) {
+            const root = document.documentElement;
+            if (!root || typeof themeObj !== 'object') return;
+            for (let [key, val] of Object.entries(themeObj)) {
+                if (val === undefined || val === null) continue;
+                let cssVar = key.trim();
+                if (!cssVar.startsWith('--')) {
+                    cssVar = cssVar.startsWith('ui-') ? `--${cssVar}` : `--ui-${cssVar}`;
+                }
+                root.style.setProperty(cssVar, String(val).trim());
             }
-            root.style.setProperty(cssVar, String(val).trim());
+        }
+
+        static inject() {
+            if (document.getElementById('ui-core-library-theme')) return;
+            const style = document.createElement('style');
+            style.id = 'ui-core-library-theme';
+            style.textContent = `
+                :root {
+                    /* ===== MÁRGENES & ESPACIADOS (CARD BASELINE 290px) ===== */
+                    --ui-margin-top: 4px;
+                    --ui-margin-right: 4px;
+                    --ui-margin-bottom: 4px;
+                    --ui-margin-left: 4px;
+                    --ui-margin: var(--ui-margin-top) var(--ui-margin-right) var(--ui-margin-bottom) var(--ui-margin-left);
+                    --ui-panel-margin: var(--ui-margin);
+                    --ui-row-margin: var(--ui-margin-top) 0px var(--ui-margin-bottom) 0px;
+                    --ui-btn-margin: 0px;
+                    --ui-input-margin: 0px;
+                    --ui-label-margin: 0px;
+                    --ui-slider-margin: var(--ui-margin);
+                    --ui-accordion-margin: var(--ui-margin);
+                    --ui-info-margin: var(--ui-margin);
+                    --ui-table-margin: var(--ui-margin);
+                    --ui-list-margin: var(--ui-margin);
+                    --ui-list-item-margin: 3px 0px;
+                    --ui-modal-item-margin: 3px 0px;
+                    --ui-container-padding: 8px;
+                    --ui-container-gap: 8px;
+                    --ui-panel-body-padding: 10px;
+                    --ui-panel-body-gap: 8px;
+
+                    /* ===== TIPOGRAFÍAS ===== */
+                    --ui-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                    --ui-font-family-mono: "SF Mono", Menlo, Consolas, monospace;
+                    --ui-font-weight-normal: 400;
+                    --ui-font-weight-medium: 500;
+                    --ui-font-weight-semibold: 600;
+                    --ui-font-weight-bold: 700;
+
+                    --ui-font-size-badge: 10px;
+                    --ui-font-size-cajon-tag: 10px;
+                    --ui-font-size-table-card-label: 11px;
+                    --ui-font-size-layout-date: 10.5px;
+                    --ui-font-size-label: 11px;
+                    --ui-font-size-seg: 11px;
+                    --ui-font-size-info: 11px;
+                    --ui-font-size-accordion-title: 11px;
+                    --ui-font-size-slider-label: 11.5px;
+                    --ui-font-size-slider-val: 11.5px;
+                    --ui-font-size-cajon-input: 11px;
+                    --ui-font-size-table-footer: 11px;
+                    --ui-font-size-tooltip-info: 11px;
+                    --ui-font-size-panel-title: 12.5px;
+                    --ui-font-size-btn: 11.5px;
+                    --ui-font-size-input: 11px;
+                    --ui-font-size-select: 11px;
+                    --ui-font-size-table: 11px;
+                    --ui-font-size-table-card-row: 11px;
+                    --ui-font-size-reorder-item: 11px;
+                    --ui-font-size-tooltip-title: 11.5px;
+                    --ui-font-size-icon-btn: 11px;
+                    --ui-font-size-info-close: 11px;
+                    --ui-font-size-layout-name: 11.5px;
+                    --ui-font-size-select-arrow: 9px;
+                    --ui-font-size-accordion-arrow: 9px;
+                    --ui-font-size-cajon-btn: 10px;
+
+                    --ui-letter-spacing-sm: 0.2px;
+                    --ui-letter-spacing-title: 0.4px;
+
+                    /* ===== DIMENSIONES BASE ===== */
+                    --ui-btn-height: 30px;
+                    --ui-container-w: 290px;
+                    --ui-container-h: calc(100vh - 48px);
+                    --ui-container-floating-max-h: 85vh;
+                    --ui-container-header-h: 36px;
+                    --ui-panel-width: 290px;
+                    --ui-panel-header-h: 36px;
+                    --ui-panel-collapsed-h: 36px;
+
+                    /* ===== SLIDER TARJETA ===== gio sldier size */
+                    --ui-slider-card-padding: 8px 10px;
+                    --ui-slider-track-height: 7px;
+                    --ui-slider-thumb-size: 11px;
+
+                    --ui-list-max-h: 180px;
+                    --ui-modal-width: 330px;
+                    --ui-modal-header-h: 36px;
+                    --ui-modal-max-h: 80vh;
+                    --ui-modal-list-max-h: 220px;
+                    --ui-square-btn-size: 38px;
+
+                    /* ===== FONDOS SOLICITADOS (#212121) ===== */
+                    --ui-bg-base: #181818;
+                    --ui-bg-panel: #212121;
+                    --ui-bg-surface: #212121;
+                    --ui-bg-surface-hover: #292929;
+                    --ui-bg-input: #212121;
+                    --ui-bg-input-hover: #262626;
+                    --ui-bg-input-focus: #242424;
+                    --ui-bg-cajon: #1a1a1a;
+                    --ui-bg-list: #1a1a1a;
+                    --ui-bg-tr-hover: #272727;
+                    --ui-bg-modal-item: #212121;
+                    --ui-bg-modal-item-hover: #282828;
+                    --ui-bg-reorder-active: #292929;
+                    --ui-bg-reorder-dragover: #2c2c2c;
+                    --ui-modal-backdrop-bg: rgba(0, 0, 0, 0.75);
+                    --ui-bg-dropdown-menu: #212121;
+                    --ui-bg-dropdown-item-hover: #2b2b2b;
+                    --ui-bg-dropdown-item-active: #2f2f2f;
+                    --ui-bg-segmented: #1a1a1a;
+                    --ui-bg-segmented-active: #2e2e2e;
+                    --ui-bg-toggle-switch: #191919;
+                    --ui-bg-slider-content: #212121;
+
+                    /* ===== BORDES SOLICITADOS (#3d3d3d) ===== */
+                    --ui-border: #3d3d3d;
+                    --ui-border-light: #3d3d3d;
+                    --ui-border-hover: #2196F3;
+                    --ui-border-focus: #2196F3;
+                    --ui-border-subtle: #2d2d2d;
+                    --ui-border-cajon: #3d3d3d;
+                    --ui-border-list: #3d3d3d;
+                    --ui-border-active: #2196F3;
+                    --ui-border-card-row: #2d2d2d;
+                    --ui-border-select: #3d3d3d;
+                    --ui-border-circle: #3d3d3d;
+
+                    /* ===== RADIOS ESTILO BOTÓN ANIMADO ===== */
+                    --ui-radius-sm: 6px;
+                    --ui-radius-md: 8px;
+                    --ui-radius-base: 10px;
+                    --ui-radius-lg: 12px;
+                    --ui-radius-pill: 100px;
+
+                    /* ===== TEXTOS SOLICITADOS (#595959 y TÍTULOS CON BRILLO #9a9a9a) ===== */
+                    --ui-text-main: #727272;
+                    --ui-text-muted: #595959;
+                    --ui-text-dim: #434343;
+                    --ui-text-subtle: #757575;
+                    --ui-text-bright: #e0e0e0;
+                    --ui-text-hover: #ffffff;
+                    --ui-text-accordion: #595959;
+                    --ui-text-accordion-open: #9a9a9a;
+                    --ui-text-val: #9a9a9a;
+                    --ui-text-panel-title: #9a9a9a;
+                    --ui-text-dropdown-item: #595959;
+                    --ui-text-dropdown-item-hover: #ffffff;
+
+                    /* ===== BOTONES & CONTROLES (#212121) ===== */
+                    --ui-btn-bg: #212121;
+                    --ui-btn-hover-bg: #262626;
+                    --ui-primary-bg: #212121;
+                    --ui-primary-hover-bg: #2196F3;
+                    --ui-primary-border: #3d3d3d;
+                    --ui-primary-text: #9a9a9a;
+                    --ui-primary-hover-text: #ffffff;
+
+                    --ui-danger-bg: #212121;
+                    --ui-danger-border: #3d3d3d;
+                    --ui-danger-border-hover: #f85149;
+                    --ui-danger-color: #f85149;
+                    --ui-danger-hover: #ff7b72;
+
+                    /* ===== ACENTO AZUL ESTILO ANIMATED BUTTON (#2196F3) ===== */
+                    --ui-accent: #2196F3;
+                    --ui-accent-hover: #42a5f5;
+                    --ui-accent-glow: rgba(33, 149, 243, 0.38);
+                    --ui-accent-snap-border: #2196F3;
+                    --ui-accent-snap-shadow: rgba(33, 149, 243, 0.40);
+                    --ui-accent-placeholder-bg: rgba(33, 149, 243, 0.08);
+                    --ui-accent-btn-shadow: rgba(33, 149, 243, 0.38);
+
+                    /* CONTROLES ACTIVOS */
+                    --ui-toggle-switch-active-bg: #2195f35b;
+                    --ui-toggle-thumb-active: #ffffff;
+                    --ui-checkbox-box-active-bg: #2196F3;
+                    --ui-checkbox-box-active-border: #2196F3;
+                    --ui-checkbox-mark-color: #ffffff;
+                    --ui-radio-circle-active-bg: #212121;
+                    --ui-radio-circle-active-border: #2196F3;
+                    --ui-radio-dot-color: #2196F3;
+
+                    /* SLIDER COLORES  gio sldoer color*/
+                    --ui-slider-bg: #151515;
+                    --ui-slider-fill: #2195f327;
+                    --ui-slider-thumb: #ffffff88;
+                    --ui-slider-divider: #3d3d3d;
+
+                    /* INFO  gio slider */
+                    --ui-info-bg: #212121;
+                    --ui-info-border: #3d3d3d;
+                    --ui-info-accent: #2196F3;
+                    --ui-info-text: #595959;
+                    --ui-info-close: #595959;
+                    --ui-info-close-hover: #ffffff83;
+
+                    /* SCROLLBAR & BADGES */
+                    --ui-badge-bg: #191919;
+                    --ui-badge-text: #9a9a9a;
+                    --ui-scrollbar-size: 5px;
+                    --ui-scrollbar-thumb: #3d3d3d;
+                    --ui-scrollbar-thumb-hover: #2196F3;
+
+                    /* SOMBRAS Y EFECTO RESPLANDOR */
+                    --ui-shadow-floating: 0 16px 36px rgba(0, 0, 0, 0.65), 0 0 0 1px var(--ui-border);
+                    --ui-shadow-panel: 0 16px 36px rgba(0, 0, 0, 0.65);
+                    --ui-shadow-static: 0 4px 14px rgba(0, 0, 0, 0.45);
+                    --ui-shadow-tooltip: 0 12px 24px rgba(0, 0, 0, 0.6);
+                    --ui-shadow-modal: 0 24px 50px rgba(0, 0, 0, 0.85);
+                    --ui-shadow-thumb: 0 0 6px rgba(33, 150, 243, 0.6);
+                    --ui-shadow-btn-floating: 0 4px 12px rgba(0, 0, 0, 0.5);
+                    --ui-shadow-guide: 0 0 10px rgba(33, 149, 243, 0.5);
+                    --ui-shadow-dropdown: 0 10px 25px rgba(0, 0, 0, 0.7);
+
+                    /* TRANSICIONES CUBIC-BEZIER DEL ANIMATED BUTTON */
+                    --ui-transition-fast: 0.25s cubic-bezier(0.23, 1, 0.320, 1);
+                    --ui-transition-base: 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+                    --ui-transition-glow: 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+                    --ui-opacity-disabled: 0.35;
+                    --ui-opacity-dragged: 0.95;
+                    --ui-opacity-drag-item: 0.30;
+                }
+
+                html, body {
+                    background-color: var(--ui-bg-base) !important;
+                    min-height: 100vh;
+                }
+
+                * { 
+                    scrollbar-width: thin; 
+                    scrollbar-color: var(--ui-scrollbar-thumb) transparent; 
+                    box-sizing: border-box; 
+                    margin: 0; 
+                    padding: 0; 
+                    font-family: var(--ui-font-family); 
+                } 
+                *::-webkit-scrollbar { 
+                    width: var(--ui-scrollbar-size); 
+                    height: var(--ui-scrollbar-size); 
+                } 
+                *::-webkit-scrollbar-track { background: transparent; } 
+                *::-webkit-scrollbar-thumb { 
+                    background: var(--ui-scrollbar-thumb); 
+                    border-radius: var(--ui-radius-pill); 
+                } 
+                *::-webkit-scrollbar-thumb:hover { 
+                    background: var(--ui-scrollbar-thumb-hover); 
+                }
+
+                /* ===== CONTENEDORES ===== */
+                .ui-container {
+                    display: flex;
+                    box-sizing: border-box;
+                    padding: var(--ui-container-padding);
+                    gap: var(--ui-container-gap);
+                    background: transparent;
+                    position: relative;
+                    min-width: 0;
+                    min-height: 0;
+                }
+
+                .ui-container-column {
+                    flex-direction: column;
+                    width: var(--ui-container-w);
+                    max-width: 100%;
+                    height: var(--ui-container-h);
+                    overflow-y: auto;
+                    overflow-x: hidden;
+                    align-items: stretch;
+                }
+
+                .ui-container-row {
+                    flex-direction: row;
+                    height: var(--ui-container-h, auto);
+                    width: var(--ui-container-w, 100%);
+                    overflow-x: auto;
+                    overflow-y: hidden;
+                    align-items: flex-start;
+                }
+
+                .ui-container.is-hidden { display: none !important; }
+
+                .ui-container.is-floating {
+                    position: fixed !important;
+                    z-index: 900;
+                    background: var(--ui-bg-panel);
+                    border: 1px solid var(--ui-border);
+                    border-radius: var(--ui-radius-lg);
+                    box-shadow: var(--ui-shadow-floating);
+                    height: auto !important;
+                    max-height: var(--ui-container-floating-max-h);
+                    overflow-y: auto;
+                }
+
+                .ui-container-header {
+                    height: var(--ui-container-header-h);
+                    min-height: var(--ui-container-header-h);
+                    background: var(--ui-bg-surface);
+                    border-bottom: 1px solid var(--ui-border);
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 0 12px;
+                    cursor: grab;
+                }
+                .ui-container-header:active { cursor: grabbing; }
+
+                .ui-panel-placeholder {
+                    border: 1.5px dashed var(--ui-accent);
+                    border-radius: var(--ui-radius-lg);
+                    background: var(--ui-accent-placeholder-bg);
+                    box-sizing: border-box;
+                    min-height: 52px;
+                    width: 100%;
+                    flex-shrink: 0;
+                    pointer-events: none;
+                    margin: var(--ui-panel-margin);
+                }
+
+                /* ===== PANELES ===== */
+                .ui-panel {
+                    width: var(--ui-panel-width);
+                    background: var(--ui-bg-panel);
+                    border-radius: var(--ui-radius-lg);
+                    border: 1px solid var(--ui-border);
+                    display: flex;
+                    flex-direction: column;
+                    box-shadow: var(--ui-shadow-panel);
+                    position: absolute;
+                    z-index: 100;
+                    user-select: none;
+                    transition: border-color var(--ui-transition-fast), box-shadow var(--ui-transition-fast);
+                    flex-shrink: 0;
+                    margin: var(--ui-panel-margin);
+                }
+
+                .ui-panel.is-hidden { display: none !important; }
+
+                .ui-panel.ui-panel-static {
+                    position: relative !important;
+                    left: auto !important;
+                    top: auto !important;
+                    width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right))) !important;
+                    height: auto !important;
+                    max-height: none !important;
+                    z-index: 1 !important;
+                    box-shadow: var(--ui-shadow-static) !important;
+                    display: flex;
+                    flex: 0 0 auto !important;
+                    margin: var(--ui-panel-margin) !important;
+                }
+
+                .ui-panel.is-snapping { 
+                    border-color: var(--ui-accent-snap-border); 
+                    box-shadow: 0 0 16px var(--ui-accent-snap-shadow); 
+                }
+                .ui-panel.is-dragged { 
+                    z-index: 10000 !important; 
+                    opacity: var(--ui-opacity-dragged); 
+                    cursor: grabbing !important; 
+                }
+                .ui-panel.collapsed { 
+                    height: var(--ui-panel-collapsed-h) !important; 
+                    min-height: var(--ui-panel-collapsed-h) !important; 
+                }
+                .ui-panel.collapsed .ui-panel-body { display: none !important; }
+
+                .ui-panel-header {
+                    height: var(--ui-panel-header-h);
+                    min-height: var(--ui-panel-header-h);
+                    background: var(--ui-bg-surface);
+                    border-bottom: 1px solid var(--ui-border);
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 0 12px;
+                    cursor: grab;
+                    flex-shrink: 0;
+                }
+                .ui-panel-header:active { cursor: grabbing; }
+                .ui-header-left { display: flex; align-items: center; gap: 8px; pointer-events: none; }
+                
+                .ui-panel-title { 
+                    font-size: var(--ui-font-size-panel-title); 
+                    font-weight: var(--ui-font-weight-semibold); 
+                    color: var(--ui-text-panel-title); 
+                    letter-spacing: var(--ui-letter-spacing-title); 
+                    margin: var(--ui-label-margin);
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+                .ui-panel-title::before {
+                    content: "";
+                    width: 7px;
+                    height: 7px;
+                    border: 1.8px solid var(--ui-border-circle);
+                    border-radius: var(--ui-radius-pill);
+                    transition: all var(--ui-transition-fast);
+                }
+                .ui-panel:hover .ui-panel-title::before {
+                    border-color: var(--ui-accent);
+                    box-shadow: 0 0 8px var(--ui-accent-glow);
+                }
+
+                .ui-header-tools { display: flex; align-items: center; gap: 4px; }
+                
+                .ui-icon-btn { 
+                    width: 22px; 
+                    height: 22px; 
+                    border-radius: var(--ui-radius-sm); 
+                    border: 1px solid transparent; 
+                    background: transparent; 
+                    color: var(--ui-text-muted); 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: center; 
+                    cursor: pointer; 
+                    font-size: var(--ui-font-size-icon-btn); 
+                    line-height: 1; 
+                    transition: all var(--ui-transition-fast); 
+                }
+                .ui-icon-btn:hover { 
+                    background: var(--ui-bg-surface-hover); 
+                    border-color: var(--ui-border);
+                    color: var(--ui-text-hover); 
+                }
+                .ui-icon-btn.active { 
+                    color: var(--ui-accent); 
+                    border-color: var(--ui-accent);
+                    box-shadow: 0 0 6px var(--ui-accent-glow);
+                }
+
+                .ui-panel-body {
+                    padding: var(--ui-panel-body-padding);
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--ui-panel-body-gap);
+                    background: transparent;
+                    overflow-y: auto;
+                    overflow-x: hidden;
+                    flex: 1;
+                    min-height: 0;
+                }
+
+                .ui-row { 
+                    display: flex; 
+                    flex-direction: row;
+                    flex-wrap: wrap;
+                    align-items: center;
+                    gap: 8px; 
+                    width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right))); 
+                    min-height: var(--ui-btn-height); 
+                    flex-shrink: 0; 
+                    margin: var(--ui-row-margin);
+                }
+
+                .ui-row-align-0 { justify-content: flex-start; }
+                .ui-row-align-0 > * { flex: 1 1 auto; min-width: 0; }
+                .ui-row-align-0 > .ui-label { flex: 0 0 auto; }
+                .ui-row-align-1 { justify-content: flex-start; }
+                .ui-row-align-2 { justify-content: center; }
+                .ui-row-align-3 { justify-content: flex-end; }
+                .ui-row-align-4 { justify-content: space-between; }
+                .ui-row-align-5 { justify-content: space-evenly; }
+
+                .ui-label { 
+                    font-size: var(--ui-font-size-label); 
+                    font-weight: var(--ui-font-weight-medium); 
+                    color: var(--ui-text-muted); 
+                    white-space: nowrap; 
+                    user-select: none; 
+                    margin: var(--ui-label-margin);
+                }
+                
+                /* ===== BOTONES ANIMADOS CON RESPLANDOR ===== */
+                .ui-btn { 
+                    background: var(--ui-btn-bg); 
+                    color: var(--ui-text-main); 
+                    border: 1px solid var(--ui-border); 
+                    padding: 0 14px; 
+                    border-radius: var(--ui-radius-pill); 
+                    font-size: var(--ui-font-size-btn); 
+                    font-weight: var(--ui-font-weight-medium); 
+                    cursor: pointer; 
+                    display: inline-flex; 
+                    align-items: center; 
+                    justify-content: center; 
+                    transition: all var(--ui-transition-glow); 
+                    height: var(--ui-btn-height); 
+                    gap: 6px; 
+                    flex-shrink: 0; 
+                    margin: var(--ui-btn-margin);
+                    box-shadow: 0 0 0 1px transparent;
+                }
+                .ui-btn:hover { 
+                    background: var(--ui-btn-hover-bg); 
+                    color: var(--ui-text-hover); 
+                    border-color: var(--ui-accent); 
+                    box-shadow: 0 0 0 3px var(--ui-accent-glow);
+                }
+                .ui-btn:active { transform: scale(0.95); }
+                .ui-btn:disabled { opacity: var(--ui-opacity-disabled); cursor: not-allowed; pointer-events: none; }
+                
+                .ui-btn-primary { 
+                    background: var(--ui-primary-bg); 
+                    border-color: var(--ui-primary-border); 
+                    color: var(--ui-primary-text); 
+                }
+                .ui-btn-primary:hover { 
+                    background: var(--ui-primary-hover-bg); 
+                    border-color: var(--ui-accent); 
+                    color: var(--ui-primary-hover-text);
+                    box-shadow: 0 0 0 4px var(--ui-accent-glow);
+                }
+                
+                .ui-btn-danger { 
+                    background: var(--ui-danger-bg); 
+                    border-color: var(--ui-danger-border); 
+                    color: var(--ui-danger-color); 
+                }
+                .ui-btn-danger:hover { 
+                    border-color: var(--ui-danger-border-hover); 
+                    color: var(--ui-danger-hover); 
+                    box-shadow: 0 0 0 3px rgba(248, 81, 73, 0.25);
+                }
+
+                /* ===== INPUTS ===== */
+                .ui-input { 
+                    background: var(--ui-bg-input); 
+                    border: 1px solid var(--ui-border); 
+                    color: var(--ui-text-bright); 
+                    padding: 0 10px; 
+                    border-radius: var(--ui-radius-sm); 
+                    font-size: var(--ui-font-size-input); 
+                    outline: none; 
+                    height: var(--ui-btn-height); 
+                    font-weight: var(--ui-font-weight-normal); 
+                    margin: var(--ui-input-margin);
+                    transition: all var(--ui-transition-fast);
+                }
+                .ui-input::placeholder { color: var(--ui-text-dim); }
+                .ui-input:hover { border-color: var(--ui-border-hover); }
+                .ui-input:focus { 
+                    border-color: var(--ui-border-focus); 
+                    box-shadow: 0 0 0 3px var(--ui-accent-glow);
+                }
+                .ui-input:disabled { opacity: var(--ui-opacity-disabled); cursor: not-allowed; }
+                .ui-input-text { flex: 1; min-width: 0; }
+                .ui-input-number { 
+                    width: 65px; 
+                    text-align: center; 
+                    font-variant-numeric: tabular-nums; 
+                    flex-shrink: 0; 
+                }
+
+                /* ===== SELECT ===== */
+                .ui-select-wrap { 
+                    position: relative; 
+                    display: inline-flex; 
+                    flex-direction: column; 
+                    flex: 1; 
+                    min-width: 0; 
+                    margin: var(--ui-input-margin);
+                    user-select: none;
+                }
+                .ui-select-trigger {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    background: var(--ui-btn-bg);
+                    height: var(--ui-btn-height);
+                    padding: 0 12px;
+                    border-radius: var(--ui-radius-pill);
+                    cursor: pointer;
+                    transition: all var(--ui-transition-fast);
+                    border: 1px solid var(--ui-border);
+                    width: 100%;
+                }
+                .ui-select-trigger:hover { 
+                    border-color: var(--ui-border-hover); 
+                    box-shadow: 0 0 0 3px var(--ui-accent-glow);
+                }
+                .ui-select-wrap.is-open .ui-select-trigger {
+                    border-color: var(--ui-border-focus);
+                    box-shadow: 0 0 0 3px var(--ui-accent-glow);
+                }
+                .ui-select-icon-circle {
+                    width: 8px;
+                    height: 8px;
+                    border: 1.8px solid var(--ui-border-circle);
+                    border-radius: var(--ui-radius-pill);
+                    transition: all var(--ui-transition-fast);
+                    flex-shrink: 0;
+                }
+                .ui-select-trigger:hover .ui-select-icon-circle,
+                .ui-select-wrap.is-open .ui-select-icon-circle {
+                    border-color: var(--ui-accent);
+                }
+                .ui-select-label-text {
+                    font-size: var(--ui-font-size-select);
+                    font-weight: var(--ui-font-weight-medium);
+                    letter-spacing: var(--ui-letter-spacing-title);
+                    color: var(--ui-text-main);
+                    flex: 1;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+                .ui-select-arrow-svg {
+                    color: var(--ui-text-muted);
+                    transition: transform var(--ui-transition-base), color var(--ui-transition-fast);
+                    flex-shrink: 0;
+                }
+                .ui-select-wrap.is-open .ui-select-arrow-svg {
+                    transform: rotate(180deg);
+                    color: var(--ui-accent);
+                }
+                .dropdown-menu {
+                    opacity: 0;
+                    visibility: hidden;
+                    transform: translateY(-6px);
+                    position: absolute;
+                    top: calc(100% + 6px);
+                    left: 0;
+                    right: 0;
+                    min-width: 120px;
+                    background: var(--ui-bg-dropdown-menu);
+                    border: 1px solid var(--ui-border);
+                    border-radius: var(--ui-radius-md);
+                    padding: 4px;
+                    box-shadow: var(--ui-shadow-dropdown);
+                    z-index: 99999;
+                    transition: all var(--ui-transition-base);
+                    display: flex;
+                    flex-direction: column;
+                    gap: 2px;
+                    max-height: 180px;
+                    overflow-y: auto;
+                }
+                .ui-select-wrap.is-open .dropdown-menu {
+                    opacity: 1;
+                    visibility: visible;
+                    transform: translateY(0);
+                }
+                .dropdown-item {
+                    padding: 6px 10px;
+                    font-size: var(--ui-font-size-select);
+                    border-radius: var(--ui-radius-sm);
+                    cursor: pointer;
+                    color: var(--ui-text-dropdown-item);
+                    transition: all var(--ui-transition-fast);
+                    display: flex;
+                    align-items: center;
+                    white-space: nowrap;
+                }
+                .dropdown-item:hover {
+                    background: var(--ui-bg-dropdown-item-hover);
+                    color: var(--ui-text-dropdown-item-hover);
+                }
+                .dropdown-item.active {
+                    background: var(--ui-bg-dropdown-item-active);
+                    color: var(--ui-accent);
+                    font-weight: var(--ui-font-weight-medium);
+                }
+                .ui-select-wrap.disabled {
+                    opacity: var(--ui-opacity-disabled);
+                    cursor: not-allowed;
+                    pointer-events: none;
+                }
+
+                /* ===== SEGMENTED ===== */
+                .ui-segmented { 
+                    display: flex; 
+                    background: var(--ui-bg-segmented); 
+                    border: 1px solid var(--ui-border); 
+                    border-radius: var(--ui-radius-pill); 
+                    padding: 2px; 
+                    width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right))); 
+                    height: var(--ui-btn-height); 
+                    flex-shrink: 0; 
+                    margin: var(--ui-margin);
+                }
+                .ui-seg-item { 
+                    flex: 1; 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: center; 
+                    font-size: var(--ui-font-size-seg); 
+                    font-weight: var(--ui-font-weight-medium); 
+                    color: var(--ui-text-muted); 
+                    cursor: pointer; 
+                    border-radius: var(--ui-radius-pill); 
+                    transition: all var(--ui-transition-base); 
+                    padding: 0 6px;
+                }
+                .ui-seg-item.active { 
+                    background: var(--ui-bg-segmented-active); 
+                    color: var(--ui-accent); 
+                    font-weight: var(--ui-font-weight-semibold);
+                    box-shadow: 0 0 6px var(--ui-accent-glow);
+                }
+
+                /* ===== CHECKBOX (#212121 + #3d3d3d) ===== */
+                .ui-checkbox { 
+                    display: flex; 
+                    align-items: center; 
+                    gap: 8px; 
+                    cursor: pointer; 
+                    margin: var(--ui-margin);
+                }
+                .ui-checkbox.disabled { opacity: var(--ui-opacity-disabled); cursor: not-allowed; pointer-events: none; }
+                .ui-checkbox-box { 
+                    width: 16px; 
+                    height: 16px; 
+                    background: var(--ui-bg-surface); 
+                    border: 1px solid var(--ui-border); 
+                    border-radius: var(--ui-radius-sm); 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: center; 
+                    transition: all var(--ui-transition-fast); 
+                    flex-shrink: 0; 
+                }
+                .ui-checkbox:hover .ui-checkbox-box { 
+                    border-color: var(--ui-accent); 
+                    box-shadow: 0 0 0 3px var(--ui-accent-glow);
+                }
+                .ui-checkbox.checked .ui-checkbox-box { 
+                    background: var(--ui-checkbox-box-active-bg); 
+                    border-color: var(--ui-checkbox-box-active-border); 
+                    box-shadow: 0 0 8px var(--ui-accent-glow);
+                }
+                .ui-checkbox-mark { 
+                    display: none; 
+                    width: 8px; 
+                    height: 4.5px; 
+                    border-left: 2px solid var(--ui-checkbox-mark-color); 
+                    border-bottom: 2px solid var(--ui-checkbox-mark-color); 
+                    transform: rotate(-45deg) translate(0.5px, -0.5px); 
+                }
+                .ui-checkbox.checked .ui-checkbox-mark { display: block; }
+
+                /* ===== RADIO GROUP ===== */
+                .ui-radio-group { 
+                    display: flex; 
+                    align-items: center; 
+                    gap: 12px; 
+                    margin: var(--ui-margin); 
+                }
+                .ui-radio-item { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+                .ui-radio-item.disabled { opacity: var(--ui-opacity-disabled); cursor: not-allowed; pointer-events: none; }
+                .ui-radio-circle { 
+                    width: 15px; 
+                    height: 15px; 
+                    border-radius: var(--ui-radius-pill); 
+                    background: var(--ui-bg-surface); 
+                    border: 1px solid var(--ui-border); 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: center; 
+                    transition: all var(--ui-transition-fast); 
+                    flex-shrink: 0; 
+                }
+                .ui-radio-dot { 
+                    width: 7px; 
+                    height: 7px; 
+                    border-radius: var(--ui-radius-pill); 
+                    background: var(--ui-radio-dot-color); 
+                    display: none; 
+                }
+                .ui-radio-item:hover .ui-radio-circle {
+                    border-color: var(--ui-accent);
+                    box-shadow: 0 0 0 3px var(--ui-accent-glow);
+                }
+                .ui-radio-item.active .ui-radio-circle { 
+                    border-color: var(--ui-radio-circle-active-border); 
+                    background: var(--ui-radio-circle-active-bg); 
+                    box-shadow: 0 0 6px var(--ui-accent-glow);
+                }
+                .ui-radio-item.active .ui-radio-dot { display: block; }
+
+                /* ===== TOGGLE SWITCH ===== */
+                .ui-toggle { 
+                    display: flex; 
+                    align-items: center; 
+                    gap: 8px; 
+                    cursor: pointer; 
+                    margin: var(--ui-margin); 
+                }
+                .ui-toggle.disabled { opacity: var(--ui-opacity-disabled); cursor: not-allowed; pointer-events: none; }
+                .ui-toggle-switch { 
+                    width: 32px; 
+                    height: 18px; 
+                    background: var(--ui-bg-toggle-switch); 
+                    border-radius: var(--ui-radius-pill); 
+                    position: relative; 
+                    transition: all var(--ui-transition-base); 
+                    border: 1px solid var(--ui-border); 
+                    flex-shrink: 0; 
+                }
+                .ui-toggle:hover .ui-toggle-switch {
+                    border-color: var(--ui-accent);
+                    box-shadow: 0 0 0 3px var(--ui-accent-glow);
+                }
+                .ui-toggle-thumb { 
+                    width: 12px; 
+                    height: 12px; 
+                    background: var(--ui-text-muted); 
+                    border-radius: var(--ui-radius-pill); 
+                    position: absolute; 
+                    top: 2px; 
+                    left: 2px; 
+                    transition: all var(--ui-transition-base); 
+                }
+                .ui-toggle.active .ui-toggle-switch { 
+                    background: var(--ui-toggle-switch-active-bg); 
+                    border-color: var(--ui-accent);
+                    box-shadow: 0 0 8px var(--ui-accent-glow);
+                }
+                .ui-toggle.active .ui-toggle-thumb { 
+                    background: var(--ui-toggle-thumb-active); 
+                    transform: translateX(14px); 
+                }
+
+                /* ===== INFO BOX ===== */
+                .ui-info-box { 
+                    background: var(--ui-info-bg); 
+                    border: 1px solid var(--ui-info-border); 
+                    border-left: 3px solid var(--ui-info-accent); 
+                    padding: 8px 12px; 
+                    border-radius: var(--ui-radius-md); 
+                    font-size: var(--ui-font-size-info); 
+                    color: var(--ui-info-text); 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: space-between; 
+                    gap: 8px; 
+                    width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right))); 
+                    transition: opacity var(--ui-transition-base), transform var(--ui-transition-base); 
+                    flex-shrink: 0; 
+                    margin: var(--ui-info-margin);
+                }
+                .ui-info-box.fade-out { opacity: 0; transform: translateY(-4px); }
+                .ui-info-close { 
+                    background: none; 
+                    border: none; 
+                    color: var(--ui-info-close); 
+                    cursor: pointer; 
+                    font-size: var(--ui-font-size-info-close); 
+                    line-height: 1; 
+                    padding: 3px; 
+                }
+                .ui-info-close:hover { color: var(--ui-info-close-hover); }
+
+                /* ===== ACCORDION ===== */
+                .ui-accordion { 
+                    display: flex; 
+                    flex-direction: column; 
+                    gap: 6px; 
+                    width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right))); 
+                    flex-shrink: 0; 
+                    margin: var(--ui-accordion-margin);
+                }
+                .ui-accordion-item { 
+                    border: 1px solid var(--ui-border); 
+                    border-radius: var(--ui-radius-md); 
+                    overflow: hidden; 
+                    background: var(--ui-bg-surface); 
+                    transition: border-color var(--ui-transition-base); 
+                }
+                .ui-accordion-item.open { border-color: var(--ui-accent); }
+                .ui-accordion-header { 
+                    height: 32px; 
+                    padding: 0 10px; 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: space-between; 
+                    cursor: pointer; 
+                    background: transparent; 
+                    transition: background var(--ui-transition-fast); 
+                }
+                .ui-accordion-header:hover { background: var(--ui-bg-surface-hover); }
+                .ui-accordion-title { 
+                    font-size: var(--ui-font-size-accordion-title); 
+                    font-weight: var(--ui-font-weight-medium); 
+                    color: var(--ui-text-accordion); 
+                }
+                .ui-accordion-item.open .ui-accordion-title { color: var(--ui-text-accordion-open); }
+                .ui-accordion-arrow { 
+                    font-size: var(--ui-font-size-accordion-arrow); 
+                    color: var(--ui-text-dim); 
+                    transition: transform var(--ui-transition-base); 
+                }
+                .ui-accordion-item.open .ui-accordion-arrow { transform: rotate(90deg); color: var(--ui-accent); }
+                .ui-accordion-content { 
+                    display: grid; 
+                    grid-template-rows: 0fr; 
+                    transition: grid-template-rows var(--ui-transition-base); 
+                    background: var(--ui-bg-list); 
+                }
+                .ui-accordion-item.open .ui-accordion-content { grid-template-rows: 1fr; }
+                .ui-accordion-body { 
+                    overflow: hidden; 
+                    min-height: 0; 
+                    display: flex; 
+                    flex-direction: column; 
+                    gap: 6px; 
+                    padding: 0 10px; 
+                    transition: padding var(--ui-transition-base); 
+                }
+                .ui-accordion-item.open .ui-accordion-body { padding: 10px; }
+
+                /* ===== SLIDER TARJETA (RESPONSIVE MÓVIL 290px Y PC) ===== */
+                .ui-slider-card { 
+                    width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right))); 
+                    background: var(--ui-bg-surface); 
+                    border: 1px solid var(--ui-border); 
+                    border-radius: var(--ui-radius-md); 
+                    padding: var(--ui-slider-card-padding);
+                    display: flex; 
+                    flex-direction: column; 
+                    gap: 8px;
+                    flex-shrink: 0; 
+                    margin: var(--ui-slider-margin);
+                    transition: border-color var(--ui-transition-fast);
+                }
+                .ui-slider-card:hover {
+                    border-color: var(--ui-border-hover);
+                }
+
+                /* Nivel 1: Fila superior (Label + Valor y Botón Cajón) */
+                .ui-slider-card-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 8px;
+                    width: 100%;
+                }
+                .ui-slider-label { 
+                    font-size: var(--ui-font-size-slider-label); 
+                    font-weight: var(--ui-font-weight-medium); 
+                    color: var(--ui-text-muted); 
+                    flex: 1; 
+                    white-space: nowrap; 
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+                .ui-slider-header-right {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    flex-shrink: 0;
+                }
+                .ui-slider-val { 
+                    font-size: var(--ui-font-size-slider-val); 
+                    font-weight: var(--ui-font-weight-semibold); 
+                    color: var(--ui-text-val); 
+                    font-variant-numeric: tabular-nums; 
+                }
+                .ui-cajon-btn { 
+                    width: 18px; 
+                    height: 18px; 
+                    border: 1px solid transparent; 
+                    background: transparent; 
+                    color: var(--ui-text-dim); 
+                    cursor: pointer; 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: center; 
+                    font-size: var(--ui-font-size-cajon-btn); 
+                    border-radius: var(--ui-radius-sm); 
+                    transition: all var(--ui-transition-base); 
+                }
+                .ui-cajon-btn:hover { color: var(--ui-text-hover); border-color: var(--ui-border); }
+                .ui-slider-card.open .ui-cajon-btn { transform: rotate(180deg); color: var(--ui-accent); }
+
+                /* Nivel 2: Barra a todo el ancho (Touch friendly en móvil y ratón en PC) */
+                .ui-slider-content {
+                    display: flex;
+                    align-items: center;
+                    width: 100%;
+                }
+                .ui-slider-track { 
+                    width: 100%; 
+                    position: relative; 
+                    height: var(--ui-slider-track-height); 
+                    display: flex; 
+                    align-items: center; 
+                    cursor: pointer; 
+                    border-radius: var(--ui-radius-pill);
+                    background-color: var(--ui-slider-bg);
+                    border: 1px solid var(--ui-border);
+                }
+                .ui-slider-bg { 
+                    position: absolute;
+                    inset: 0;
+                    width: 100%; 
+                    height: 100%; 
+                    pointer-events: none;
+                }
+                .ui-slider-fill { 
+                    position: absolute; 
+                    height: 100%; 
+                    background: var(--ui-slider-fill); 
+                    border-radius: var(--ui-radius-pill); 
+                    width: 0%; 
+                    pointer-events: none; 
+                    box-shadow: 0 0 8px var(--ui-accent-glow);
+                }
+                .ui-slider-thumb { 
+                    width: var(--ui-slider-thumb-size); 
+                    height: var(--ui-slider-thumb-size); 
+                    background: var(--ui-slider-thumb); 
+                    border-radius: var(--ui-radius-pill); 
+                    position: absolute; 
+                    top: 50%; 
+                    transform: translate(-50%, -50%); 
+                    box-shadow: var(--ui-shadow-thumb); 
+                    pointer-events: none; 
+                    transition: transform var(--ui-transition-fast), box-shadow var(--ui-transition-fast);
+                }
+                .ui-slider-track:hover .ui-slider-thumb {
+                    transform: translate(-50%, -50%) scale(1.2);
+                    box-shadow: 0 0 10px var(--ui-accent);
+                }
+
+                /* Nivel 3: Cajón inferior */
+                .ui-slider-cajon { 
+                    display: grid; 
+                    grid-template-rows: 0fr; 
+                    transition: grid-template-rows var(--ui-transition-base); 
+                    background: var(--ui-bg-cajon); 
+                    border-radius: var(--ui-radius-sm); 
+                }
+                .ui-slider-card.open .ui-slider-cajon { 
+                    grid-template-rows: 1fr; 
+                    border: 1px solid var(--ui-border); 
+                    margin-top: 2px;
+                }
+                .ui-slider-cajon-inner { 
+                    overflow: hidden; 
+                    min-height: 0; 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: space-between; 
+                    padding: 0 8px; 
+                    gap: 6px; 
+                    transition: padding var(--ui-transition-base); 
+                }
+                .ui-slider-card.open .ui-slider-cajon-inner { padding: 6px 8px; }
+                .ui-cajon-tag { 
+                    font-size: var(--ui-font-size-cajon-tag); 
+                    font-weight: var(--ui-font-weight-medium); 
+                    color: var(--ui-text-muted); 
+                }
+                .ui-cajon-group { display: flex; align-items: center; gap: 4px; }
+                .ui-cajon-input { 
+                    width: 44px; 
+                    text-align: center; 
+                    height: 22px; 
+                    padding: 0 4px; 
+                    font-size: var(--ui-font-size-cajon-input); 
+                }
+
+                /* ===== GUÍAS DE ACOPLAMIENTO ===== */
+                .ui-snap-guide { 
+                    position: fixed; 
+                    pointer-events: none; 
+                    z-index: 99990; 
+                    border: 1.5px dashed var(--ui-accent); 
+                    border-radius: var(--ui-radius-lg); 
+                    background: var(--ui-accent-placeholder-bg); 
+                    display: none; 
+                    box-sizing: border-box; 
+                }
+                .ui-guide-line { 
+                    position: fixed; 
+                    pointer-events: none; 
+                    z-index: 999998; 
+                    background: var(--ui-accent); 
+                    box-shadow: var(--ui-shadow-guide); 
+                    display: none; 
+                }
+                .ui-guide-v { width: 1px; top: 0; bottom: 0; }
+                .ui-guide-h { height: 1px; left: 0; right: 0; }
+
+                /* ===== TABLA ===== */
+                .ui-table-container { 
+                    width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right))); 
+                    display: flex; 
+                    flex-direction: column; 
+                    gap: 6px; 
+                    background: var(--ui-bg-panel); 
+                    border: 1px solid var(--ui-border); 
+                    border-radius: var(--ui-radius-md); 
+                    overflow: hidden; 
+                    flex-shrink: 0; 
+                    margin: var(--ui-table-margin);
+                }
+                .ui-table-toolbar { 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: space-between; 
+                    gap: 8px; 
+                    padding: 8px 10px; 
+                    background: var(--ui-bg-surface); 
+                    border-bottom: 1px solid var(--ui-border); 
+                    flex-wrap: wrap; 
+                }
+                .ui-table-search { flex: 1; min-width: 140px; }
+                .ui-table-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+                .ui-table { width: 100%; border-collapse: collapse; text-align: left; font-size: var(--ui-font-size-table); }
+                .ui-table th { 
+                    background: var(--ui-bg-surface); 
+                    color: var(--ui-text-muted); 
+                    font-weight: var(--ui-font-weight-medium); 
+                    padding: 8px 10px; 
+                    border-bottom: 1px solid var(--ui-border); 
+                    white-space: nowrap; 
+                    cursor: grab; 
+                }
+                .ui-table th.drag-over { background: var(--ui-bg-reorder-active); border-left: 2px solid var(--ui-accent); }
+                .ui-table td { 
+                    padding: 8px 10px; 
+                    border-bottom: 1px solid var(--ui-border-subtle); 
+                    color: var(--ui-text-main); 
+                    white-space: nowrap; 
+                    vertical-align: middle; 
+                }
+                .ui-table tr:hover td { background: var(--ui-bg-tr-hover); color: var(--ui-text-hover); }
+                .ui-table-actions-cell { display: flex; align-items: center; gap: 6px; }
+                .ui-table-footer { 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: space-between; 
+                    padding: 8px 10px; 
+                    background: var(--ui-bg-surface); 
+                    border-top: 1px solid var(--ui-border); 
+                    font-size: var(--ui-font-size-table-footer); 
+                    color: var(--ui-text-muted); 
+                    flex-wrap: wrap; 
+                    gap: 6px; 
+                }
+                .ui-table-pagination { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+                .ui-table-cards { display: none; flex-direction: column; gap: 8px; padding: 8px; }
+                .ui-table-card { 
+                    background: var(--ui-bg-surface); 
+                    border: 1px solid var(--ui-border); 
+                    border-radius: var(--ui-radius-sm); 
+                    padding: 8px 10px; 
+                    display: flex; 
+                    flex-direction: column; 
+                    gap: 6px; 
+                }
+                .ui-table-card-row { 
+                    display: flex; 
+                    justify-content: space-between; 
+                    align-items: center; 
+                    font-size: var(--ui-font-size-table-card-row); 
+                    border-bottom: 1px solid var(--ui-border-card-row); 
+                    padding-bottom: 4px; 
+                }
+                .ui-table-card-label { 
+                    color: var(--ui-text-muted); 
+                    font-weight: var(--ui-font-weight-medium); 
+                    font-size: var(--ui-font-size-table-card-label); 
+                }
+                .ui-table-card-val { color: var(--ui-text-main); }
+
+                /* ===== REORDER LIST ===== */
+                .ui-reorder-list { 
+                    display: flex; 
+                    flex-direction: column; 
+                    gap: 6px; 
+                    width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right))); 
+                    max-height: var(--ui-list-max-h); 
+                    overflow-y: auto; 
+                    background: var(--ui-bg-list); 
+                    border: 1px solid var(--ui-border-list); 
+                    border-radius: var(--ui-radius-md); 
+                    padding: 6px; 
+                    box-sizing: border-box; 
+                    flex-shrink: 0; 
+                    margin: var(--ui-list-margin);
+                }
+                .ui-reorder-item { 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: space-between; 
+                    padding: 6px 10px; 
+                    background: var(--ui-bg-surface); 
+                    border-radius: var(--ui-radius-sm); 
+                    cursor: grab; 
+                    border: 1px solid transparent; 
+                    font-size: var(--ui-font-size-reorder-item); 
+                    color: var(--ui-text-subtle); 
+                    touch-action: none; 
+                    transition: transform var(--ui-transition-fast), background-color var(--ui-transition-fast), border-color var(--ui-transition-fast); 
+                    width: 100%; 
+                    margin: var(--ui-list-item-margin);
+                }
+                .ui-reorder-item:active { cursor: grabbing; }
+                .ui-reorder-item.active { background: var(--ui-bg-reorder-active); border-color: var(--ui-accent); color: var(--ui-text-bright); box-shadow: 0 0 6px var(--ui-accent-glow); }
+                .ui-reorder-item.dragging { opacity: var(--ui-opacity-drag-item); transform: scale(0.96); }
+                .ui-reorder-item.drag-over { border-color: var(--ui-accent); background: var(--ui-bg-reorder-dragover); }
+                .ui-reorder-item-left { display: flex; align-items: center; gap: 8px; pointer-events: none; }
+                .ui-reorder-item-left button { pointer-events: auto; }
+
+                /* ===== BOTÓN CUADRADO / FLOTANTE ===== */
+                .ui-square-btn { 
+                    display: inline-flex; 
+                    align-items: center; 
+                    justify-content: center; 
+                    border-radius: var(--ui-radius-pill); 
+                    border: 1px solid var(--ui-border); 
+                    cursor: pointer; 
+                    transition: all var(--ui-transition-glow); 
+                    flex-shrink: 0; 
+                    font-weight: var(--ui-font-weight-medium); 
+                    line-height: 1; 
+                    margin: var(--ui-margin);
+                    -webkit-tap-highlight-color: transparent; 
+                    box-shadow: var(--ui-shadow-btn-floating);
+                    width: var(--ui-square-btn-size);
+                    height: var(--ui-square-btn-size);
+                    background-color: var(--ui-btn-bg);
+                    color: var(--ui-text-bright);
+                    font-size: var(--ui-font-size-btn);
+                }
+                .ui-square-btn:hover { 
+                    border-color: var(--ui-accent); 
+                    box-shadow: 0 0 0 4px var(--ui-accent-glow);
+                }
+                .ui-draggable-floating { 
+                    position: absolute !important; 
+                    z-index: 1000; 
+                    touch-action: none; 
+                }
+                .ui-draggable-floating.is-dragging { 
+                    z-index: 10001 !important; 
+                    opacity: var(--ui-opacity-dragged); 
+                    cursor: grabbing !important; 
+                }
+                .ui-draggable-floating.is-snapping { 
+                    border-color: var(--ui-accent) !important; 
+                    box-shadow: 0 0 12px var(--ui-accent-btn-shadow) !important; 
+                }
+
+                .ui-square-tooltip { 
+                    position: fixed; 
+                    z-index: 999999; 
+                    pointer-events: none; 
+                    background: var(--ui-bg-dropdown-menu); 
+                    border: 1px solid var(--ui-border); 
+                    border-radius: var(--ui-radius-md); 
+                    padding: 8px 12px; 
+                    box-shadow: var(--ui-shadow-tooltip); 
+                    max-width: 240px; 
+                    opacity: 0; 
+                    transform: scale(0.94); 
+                    transition: all var(--ui-transition-fast); 
+                    display: flex; 
+                    flex-direction: column; 
+                    gap: 4px; 
+                }
+                .ui-square-tooltip.visible { opacity: 1; transform: scale(1); }
+                .ui-square-tooltip-title { 
+                    font-size: var(--ui-font-size-tooltip-title); 
+                    font-weight: var(--ui-font-weight-semibold); 
+                    color: var(--ui-text-bright); 
+                }
+                .ui-square-tooltip-info { 
+                    font-size: var(--ui-font-size-tooltip-info); 
+                    color: var(--ui-text-muted); 
+                    line-height: 1.4; 
+                }
+
+                /* ===== MODAL DE LAYOUTS ===== */
+                .ui-layout-modal-backdrop { 
+                    position: fixed; 
+                    inset: 0; 
+                    background: var(--ui-modal-backdrop-bg); 
+                    z-index: 9999999; 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: center; 
+                    padding: 15px; 
+                }
+                .ui-layout-modal { 
+                    background: var(--ui-bg-panel); 
+                    border: 1px solid var(--ui-border); 
+                    border-radius: var(--ui-radius-lg); 
+                    width: var(--ui-modal-width); 
+                    max-width: 100%; 
+                    box-shadow: var(--ui-shadow-modal); 
+                    display: flex; 
+                    flex-direction: column; 
+                    overflow: hidden; 
+                    animation: uiModalIn var(--ui-transition-base); 
+                }
+                @keyframes uiModalIn { 
+                    from { transform: scale(0.95); opacity: 0; } 
+                    to { transform: scale(1); opacity: 1; } 
+                }
+                .ui-layout-modal-head { 
+                    height: var(--ui-modal-header-h); 
+                    background: var(--ui-bg-surface); 
+                    border-bottom: 1px solid var(--ui-border); 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: space-between; 
+                    padding: 0 14px; 
+                }
+                .ui-layout-modal-body { 
+                    padding: 14px; 
+                    display: flex; 
+                    flex-direction: column; 
+                    gap: 12px; 
+                    max-height: var(--ui-modal-max-h); 
+                    overflow-y: auto; 
+                }
+                .ui-layout-list { 
+                    display: flex; 
+                    flex-direction: column; 
+                    gap: 6px; 
+                    max-height: var(--ui-modal-list-max-h); 
+                    overflow-y: auto; 
+                    background: var(--ui-bg-list); 
+                    border: 1px solid var(--ui-border); 
+                    border-radius: var(--ui-radius-md); 
+                    padding: 6px; 
+                }
+                .ui-layout-item { 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: space-between; 
+                    padding: 7px 10px; 
+                    background: var(--ui-bg-modal-item); 
+                    border: 1px solid transparent; 
+                    border-radius: var(--ui-radius-sm); 
+                    margin: var(--ui-modal-item-margin); 
+                    transition: all var(--ui-transition-fast); 
+                }
+                .ui-layout-item:hover { 
+                    border-color: var(--ui-accent); 
+                    background: var(--ui-bg-modal-item-hover); 
+                }
+                .ui-layout-meta { display: flex; flex-direction: column; gap: 3px; overflow: hidden; }
+                .ui-layout-name { 
+                    font-size: var(--ui-font-size-layout-name); 
+                    font-weight: var(--ui-font-weight-medium); 
+                    color: var(--ui-text-bright); 
+                    white-space: nowrap; 
+                    text-overflow: ellipsis; 
+                }
+                .ui-layout-date { 
+                    font-size: var(--ui-font-size-layout-date); 
+                    color: var(--ui-text-muted); 
+                    font-variant-numeric: tabular-nums; 
+                }
+                .ui-layout-actions { display: flex; align-items: center; gap: 6px; }
+                .ui-badge-app { 
+                    font-size: var(--ui-font-size-badge); 
+                    background: var(--ui-badge-bg); 
+                    color: var(--ui-badge-text); 
+                    padding: 2px 7px; 
+                    border-radius: var(--ui-radius-pill); 
+                    font-weight: var(--ui-font-weight-medium); 
+                    border: 1px solid var(--ui-border);
+                }
+
+                @media (max-width: 768px) {
+                    .ui-container-column { width: 100% !important; height: auto !important; max-height: 50vh !important; }
+                    .ui-container-row { width: 100% !important; }
+                    .ui-panel { width: 100% !important; }
+                    .ui-table-scroll { display: none; }
+                    .ui-table-cards { display: flex; }
+                }
+            `;
+            const target = document.head || document.documentElement;
+            if (target) target.appendChild(style);
         }
     }
-
-    static inject() {
-        if (document.getElementById('ui-core-library-theme')) return;
-        const style = document.createElement('style');
-        style.id = 'ui-core-library-theme';
-        style.textContent = `
-            :root {
-                /* =======================================================
-                   1. CONTROL GLOBAL DE MÁRGENES (4.5px por defecto)
-                   ======================================================= */
-                --ui-margin-top: 4.5px;
-                --ui-margin-right: 4.5px;
-                --ui-margin-bottom: 4.5px;
-                --ui-margin-left: 4.5px;
-                --ui-margin: var(--ui-margin-top) var(--ui-margin-right) var(--ui-margin-bottom) var(--ui-margin-left);
-
-                /* Márgenes Específicos por Componente */
-                --ui-panel-margin: var(--ui-margin);
-                --ui-row-margin: var(--ui-margin-top) 0px var(--ui-margin-bottom) 0px;
-                --ui-btn-margin: 0px var(--ui-margin-right) 0px var(--ui-margin-left);
-                --ui-input-margin: 0px var(--ui-margin-right) 0px var(--ui-margin-left);
-                --ui-label-margin: 0px var(--ui-margin-right) 0px var(--ui-margin-left);
-                --ui-slider-margin: var(--ui-margin);
-                --ui-accordion-margin: var(--ui-margin);
-                --ui-info-margin: var(--ui-margin);
-                --ui-table-margin: var(--ui-margin);
-                --ui-list-margin: var(--ui-margin);
-                --ui-list-item-margin: var(--ui-margin-top) 0px var(--ui-margin-bottom) 0px;
-                --ui-modal-item-margin: var(--ui-margin-top) 0px var(--ui-margin-bottom) 0px;
-
-                /* Espaciados Internos (Paddings y Gaps) */
-                --ui-container-padding: 10px;
-                --ui-container-gap: 10px;
-                --ui-panel-body-padding: 10px;
-                --ui-panel-body-gap: 8px;
-
-                /* =======================================================
-                   2. TIPOGRAFÍA Y TAMAÑOS DE FUENTE
-                   ======================================================= */
-                --ui-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-                --ui-font-weight-normal: 400;
-                --ui-font-weight-medium: 500;
-                --ui-font-weight-semibold: 600;
-                --ui-font-weight-bold: 700;
-
-                --ui-font-size-badge: 9px;
-                --ui-font-size-cajon-tag: 9px;
-                --ui-font-size-table-card-label: 9.5px;
-                --ui-font-size-layout-date: 9.5px;
-                --ui-font-size-label: 10.5px;
-                --ui-font-size-seg: 10px;
-                --ui-font-size-info: 10.5px;
-                --ui-font-size-accordion-title: 10.5px;
-                --ui-font-size-slider-label: 10px;
-                --ui-font-size-slider-val: 10.5px;
-                --ui-font-size-cajon-input: 10px;
-                --ui-font-size-table-footer: 10px;
-                --ui-font-size-tooltip-info: 10.5px;
-                --ui-font-size-panel-title: 11px;
-                --ui-font-size-btn: 11px;
-                --ui-font-size-input: 11px;
-                --ui-font-size-select: 11px;
-                --ui-font-size-table: 11px;
-                --ui-font-size-table-card-row: 11px;
-                --ui-font-size-reorder-item: 11px;
-                --ui-font-size-tooltip-title: 11.5px;
-                --ui-font-size-icon-btn: 11px;
-                --ui-font-size-info-close: 11px;
-                --ui-font-size-layout-name: 11.5px;
-                --ui-font-size-select-arrow: 9px;
-                --ui-font-size-accordion-arrow: 9px;
-                --ui-font-size-cajon-btn: 9px;
-
-                --ui-letter-spacing-sm: 0.5px;
-
-                /* =======================================================
-                   3. DIMENSIONES
-                   ======================================================= */
-                --ui-btn-height: 26px;
-                --ui-container-w: 320px;
-                --ui-container-h: calc(100vh - 48px);
-                --ui-container-floating-max-h: 85vh;
-                --ui-container-header-h: 28px;
-                
-                --ui-panel-width: 310px;
-                --ui-panel-header-h: 32px;
-                --ui-panel-collapsed-h: 32px;
-
-                --ui-slider-card-height: 28px;
-                --ui-slider-track-height: 18px;
-                --ui-slider-bar-height: 4px;
-                --ui-slider-thumb-size: 12px;
-                --ui-slider-label-width: 42px;
-                --ui-slider-val-width: 34px;
-
-                --ui-list-max-h: 180px;
-                --ui-modal-width: 360px;
-                --ui-modal-header-h: 34px;
-                --ui-modal-max-h: 75vh;
-                --ui-modal-list-max-h: 200px;
-
-                /* =======================================================
-                   4. COLORES Y FONDOS
-                   ======================================================= */
-                --ui-bg-base: #14161a;
-                --ui-bg-panel: #1d1f24c5;
-                --ui-bg-surface: #181a1f;
-                --ui-bg-surface-hover: #20242b;
-                --ui-bg-input: #15171b;
-                --ui-bg-cajon: #131518;
-                --ui-bg-list: #131518;
-                --ui-bg-tr-hover: #1e2126;
-                --ui-bg-modal-item: #1a1d22;
-                --ui-bg-modal-item-hover: #20242b;
-                --ui-bg-reorder-active: #2b313c;
-                --ui-bg-reorder-dragover: #202430;
-                --ui-modal-backdrop-bg: rgba(0, 0, 0, 0.7);
-
-                /* Bordes */
-                --ui-border: #282b33;
-                --ui-border-light: #3c424d;
-                --ui-border-hover: #4b5260;
-                --ui-border-focus: #4b5463;
-                --ui-border-subtle: #202329;
-                --ui-border-cajon: #24272e;
-                --ui-border-list: #24272f;
-                --ui-border-active: #4f5869;
-                --ui-border-card-row: #1d2026;
-
-                --ui-radius-sm: 3px;
-                --ui-radius-md: 4px;
-                --ui-radius-base: 5px;
-                --ui-radius-lg: 8px;
-                --ui-radius-pill: 50%;
-
-                /* Textos */
-                --ui-text-main: #d1d5db;
-                --ui-text-muted: #777d88;
-                --ui-text-dim: #616773;
-                --ui-text-subtle: #a6adb9;
-                --ui-text-bright: #ffffff;
-                --ui-text-hover: #f1f3f5;
-                --ui-text-accordion: #8c93a0;
-                --ui-text-accordion-open: #e2e5e9;
-                --ui-text-val: #9da4b0;
-                --ui-text-panel-title: var(--ui-text-muted);
-
-                /* Botones */
-                --ui-btn-bg: #2f343d;
-                --ui-btn-hover-bg: #383e49;
-                --ui-primary-bg: #3b424e;
-                --ui-primary-hover-bg: #444c5a;
-                --ui-primary-border: #586273;
-                --ui-primary-text: #ffffff;
-
-                --ui-danger-bg: rgba(0, 0, 0, 0.25);
-                --ui-danger-border: #5a595967;
-                --ui-danger-border-hover: #bdbdbd67;
-                --ui-danger-color: #e65921d7;
-                --ui-danger-hover: #f88f66d7;
-
-                /* Snapping & Acentos */
-                --ui-accent: #5865f2;
-                --ui-accent-snap-border: #5865f2aa;
-                --ui-accent-snap-shadow: rgba(88, 101, 242, 0.25);
-                --ui-accent-placeholder-bg: rgba(88, 101, 242, 0.12);
-                --ui-accent-btn-shadow: rgba(88, 101, 242, 0.5);
-
-                /* Sliders */
-                --ui-slider-bg: #282b33;
-                --ui-slider-fill: #525c6c;
-                --ui-slider-thumb: #c5cbd4;
-
-                /* Info Box */
-                --ui-info-bg: #161a20;
-                --ui-info-border: #242f3d;
-                --ui-info-accent: #486581;
-                --ui-info-text: #bcccdc;
-                --ui-info-close: #627d98;
-                --ui-info-close-hover: #d9e2ec;
-
-                /* Badges & Scroll */
-                --ui-badge-bg: #2a2f3a;
-                --ui-badge-text: #9da4b0;
-                --ui-scrollbar-size: 5px;
-                --ui-scrollbar-thumb: #282b33;
-                --ui-scrollbar-thumb-hover: #3c424d;
-
-                /* Sombras */
-                --ui-shadow-floating: 0 15px 35px rgba(0,0,0,0.7);
-                --ui-shadow-panel: 0 10px 25px rgba(0,0,0,0.7);
-                --ui-shadow-static: 0 4px 15px rgba(0,0,0,0.3);
-                --ui-shadow-tooltip: 0 10px 25px rgba(0,0,0,0.8);
-                --ui-shadow-modal: 0 20px 40px rgba(0,0,0,0.8);
-                --ui-shadow-thumb: 0 0 4px rgba(0,0,0,0.5);
-                --ui-shadow-btn-floating: 0 4px 15px rgba(0,0,0,0.5);
-                --ui-shadow-guide: 0 0 6px #5865f2aa;
-
-                /* Transiciones y Estados */
-                --ui-transition-fast: 0.15s ease;
-                --ui-transition-base: 0.2s ease;
-                --ui-transition-accordion: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-                --ui-opacity-disabled: 0.4;
-                --ui-opacity-dragged: 0.94;
-                --ui-opacity-drag-item: 0.35;
-            }
-
-            * { 
-                scrollbar-width: thin; 
-                scrollbar-color: var(--ui-scrollbar-thumb) transparent; 
-            } 
-            *::-webkit-scrollbar { 
-                width: var(--ui-scrollbar-size); 
-                height: var(--ui-scrollbar-size); 
-            } 
-            *::-webkit-scrollbar-track { 
-                background: transparent; 
-            } 
-            *::-webkit-scrollbar-thumb { 
-                background: var(--ui-scrollbar-thumb); 
-                border-radius: var(--ui-radius-base); 
-            } 
-            *::-webkit-scrollbar-thumb:hover { 
-                background: var(--ui-scrollbar-thumb-hover); 
-            }
-            * { 
-                box-sizing: border-box; 
-                margin: 0; 
-                padding: 0; 
-                font-family: var(--ui-font-family); 
-            }
-
-            /* Contenedores */
-            .ui-container {
-                display: flex;
-                box-sizing: border-box;
-                padding: var(--ui-container-padding);
-                gap: var(--ui-container-gap);
-                background: transparent;
-                position: relative;
-                min-width: 0;
-                min-height: 0;
-            }
-
-            .ui-container-column {
-                flex-direction: column;
-                width: var(--ui-container-w);
-                max-width: 100%;
-                height: var(--ui-container-h);
-                overflow-y: auto;
-                overflow-x: hidden;
-                align-items: stretch;
-            }
-
-            .ui-container-row {
-                flex-direction: row;
-                height: var(--ui-container-h, auto);
-                width: var(--ui-container-w, 100%);
-                overflow-x: auto;
-                overflow-y: hidden;
-                align-items: flex-start;
-            }
-
-            .ui-container.is-hidden { display: none !important; }
-
-            .ui-container.is-floating {
-                position: fixed !important;
-                z-index: 900;
-                background: var(--ui-bg-base);
-                border: 1px solid var(--ui-border);
-                border-radius: var(--ui-radius-lg);
-                box-shadow: var(--ui-shadow-floating);
-                height: auto !important;
-                max-height: var(--ui-container-floating-max-h);
-                overflow-y: auto;
-            }
-
-            .ui-container-header {
-                height: var(--ui-container-header-h);
-                min-height: var(--ui-container-header-h);
-                background: var(--ui-bg-surface);
-                border-bottom: 1px solid var(--ui-border);
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 0 10px;
-                cursor: grab;
-            }
-            .ui-container-header:active { cursor: grabbing; }
-
-            .ui-panel-placeholder {
-                border: 1.5px dashed var(--ui-accent);
-                border-radius: var(--ui-radius-lg);
-                background: var(--ui-accent-placeholder-bg);
-                box-sizing: border-box;
-                min-height: 52px;
-                width: 100%;
-                flex-shrink: 0;
-                pointer-events: none;
-                margin: var(--ui-panel-margin);
-            }
-
-            /* Panel */
-            .ui-panel {
-                width: var(--ui-panel-width);
-                background: var(--ui-bg-panel);
-                border-radius: var(--ui-radius-lg);
-                border: 1px solid var(--ui-border);
-                display: flex;
-                flex-direction: column;
-                box-shadow: var(--ui-shadow-panel);
-                position: absolute;
-                z-index: 100;
-                user-select: none;
-                transition: border-color var(--ui-transition-fast), box-shadow var(--ui-transition-fast);
-                flex-shrink: 0;
-                margin: var(--ui-panel-margin);
-            }
-
-            .ui-panel.is-hidden { 
-                display: none !important; 
-            }
-
-            .ui-panel.ui-panel-static {
-                position: relative !important;
-                left: auto !important;
-                top: auto !important;
-                width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right))) !important;
-                height: auto !important;
-                max-height: none !important;
-                z-index: 1 !important;
-                box-shadow: var(--ui-shadow-static) !important;
-                display: flex;
-                flex: 0 0 auto !important;
-                margin: var(--ui-panel-margin) !important;
-            }
-
-            .ui-panel.is-snapping { 
-                border-color: var(--ui-accent-snap-border); 
-                box-shadow: 0 0 14px var(--ui-accent-snap-shadow); 
-            }
-            .ui-panel.is-dragged { 
-                z-index: 10000 !important; 
-                opacity: var(--ui-opacity-dragged); 
-                cursor: grabbing !important; 
-            }
-            .ui-panel.collapsed { 
-                height: var(--ui-panel-collapsed-h) !important; 
-                min-height: var(--ui-panel-collapsed-h) !important; 
-            }
-            .ui-panel.collapsed .ui-panel-body { display: none !important; }
-
-            .ui-panel-header {
-                height: var(--ui-panel-header-h);
-                min-height: var(--ui-panel-header-h);
-                background: var(--ui-bg-surface);
-                border-bottom: 1px solid var(--ui-border);
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 0 10px;
-                cursor: grab;
-                flex-shrink: 0;
-            }
-            .ui-panel-header:active { cursor: grabbing; }
-            .ui-header-left { display: flex; align-items: center; gap: 8px; pointer-events: none; }
-            .ui-panel-title { 
-                font-size: var(--ui-font-size-panel-title); 
-                font-weight: var(--ui-font-weight-bold); 
-                color: var(--ui-text-panel-title); 
-                text-transform: uppercase; 
-                letter-spacing: var(--ui-letter-spacing-sm); 
-                margin: var(--ui-label-margin);
-            }
-            .ui-header-tools { display: flex; align-items: center; gap: 6px; }
-            
-            .ui-icon-btn { 
-                width: 18px; 
-                height: 18px; 
-                border-radius: var(--ui-radius-md); 
-                border: none; 
-                background: transparent; 
-                color: var(--ui-text-muted); 
-                display: flex; 
-                align-items: center; 
-                justify-content: center; 
-                cursor: pointer; 
-                font-size: var(--ui-font-size-icon-btn); 
-                line-height: 1; 
-                transition: all var(--ui-transition-fast); 
-            }
-            .ui-icon-btn:hover { background: var(--ui-btn-bg); color: var(--ui-text-bright); }
-            .ui-icon-btn.active { color: var(--ui-accent); font-weight: var(--ui-font-weight-bold); }
-
-            .ui-panel-body {
-                padding: var(--ui-panel-body-padding);
-                display: flex;
-                flex-direction: column;
-                gap: var(--ui-panel-body-gap);
-                background: var(--ui-bg-panel);
-                overflow-y: auto;
-                overflow-x: hidden;
-                flex: 1;
-                min-height: 0;
-            }
-
-            .ui-row { 
-                display: flex; 
-                flex-direction: row;
-                flex-wrap: wrap;
-                align-items: center;
-                gap: 8px; 
-                width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right))); 
-                min-height: var(--ui-btn-height); 
-                flex-shrink: 0; 
-                margin: var(--ui-row-margin);
-            }
-
-            .ui-row-align-0 { justify-content: flex-start; }
-            .ui-row-align-0 > * { flex: 1 1 auto; min-width: 0; }
-            .ui-row-align-0 > .ui-label { flex: 0 0 auto; }
-            .ui-row-align-1 { justify-content: flex-start; }
-            .ui-row-align-2 { justify-content: center; }
-            .ui-row-align-3 { justify-content: flex-end; }
-            .ui-row-align-4 { justify-content: space-between; }
-            .ui-row-align-5 { justify-content: space-evenly; }
-
-            .ui-label { 
-                font-size: var(--ui-font-size-label); 
-                font-weight: var(--ui-font-weight-semibold); 
-                color: var(--ui-text-muted); 
-                text-transform: uppercase; 
-                letter-spacing: var(--ui-letter-spacing-sm); 
-                white-space: nowrap; 
-                user-select: none; 
-                margin: var(--ui-label-margin);
-            }
-            
-            /* Botones Comunes */
-            .ui-btn { 
-                background: var(--ui-btn-bg); 
-                color: var(--ui-text-main); 
-                border: 1px solid var(--ui-border-light); 
-                padding: 0 10px; 
-                border-radius: var(--ui-radius-base); 
-                font-size: var(--ui-font-size-btn); 
-                font-weight: var(--ui-font-weight-semibold); 
-                cursor: pointer; 
-                display: inline-flex; 
-                align-items: center; 
-                justify-content: center; 
-                transition: all var(--ui-transition-fast); 
-                height: var(--ui-btn-height); 
-                gap: 6px; 
-                flex-shrink: 0; 
-                margin: var(--ui-btn-margin);
-            }
-            .ui-btn:hover { background: var(--ui-btn-hover-bg); color: var(--ui-text-hover); border-color: var(--ui-border-hover); }
-            .ui-btn:active { transform: scale(0.97); }
-            .ui-btn:disabled { opacity: var(--ui-opacity-disabled); cursor: not-allowed; pointer-events: none; }
-            
-            .ui-btn-primary { background: var(--ui-primary-bg); border-color: var(--ui-border-focus); color: var(--ui-primary-text); }
-            .ui-btn-primary:hover { background: var(--ui-primary-hover-bg); border-color: var(--ui-primary-border); }
-            
-            .ui-btn-danger { background: var(--ui-danger-bg); border-color: var(--ui-danger-border); color: var(--ui-danger-color); }
-            .ui-btn-danger:hover { background: var(--ui-danger-bg); border-color: var(--ui-danger-border-hover); color: var(--ui-danger-hover); }
-
-            /* Inputs & Selects */
-            .ui-input { 
-                background: var(--ui-bg-input); 
-                border: 1px solid var(--ui-border); 
-                color: var(--ui-text-main); 
-                padding: 0 8px; 
-                border-radius: var(--ui-radius-base); 
-                font-size: var(--ui-font-size-input); 
-                outline: none; 
-                height: var(--ui-btn-height); 
-                font-weight: var(--ui-font-weight-medium); 
-                margin: var(--ui-input-margin);
-            }
-            .ui-input:focus { border-color: var(--ui-border-focus); color: var(--ui-text-bright); }
-            .ui-input:disabled { opacity: var(--ui-opacity-disabled); cursor: not-allowed; }
-            .ui-input-text { flex: 1; min-width: 0; }
-            .ui-input-number { width: 62px; text-align: center; font-variant-numeric: tabular-nums; flex-shrink: 0; }
-
-            .ui-select-wrap { 
-                position: relative; 
-                display: inline-flex; 
-                align-items: center; 
-                height: var(--ui-btn-height); 
-                background: var(--ui-bg-input); 
-                border: 1px solid var(--ui-border); 
-                border-radius: var(--ui-radius-base); 
-                padding: 0 8px; 
-                flex: 1; 
-                min-width: 0; 
-                margin: var(--ui-input-margin);
-            }
-            .ui-select-wrap:focus-within { border-color: var(--ui-border-focus); }
-            .ui-select { 
-                appearance: none; 
-                background: transparent; 
-                border: none; 
-                color: var(--ui-text-main); 
-                font-size: var(--ui-font-size-select); 
-                font-weight: var(--ui-font-weight-semibold); 
-                width: 100%; 
-                outline: none; 
-                cursor: pointer; 
-                padding-right: 18px; 
-            }
-            .ui-select:disabled { opacity: var(--ui-opacity-disabled); cursor: not-allowed; }
-            .ui-select option { background: var(--ui-bg-panel); color: var(--ui-text-main); }
-            .ui-select-arrow { 
-                position: absolute; 
-                right: 8px; 
-                pointer-events: none; 
-                font-size: var(--ui-font-size-select-arrow); 
-                color: var(--ui-text-muted); 
-            }
-
-            /* Segmented */
-            .ui-segmented { 
-                display: flex; 
-                background: var(--ui-bg-input); 
-                border: 1px solid var(--ui-border); 
-                border-radius: var(--ui-radius-base); 
-                padding: 2px; 
-                width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right))); 
-                height: var(--ui-btn-height); 
-                flex-shrink: 0; 
-                margin: var(--ui-margin);
-            }
-            .ui-seg-item { 
-                flex: 1; 
-                display: flex; 
-                align-items: center; 
-                justify-content: center; 
-                font-size: var(--ui-font-size-seg); 
-                font-weight: var(--ui-font-weight-semibold); 
-                color: var(--ui-text-muted); 
-                cursor: pointer; 
-                border-radius: var(--ui-radius-md); 
-                transition: all var(--ui-transition-base); 
-                text-transform: uppercase; 
-                padding: 0 4px;
-            }
-            .ui-seg-item.active { background: var(--ui-btn-bg); color: var(--ui-text-bright); }
-
-            /* Checkbox */
-            .ui-checkbox { 
-                display: flex; 
-                align-items: center; 
-                gap: 8px; 
-                cursor: pointer; 
-                margin: var(--ui-margin);
-            }
-            .ui-checkbox.disabled { opacity: var(--ui-opacity-disabled); cursor: not-allowed; pointer-events: none; }
-            .ui-checkbox-box { 
-                width: 16px; 
-                height: 16px; 
-                background: var(--ui-bg-input); 
-                border: 1px solid var(--ui-border); 
-                border-radius: var(--ui-radius-md); 
-                display: flex; 
-                align-items: center; 
-                justify-content: center; 
-                transition: all var(--ui-transition-fast); 
-                flex-shrink: 0; 
-            }
-            .ui-checkbox.checked .ui-checkbox-box { background: var(--ui-primary-bg); border-color: var(--ui-primary-border); }
-            .ui-checkbox-mark { 
-                display: none; 
-                width: 8px; 
-                height: 5px; 
-                border-left: 1.5px solid var(--ui-primary-text); 
-                border-bottom: 1.5px solid var(--ui-primary-text); 
-                transform: rotate(-45deg) translate(0.5px, -0.5px); 
-            }
-            .ui-checkbox.checked .ui-checkbox-mark { display: block; }
-
-            /* Radio */
-            .ui-radio-group { 
-                display: flex; 
-                align-items: center; 
-                gap: 10px; 
-                margin: var(--ui-margin); 
-            }
-            .ui-radio-item { display: flex; align-items: center; gap: 6px; cursor: pointer; }
-            .ui-radio-item.disabled { opacity: var(--ui-opacity-disabled); cursor: not-allowed; pointer-events: none; }
-            .ui-radio-circle { 
-                width: 14px; 
-                height: 14px; 
-                border-radius: var(--ui-radius-pill); 
-                background: var(--ui-bg-input); 
-                border: 1px solid var(--ui-border); 
-                display: flex; 
-                align-items: center; 
-                justify-content: center; 
-                transition: all var(--ui-transition-fast); 
-                flex-shrink: 0; 
-            }
-            .ui-radio-dot { 
-                width: 5px; 
-                height: 5px; 
-                border-radius: var(--ui-radius-pill); 
-                background: var(--ui-primary-text); 
-                display: none; 
-            }
-            .ui-radio-item.active .ui-radio-circle { border-color: var(--ui-primary-border); background: var(--ui-primary-bg); }
-            .ui-radio-item.active .ui-radio-dot { display: block; }
-
-            /* Toggle */
-            .ui-toggle { 
-                display: flex; 
-                align-items: center; 
-                gap: 8px; 
-                cursor: pointer; 
-                margin: var(--ui-margin); 
-            }
-            .ui-toggle.disabled { opacity: var(--ui-opacity-disabled); cursor: not-allowed; pointer-events: none; }
-            .ui-toggle-switch { 
-                width: 24px; 
-                height: 14px; 
-                background: var(--ui-bg-input); 
-                border-radius: 8px; 
-                position: relative; 
-                transition: all var(--ui-transition-base); 
-                border: 1px solid var(--ui-border); 
-                flex-shrink: 0; 
-            }
-            .ui-toggle-thumb { 
-                width: 8px; 
-                height: 8px; 
-                background: var(--ui-text-muted); 
-                border-radius: var(--ui-radius-pill); 
-                position: absolute; 
-                top: 2px; 
-                left: 2px; 
-                transition: all var(--ui-transition-base); 
-            }
-            .ui-toggle.active .ui-toggle-switch { background: var(--ui-primary-bg); border-color: var(--ui-primary-border); }
-            .ui-toggle.active .ui-toggle-thumb { transform: translateX(10px); background: var(--ui-primary-text); }
-
-            /* Info Box */
-            .ui-info-box { 
-                background: var(--ui-info-bg); 
-                border: 1px solid var(--ui-info-border); 
-                border-left: 3px solid var(--ui-info-accent); 
-                padding: 8px 10px; 
-                border-radius: var(--ui-radius-base); 
-                font-size: var(--ui-font-size-info); 
-                color: var(--ui-info-text); 
-                display: flex; 
-                align-items: center; 
-                justify-content: space-between; 
-                gap: 8px; 
-                width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right))); 
-                transition: opacity var(--ui-transition-base), transform var(--ui-transition-base); 
-                flex-shrink: 0; 
-                margin: var(--ui-info-margin);
-            }
-            .ui-info-box.fade-out { opacity: 0; transform: translateY(-4px); }
-            .ui-info-close { 
-                background: none; 
-                border: none; 
-                color: var(--ui-info-close); 
-                cursor: pointer; 
-                font-size: var(--ui-font-size-info-close); 
-                line-height: 1; 
-                padding: 3px; 
-            }
-            .ui-info-close:hover { color: var(--ui-info-close-hover); }
-
-            /* Acordeón */
-            .ui-accordion { 
-                display: flex; 
-                flex-direction: column; 
-                gap: 6px; 
-                width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right))); 
-                flex-shrink: 0; 
-                margin: var(--ui-accordion-margin);
-            }
-            .ui-accordion-item { 
-                border: 1px solid var(--ui-border); 
-                border-radius: var(--ui-radius-base); 
-                overflow: hidden; 
-                background: var(--ui-bg-surface); 
-                transition: border-color var(--ui-transition-base); 
-            }
-            .ui-accordion-item.open { border-color: var(--ui-border-light); }
-            .ui-accordion-header { 
-                height: 26px; 
-                padding: 0 8px; 
-                display: flex; 
-                align-items: center; 
-                justify-content: space-between; 
-                cursor: pointer; 
-                background: var(--ui-bg-surface); 
-                transition: background var(--ui-transition-fast); 
-            }
-            .ui-accordion-header:hover { background: var(--ui-bg-surface-hover); }
-            .ui-accordion-title { 
-                font-size: var(--ui-font-size-accordion-title); 
-                font-weight: var(--ui-font-weight-bold); 
-                color: var(--ui-text-accordion); 
-                text-transform: uppercase; 
-                letter-spacing: var(--ui-letter-spacing-sm); 
-            }
-            .ui-accordion-item.open .ui-accordion-title { color: var(--ui-text-accordion-open); }
-            .ui-accordion-arrow { 
-                font-size: var(--ui-font-size-accordion-arrow); 
-                color: var(--ui-text-dim); 
-                transition: transform var(--ui-transition-base); 
-            }
-            .ui-accordion-item.open .ui-accordion-arrow { transform: rotate(90deg); color: var(--ui-text-main); }
-            .ui-accordion-content { 
-                display: grid; 
-                grid-template-rows: 0fr; 
-                transition: grid-template-rows var(--ui-transition-accordion); 
-                background: var(--ui-bg-base); 
-            }
-            .ui-accordion-item.open .ui-accordion-content { grid-template-rows: 1fr; }
-            .ui-accordion-body { 
-                overflow: hidden; 
-                min-height: 0; 
-                display: flex; 
-                flex-direction: column; 
-                gap: 6px; 
-                padding: 0 8px; 
-                transition: padding var(--ui-transition-base); 
-            }
-            .ui-accordion-item.open .ui-accordion-body { padding: 8px; }
-
-            /* Slider Card */
-            .ui-slider-card { 
-                width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right))); 
-                background: var(--ui-bg-surface); 
-                border: 1px solid var(--ui-border); 
-                border-radius: var(--ui-radius-base); 
-                overflow: hidden; 
-                display: flex; 
-                flex-direction: column; 
-                flex-shrink: 0; 
-                margin: var(--ui-slider-margin);
-            }
-            .ui-slider-row { 
-                display: flex; 
-                align-items: center; 
-                gap: 8px; 
-                width: 100%; 
-                height: var(--ui-slider-card-height); 
-                padding: 0 8px; 
-            }
-            .ui-slider-label { 
-                font-size: var(--ui-font-size-slider-label); 
-                font-weight: var(--ui-font-weight-semibold); 
-                color: var(--ui-text-muted); 
-                width: var(--ui-slider-label-width); 
-                text-transform: uppercase; 
-                letter-spacing: var(--ui-letter-spacing-sm); 
-                flex-shrink: 0; 
-            }
-            .ui-slider-track { 
-                flex: 1; 
-                position: relative; 
-                height: var(--ui-slider-track-height); 
-                display: flex; 
-                align-items: center; 
-                cursor: pointer; 
-            }
-            .ui-slider-bg { 
-                width: 100%; 
-                height: var(--ui-slider-bar-height); 
-                background: var(--ui-slider-bg); 
-                border-radius: var(--ui-radius-sm); 
-                position: relative; 
-                overflow: hidden; 
-            }
-            .ui-slider-fill { 
-                position: absolute; 
-                height: 100%; 
-                background: var(--ui-slider-fill); 
-                border-radius: var(--ui-radius-sm); 
-                width: 0%; 
-                pointer-events: none; 
-            }
-            .ui-slider-thumb { 
-                width: var(--ui-slider-thumb-size); 
-                height: var(--ui-slider-thumb-size); 
-                background: var(--ui-slider-thumb); 
-                border-radius: var(--ui-radius-pill); 
-                position: absolute; 
-                top: 3px; 
-                transform: translateX(-50%); 
-                box-shadow: var(--ui-shadow-thumb); 
-                pointer-events: none; 
-            }
-            .ui-slider-val { 
-                font-size: var(--ui-font-size-slider-val); 
-                font-weight: var(--ui-font-weight-bold); 
-                color: var(--ui-text-val); 
-                width: var(--ui-slider-val-width); 
-                text-align: right; 
-                font-variant-numeric: tabular-nums; 
-                flex-shrink: 0; 
-            }
-            .ui-cajon-btn { 
-                width: 16px; 
-                height: 16px; 
-                border: none; 
-                background: transparent; 
-                color: var(--ui-text-dim); 
-                cursor: pointer; 
-                display: flex; 
-                align-items: center; 
-                justify-content: center; 
-                font-size: var(--ui-font-size-cajon-btn); 
-                border-radius: var(--ui-radius-md); 
-                transition: all var(--ui-transition-base); 
-                flex-shrink: 0; 
-            }
-            .ui-cajon-btn:hover { background: var(--ui-border); color: var(--ui-text-main); }
-            .ui-slider-card.open .ui-cajon-btn { transform: rotate(180deg); color: var(--ui-text-val); }
-            .ui-slider-cajon { 
-                display: grid; 
-                grid-template-rows: 0fr; 
-                transition: grid-template-rows var(--ui-transition-accordion); 
-                background: var(--ui-bg-cajon); 
-                border-top: 1px solid transparent; 
-            }
-            .ui-slider-card.open .ui-slider-cajon { grid-template-rows: 1fr; border-top-color: var(--ui-border-cajon); }
-            .ui-slider-cajon-inner { 
-                overflow: hidden; 
-                min-height: 0; 
-                display: flex; 
-                align-items: center; 
-                justify-content: space-between; 
-                padding: 0 8px; 
-                gap: 6px; 
-                transition: padding var(--ui-transition-base); 
-            }
-            .ui-slider-card.open .ui-slider-cajon-inner { padding: 6px 8px; }
-            .ui-cajon-tag { 
-                font-size: var(--ui-font-size-cajon-tag); 
-                font-weight: var(--ui-font-weight-bold); 
-                color: var(--ui-text-dim); 
-                text-transform: uppercase; 
-            }
-            .ui-cajon-group { display: flex; align-items: center; gap: 4px; }
-            .ui-cajon-input { 
-                width: 44px; 
-                text-align: center; 
-                height: 20px; 
-                padding: 0 4px; 
-                font-size: var(--ui-font-size-cajon-input); 
-            }
-
-            /* Snapping Guides */
-            .ui-snap-guide { 
-                position: fixed; 
-                pointer-events: none; 
-                z-index: 99990; 
-                border: 1.5px dashed var(--ui-accent); 
-                border-radius: var(--ui-radius-lg); 
-                background: var(--ui-accent-placeholder-bg); 
-                display: none; 
-                box-sizing: border-box; 
-            }
-
-            /* Tablas */
-            .ui-table-container { 
-                width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right))); 
-                display: flex; 
-                flex-direction: column; 
-                gap: 6px; 
-                background: var(--ui-bg-surface); 
-                border: 1px solid var(--ui-border); 
-                border-radius: var(--ui-radius-base); 
-                overflow: hidden; 
-                flex-shrink: 0; 
-                margin: var(--ui-table-margin);
-            }
-            .ui-table-toolbar { 
-                display: flex; 
-                align-items: center; 
-                justify-content: space-between; 
-                gap: 8px; 
-                padding: 8px; 
-                background: var(--ui-bg-base); 
-                border-bottom: 1px solid var(--ui-border); 
-                flex-wrap: wrap; 
-            }
-            .ui-table-search { flex: 1; min-width: 140px; }
-            .ui-table-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-            .ui-table { width: 100%; border-collapse: collapse; text-align: left; font-size: var(--ui-font-size-table); }
-            .ui-table th { 
-                background: var(--ui-bg-surface); 
-                color: var(--ui-text-muted); 
-                font-weight: var(--ui-font-weight-bold); 
-                text-transform: uppercase; 
-                letter-spacing: var(--ui-letter-spacing-sm); 
-                padding: 8px 10px; 
-                border-bottom: 1px solid var(--ui-border); 
-                white-space: nowrap; 
-                cursor: grab; 
-            }
-            .ui-table th.drag-over { background: var(--ui-btn-bg); border-left: 2px solid var(--ui-accent); }
-            .ui-table td { 
-                padding: 7px 10px; 
-                border-bottom: 1px solid var(--ui-border-subtle); 
-                color: var(--ui-text-main); 
-                white-space: nowrap; 
-                vertical-align: middle; 
-            }
-            .ui-table tr:hover td { background: var(--ui-bg-tr-hover); }
-            .ui-table-actions-cell { display: flex; align-items: center; gap: 6px; }
-            .ui-table-footer { 
-                display: flex; 
-                align-items: center; 
-                justify-content: space-between; 
-                padding: 6px 8px; 
-                background: var(--ui-bg-base); 
-                border-top: 1px solid var(--ui-border); 
-                font-size: var(--ui-font-size-table-footer); 
-                color: var(--ui-text-muted); 
-                flex-wrap: wrap; 
-                gap: 6px; 
-            }
-            .ui-table-pagination { display: flex; align-items: center; gap: 6px; margin-left: auto; }
-            .ui-table-cards { display: none; flex-direction: column; gap: 8px; padding: 8px; }
-            .ui-table-card { 
-                background: var(--ui-bg-base); 
-                border: 1px solid var(--ui-border); 
-                border-radius: var(--ui-radius-base); 
-                padding: 8px; 
-                display: flex; 
-                flex-direction: column; 
-                gap: 6px; 
-            }
-            .ui-table-card-row { 
-                display: flex; 
-                justify-content: space-between; 
-                align-items: center; 
-                font-size: var(--ui-font-size-table-card-row); 
-                border-bottom: 1px solid var(--ui-border-card-row); 
-                padding-bottom: 4px; 
-            }
-            .ui-table-card-label { 
-                color: var(--ui-text-muted); 
-                font-weight: var(--ui-font-weight-bold); 
-                text-transform: uppercase; 
-                font-size: var(--ui-font-size-table-card-label); 
-            }
-            .ui-table-card-val { color: var(--ui-text-main); }
-
-            /* Reorder List */
-            .ui-reorder-list { 
-                display: flex; 
-                flex-direction: column; 
-                gap: 6px; 
-                width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right))); 
-                max-height: var(--ui-list-max-h); 
-                overflow-y: auto; 
-                background: var(--ui-bg-list); 
-                border: 1px solid var(--ui-border-list); 
-                border-radius: var(--ui-radius-base); 
-                padding: 6px; 
-                box-sizing: border-box; 
-                flex-shrink: 0; 
-                margin: var(--ui-list-margin);
-            }
-            .ui-reorder-item { 
-                display: flex; 
-                align-items: center; 
-                justify-content: space-between; 
-                padding: 6px 8px; 
-                background: var(--ui-bg-surface); 
-                border-radius: var(--ui-radius-md); 
-                cursor: grab; 
-                border: 1px solid transparent; 
-                font-size: var(--ui-font-size-reorder-item); 
-                color: var(--ui-text-subtle); 
-                touch-action: none; 
-                transition: transform var(--ui-transition-fast), background-color var(--ui-transition-fast), border-color var(--ui-transition-fast); 
-                width: 100%; 
-                margin: var(--ui-list-item-margin);
-            }
-            .ui-reorder-item:active { cursor: grabbing; }
-            .ui-reorder-item.active { background: var(--ui-bg-reorder-active); border-color: var(--ui-border-active); color: var(--ui-text-bright); }
-            .ui-reorder-item.dragging { opacity: var(--ui-opacity-drag-item); transform: scale(0.96); }
-            .ui-reorder-item.drag-over { border-color: var(--ui-accent); background: var(--ui-bg-reorder-dragover); }
-            .ui-reorder-item-left { display: flex; align-items: center; gap: 8px; pointer-events: none; }
-            .ui-reorder-item-left button { pointer-events: auto; }
-
-            /* Líneas Guía */
-            .ui-guide-line { 
-                position: fixed; 
-                pointer-events: none; 
-                z-index: 999998; 
-                background: var(--ui-accent); 
-                box-shadow: var(--ui-shadow-guide); 
-                display: none; 
-            }
-            .ui-guide-v { width: 1px; top: 0; bottom: 0; }
-            .ui-guide-h { height: 1px; left: 0; right: 0; }
-
-            /* Botones Flotantes y Cuadrados */
-            .ui-square-btn { 
-                display: inline-flex; 
-                align-items: center; 
-                justify-content: center; 
-                border-radius: var(--ui-radius-base); 
-                border: 1px solid var(--ui-border); 
-                cursor: pointer; 
-                transition: border-color var(--ui-transition-fast), filter var(--ui-transition-fast); 
-                flex-shrink: 0; 
-                font-weight: var(--ui-font-weight-bold); 
-                line-height: 1; 
-                margin: var(--ui-margin);
-                -webkit-tap-highlight-color: transparent; 
-            }
-            .ui-square-btn:hover { border-color: var(--ui-border-focus); filter: brightness(1.2); }
-            .ui-draggable-floating { 
-                position: absolute !important; 
-                z-index: 1000; 
-                box-shadow: var(--ui-shadow-btn-floating); 
-                touch-action: none; 
-            }
-            .ui-draggable-floating.is-dragging { 
-                z-index: 10001 !important; 
-                opacity: var(--ui-opacity-dragged); 
-                cursor: grabbing !important; 
-            }
-            .ui-draggable-floating.is-snapping { 
-                border-color: var(--ui-accent) !important; 
-                box-shadow: 0 0 10px var(--ui-accent-btn-shadow) !important; 
-            }
-
-            /* Tooltip */
-            .ui-square-tooltip { 
-                position: fixed; 
-                z-index: 999999; 
-                pointer-events: none; 
-                background: var(--ui-bg-base); 
-                border: 1px solid var(--ui-border); 
-                border-radius: var(--ui-radius-base); 
-                padding: 8px 12px; 
-                box-shadow: var(--ui-shadow-tooltip); 
-                max-width: 240px; 
-                opacity: 0; 
-                transform: scale(0.94); 
-                transition: all var(--ui-transition-fast); 
-                display: flex; 
-                flex-direction: column; 
-                gap: 4px; 
-            }
-            .ui-square-tooltip.visible { opacity: 1; transform: scale(1); }
-            .ui-square-tooltip-title { 
-                font-size: var(--ui-font-size-tooltip-title); 
-                font-weight: var(--ui-font-weight-bold); 
-                color: var(--ui-text-bright); 
-                text-transform: uppercase; 
-            }
-            .ui-square-tooltip-info { 
-                font-size: var(--ui-font-size-tooltip-info); 
-                color: var(--ui-text-muted); 
-                line-height: 1.4; 
-            }
-
-            /* Modal de Layouts */
-            .ui-layout-modal-backdrop { 
-                position: fixed; 
-                inset: 0; 
-                background: var(--ui-modal-backdrop-bg); 
-                backdrop-filter: blur(4px); 
-                z-index: 9999999; 
-                display: flex; 
-                align-items: center; 
-                justify-content: center; 
-                padding: 15px; 
-            }
-            .ui-layout-modal { 
-                background: var(--ui-bg-panel); 
-                border: 1px solid var(--ui-border); 
-                border-radius: var(--ui-radius-lg); 
-                width: var(--ui-modal-width); 
-                max-width: 100%; 
-                box-shadow: var(--ui-shadow-modal); 
-                display: flex; 
-                flex-direction: column; 
-                overflow: hidden; 
-                animation: uiModalIn var(--ui-transition-base) cubic-bezier(0.16, 1, 0.3, 1); 
-            }
-            @keyframes uiModalIn { 
-                from { transform: scale(0.92); opacity: 0; } 
-                to { transform: scale(1); opacity: 1; } 
-            }
-            .ui-layout-modal-head { 
-                height: var(--ui-modal-header-h); 
-                background: var(--ui-bg-surface); 
-                border-bottom: 1px solid var(--ui-border); 
-                display: flex; 
-                align-items: center; 
-                justify-content: space-between; 
-                padding: 0 12px; 
-            }
-            .ui-layout-modal-body { 
-                padding: 12px; 
-                display: flex; 
-                flex-direction: column; 
-                gap: 12px; 
-                max-height: var(--ui-modal-max-h); 
-                overflow-y: auto; 
-            }
-            .ui-layout-list { 
-                display: flex; 
-                flex-direction: column; 
-                gap: 6px; 
-                max-height: var(--ui-modal-list-max-h); 
-                overflow-y: auto; 
-                background: var(--ui-bg-input); 
-                border: 1px solid var(--ui-border); 
-                border-radius: var(--ui-radius-base); 
-                padding: 6px; 
-            }
-            .ui-layout-item { 
-                display: flex; 
-                align-items: center; 
-                justify-content: space-between; 
-                padding: 7px 10px; 
-                background: var(--ui-bg-modal-item); 
-                border: 1px solid transparent; 
-                border-radius: var(--ui-radius-base); 
-                margin: var(--ui-modal-item-margin);
-            }
-            .ui-layout-item:hover { 
-                border-color: var(--ui-border); 
-                background: var(--ui-bg-modal-item-hover); 
-            }
-            .ui-layout-meta { display: flex; flex-direction: column; gap: 3px; overflow: hidden; }
-            .ui-layout-name { 
-                font-size: var(--ui-font-size-layout-name); 
-                font-weight: var(--ui-font-weight-bold); 
-                color: var(--ui-text-bright); 
-                text-transform: uppercase; 
-                white-space: nowrap; 
-                text-overflow: ellipsis; 
-            }
-            .ui-layout-date { 
-                font-size: var(--ui-font-size-layout-date); 
-                color: var(--ui-text-muted); 
-                font-variant-numeric: tabular-nums; 
-            }
-            .ui-layout-actions { display: flex; align-items: center; gap: 6px; }
-            .ui-badge-app { 
-                font-size: var(--ui-font-size-badge); 
-                background: var(--ui-badge-bg); 
-                color: var(--ui-badge-text); 
-                padding: 3px 6px; 
-                border-radius: var(--ui-radius-md); 
-                font-weight: var(--ui-font-weight-bold); 
-            }
-
-            @media (max-width: 768px) {
-                .ui-container-column { width: 100% !important; height: auto !important; max-height: 50vh !important; }
-                .ui-container-row { width: 100% !important; }
-                .ui-panel { width: 100% !important; }
-                .ui-table-scroll { display: none; }
-                .ui-table-cards { display: flex; }
-            }
-        `;
-        const target = document.head || document.documentElement;
-        if (target) target.appendChild(style);
-    }
-}
 
     class UIRegistryManager {
         constructor() { this.entities = new Map(); }
@@ -1293,9 +1501,7 @@
             const vw = window.innerWidth + window.scrollX;
             const vh = window.innerHeight + window.scrollY;
 
-            let finalX = rawX;
-            let finalY = rawY;
-            let snapped = false;
+            let finalX = rawX, finalY = rawY, snapped = false;
 
             if (Math.abs(finalX - window.scrollX) < this.threshold) { finalX = window.scrollX; snapped = true; }
             if (Math.abs(finalY - window.scrollY) < this.threshold) { finalY = window.scrollY; snapped = true; }
@@ -1462,7 +1668,7 @@
         constructor({
             id = null,
             direction = 'column',
-            width = '296px',
+            width = '290px',
             height = 'calc(100vh - 48px)',
             gap = 8,
             floating = false,
@@ -1533,9 +1739,7 @@
                 const dx = cx - startX;
                 const dy = cy - startY;
 
-                if (!dragging && (Math.abs(dx) > 4 || Math.abs(dy) > 4)) {
-                    dragging = true;
-                }
+                if (!dragging && (Math.abs(dx) > 4 || Math.abs(dy) > 4)) dragging = true;
                 if (dragging) {
                     this.x = initX + dx;
                     this.y = initY + dy;
@@ -1573,9 +1777,7 @@
                     p.lastParentContainer = this;
                     GlobalDock.unregister(p);
                     p.updateFloatButtonUI();
-                    if (!this.panels.includes(p)) {
-                        this.panels.push(p);
-                    }
+                    if (!this.panels.includes(p)) this.panels.push(p);
                     this.element.appendChild(p.element);
                 } else if (p.mount) {
                     p.mount(this.element);
@@ -1617,11 +1819,8 @@
                 }
             }
 
-            if (targetChild) {
-                this.element.insertBefore(this.placeholder, targetChild);
-            } else {
-                this.element.appendChild(this.placeholder);
-            }
+            if (targetChild) this.element.insertBefore(this.placeholder, targetChild);
+            else this.element.appendChild(this.placeholder);
         }
 
         showPlaceholderAt(element) {
@@ -1648,9 +1847,7 @@
             panel.lastParentContainer = this;
 
             const currentIdx = this.panels.indexOf(panel);
-            if (currentIdx !== -1) {
-                this.panels.splice(currentIdx, 1);
-            }
+            if (currentIdx !== -1) this.panels.splice(currentIdx, 1);
 
             if (this.placeholder && this.placeholder.parentNode === this.element) {
                 this.element.insertBefore(panel.element, this.placeholder);
@@ -1730,293 +1927,273 @@
         constructor(opts = {}) {
             super({
                 direction: opts.type === 'row' ? 'row' : 'column',
-                width: opts.minWidth ? `${opts.minWidth}px` : '296px',
+                width: opts.minWidth ? `${opts.minWidth}px` : '290px',
                 gap: opts.gap || 8,
                 ...opts
             });
         }
     }
     
-        class UIContainerFacil extends UIBaseComponent {
-            constructor({
-                id = null,
-                width = 920,
-                maxHeight = '84vh',
-                gap = 8,
-                padding = 8,
-                floating = true,
-                draggable = true
-            } = {}) {
-                super({ id }, 'cnt_facil');
+    class UIContainerFacil extends UIBaseComponent {
+        constructor({
+            id = null,
+            width = 920,
+            maxHeight = '84vh',
+            gap = 8,
+            padding = 8,
+            floating = true,
+            draggable = true
+        } = {}) {
+            super({ id }, 'cnt_facil');
 
-                this.targetWidth = width;
-                this.maxHeight = maxHeight;
-                this.gap = gap;
-                this.padding = padding;
-                this.floating = floating;
-                this.isDraggable = draggable;
-                this.panels = [];
-                this.isHidden = false;
+            this.targetWidth = width;
+            this.maxHeight = maxHeight;
+            this.gap = gap;
+            this.padding = padding;
+            this.floating = floating;
+            this.isDraggable = draggable;
+            this.panels = [];
+            this.isHidden = false;
 
-                this.element = document.createElement('div');
-                this.element.className = 'ui-container-facil';
-                this.element.setAttribute('data-ui-id', this.id);
+            this.element = document.createElement('div');
+            this.element.className = 'ui-container-facil';
+            this.element.setAttribute('data-ui-id', this.id);
 
-                this.element.style.cssText = `
-                    display: flex;
-                    flex-direction: row;
-                    flex-wrap: wrap;
-                    justify-content: flex-start;
-                    align-items: flex-start;
-                    align-content: flex-start;
-                    gap: ${this.gap}px;
-                    padding: ${this.padding}px;
-                    box-sizing: border-box;
-                    background: transparent;
-                    width: min(${this.targetWidth}px, calc(100vw - 16px));
-                    max-width: 100vw;
-                    height: auto;
-                    max-height: ${this.maxHeight};
-                    overflow-y: auto;
-                    overflow-x: hidden;
-                `;
+            this.element.style.cssText = `
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: flex-start;
+                align-items: flex-start;
+                gap: ${this.gap}px;
+                padding: ${this.padding}px;
+                box-sizing: border-box;
+                background: transparent;
+                width: min(${this.targetWidth}px, calc(100vw - 16px));
+                max-width: 100vw;
+                height: auto;
+                max-height: ${this.maxHeight};
+                overflow-y: auto;
+                overflow-x: hidden;
+            `;
 
-                this.placeholder = document.createElement('div');
-                this.placeholder.className = 'ui-panel-placeholder';
-                this.placeholder.style.display = 'none';
+            this.placeholder = document.createElement('div');
+            this.placeholder.className = 'ui-panel-placeholder';
+            this.placeholder.style.display = 'none';
 
-                if (this.floating) {
-                    this.element.style.position = 'fixed';
-                    this.element.style.zIndex = '850';
-                    this.centerOnScreen();
+            if (this.floating) {
+                this.element.style.position = 'fixed';
+                this.element.style.zIndex = '850';
+                this.centerOnScreen();
 
-                    window.addEventListener('resize', () => this.handleResize());
-
-                    if (document.body) {
-                        document.body.appendChild(this.element);
-                    } else {
-                        window.addEventListener('DOMContentLoaded', () => document.body.appendChild(this.element));
-                    }
-                }
-
-                if (typeof GlobalDock !== 'undefined') {
-                    GlobalDock.registerContainer(this);
-                }
-
-                if (this.isDraggable && this.floating) {
-                    this.bindDragEvents();
-                }
-            }
-
-            centerOnScreen() {
-                const screenW = window.innerWidth;
-                const screenH = window.innerHeight;
-                const isMobile = screenW <= 768;
-
-                if (isMobile) {
-                    this.x = 8;
-                    this.y = 60;
-                    this.element.style.left = '8px';
-                    this.element.style.top = '60px';
-                    this.element.style.width = 'calc(100vw - 16px)';
+                window.addEventListener('resize', () => this.handleResize());
+                if (document.body) {
+                    document.body.appendChild(this.element);
                 } else {
-                    const actualW = Math.min(this.targetWidth, screenW - 20);
-                    this.x = Math.max(10, (screenW - actualW) / 2);
-                    this.y = Math.max(60, (screenH - 520) / 2);
-                    this.element.style.left = `${this.x}px`;
-                    this.element.style.top = `${this.y}px`;
-                    this.element.style.width = `${actualW}px`;
+                    window.addEventListener('DOMContentLoaded', () => document.body.appendChild(this.element));
                 }
             }
 
-            handleResize() {
-                const isMobile = window.innerWidth <= 768;
-                if (isMobile) {
-                    this.element.style.left = '8px';
-                    this.element.style.top = '60px';
-                    this.element.style.width = 'calc(100vw - 16px)';
-                } else {
-                    this.element.style.width = `min(${this.targetWidth}px, calc(100vw - 16px))`;
-                }
-            }
-
-            addPanel(...panels) {
-                panels.forEach(p => {
-                    if (p instanceof UISmartPanel) {
-                        p.element.classList.add('ui-panel-static');
-                        p.floating = false;
-                        p.parentContainer = this;
-                        p.lastParentContainer = this;
-                        if (typeof GlobalDock !== 'undefined') {
-                            GlobalDock.unregister(p);
-                        }
-                        p.updateFloatButtonUI();
-
-                        p.element.style.position = 'relative';
-                        p.element.style.left = 'auto';
-                        p.element.style.top = 'auto';
-                        p.element.style.flex = '1 1 280px';
-                        p.element.style.maxWidth = '100%';
-
-                        if (!this.panels.includes(p)) {
-                            this.panels.push(p);
-                        }
-                        this.element.appendChild(p.element);
-                    } else if (p.mount) {
-                        p.mount(this.element);
-                    } else if (p instanceof HTMLElement) {
-                        this.element.appendChild(p);
-                    }
-                });
-                return this;
-            }
-
-            removePanel(panel) {
-                const idx = this.panels.indexOf(panel);
-                if (idx !== -1) this.panels.splice(idx, 1);
-                panel.parentContainer = null;
-                if (panel.element && panel.element.parentNode === this.element) {
-                    this.element.removeChild(panel.element);
-                }
-            }
-
-            showPlaceholder(cx, cy) {
-                if (!this.placeholder.parentNode) {
-                    this.element.appendChild(this.placeholder);
-                }
-                this.placeholder.style.display = 'block';
-                this.placeholder.style.flex = '1 1 280px';
-
-                const children = Array.from(this.element.children).filter(c => c !== this.placeholder);
-                let targetChild = null;
-
-                for (const child of children) {
-                    const rect = child.getBoundingClientRect();
-                    if (cx < rect.right && cy < rect.bottom) {
-                        targetChild = child;
-                        break;
-                    }
-                }
-
-                if (targetChild) {
-                    this.element.insertBefore(this.placeholder, targetChild);
-                } else {
-                    this.element.appendChild(this.placeholder);
-                }
-            }
-
-            showPlaceholderAt(element) {
-                if (!this.placeholder.parentNode) {
-                    this.element.appendChild(this.placeholder);
-                }
-                this.placeholder.style.display = 'block';
-                this.placeholder.style.flex = '1 1 280px';
-                this.placeholder.style.height = `${element.offsetHeight || 60}px`;
-                this.element.insertBefore(this.placeholder, element);
-            }
-
-            hidePlaceholder() {
-                if (this.placeholder) {
-                    this.placeholder.style.display = 'none';
-                    if (this.placeholder.parentNode) {
-                        this.placeholder.parentNode.removeChild(this.placeholder);
-                    }
-                }
-            }
-
-            insertPanelAtPlaceholder(panel) {
-                panel.parentContainer = this;
-                panel.lastParentContainer = this;
-
-                const currentIdx = this.panels.indexOf(panel);
-                if (currentIdx !== -1) this.panels.splice(currentIdx, 1);
-
-                panel.element.style.flex = '1 1 280px';
-                panel.element.style.maxWidth = '100%';
-
-                if (this.placeholder && this.placeholder.parentNode === this.element) {
-                    this.element.insertBefore(panel.element, this.placeholder);
-                    this.hidePlaceholder();
-                } else {
-                    this.element.appendChild(panel.element);
-                }
-
-                const allElements = Array.from(this.element.children);
-                this.panels = this.panels.concat(panel).sort((a, b) => {
-                    return allElements.indexOf(a.element) - allElements.indexOf(b.element);
-                });
-            }
-
-            insertPanelAt(panel, index) {
-                panel.parentContainer = this;
-                panel.lastParentContainer = this;
-                const currentIdx = this.panels.indexOf(panel);
-                if (currentIdx !== -1) this.panels.splice(currentIdx, 1);
-
-                panel.element.style.flex = '1 1 280px';
-                panel.element.style.maxWidth = '100%';
-
-                const children = Array.from(this.element.children).filter(c => c !== this.placeholder);
-                if (index >= 0 && index < children.length) {
-                    this.element.insertBefore(panel.element, children[index]);
-                    this.panels.splice(index, 0, panel);
-                } else {
-                    this.element.appendChild(panel.element);
-                    this.panels.push(panel);
-                }
-            }
-
-            bindDragEvents() {
-                let startX = 0, startY = 0, initX = 0, initY = 0, isDragging = false;
-
-                const onMove = (e) => {
-                    const cx = e.touches ? e.touches[0].clientX : e.clientX;
-                    const cy = e.touches ? e.touches[0].clientY : e.clientY;
-                    if (!isDragging && Math.hypot(cx - startX, cy - startY) > 5) isDragging = true;
-                    if (isDragging) {
-                        this.x = initX + (cx - startX);
-                        this.y = initY + (cy - startY);
-                        this.element.style.left = `${this.x}px`;
-                        this.element.style.top = `${this.y}px`;
-                    }
-                };
-
-                const onUp = () => {
-                    isDragging = false;
-                    window.removeEventListener('mousemove', onMove);
-                    window.removeEventListener('mouseup', onUp);
-                    window.removeEventListener('touchmove', onMove);
-                    window.removeEventListener('touchend', onUp);
-                };
-
-                const onDown = (e) => {
-                    if (e.target.closest('.ui-panel, button, input, select, .ui-slider-track')) return;
-                    startX = e.touches ? e.touches[0].clientX : e.clientX;
-                    startY = e.touches ? e.touches[0].clientY : e.clientY;
-                    initX = this.element.offsetLeft;
-                    initY = this.element.offsetTop;
-                    window.addEventListener('mousemove', onMove);
-                    window.addEventListener('mouseup', onUp);
-                    window.addEventListener('touchmove', onMove, { passive: false });
-                    window.addEventListener('touchend', onUp);
-                };
-
-                this.element.addEventListener('mousedown', onDown);
-                this.element.addEventListener('touchstart', onDown, { passive: true });
-            }
-
-            destroy() {
-                if (typeof GlobalDock !== 'undefined') {
-                    GlobalDock.unregisterContainer(this);
-                }
-                this.hidePlaceholder();
-                this.panels.forEach(p => p.destroy());
-                this.panels = [];
-                super.destroy();
+            GlobalDock.registerContainer(this);
+            if (this.isDraggable && this.floating) {
+                this.bindDragEvents();
             }
         }
 
- 
+        centerOnScreen() {
+            const screenW = window.innerWidth;
+            const screenH = window.innerHeight;
+            const isMobile = screenW <= 768;
+
+            if (isMobile) {
+                this.x = 8;
+                this.y = 60;
+                this.element.style.left = '8px';
+                this.element.style.top = '60px';
+                this.element.style.width = 'calc(100vw - 16px)';
+            } else {
+                const actualW = Math.min(this.targetWidth, screenW - 20);
+                this.x = Math.max(10, (screenW - actualW) / 2);
+                this.y = Math.max(60, (screenH - 520) / 2);
+                this.element.style.left = `${this.x}px`;
+                this.element.style.top = `${this.y}px`;
+                this.element.style.width = `${actualW}px`;
+            }
+        }
+
+        handleResize() {
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile) {
+                this.element.style.left = '8px';
+                this.element.style.top = '60px';
+                this.element.style.width = 'calc(100vw - 16px)';
+            } else {
+                this.element.style.width = `min(${this.targetWidth}px, calc(100vw - 16px))`;
+            }
+        }
+
+        addPanel(...panels) {
+            panels.forEach(p => {
+                if (p instanceof UISmartPanel) {
+                    p.element.classList.add('ui-panel-static');
+                    p.floating = false;
+                    p.parentContainer = this;
+                    p.lastParentContainer = this;
+                    GlobalDock.unregister(p);
+                    p.updateFloatButtonUI();
+
+                    p.element.style.position = 'relative';
+                    p.element.style.left = 'auto';
+                    p.element.style.top = 'auto';
+                    p.element.style.flex = '1 1 270px';
+                    p.element.style.maxWidth = '100%';
+
+                    if (!this.panels.includes(p)) this.panels.push(p);
+                    this.element.appendChild(p.element);
+                } else if (p.mount) {
+                    p.mount(this.element);
+                } else if (p instanceof HTMLElement) {
+                    this.element.appendChild(p);
+                }
+            });
+            return this;
+        }
+
+        removePanel(panel) {
+            const idx = this.panels.indexOf(panel);
+            if (idx !== -1) this.panels.splice(idx, 1);
+            panel.parentContainer = null;
+            if (panel.element && panel.element.parentNode === this.element) {
+                this.element.removeChild(panel.element);
+            }
+        }
+
+        showPlaceholder(cx, cy) {
+            if (!this.placeholder.parentNode) this.element.appendChild(this.placeholder);
+            this.placeholder.style.display = 'block';
+            this.placeholder.style.flex = '1 1 270px';
+
+            const children = Array.from(this.element.children).filter(c => c !== this.placeholder);
+            let targetChild = null;
+
+            for (const child of children) {
+                const rect = child.getBoundingClientRect();
+                if (cx < rect.right && cy < rect.bottom) {
+                    targetChild = child;
+                    break;
+                }
+            }
+
+            if (targetChild) this.element.insertBefore(this.placeholder, targetChild);
+            else this.element.appendChild(this.placeholder);
+        }
+
+        showPlaceholderAt(element) {
+            if (!this.placeholder.parentNode) this.element.appendChild(this.placeholder);
+            this.placeholder.style.display = 'block';
+            this.placeholder.style.flex = '1 1 270px';
+            this.placeholder.style.height = `${element.offsetHeight || 60}px`;
+            this.element.insertBefore(this.placeholder, element);
+        }
+
+        hidePlaceholder() {
+            if (this.placeholder) {
+                this.placeholder.style.display = 'none';
+                if (this.placeholder.parentNode) {
+                    this.placeholder.parentNode.removeChild(this.placeholder);
+                }
+            }
+        }
+
+        insertPanelAtPlaceholder(panel) {
+            panel.parentContainer = this;
+            panel.lastParentContainer = this;
+
+            const currentIdx = this.panels.indexOf(panel);
+            if (currentIdx !== -1) this.panels.splice(currentIdx, 1);
+
+            panel.element.style.flex = '1 1 270px';
+            panel.element.style.maxWidth = '100%';
+
+            if (this.placeholder && this.placeholder.parentNode === this.element) {
+                this.element.insertBefore(panel.element, this.placeholder);
+                this.hidePlaceholder();
+            } else {
+                this.element.appendChild(panel.element);
+            }
+
+            const allElements = Array.from(this.element.children);
+            this.panels = this.panels.concat(panel).sort((a, b) => {
+                return allElements.indexOf(a.element) - allElements.indexOf(b.element);
+            });
+        }
+
+        insertPanelAt(panel, index) {
+            panel.parentContainer = this;
+            panel.lastParentContainer = this;
+            const currentIdx = this.panels.indexOf(panel);
+            if (currentIdx !== -1) this.panels.splice(currentIdx, 1);
+
+            panel.element.style.flex = '1 1 270px';
+            panel.element.style.maxWidth = '100%';
+
+            const children = Array.from(this.element.children).filter(c => c !== this.placeholder);
+            if (index >= 0 && index < children.length) {
+                this.element.insertBefore(panel.element, children[index]);
+                this.panels.splice(index, 0, panel);
+            } else {
+                this.element.appendChild(panel.element);
+                this.panels.push(panel);
+            }
+        }
+
+        bindDragEvents() {
+            let startX = 0, startY = 0, initX = 0, initY = 0, isDragging = false;
+
+            const onMove = (e) => {
+                const cx = e.touches ? e.touches[0].clientX : e.clientX;
+                const cy = e.touches ? e.touches[0].clientY : e.clientY;
+                if (!isDragging && Math.hypot(cx - startX, cy - startY) > 5) isDragging = true;
+                if (isDragging) {
+                    this.x = initX + (cx - startX);
+                    this.y = initY + (cy - startY);
+                    this.element.style.left = `${this.x}px`;
+                    this.element.style.top = `${this.y}px`;
+                }
+            };
+
+            const onUp = () => {
+                isDragging = false;
+                window.removeEventListener('mousemove', onMove);
+                window.removeEventListener('mouseup', onUp);
+                window.removeEventListener('touchmove', onMove);
+                window.removeEventListener('touchend', onUp);
+            };
+
+            const onDown = (e) => {
+                if (e.target.closest('.ui-panel, button, input, select, .ui-slider-track, .ui-select-trigger')) return;
+                startX = e.touches ? e.touches[0].clientX : e.clientX;
+                startY = e.touches ? e.touches[0].clientY : e.clientY;
+                initX = this.element.offsetLeft;
+                initY = this.element.offsetTop;
+                window.addEventListener('mousemove', onMove);
+                window.addEventListener('mouseup', onUp);
+                window.addEventListener('touchmove', onMove, { passive: false });
+                window.addEventListener('touchend', onUp);
+            };
+
+            this.element.addEventListener('mousedown', onDown);
+            this.element.addEventListener('touchstart', onDown, { passive: true });
+        }
+
+        destroy() {
+            GlobalDock.unregisterContainer(this);
+            this.hidePlaceholder();
+            this.panels.forEach(p => p.destroy());
+            this.panels = [];
+            super.destroy();
+        }
+    }
 
     class UISmartPanel extends UIBaseComponent {
         constructor({ id = null, title = 'Panel', x = 40, y = 40, width = 290, floating = true, onSnap, onUnsnap, onOpen, onClose } = {}) {
@@ -2074,15 +2251,8 @@
             this.bindEvents();
 
             if (this.floating) {
-                if (document.body) {
-                    document.body.appendChild(this.element);
-                } else {
-                    window.addEventListener('DOMContentLoaded', () => {
-                        if (this.element && !this.element.parentNode && document.body) {
-                            document.body.appendChild(this.element);
-                        }
-                    });
-                }
+                if (document.body) document.body.appendChild(this.element);
+                else window.addEventListener('DOMContentLoaded', () => document.body.appendChild(this.element));
             }
         }
 
@@ -2120,9 +2290,7 @@
                 this.element.style.width = '';
 
                 const containerToJoin = this.lastParentContainer || Array.from(GlobalDock.containers)[0];
-                if (containerToJoin) {
-                    containerToJoin.addPanel(this);
-                }
+                if (containerToJoin) containerToJoin.addPanel(this);
             }
             this.updateFloatButtonUI();
             return this;
@@ -2149,12 +2317,7 @@
             this.btnClose.onclick = this.handleClose;
             this.btnFloat.onclick = this.handleToggleFloat;
 
-            let offsetX = 0;
-            let offsetY = 0;
-            let targetContainer = null;
-            let startClientX = 0;
-            let startClientY = 0;
-            let isTracking = false;
+            let offsetX = 0, offsetY = 0, targetContainer = null, startClientX = 0, startClientY = 0, isTracking = false;
 
             const onPointerMove = (e) => {
                 if (!isTracking) return;
@@ -2252,7 +2415,6 @@
                 GlobalDock.hideGuide();
 
                 if (targetContainer) {
-                    // Inserción directa en el lugar visual del placeholder
                     targetContainer.insertPanelAtPlaceholder(this);
                     this.floating = false;
                     this.element.classList.add('ui-panel-static');
@@ -2269,7 +2431,7 @@
             };
 
             const onPointerDown = (e) => {
-                if (e.target.closest('button, input, select, .ui-accordion-header, .ui-cajon-btn, .ui-table th, .ui-table td, .ui-reorder-item, .ui-square-btn')) return;
+                if (e.target.closest('button, input, select, .ui-accordion-header, .ui-cajon-btn, .ui-table th, .ui-table td, .ui-reorder-item, .ui-square-btn, .ui-select-trigger, .dropdown-menu, .ui-slider-track')) return;
 
                 isTracking = true;
                 this.isDragging = false;
@@ -2397,947 +2559,156 @@
         }
     }
 
-    class UIStorageAdapter {
-        constructor() {
-            this.dbName = 'UI_Layouts_DB';
-            this.storeName = 'layouts';
-            this.db = null;
-        }
-        async initIDB() {
-            if (this.db) return this.db;
-            return new Promise((resolve, reject) => {
-                const req = indexedDB.open(this.dbName, 2);
-                req.onupgradeneeded = (e) => {
-                    const db = e.target.result;
-                    if (!db.objectStoreNames.contains(this.storeName)) {
-                        db.createObjectStore(this.storeName, { keyPath: ['appId', 'name'] });
-                    }
-                };
-                req.onsuccess = (e) => { this.db = e.target.result; resolve(this.db); };
-                req.onerror = (e) => reject(e);
-            });
-        }
-        async getAll(appId, useIDB = false) {
-            if (!useIDB) {
-                const data = localStorage.getItem(`ui_layouts_store_${appId}`);
-                return data ? JSON.parse(data) : [];
-            }
-            const db = await this.initIDB();
-            return new Promise((resolve) => {
-                const tx = db.transaction(this.storeName, 'readonly');
-                const store = tx.objectStore(this.storeName);
-                const req = store.getAll();
-                req.onsuccess = () => {
-                    const all = req.result || [];
-                    resolve(all.filter(it => it.appId === appId));
-                };
-                req.onerror = () => resolve([]);
-            });
-        }
-        async save(item, useIDB = false) {
-            if (!useIDB) {
-                const list = await this.getAll(item.appId, false);
-                const idx = list.findIndex(l => l.name === item.name);
-                if (idx >= 0) list[idx] = item; else list.push(item);
-                localStorage.setItem(`ui_layouts_store_${item.appId}`, JSON.stringify(list));
-                return;
-            }
-            const db = await this.initIDB();
-            return new Promise((resolve) => {
-                const tx = db.transaction(this.storeName, 'readwrite');
-                tx.objectStore(this.storeName).put(item);
-                tx.oncomplete = () => resolve();
-            });
-        }
-        async delete(appId, name, useIDB = false) {
-            if (!useIDB) {
-                let list = await this.getAll(appId, false);
-                list = list.filter(l => l.name !== name);
-                localStorage.setItem(`ui_layouts_store_${appId}`, JSON.stringify(list));
-                return;
-            }
-            const db = await this.initIDB();
-            return new Promise((resolve) => {
-                const tx = db.transaction(this.storeName, 'readwrite');
-                tx.objectStore(this.storeName).delete([appId, name]);
-                tx.oncomplete = () => resolve();
-            });
-        }
-    }
+    /* ===== SLIDER REDISEÑADO EN FORMATO TARJETA (CARD SYSTEM) ===== */
+    class UIConfigurableSlider extends UIBaseComponent {
+        constructor({ label = '', min = 0, max = 100, step = 1, value = 50, onChange } = {}) {
+            super();
+            this.label = label;
+            this.min = min;
+            this.max = max;
+            this.step = step;
+            this.value = Math.max(this.min, Math.min(this.max, value));
+            this.onChange = onChange;
+            this.isOpen = false;
 
-    class UILayoutManagerClass {
-        constructor() {
-            UITheme.inject();
-            this.storage = new UIStorageAdapter();
-            this.useIndexedDB = localStorage.getItem('ui_pref_indexeddb') === 'true';
-            this.modal = null;
-            this.factoryState = null;
-            this.setupShortcut();
-
-            const initRestore = () => {
-                setTimeout(() => {
-                    this.captureFactoryState();
-                    this.autoRestore();
-                }, 100);
-            };
-
-            if (document.readyState === 'complete' || document.readyState === 'interactive') {
-                initRestore();
-            } else {
-                window.addEventListener('DOMContentLoaded', initRestore);
-            }
-        }
-
-        getAppId() {
-            return (typeof window !== 'undefined' && window.programaId) ? String(window.programaId).trim() : 'default_app';
-        }
-
-        isFactoryForced() {
-            return localStorage.getItem(`ui_force_factory_${this.getAppId()}`) === 'true';
-        }
-
-        setFactoryForced(val) {
-            localStorage.setItem(`ui_force_factory_${this.getAppId()}`, String(!!val));
-        }
-
-        captureFactoryState() {
-            if (!this.factoryState) {
-                this.factoryState = JSON.parse(JSON.stringify(this.captureCurrentState()));
-            }
-        }
-
-        setupShortcut() {
-            let timer = null;
-            window.addEventListener('keydown', (e) => {
-                if (e.ctrlKey && e.altKey && !timer) {
-                    timer = setTimeout(() => {
-                        this.open();
-                        timer = null;
-                    }, 500);
-                }
-            });
-            window.addEventListener('keyup', (e) => {
-                if (!e.ctrlKey || !e.altKey) {
-                    if (timer) {
-                        clearTimeout(timer);
-                        timer = null;
-                    }
-                }
-            });
-        }
-
-        captureCurrentState() {
-            const state = {};
-            for (const [id, comp] of UIRegistry.getAll()) {
-                if (comp.getState) {
-                    state[id] = comp.getState();
-                }
-            }
-            return state;
-        }
-
-        applyState(state) {
-            if (!state) return;
-            for (const id in state) {
-                const comp = UIRegistry.get(id);
-                if (comp instanceof UIContainer && comp.setState) {
-                    comp.setState(state[id]);
-                }
-            }
-            for (const id in state) {
-                const comp = UIRegistry.get(id);
-                if (comp && !(comp instanceof UIContainer) && comp.setState) {
-                    comp.setState(state[id]);
-                }
-            }
-        }
-
-        formatDate(d) {
-            const pad = (n) => String(n).padStart(2, '0');
-            return `${pad(d.getDate())}-${pad(d.getMonth() + 1)}-${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-        }
-
-        async saveLayout(name) {
-            if (!name) return;
-            const appId = this.getAppId();
-            const item = {
-                appId,
-                name: name.trim(),
-                date: this.formatDate(new Date()),
-                state: this.captureCurrentState()
-            };
-            await this.storage.save(item, this.useIndexedDB);
-            localStorage.setItem(`ui_last_active_layout_${appId}`, item.name);
-            this.renderList();
-        }
-
-        async deleteLayout(name) {
-            const appId = this.getAppId();
-            await this.storage.delete(appId, name, this.useIndexedDB);
-            this.renderList();
-        }
-
-        async loadLayout(name) {
-            const appId = this.getAppId();
-            const list = await this.storage.getAll(appId, this.useIndexedDB);
-            const found = list.find(l => l.name === name);
-            if (found && found.state) {
-                this.applyState(found.state);
-                localStorage.setItem(`ui_last_active_layout_${appId}`, found.name);
-                this.close();
-            }
-        }
-
-        async autoRestore() {
-            const appId = this.getAppId();
-            if (this.isFactoryForced()) {
-                if (this.factoryState) this.applyState(this.factoryState);
-                return;
-            }
-            const last = localStorage.getItem(`ui_last_active_layout_${appId}`);
-            if (last) {
-                const list = await this.storage.getAll(appId, this.useIndexedDB);
-                const found = list.find(l => l.name === last);
-                if (found && found.state) {
-                    this.applyState(found.state);
-                }
-            }
-        }
-
-        open() {
-            if (this.modal) return;
-            const appId = this.getAppId();
-            const factoryActive = this.isFactoryForced();
-
-            this.modal = document.createElement('div');
-            this.modal.className = 'ui-layout-modal-backdrop';
-            this.modal.innerHTML = `
-                <div class="ui-layout-modal">
-                    <div class="ui-layout-modal-head">
-                        <div style="display:flex; align-items:center; gap:6px;">
-                            <span class="ui-panel-title">GESTOR DE INTERFAZ</span>
-                            <span class="ui-badge-app">${appId}</span>
-                        </div>
-                        <button class="ui-icon-btn btn-modal-close">✕</button>
+            this.element = document.createElement('div');
+            this.element.className = 'ui-slider-card';
+            this.element.innerHTML = `
+                <!-- NIVEL 1: CABECERA (LABEL A LA IZQUIERDA, VALOR Y BOTÓN A LA DERECHA) -->
+                <div class="ui-slider-card-header">
+                    <span class="ui-slider-label">${this.label}</span>
+                    <div class="ui-slider-header-right">
+                        <span class="ui-slider-val"></span>
+                        <button class="ui-cajon-btn" title="Configurar Min/Max">▼</button>
                     </div>
-                    <div class="ui-layout-modal-body">
-                        <div class="ui-row ui-row-align-4">
-                            <label class="ui-checkbox ${factoryActive ? 'checked' : ''}" id="chk-factory-mode">
-                                <div class="ui-checkbox-box"><div class="ui-checkbox-mark"></div></div>
-                                <span class="ui-label" style="color:#f39c12;">HABILITAR INTERFAZ DE FÁBRICA</span>
-                            </label>
+                </div>
+
+                <!-- NIVEL 2: BARRA 100% ANCHO (ÓPTIMA PARA TOUCH 290PX Y PC) -->
+                <div class="ui-slider-content">
+                    <div class="ui-slider-track">
+                        <div class="ui-slider-bg"><div class="ui-slider-fill"></div></div>
+                        <div class="ui-slider-thumb"></div>
+                    </div>
+                </div>
+
+                <!-- NIVEL 3: CAJÓN DESPLEGABLE -->
+                <div class="ui-slider-cajon">
+                    <div class="ui-slider-cajon-inner">
+                        <div class="ui-cajon-group">
+                            <span class="ui-cajon-tag">Min</span>
+                            <input type="number" class="ui-input ui-cajon-input input-min" value="${this.min}" step="${this.step}">
                         </div>
-                        <div class="ui-row ui-row-align-4">
-                            <label class="ui-checkbox ${this.useIndexedDB ? 'checked' : ''}" id="chk-use-idb">
-                                <div class="ui-checkbox-box"><div class="ui-checkbox-mark"></div></div>
-                                <span class="ui-label">USAR INDEXED-DB (OFF = LOCALSTORAGE)</span>
-                            </label>
+                        <div class="ui-cajon-group">
+                            <span class="ui-cajon-tag">Max</span>
+                            <input type="number" class="ui-input ui-cajon-input input-max" value="${this.max}" step="${this.step}">
                         </div>
-                        <div class="ui-row ui-row-align-0" id="save-bar-container" style="${factoryActive ? 'opacity:0.4; pointer-events:none;' : ''}">
-                            <input type="text" class="ui-input" id="input-layout-name" placeholder="NOMBRE (EJ: Principal)" style="flex:1;">
-                            <button class="ui-btn ui-btn-primary" id="btn-save-layout">GUARDAR</button>
+                        <div class="ui-cajon-group">
+                            <span class="ui-cajon-tag">Paso</span>
+                            <input type="number" class="ui-input ui-cajon-input input-step" value="${this.step}" step="any">
                         </div>
-                        <span class="ui-label" style="margin-top:4px;">LAYOUTS GUARDADOS (${appId}):</span>
-                        <div class="ui-layout-list" id="layout-items-container"></div>
                     </div>
                 </div>
             `;
-            document.body.appendChild(this.modal);
 
-            this.modal.querySelector('.btn-modal-close').addEventListener('click', () => this.close());
-            this.modal.addEventListener('click', (e) => { if (e.target === this.modal) this.close(); });
+            this.track = this.element.querySelector('.ui-slider-track');
+            this.fill = this.element.querySelector('.ui-slider-fill');
+            this.thumb = this.element.querySelector('.ui-slider-thumb');
+            this.valDisplay = this.element.querySelector('.ui-slider-val');
+            this.toggleBtn = this.element.querySelector('.ui-cajon-btn');
 
-            const chkFactory = this.modal.querySelector('#chk-factory-mode');
-            const saveBar = this.modal.querySelector('#save-bar-container');
-
-            chkFactory.addEventListener('click', () => {
-                const nowForced = !this.isFactoryForced();
-                this.setFactoryForced(nowForced);
-                chkFactory.classList.toggle('checked', nowForced);
-                saveBar.style.opacity = nowForced ? '0.4' : '1';
-                saveBar.style.pointerEvents = nowForced ? 'none' : 'auto';
-
-                if (nowForced) {
-                    if (this.factoryState) this.applyState(this.factoryState);
-                } else {
-                    this.autoRestore();
-                }
-                this.renderList();
-            });
-
-            const chkIdb = this.modal.querySelector('#chk-use-idb');
-            chkIdb.addEventListener('click', () => {
-                this.useIndexedDB = !this.useIndexedDB;
-                chkIdb.classList.toggle('checked', this.useIndexedDB);
-                localStorage.setItem('ui_pref_indexeddb', String(this.useIndexedDB));
-                this.renderList();
-            });
-
-            const input = this.modal.querySelector('#input-layout-name');
-            this.modal.querySelector('#btn-save-layout').addEventListener('click', () => {
-                if (input.value) {
-                    this.saveLayout(input.value);
-                    input.value = '';
-                }
-            });
-            this.renderList();
-        }
-
-        async renderList() {
-            if (!this.modal) return;
-            const appId = this.getAppId();
-            const container = this.modal.querySelector('#layout-items-container');
-            const isFactory = this.isFactoryForced();
-            container.innerHTML = '';
-            const list = await this.storage.getAll(appId, this.useIndexedDB);
-
-            if (list.length === 0) {
-                container.innerHTML = `<span class="ui-label" style="text-align:center; padding: 12px; color: #555;">NO HAY ESTADOS GUARDADOS PARA ESTA APP</span>`;
-                return;
-            }
-
-            list.forEach(item => {
-                const el = document.createElement('div');
-                el.className = 'ui-layout-item';
-                el.innerHTML = `
-                    <div class="ui-layout-meta">
-                        <span class="ui-layout-name">${item.name}</span>
-                        <span class="ui-layout-date">${item.date || ''}</span>
-                    </div>
-                    <div class="ui-layout-actions">
-                        <button class="ui-btn btn-apply" ${isFactory ? 'disabled' : ''}>CARGAR</button>
-                        <button class="ui-btn ui-btn-danger btn-del">✕</button>
-                    </div>
-                `;
-                el.querySelector('.btn-apply').addEventListener('click', () => this.loadLayout(item.name));
-                el.querySelector('.btn-del').addEventListener('click', () => this.deleteLayout(item.name));
-                container.appendChild(el);
-            });
-        }
-
-        close() {
-            if (this.modal && this.modal.parentNode) {
-                this.modal.parentNode.removeChild(this.modal);
-            }
-            this.modal = null;
-        }
-    }
-    const GlobalLayoutManager = new UILayoutManagerClass();
-
-    class UISquareButton extends UIBaseComponent {
-        constructor({
-            id = null,
-            text = 'OK',
-            title = '',
-            info = '',
-            size = 40,
-            bgColor = '#1e2126',
-            textColor = '#d1d5db',
-            fontSize = '9px',
-            draggable = false,
-            floating = false,
-            x = 100,
-            y = 100,
-            onClick
-        } = {}) {
-            const fallbackPrefix = title ? `sqbtn_${title.toLowerCase().replace(/[^a-z0-9]/g, '_')}` : 'sqbtn';
-            super({ id }, fallbackPrefix);
-
-            this.text = text;
-            this.titleText = title;
-            this.infoText = info;
-            this.size = size;
-            this.bgColor = this.normalizeColor(bgColor);
-            this.textColor = this.normalizeColor(textColor);
-            this.fontSize = fontSize;
-            this.isDraggable = draggable;
-            this.floating = floating || draggable;
-            this.x = x;
-            this.y = y;
-            this.onClick = onClick;
-
-            this.isDragging = false;
-            this.touchTimer = null;
-            this.isLongPress = false;
-
-            this.element = document.createElement('button');
-            this.element.className = 'ui-square-btn';
-            this.element.setAttribute('data-ui-id', this.id);
-            this.updateAppearance();
-
-            if (this.floating) {
-                this.element.classList.add('ui-draggable-floating');
-                this.element.style.left = `${this.x}px`;
-                this.element.style.top = `${this.y}px`;
-                document.body.appendChild(this.element);
-                GlobalDock.registerButton(this);
-            }
-
-            this.tooltip = document.createElement('div');
-            this.tooltip.className = 'ui-square-tooltip';
-            this.buildTooltip();
-            document.body.appendChild(this.tooltip);
+            this.inputMin = this.element.querySelector('.input-min');
+            this.inputMax = this.element.querySelector('.input-max');
+            this.inputStep = this.element.querySelector('.input-step');
 
             this.bindEvents();
-        }
-
-        normalizeColor(c) {
-            if (!c) return '#ffffff';
-            c = String(c).trim();
-            return (!c.startsWith('#') && !c.startsWith('rgb') && !c.startsWith('hsl')) ? '#' + c : c;
-        }
-
-        updateAppearance() {
-            if (!this.element) return;
-            this.element.textContent = this.text;
-            this.element.style.width = `${this.size}px`;
-            this.element.style.height = `${this.size}px`;
-            this.element.style.backgroundColor = this.bgColor;
-            this.element.style.color = this.textColor;
-            this.element.style.fontSize = this.fontSize;
-        }
-
-        buildTooltip() {
-            this.tooltip.innerHTML = '';
-            if (this.titleText) {
-                const t = document.createElement('span');
-                t.className = 'ui-square-tooltip-title';
-                t.textContent = this.titleText;
-                this.tooltip.appendChild(t);
-            }
-            if (this.infoText) {
-                const i = document.createElement('span');
-                i.className = 'ui-square-tooltip-info';
-                i.textContent = this.infoText;
-                this.tooltip.appendChild(i);
-            }
-        }
-
-        showTooltip() {
-            if (this.isDragging || (!this.titleText && !this.infoText)) return;
-            const rect = this.element.getBoundingClientRect();
-            this.tooltip.classList.add('visible');
-            const tW = this.tooltip.offsetWidth, tH = this.tooltip.offsetHeight, gap = 8;
-            const sw = window.innerWidth, sh = window.innerHeight;
-
-            let x = 0, y = 0;
-            if (sh - rect.bottom < tH + gap && rect.top >= tH) {
-                x = rect.left + (rect.width / 2) - (tW / 2); y = rect.top - tH - gap;
-            } else if (rect.top < tH + gap) {
-                x = rect.left + (rect.width / 2) - (tW / 2); y = rect.bottom + gap;
-            } else if (sw - rect.right < tW + gap) {
-                x = rect.left - tW - gap; y = rect.top + (rect.height / 2) - (tH / 2);
-            } else {
-                x = rect.right + gap; y = rect.top + (rect.height / 2) - (tH / 2);
-            }
-
-            x = Math.max(6, Math.min(x, sw - tW - 6));
-            y = Math.max(6, Math.min(y, sh - tH - 6));
-            this.tooltip.style.left = `${x}px`;
-            this.tooltip.style.top = `${y}px`;
-        }
-
-        hideTooltip() {
-            if (this.tooltip) this.tooltip.classList.remove('visible');
+            this.updateUI();
         }
 
         bindEvents() {
-            this.element.addEventListener('mouseenter', () => this.showTooltip());
-            this.element.addEventListener('mouseleave', () => this.hideTooltip());
+            this.toggleCajon = () => {
+                this.isOpen = !this.isOpen;
+                this.element.classList.toggle('open', this.isOpen);
+            };
+            this.toggleBtn.addEventListener('click', this.toggleCajon);
 
-            let offsetX = 0, offsetY = 0;
-            let startClientX = 0, startClientY = 0;
-            let isTracking = false;
-
-            const onPointerMove = (e) => {
-                if (!isTracking) return;
-                const cx = (e.touches ? e.touches[0].pageX : e.pageX);
-                const cy = (e.touches ? e.touches[0].pageY : e.pageY);
-
-                if (!this.isDragging) {
-                    const rawClientX = e.touches ? e.touches[0].clientX : e.clientX;
-                    const rawClientY = e.touches ? e.touches[0].clientY : e.clientY;
-                    if (Math.hypot(rawClientX - startClientX, rawClientY - startClientY) > 5) {
-                        this.isDragging = true;
-                        this.hideTooltip();
-                        this.element.classList.add('is-dragging');
-                    } else {
-                        return;
-                    }
-                }
-
-                const evaluated = GlobalDock.evaluateSmartSnap(this, cx - offsetX, cy - offsetY);
-                this.element.classList.toggle('is-snapping', evaluated.snapped);
-                this.x = evaluated.x; 
-                this.y = evaluated.y;
-                this.element.style.left = `${this.x}px`;
-                this.element.style.top = `${this.y}px`;
+            const handleMove = (e) => {
+                const cx = e.touches ? e.touches[0].clientX : e.clientX;
+                const rect = this.track.getBoundingClientRect();
+                let pos = (cx - rect.left) / rect.width;
+                pos = Math.max(0, Math.min(1, pos));
+                let rawVal = this.min + pos * (this.max - this.min);
+                const steps = Math.round((rawVal - this.min) / this.step);
+                this.value = Number((this.min + steps * this.step).toFixed(2));
+                this.value = Math.max(this.min, Math.min(this.max, this.value));
+                this.updateUI();
+                if (this.onChange) this.onChange(this.value, this);
             };
 
-            const onPointerUp = () => {
-                isTracking = false;
-                if (this.isDragging) {
-                    this.isDragging = false;
-                    this.element.classList.remove('is-dragging');
-                    this.element.classList.remove('is-snapping');
-                    GlobalDock.hideSmartGuides();
-                }
-                window.removeEventListener('mousemove', onPointerMove);
-                window.removeEventListener('mouseup', onPointerUp);
-                window.removeEventListener('touchmove', onPointerMove);
-                window.removeEventListener('touchend', onPointerUp);
+            const stopMove = () => {
+                window.removeEventListener('mousemove', handleMove);
+                window.removeEventListener('mouseup', stopMove);
+                window.removeEventListener('touchmove', handleMove);
+                window.removeEventListener('touchend', stopMove);
             };
 
-            this.element.addEventListener('mousedown', (e) => {
-                if (!this.isDraggable) return;
-                isTracking = true;
-                this.isDragging = false;
-                startClientX = e.clientX; 
-                startClientY = e.clientY;
-                offsetX = e.pageX - this.element.offsetLeft;
-                offsetY = e.pageY - this.element.offsetTop;
-                window.addEventListener('mousemove', onPointerMove);
-                window.addEventListener('mouseup', onPointerUp);
+            const startMove = (e) => {
+                handleMove(e);
+                window.addEventListener('mousemove', handleMove);
+                window.addEventListener('mouseup', stopMove);
+                window.addEventListener('touchmove', handleMove);
+                window.addEventListener('touchend', stopMove);
+            };
+
+            this.track.addEventListener('mousedown', startMove);
+            this.track.addEventListener('touchstart', startMove, { passive: true });
+
+            this.inputMin.addEventListener('change', (e) => {
+                let v = parseFloat(e.target.value);
+                if (isNaN(v)) v = 0;
+                if (v >= this.max) v = this.max - this.step;
+                this.min = v;
+                this.inputMin.value = this.min;
+                this.setValue(this.value);
             });
 
-            this.element.addEventListener('touchstart', (e) => {
-                const t = e.touches[0];
-                isTracking = true;
-                this.isDragging = false;
-                startClientX = t.clientX; 
-                startClientY = t.clientY;
-                offsetX = t.pageX - this.element.offsetLeft;
-                offsetY = t.pageY - this.element.offsetTop;
-                this.isLongPress = false;
-                this.touchTimer = setTimeout(() => {
-                    if (!this.isDragging) {
-                        this.isLongPress = true;
-                        if (navigator.vibrate) navigator.vibrate(25);
-                        this.showTooltip();
-                    }
-                }, 400);
-
-                if (this.isDraggable) {
-                    window.addEventListener('touchmove', onPointerMove, { passive: false });
-                    window.addEventListener('touchend', onPointerUp);
-                }
-            }, { passive: true });
-
-            this.element.addEventListener('touchend', (e) => {
-                clearTimeout(this.touchTimer);
-                if (this.isLongPress) e.preventDefault();
+            this.inputMax.addEventListener('change', (e) => {
+                let v = parseFloat(e.target.value);
+                if (isNaN(v)) v = 0;
+                if (v <= this.min) v = this.min + this.step;
+                this.max = v;
+                this.inputMax.value = this.max;
+                this.setValue(this.value);
             });
 
-            this.element.addEventListener('click', (e) => {
-                if (this.isDragging || this.isLongPress) return;
-                if (this.onClick) this.onClick(e, this);
+            this.inputStep.addEventListener('change', (e) => {
+                let v = parseFloat(e.target.value);
+                if (isNaN(v) || v <= 0) v = 1;
+                this.step = v;
+                this.inputStep.value = this.step;
+                this.setValue(this.value);
             });
         }
 
-        getState() {
-            return {
-                type: 'SquareButton',
-                x: this.x,
-                y: this.y,
-                floating: this.floating,
-                visible: this.element.style.display !== 'none'
-            };
+        getValue() { return this.value; }
+
+        setValue(v) {
+            this.value = Math.max(this.min, Math.min(this.max, v));
+            this.updateUI();
+            if (this.onChange) this.onChange(this.value, this);
+            return this;
         }
 
-        setState(s) {
-            if (!s) return;
-            if (s.x !== undefined) {
-                this.x = s.x; this.y = s.y;
-                this.element.style.left = `${this.x}px`;
-                this.element.style.top = `${this.y}px`;
-            }
-            if (s.visible !== undefined) {
-                this.element.style.display = s.visible ? '' : 'none';
-            }
+        updateUI() {
+            const range = this.max - this.min;
+            const percent = range > 0 ? Math.max(0, Math.min(100, ((this.value - this.min) / range) * 100)) : 0;
+            this.fill.style.width = `${percent}%`;
+            this.thumb.style.left = `${percent}%`;
+            this.valDisplay.textContent = this.value;
         }
 
         destroy() {
-            GlobalDock.unregisterButton(this);
-            this.hideTooltip();
-            if (this.tooltip && this.tooltip.parentNode) this.tooltip.parentNode.removeChild(this.tooltip);
+            if (this.toggleBtn) this.toggleBtn.removeEventListener('click', this.toggleCajon);
             super.destroy();
-        }
-    }
-
-    class UIReorderList extends UIBaseComponent {
-        constructor({ items = [], maxHeight = 160, onReorder, onSelect, onVisibilityChange, renderItem } = {}) {
-            super();
-            this.items = [...items];
-            this.activeIndex = -1;
-            this.onReorder = onReorder;
-            this.onSelect = onSelect;
-            this.onVisibilityChange = onVisibilityChange;
-            this.renderItemCustom = renderItem;
-
-            this.element = document.createElement('div');
-            this.element.className = 'ui-reorder-list';
-            this.element.style.setProperty('--list-max-h', `${maxHeight}px`);
-
-            this.draggedSourceIdx = null;
-            this.touchSourceIdx = null;
-            this.render();
-        }
-
-        setItems(newItems, activeIdx = -1) {
-            this.items = [...newItems];
-            this.activeIndex = activeIdx;
-            this.render();
-            return this;
-        }
-
-        setActiveIndex(idx) {
-            this.activeIndex = idx;
-            const children = Array.from(this.element.children);
-            children.forEach((c, i) => {
-                const itemDataIdx = (this.items.length - 1) - i;
-                c.classList.toggle('active', itemDataIdx === this.activeIndex);
-            });
-            return this;
-        }
-
-        render() {
-            this.element.innerHTML = '';
-            for (let i = this.items.length - 1; i >= 0; i--) {
-                const data = this.items[i];
-                const itemEl = document.createElement('div');
-                itemEl.className = `ui-reorder-item ${i === this.activeIndex ? 'active' : ''}`;
-                itemEl.draggable = true;
-
-                if (this.renderItemCustom) {
-                    itemEl.appendChild(this.renderItemCustom(data, i));
-                } else {
-                    const left = document.createElement('div');
-                    left.className = 'ui-reorder-item-left';
-
-                    const btnVis = document.createElement('button');
-                    btnVis.className = 'ui-icon-btn';
-                    btnVis.textContent = data.visible !== false ? '👁' : '✕';
-                    btnVis.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        data.visible = !(data.visible !== false);
-                        btnVis.textContent = data.visible ? '👁' : '✕';
-                        if (this.onVisibilityChange) this.onVisibilityChange(data, i, data.visible);
-                    });
-
-                    const nameSpan = document.createElement('span');
-                    nameSpan.textContent = data.name || `Item ${i + 1}`;
-
-                    left.appendChild(btnVis);
-                    left.appendChild(nameSpan);
-
-                    const rightMeta = document.createElement('small');
-                    rightMeta.style.opacity = '0.6';
-                    rightMeta.style.fontSize = '7.5px';
-                    rightMeta.textContent = data.opacity !== undefined ? `${Math.round(data.opacity * 100)}%` : '';
-
-                    itemEl.appendChild(left);
-                    itemEl.appendChild(rightMeta);
-                }
-
-                itemEl.addEventListener('click', () => {
-                    this.setActiveIndex(i);
-                    if (this.onSelect) this.onSelect(data, i);
-                });
-
-                itemEl.addEventListener('dragstart', (e) => {
-                    this.draggedSourceIdx = i;
-                    itemEl.classList.add('dragging');
-                    e.dataTransfer.effectAllowed = 'move';
-                });
-
-                itemEl.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    e.dataTransfer.dropEffect = 'move';
-                    itemEl.classList.add('drag-over');
-                });
-
-                itemEl.addEventListener('dragleave', () => itemEl.classList.remove('drag-over'));
-                itemEl.addEventListener('dragend', () => {
-                    itemEl.classList.remove('dragging');
-                    itemEl.classList.remove('drag-over');
-                });
-
-                itemEl.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    itemEl.classList.remove('drag-over');
-
-                    if (this.draggedSourceIdx !== null && this.draggedSourceIdx !== i) {
-                        const moved = this.items.splice(this.draggedSourceIdx, 1)[0];
-                        this.items.splice(i, 0, moved);
-                        this.activeIndex = i;
-                        this.render();
-                        if (this.onReorder) this.onReorder(this.items, this.draggedSourceIdx, i);
-                    }
-                    this.draggedSourceIdx = null;
-                });
-
-                itemEl.addEventListener('touchstart', () => { this.touchSourceIdx = i; }, { passive: true });
-                itemEl.addEventListener('touchend', (e) => {
-                    if (this.touchSourceIdx === null) return;
-                    const touch = e.changedTouches[0];
-                    const targetEl = document.elementFromPoint(touch.clientX, touch.clientY);
-                    const dropItem = targetEl ? targetEl.closest('.ui-reorder-item') : null;
-
-                    if (dropItem && dropItem !== itemEl) {
-                        const allDomItems = Array.from(this.element.children);
-                        const dropDomIdx = allDomItems.indexOf(dropItem);
-                        if (dropDomIdx !== -1) {
-                            const targetIdx = (this.items.length - 1) - dropDomIdx;
-                            const moved = this.items.splice(this.touchSourceIdx, 1)[0];
-                            this.items.splice(targetIdx, 0, moved);
-                            this.activeIndex = targetIdx;
-                            this.render();
-                            if (this.onReorder) this.onReorder(this.items, this.touchSourceIdx, targetIdx);
-                        }
-                    }
-                    this.touchSourceIdx = null;
-                });
-
-                this.element.appendChild(itemEl);
-            }
-        }
-    }
-
-    class UITable extends UIBaseComponent {
-        constructor({ columns = [], data = [], endpoint = null, pageSize = 5, onRowDelete, onRowClick } = {}) {
-            super();
-            this.columns = columns;
-            this.data = [...data];
-            this.filteredData = [...data];
-            this.endpoint = endpoint;
-            this.pageSize = pageSize;
-            this.currentPage = 1;
-            this.searchQuery = '';
-            this.draggedColIdx = null;
-            this.onRowDelete = onRowDelete;
-            this.onRowClick = onRowClick;
-
-            this.element = document.createElement('div');
-            this.element.className = 'ui-table-container';
-
-            this.element.innerHTML = `
-                <div class="ui-table-toolbar">
-                    <input type="text" class="ui-input ui-input-text ui-table-search" placeholder="BUSCAR...">
-                    <button class="ui-btn btn-refresh">↻</button>
-                </div>
-                <div class="ui-table-scroll">
-                    <table class="ui-table">
-                        <thead><tr></tr></thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-                <div class="ui-table-cards"></div>
-                <div class="ui-table-footer">
-                    <span class="ui-table-info"></span>
-                    <div class="ui-table-pagination">
-                        <button class="ui-btn btn-prev">◀</button>
-                        <span class="ui-label page-label"></span>
-                        <button class="ui-btn btn-next">▶</button>
-                    </div>
-                </div>
-            `;
-
-            this.theadTr = this.element.querySelector('thead tr');
-            this.tbody = this.element.querySelector('tbody');
-            this.cardsContainer = this.element.querySelector('.ui-table-cards');
-            this.searchInput = this.element.querySelector('.ui-table-search');
-            this.btnRefresh = this.element.querySelector('.btn-refresh');
-            this.btnPrev = this.element.querySelector('.btn-prev');
-            this.btnNext = this.element.querySelector('.btn-next');
-            this.infoSpan = this.element.querySelector('.ui-table-info');
-            this.pageLabel = this.element.querySelector('.page-label');
-
-            this.bindEvents();
-            if (this.endpoint) this.fetchData(); else this.render();
-        }
-
-        bindEvents() {
-            this.searchInput.addEventListener('input', (e) => {
-                this.searchQuery = e.target.value.toLowerCase();
-                this.currentPage = 1;
-                this.applyFilter();
-            });
-
-            this.btnRefresh.addEventListener('click', () => {
-                if (this.endpoint) this.fetchData(); else this.render();
-            });
-
-            this.btnPrev.addEventListener('click', () => {
-                if (this.currentPage > 1) {
-                    this.currentPage--;
-                    this.render();
-                }
-            });
-
-            this.btnNext.addEventListener('click', () => {
-                const totalPages = Math.ceil(this.filteredData.length / this.pageSize) || 1;
-                if (this.currentPage < totalPages) {
-                    this.currentPage++;
-                    this.render();
-                }
-            });
-        }
-
-        async fetchData() {
-            this.btnRefresh.disabled = true;
-            try {
-                const res = await fetch(this.endpoint);
-                const json = await res.json();
-                this.data = Array.isArray(json) ? json : (json.data || []);
-                this.applyFilter();
-            } catch (err) {
-                console.error(err);
-            } finally {
-                this.btnRefresh.disabled = false;
-            }
-        }
-
-        applyFilter() {
-            if (!this.searchQuery) {
-                this.filteredData = [...this.data];
-            } else {
-                this.filteredData = this.data.filter(row => {
-                    return this.columns.some(col => {
-                        const val = row[col.key];
-                        return String(val !== undefined ? val : '').toLowerCase().includes(this.searchQuery);
-                    });
-                });
-            }
-            this.render();
-        }
-
-        deleteRow(item, index) {
-            const originalIdx = this.data.indexOf(item);
-            if (originalIdx !== -1) {
-                this.data.splice(originalIdx, 1);
-            }
-            if (this.onRowDelete) {
-                this.onRowDelete(item, originalIdx, this);
-            }
-            this.applyFilter();
-        }
-
-        renderHeaders() {
-            this.theadTr.innerHTML = '';
-            this.columns.forEach((col, idx) => {
-                const th = document.createElement('th');
-                th.textContent = col.label || col.key;
-                th.draggable = true;
-
-                th.addEventListener('dragstart', (e) => {
-                    this.draggedColIdx = idx;
-                    e.dataTransfer.effectAllowed = 'move';
-                });
-
-                th.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    th.classList.add('drag-over');
-                });
-
-                th.addEventListener('dragleave', () => th.classList.remove('drag-over'));
-                th.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    th.classList.remove('drag-over');
-                    if (this.draggedColIdx !== null && this.draggedColIdx !== idx) {
-                        const dragged = this.columns.splice(this.draggedColIdx, 1)[0];
-                        this.columns.splice(idx, 0, dragged);
-                        this.render();
-                    }
-                    this.draggedColIdx = null;
-                });
-
-                this.theadTr.appendChild(th);
-            });
-
-            const thAction = document.createElement('th');
-            thAction.textContent = 'ACCIONES';
-            this.theadTr.appendChild(thAction);
-        }
-
-        render() {
-            this.renderHeaders();
-            this.tbody.innerHTML = '';
-            this.cardsContainer.innerHTML = '';
-
-            const start = (this.currentPage - 1) * this.pageSize;
-            const end = start + this.pageSize;
-            const pageData = this.filteredData.slice(start, end);
-            const totalPages = Math.ceil(this.filteredData.length / this.pageSize) || 1;
-
-            this.infoSpan.textContent = `${this.filteredData.length} FILAS`;
-            this.pageLabel.textContent = `${this.currentPage}/${totalPages}`;
-            this.btnPrev.disabled = this.currentPage <= 1;
-            this.btnNext.disabled = this.currentPage >= totalPages;
-
-            pageData.forEach((row, rIdx) => {
-                const tr = document.createElement('tr');
-                if (this.onRowClick) {
-                    tr.style.cursor = 'pointer';
-                    tr.addEventListener('click', (e) => {
-                        if (!e.target.closest('button')) this.onRowClick(row, rIdx, this);
-                    });
-                }
-
-                this.columns.forEach(col => {
-                    const td = document.createElement('td');
-                    td.textContent = row[col.key] !== undefined ? row[col.key] : '';
-                    tr.appendChild(td);
-                });
-
-                const tdActions = document.createElement('td');
-                tdActions.className = 'ui-table-actions-cell';
-                const delBtn = document.createElement('button');
-                delBtn.className = 'ui-btn ui-btn-danger';
-                delBtn.textContent = '✕';
-                delBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    this.deleteRow(row, start + rIdx);
-                });
-                tdActions.appendChild(delBtn);
-                tr.appendChild(tdActions);
-                this.tbody.appendChild(tr);
-
-                const card = document.createElement('div');
-                card.className = 'ui-table-card';
-                if (this.onRowClick) {
-                    card.addEventListener('click', (e) => {
-                        if (!e.target.closest('button')) this.onRowClick(row, rIdx, this);
-                    });
-                }
-
-                this.columns.forEach(col => {
-                    const crow = document.createElement('div');
-                    crow.className = 'ui-table-card-row';
-                    crow.innerHTML = `
-                        <span class="ui-table-card-label">${col.label || col.key}</span>
-                        <span class="ui-table-card-val">${row[col.key] !== undefined ? row[col.key] : ''}</span>
-                    `;
-                    card.appendChild(crow);
-                });
-
-                const cardFooter = document.createElement('div');
-                cardFooter.style.display = 'flex';
-                cardFooter.style.justifyContent = 'flex-end';
-                cardFooter.style.marginTop = '4px';
-
-                const cardDelBtn = document.createElement('button');
-                cardDelBtn.className = 'ui-btn ui-btn-danger';
-                cardDelBtn.textContent = 'ELIMINAR';
-                cardDelBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    this.deleteRow(row, start + rIdx);
-                });
-                cardFooter.appendChild(cardDelBtn);
-                card.appendChild(cardFooter);
-
-                this.cardsContainer.appendChild(card);
-            });
         }
     }
 
@@ -3545,37 +2916,119 @@
     class UISelect extends UIBaseComponent {
         constructor({ options = [], value = '', onChange } = {}) {
             super();
-            this.options = options;
-            this.value = value || (options[0]?.value ?? '');
+            this.options = Array.isArray(options) ? options.map(o => {
+                if (typeof o === 'object' && o !== null) return o;
+                return { value: o, label: String(o) };
+            }) : [];
+
+            this.value = value !== '' ? value : (this.options[0]?.value ?? '');
+            this.onChange = onChange;
+            this.isOpen = false;
+            this.disabled = false;
 
             this.element = document.createElement('div');
             this.element.className = 'ui-select-wrap';
+            
             this.element.innerHTML = `
-                <select class="ui-select">
-                    ${options.map(o => `<option value="${o.value}" ${String(o.value) === String(this.value) ? 'selected' : ''}>${o.label}</option>`).join('')}
-                </select>
-                <span class="ui-select-arrow">▼</span>
+                <div class="ui-select-trigger header-dropdown">
+                    <div class="ui-select-icon-circle icon-circle"></div>
+                    <span class="ui-select-label-text title"></span>
+                    <svg class="ui-select-arrow-svg arrow-down" width="10" height="6" viewBox="0 0 10 6">
+                        <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+                    </svg>
+                </div>
+                <div class="dropdown-menu"></div>
             `;
 
-            this.selectNode = this.element.querySelector('.ui-select');
-            this.handleChange = (e) => {
-                this.value = e.target.value;
-                if (onChange) onChange(this.value, this);
-            };
-            this.selectNode.addEventListener('change', this.handleChange);
+            this.trigger = this.element.querySelector('.ui-select-trigger');
+            this.labelText = this.element.querySelector('.ui-select-label-text');
+            this.menu = this.element.querySelector('.dropdown-menu');
+
+            this.renderItems();
+            this.bindEvents();
         }
+
+        renderItems() {
+            this.menu.innerHTML = '';
+            let currentLabel = '';
+
+            this.options.forEach(opt => {
+                const isSelected = String(opt.value) === String(this.value);
+                if (isSelected) currentLabel = opt.label;
+
+                const itemEl = document.createElement('div');
+                itemEl.className = `dropdown-item ${isSelected ? 'active' : ''}`;
+                itemEl.textContent = opt.label;
+
+                itemEl.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.setValue(opt.value);
+                    this.close();
+                    if (this.onChange) this.onChange(this.value, this);
+                });
+
+                this.menu.appendChild(itemEl);
+            });
+
+            this.labelText.textContent = currentLabel || (this.options[0]?.label ?? '');
+        }
+
+        toggle() {
+            if (this.disabled) return;
+            this.isOpen ? this.close() : this.open();
+        }
+
+        open() {
+            if (this.disabled || this.isOpen) return;
+            document.querySelectorAll('.ui-select-wrap.is-open').forEach(el => {
+                if (el !== this.element) el.classList.remove('is-open');
+            });
+            this.isOpen = true;
+            this.element.classList.add('is-open');
+        }
+
+        close() {
+            if (!this.isOpen) return;
+            this.isOpen = false;
+            this.element.classList.remove('is-open');
+        }
+
+        bindEvents() {
+            this.trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.toggle();
+            });
+
+            this.onDocClick = (e) => {
+                if (!this.element.contains(e.target)) {
+                    this.close();
+                }
+            };
+            document.addEventListener('click', this.onDocClick);
+        }
+
         getValue() { return this.value; }
+
         setValue(v) {
             this.value = v;
-            if (this.selectNode) this.selectNode.value = v;
+            const items = this.menu.querySelectorAll('.dropdown-item');
+            this.options.forEach((opt, idx) => {
+                const isSelected = String(opt.value) === String(this.value);
+                if (items[idx]) items[idx].classList.toggle('active', isSelected);
+                if (isSelected) this.labelText.textContent = opt.label;
+            });
             return this;
         }
+
         setDisabled(v) {
-            if (this.selectNode) this.selectNode.disabled = !!v;
+            this.disabled = !!v;
+            this.element.classList.toggle('disabled', this.disabled);
+            if (this.disabled) this.close();
             return this;
         }
+
         destroy() {
-            if (this.selectNode) this.selectNode.removeEventListener('change', this.handleChange);
+            document.removeEventListener('click', this.onDocClick);
             super.destroy();
         }
     }
@@ -3669,149 +3122,6 @@
             this.handlers.forEach(({ el, h }) => el.removeEventListener('click', h));
             this.handlers = [];
             this.domItems = [];
-            super.destroy();
-        }
-    }
-
-    class UIConfigurableSlider extends UIBaseComponent {
-        constructor({ label = '', min = 0, max = 100, step = 1, value = 50, onChange } = {}) {
-            super();
-            this.label = label;
-            this.min = min;
-            this.max = max;
-            this.step = step;
-            this.value = Math.max(this.min, Math.min(this.max, value));
-            this.onChange = onChange;
-            this.isOpen = false;
-
-            this.element = document.createElement('div');
-            this.element.className = 'ui-slider-card';
-            this.element.innerHTML = `
-                <div class="ui-slider-row">
-                    <span class="ui-slider-label">${this.label}</span>
-                    <div class="ui-slider-track">
-                        <div class="ui-slider-bg"><div class="ui-slider-fill"></div></div>
-                        <div class="ui-slider-thumb"></div>
-                    </div>
-                    <span class="ui-slider-val"></span>
-                    <button class="ui-cajon-btn">▼</button>
-                </div>
-                <div class="ui-slider-cajon">
-                    <div class="ui-slider-cajon-inner">
-                        <div class="ui-cajon-group">
-                            <span class="ui-cajon-tag">Min</span>
-                            <input type="number" class="ui-input ui-cajon-input input-min" value="${this.min}" step="${this.step}">
-                        </div>
-                        <div class="ui-cajon-group">
-                            <span class="ui-cajon-tag">Max</span>
-                            <input type="number" class="ui-input ui-cajon-input input-max" value="${this.max}" step="${this.step}">
-                        </div>
-                        <div class="ui-cajon-group">
-                            <span class="ui-cajon-tag">Paso</span>
-                            <input type="number" class="ui-input ui-cajon-input input-step" value="${this.step}" step="any">
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            this.track = this.element.querySelector('.ui-slider-track');
-            this.fill = this.element.querySelector('.ui-slider-fill');
-            this.thumb = this.element.querySelector('.ui-slider-thumb');
-            this.valDisplay = this.element.querySelector('.ui-slider-val');
-            this.toggleBtn = this.element.querySelector('.ui-cajon-btn');
-
-            this.inputMin = this.element.querySelector('.input-min');
-            this.inputMax = this.element.querySelector('.input-max');
-            this.inputStep = this.element.querySelector('.input-step');
-
-            this.bindEvents();
-            this.updateUI();
-        }
-
-        bindEvents() {
-            this.toggleCajon = () => {
-                this.isOpen = !this.isOpen;
-                this.element.classList.toggle('open', this.isOpen);
-            };
-            this.toggleBtn.addEventListener('click', this.toggleCajon);
-
-            const handleMove = (e) => {
-                const cx = e.touches ? e.touches[0].clientX : e.clientX;
-                const rect = this.track.getBoundingClientRect();
-                let pos = (cx - rect.left) / rect.width;
-                pos = Math.max(0, Math.min(1, pos));
-                let rawVal = this.min + pos * (this.max - this.min);
-                const steps = Math.round((rawVal - this.min) / this.step);
-                this.value = Number((this.min + steps * this.step).toFixed(3));
-                this.value = Math.max(this.min, Math.min(this.max, this.value));
-                this.updateUI();
-                if (this.onChange) this.onChange(this.value, this);
-            };
-
-            const stopMove = () => {
-                window.removeEventListener('mousemove', handleMove);
-                window.removeEventListener('mouseup', stopMove);
-                window.removeEventListener('touchmove', handleMove);
-                window.removeEventListener('touchend', stopMove);
-            };
-
-            const startMove = (e) => {
-                handleMove(e);
-                window.addEventListener('mousemove', handleMove);
-                window.addEventListener('mouseup', stopMove);
-                window.addEventListener('touchmove', handleMove);
-                window.addEventListener('touchend', stopMove);
-            };
-
-            this.track.addEventListener('mousedown', startMove);
-            this.track.addEventListener('touchstart', startMove, { passive: true });
-
-            this.inputMin.addEventListener('change', (e) => {
-                let v = parseFloat(e.target.value);
-                if (isNaN(v)) v = 0;
-                if (v >= this.max) v = this.max - this.step;
-                this.min = v;
-                this.inputMin.value = this.min;
-                this.setValue(this.value);
-            });
-
-            this.inputMax.addEventListener('change', (e) => {
-                let v = parseFloat(e.target.value);
-                if (isNaN(v)) v = 0;
-                if (v <= this.min) v = this.min + this.step;
-                this.max = v;
-                this.inputMax.value = this.max;
-                this.setValue(this.value);
-            });
-
-            this.inputStep.addEventListener('change', (e) => {
-                let v = parseFloat(e.target.value);
-                if (isNaN(v) || v <= 0) v = 1;
-                this.step = v;
-                this.inputStep.value = this.step;
-                this.setValue(this.value);
-            });
-        }
-
-        getValue() { return this.value; }
-
-        setValue(v) {
-            this.value = Math.max(this.min, Math.min(this.max, v));
-            this.updateUI();
-            if (this.onChange) this.onChange(this.value, this);
-            return this;
-        }
-
-        updateUI() {
-            const range = this.max - this.min;
-            const percent = range > 0 ? ((this.value - this.min) / range) * 100 : 0;
-            this.fill.style.width = `${percent}%`;
-            this.thumb.style.left = `${percent}%`;
-            this.valDisplay.textContent = this.value;
-        }
-
-        destroy() {
-            if (this.toggleBtn) this.toggleBtn.removeEventListener('click', this.toggleCajon);
             super.destroy();
         }
     }
@@ -3993,6 +3303,933 @@
         }
     }
 
+    class UIStorageAdapter {
+        constructor() {
+            this.dbName = 'UI_Layouts_DB';
+            this.storeName = 'layouts';
+            this.db = null;
+        }
+        async initIDB() {
+            if (this.db) return this.db;
+            return new Promise((resolve, reject) => {
+                const req = indexedDB.open(this.dbName, 2);
+                req.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains(this.storeName)) {
+                        db.createObjectStore(this.storeName, { keyPath: ['appId', 'name'] });
+                    }
+                };
+                req.onsuccess = (e) => { this.db = e.target.result; resolve(this.db); };
+                req.onerror = (e) => reject(e);
+            });
+        }
+        async getAll(appId, useIDB = false) {
+            if (!useIDB) {
+                const data = localStorage.getItem(`ui_layouts_store_${appId}`);
+                return data ? JSON.parse(data) : [];
+            }
+            const db = await this.initIDB();
+            return new Promise((resolve) => {
+                const tx = db.transaction(this.storeName, 'readonly');
+                const store = tx.objectStore(this.storeName);
+                const req = store.getAll();
+                req.onsuccess = () => {
+                    const all = req.result || [];
+                    resolve(all.filter(it => it.appId === appId));
+                };
+                req.onerror = () => resolve([]);
+            });
+        }
+        async save(item, useIDB = false) {
+            if (!useIDB) {
+                const list = await this.getAll(item.appId, false);
+                const idx = list.findIndex(l => l.name === item.name);
+                if (idx >= 0) list[idx] = item; else list.push(item);
+                localStorage.setItem(`ui_layouts_store_${item.appId}`, JSON.stringify(list));
+                return;
+            }
+            const db = await this.initIDB();
+            return new Promise((resolve) => {
+                const tx = db.transaction(this.storeName, 'readwrite');
+                tx.objectStore(this.storeName).put(item);
+                tx.oncomplete = () => resolve();
+            });
+        }
+        async delete(appId, name, useIDB = false) {
+            if (!useIDB) {
+                let list = await this.getAll(appId, false);
+                list = list.filter(l => l.name !== name);
+                localStorage.setItem(`ui_layouts_store_${appId}`, JSON.stringify(list));
+                return;
+            }
+            const db = await this.initIDB();
+            return new Promise((resolve) => {
+                const tx = db.transaction(this.storeName, 'readwrite');
+                tx.objectStore(this.storeName).delete([appId, name]);
+                tx.oncomplete = () => resolve();
+            });
+        }
+    }
+
+    class UILayoutManagerClass {
+        constructor() {
+            UITheme.inject();
+            this.storage = new UIStorageAdapter();
+            this.useIndexedDB = localStorage.getItem('ui_pref_indexeddb') === 'true';
+            this.modal = null;
+            this.factoryState = null;
+            this.setupShortcut();
+
+            const initRestore = () => {
+                setTimeout(() => {
+                    this.captureFactoryState();
+                    this.autoRestore();
+                }, 100);
+            };
+
+            if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                initRestore();
+            } else {
+                window.addEventListener('DOMContentLoaded', initRestore);
+            }
+        }
+
+        getAppId() {
+            return (typeof window !== 'undefined' && window.programaId) ? String(window.programaId).trim() : 'default_app';
+        }
+
+        isFactoryForced() {
+            return localStorage.getItem(`ui_force_factory_${this.getAppId()}`) === 'true';
+        }
+
+        setFactoryForced(val) {
+            localStorage.setItem(`ui_force_factory_${this.getAppId()}`, String(!!val));
+        }
+
+        captureFactoryState() {
+            if (!this.factoryState) {
+                this.factoryState = JSON.parse(JSON.stringify(this.captureCurrentState()));
+            }
+        }
+
+        setupShortcut() {
+            let timer = null;
+            window.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.altKey && !timer) {
+                    timer = setTimeout(() => {
+                        this.open();
+                        timer = null;
+                    }, 500);
+                }
+            });
+            window.addEventListener('keyup', (e) => {
+                if (!e.ctrlKey || !e.altKey) {
+                    if (timer) {
+                        clearTimeout(timer);
+                        timer = null;
+                    }
+                }
+            });
+        }
+
+        captureCurrentState() {
+            const state = {};
+            for (const [id, comp] of UIRegistry.getAll()) {
+                if (comp.getState) state[id] = comp.getState();
+            }
+            return state;
+        }
+
+        applyState(state) {
+            if (!state) return;
+            for (const id in state) {
+                const comp = UIRegistry.get(id);
+                if (comp instanceof UIContainer && comp.setState) comp.setState(state[id]);
+            }
+            for (const id in state) {
+                const comp = UIRegistry.get(id);
+                if (comp && !(comp instanceof UIContainer) && comp.setState) comp.setState(state[id]);
+            }
+        }
+
+        formatDate(d) {
+            const pad = (n) => String(n).padStart(2, '0');
+            return `${pad(d.getDate())}-${pad(d.getMonth() + 1)}-${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+        }
+
+        async saveLayout(name) {
+            if (!name) return;
+            const appId = this.getAppId();
+            const item = {
+                appId,
+                name: name.trim(),
+                date: this.formatDate(new Date()),
+                state: this.captureCurrentState()
+            };
+            await this.storage.save(item, this.useIndexedDB);
+            localStorage.setItem(`ui_last_active_layout_${appId}`, item.name);
+            this.renderList();
+        }
+
+        async deleteLayout(name) {
+            const appId = this.getAppId();
+            await this.storage.delete(appId, name, this.useIndexedDB);
+            this.renderList();
+        }
+
+        async loadLayout(name) {
+            const appId = this.getAppId();
+            const list = await this.storage.getAll(appId, this.useIndexedDB);
+            const found = list.find(l => l.name === name);
+            if (found && found.state) {
+                this.applyState(found.state);
+                localStorage.setItem(`ui_last_active_layout_${appId}`, found.name);
+                this.close();
+            }
+        }
+
+        async autoRestore() {
+            const appId = this.getAppId();
+            if (this.isFactoryForced()) {
+                if (this.factoryState) this.applyState(this.factoryState);
+                return;
+            }
+            const last = localStorage.getItem(`ui_last_active_layout_${appId}`);
+            if (last) {
+                const list = await this.storage.getAll(appId, this.useIndexedDB);
+                const found = list.find(l => l.name === last);
+                if (found && found.state) this.applyState(found.state);
+            }
+        }
+
+        open() {
+            if (this.modal) return;
+            const appId = this.getAppId();
+            const factoryActive = this.isFactoryForced();
+
+            this.modal = document.createElement('div');
+            this.modal.className = 'ui-layout-modal-backdrop';
+            this.modal.innerHTML = `
+                <div class="ui-layout-modal">
+                    <div class="ui-layout-modal-head">
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <span class="ui-panel-title">GESTOR DE INTERFAZ</span>
+                            <span class="ui-badge-app">${appId}</span>
+                        </div>
+                        <button class="ui-icon-btn btn-modal-close">✕</button>
+                    </div>
+                    <div class="ui-layout-modal-body">
+                        <div class="ui-row ui-row-align-4">
+                            <label class="ui-checkbox ${factoryActive ? 'checked' : ''}" id="chk-factory-mode">
+                                <div class="ui-checkbox-box"><div class="ui-checkbox-mark"></div></div>
+                                <span class="ui-label" style="color:var(--ui-accent);">MODO FÁBRICA FORZADO</span>
+                            </label>
+                        </div>
+                        <div class="ui-row ui-row-align-4">
+                            <label class="ui-checkbox ${this.useIndexedDB ? 'checked' : ''}" id="chk-use-idb">
+                                <div class="ui-checkbox-box"><div class="ui-checkbox-mark"></div></div>
+                                <span class="ui-label">INDEXED-DB (OFF = LOCALSTORAGE)</span>
+                            </label>
+                        </div>
+                        <div class="ui-row ui-row-align-0" id="save-bar-container" style="${factoryActive ? 'opacity:0.4; pointer-events:none;' : ''}">
+                            <input type="text" class="ui-input ui-input-text" id="input-layout-name" placeholder="NOMBRE (EJ: Principal)" style="flex:1;">
+                            <button class="ui-btn ui-btn-primary" id="btn-save-layout">GUARDAR</button>
+                        </div>
+                        <span class="ui-label" style="margin-top:4px;">LAYOUTS (${appId}):</span>
+                        <div class="ui-layout-list" id="layout-items-container"></div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(this.modal);
+
+            this.modal.querySelector('.btn-modal-close').addEventListener('click', () => this.close());
+            this.modal.addEventListener('click', (e) => { if (e.target === this.modal) this.close(); });
+
+            const chkFactory = this.modal.querySelector('#chk-factory-mode');
+            const saveBar = this.modal.querySelector('#save-bar-container');
+
+            chkFactory.addEventListener('click', () => {
+                const nowForced = !this.isFactoryForced();
+                this.setFactoryForced(nowForced);
+                chkFactory.classList.toggle('checked', nowForced);
+                saveBar.style.opacity = nowForced ? '0.4' : '1';
+                saveBar.style.pointerEvents = nowForced ? 'none' : 'auto';
+
+                if (nowForced) {
+                    if (this.factoryState) this.applyState(this.factoryState);
+                } else {
+                    this.autoRestore();
+                }
+                this.renderList();
+            });
+
+            const chkIdb = this.modal.querySelector('#chk-use-idb');
+            chkIdb.addEventListener('click', () => {
+                this.useIndexedDB = !this.useIndexedDB;
+                chkIdb.classList.toggle('checked', this.useIndexedDB);
+                localStorage.setItem('ui_pref_indexeddb', String(this.useIndexedDB));
+                this.renderList();
+            });
+
+            const input = this.modal.querySelector('#input-layout-name');
+            this.modal.querySelector('#btn-save-layout').addEventListener('click', () => {
+                if (input.value) {
+                    this.saveLayout(input.value);
+                    input.value = '';
+                }
+            });
+            this.renderList();
+        }
+
+        async renderList() {
+            if (!this.modal) return;
+            const appId = this.getAppId();
+            const container = this.modal.querySelector('#layout-items-container');
+            const isFactory = this.isFactoryForced();
+            container.innerHTML = '';
+            const list = await this.storage.getAll(appId, this.useIndexedDB);
+
+            if (list.length === 0) {
+                container.innerHTML = `<span class="ui-label" style="text-align:center; padding: 12px; color: var(--ui-text-dim);">NO HAY ESTADOS GUARDADOS</span>`;
+                return;
+            }
+
+            list.forEach(item => {
+                const el = document.createElement('div');
+                el.className = 'ui-layout-item';
+                el.innerHTML = `
+                    <div class="ui-layout-meta">
+                        <span class="ui-layout-name">${item.name}</span>
+                        <span class="ui-layout-date">${item.date || ''}</span>
+                    </div>
+                    <div class="ui-layout-actions">
+                        <button class="ui-btn btn-apply" ${isFactory ? 'disabled' : ''}>CARGAR</button>
+                        <button class="ui-btn ui-btn-danger btn-del">✕</button>
+                    </div>
+                `;
+                el.querySelector('.btn-apply').addEventListener('click', () => this.loadLayout(item.name));
+                el.querySelector('.btn-del').addEventListener('click', () => this.deleteLayout(item.name));
+                container.appendChild(el);
+            });
+        }
+
+        close() {
+            if (this.modal && this.modal.parentNode) {
+                this.modal.parentNode.removeChild(this.modal);
+            }
+            this.modal = null;
+        }
+    }
+    const GlobalLayoutManager = new UILayoutManagerClass();
+
+    class UISquareButton extends UIBaseComponent {
+        constructor({
+            id = null,
+            text = 'OK',
+            title = '',
+            info = '',
+            size = 38,
+            bgColor = '#212121',
+            textColor = '#595959',
+            fontSize = '11px',
+            draggable = false,
+            floating = false,
+            x = 100,
+            y = 100,
+            onClick
+        } = {}) {
+            const fallbackPrefix = title ? `sqbtn_${title.toLowerCase().replace(/[^a-z0-9]/g, '_')}` : 'sqbtn';
+            super({ id }, fallbackPrefix);
+
+            this.text = text;
+            this.titleText = title;
+            this.infoText = info;
+            this.size = size;
+            this.bgColor = bgColor;
+            this.textColor = textColor;
+            this.fontSize = fontSize;
+            this.isDraggable = draggable;
+            this.floating = floating || draggable;
+            this.x = x;
+            this.y = y;
+            this.onClick = onClick;
+
+            this.isDragging = false;
+            this.touchTimer = null;
+            this.isLongPress = false;
+
+            this.element = document.createElement('button');
+            this.element.className = 'ui-square-btn';
+            this.element.setAttribute('data-ui-id', this.id);
+            this.updateAppearance();
+
+            if (this.floating) {
+                this.element.classList.add('ui-draggable-floating');
+                this.element.style.left = `${this.x}px`;
+                this.element.style.top = `${this.y}px`;
+                document.body.appendChild(this.element);
+                GlobalDock.registerButton(this);
+            }
+
+            this.tooltip = document.createElement('div');
+            this.tooltip.className = 'ui-square-tooltip';
+            this.buildTooltip();
+            document.body.appendChild(this.tooltip);
+
+            this.bindEvents();
+        }
+
+        updateAppearance() {
+            if (!this.element) return;
+            this.element.textContent = this.text;
+            this.element.style.setProperty('--ui-square-btn-size', `${this.size}px`);
+            this.element.style.backgroundColor = this.bgColor;
+            this.element.style.color = this.textColor;
+            this.element.style.fontSize = this.fontSize;
+        }
+
+        buildTooltip() {
+            this.tooltip.innerHTML = '';
+            if (this.titleText) {
+                const t = document.createElement('span');
+                t.className = 'ui-square-tooltip-title';
+                t.textContent = this.titleText;
+                this.tooltip.appendChild(t);
+            }
+            if (this.infoText) {
+                const i = document.createElement('span');
+                i.className = 'ui-square-tooltip-info';
+                i.textContent = this.infoText;
+                this.tooltip.appendChild(i);
+            }
+        }
+
+        showTooltip() {
+            if (this.isDragging || (!this.titleText && !this.infoText)) return;
+            const rect = this.element.getBoundingClientRect();
+            this.tooltip.classList.add('visible');
+            const tW = this.tooltip.offsetWidth, tH = this.tooltip.offsetHeight, gap = 8;
+            const sw = window.innerWidth, sh = window.innerHeight;
+
+            let x = 0, y = 0;
+            if (sh - rect.bottom < tH + gap && rect.top >= tH) {
+                x = rect.left + (rect.width / 2) - (tW / 2); y = rect.top - tH - gap;
+            } else if (rect.top < tH + gap) {
+                x = rect.left + (rect.width / 2) - (tW / 2); y = rect.bottom + gap;
+            } else if (sw - rect.right < tW + gap) {
+                x = rect.left - tW - gap; y = rect.top + (rect.height / 2) - (tH / 2);
+            } else {
+                x = rect.right + gap; y = rect.top + (rect.height / 2) - (tH / 2);
+            }
+
+            x = Math.max(6, Math.min(x, sw - tW - 6));
+            y = Math.max(6, Math.min(y, sh - tH - 6));
+            this.tooltip.style.left = `${x}px`;
+            this.tooltip.style.top = `${y}px`;
+        }
+
+        hideTooltip() {
+            if (this.tooltip) this.tooltip.classList.remove('visible');
+        }
+
+        bindEvents() {
+            this.element.addEventListener('mouseenter', () => this.showTooltip());
+            this.element.addEventListener('mouseleave', () => this.hideTooltip());
+
+            let offsetX = 0, offsetY = 0, startClientX = 0, startClientY = 0, isTracking = false;
+
+            const onPointerMove = (e) => {
+                if (!isTracking) return;
+                const cx = (e.touches ? e.touches[0].pageX : e.pageX);
+                const cy = (e.touches ? e.touches[0].pageY : e.pageY);
+
+                if (!this.isDragging) {
+                    const rawClientX = e.touches ? e.touches[0].clientX : e.clientX;
+                    const rawClientY = e.touches ? e.touches[0].clientY : e.clientY;
+                    if (Math.hypot(rawClientX - startClientX, rawClientY - startClientY) > 5) {
+                        this.isDragging = true;
+                        this.hideTooltip();
+                        this.element.classList.add('is-dragging');
+                    } else {
+                        return;
+                    }
+                }
+
+                const evaluated = GlobalDock.evaluateSmartSnap(this, cx - offsetX, cy - offsetY);
+                this.element.classList.toggle('is-snapping', evaluated.snapped);
+                this.x = evaluated.x; 
+                this.y = evaluated.y;
+                this.element.style.left = `${this.x}px`;
+                this.element.style.top = `${this.y}px`;
+            };
+
+            const onPointerUp = () => {
+                isTracking = false;
+                if (this.isDragging) {
+                    this.isDragging = false;
+                    this.element.classList.remove('is-dragging');
+                    this.element.classList.remove('is-snapping');
+                    GlobalDock.hideSmartGuides();
+                }
+                window.removeEventListener('mousemove', onPointerMove);
+                window.removeEventListener('mouseup', onPointerUp);
+                window.removeEventListener('touchmove', onPointerMove);
+                window.removeEventListener('touchend', onPointerUp);
+            };
+
+            this.element.addEventListener('mousedown', (e) => {
+                if (!this.isDraggable) return;
+                isTracking = true;
+                this.isDragging = false;
+                startClientX = e.clientX; 
+                startClientY = e.clientY;
+                offsetX = e.pageX - this.element.offsetLeft;
+                offsetY = e.pageY - this.element.offsetTop;
+                window.addEventListener('mousemove', onPointerMove);
+                window.addEventListener('mouseup', onPointerUp);
+            });
+
+            this.element.addEventListener('touchstart', (e) => {
+                const t = e.touches[0];
+                isTracking = true;
+                this.isDragging = false;
+                startClientX = t.clientX; 
+                startClientY = t.clientY;
+                offsetX = t.pageX - this.element.offsetLeft;
+                offsetY = t.pageY - this.element.offsetTop;
+                this.isLongPress = false;
+                this.touchTimer = setTimeout(() => {
+                    if (!this.isDragging) {
+                        this.isLongPress = true;
+                        if (navigator.vibrate) navigator.vibrate(25);
+                        this.showTooltip();
+                    }
+                }, 400);
+
+                if (this.isDraggable) {
+                    window.addEventListener('touchmove', onPointerMove, { passive: false });
+                    window.addEventListener('touchend', onPointerUp);
+                }
+            }, { passive: true });
+
+            this.element.addEventListener('touchend', (e) => {
+                clearTimeout(this.touchTimer);
+                if (this.isLongPress) e.preventDefault();
+            });
+
+            this.element.addEventListener('click', (e) => {
+                if (this.isDragging || this.isLongPress) return;
+                if (this.onClick) this.onClick(e, this);
+            });
+        }
+
+        getState() {
+            return {
+                type: 'SquareButton',
+                x: this.x,
+                y: this.y,
+                floating: this.floating,
+                visible: this.element.style.display !== 'none'
+            };
+        }
+
+        setState(s) {
+            if (!s) return;
+            if (s.x !== undefined) {
+                this.x = s.x; this.y = s.y;
+                this.element.style.left = `${this.x}px`;
+                this.element.style.top = `${this.y}px`;
+            }
+            if (s.visible !== undefined) {
+                this.element.style.display = s.visible ? '' : 'none';
+            }
+        }
+
+        destroy() {
+            GlobalDock.unregisterButton(this);
+            this.hideTooltip();
+            if (this.tooltip && this.tooltip.parentNode) this.tooltip.parentNode.removeChild(this.tooltip);
+            super.destroy();
+        }
+    }
+
+    class UIReorderList extends UIBaseComponent {
+        constructor({ items = [], maxHeight = 160, onReorder, onSelect, onVisibilityChange, renderItem } = {}) {
+            super();
+            this.items = [...items];
+            this.activeIndex = -1;
+            this.onReorder = onReorder;
+            this.onSelect = onSelect;
+            this.onVisibilityChange = onVisibilityChange;
+            this.renderItemCustom = renderItem;
+
+            this.element = document.createElement('div');
+            this.element.className = 'ui-reorder-list';
+            this.element.style.setProperty('--ui-list-max-h', `${maxHeight}px`);
+
+            this.draggedSourceIdx = null;
+            this.touchSourceIdx = null;
+            this.render();
+        }
+
+        setItems(newItems, activeIdx = -1) {
+            this.items = [...newItems];
+            this.activeIndex = activeIdx;
+            this.render();
+            return this;
+        }
+
+        setActiveIndex(idx) {
+            this.activeIndex = idx;
+            const children = Array.from(this.element.children);
+            children.forEach((c, i) => {
+                const itemDataIdx = (this.items.length - 1) - i;
+                c.classList.toggle('active', itemDataIdx === this.activeIndex);
+            });
+            return this;
+        }
+
+        render() {
+            this.element.innerHTML = '';
+            for (let i = this.items.length - 1; i >= 0; i--) {
+                const data = this.items[i];
+                const itemEl = document.createElement('div');
+                itemEl.className = `ui-reorder-item ${i === this.activeIndex ? 'active' : ''}`;
+                itemEl.draggable = true;
+
+                if (this.renderItemCustom) {
+                    itemEl.appendChild(this.renderItemCustom(data, i));
+                } else {
+                    const left = document.createElement('div');
+                    left.className = 'ui-reorder-item-left';
+
+                    const btnVis = document.createElement('button');
+                    btnVis.className = 'ui-icon-btn';
+                    btnVis.textContent = data.visible !== false ? '👁' : '✕';
+                    btnVis.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        data.visible = !(data.visible !== false);
+                        btnVis.textContent = data.visible ? '👁' : '✕';
+                        if (this.onVisibilityChange) this.onVisibilityChange(data, i, data.visible);
+                    });
+
+                    const nameSpan = document.createElement('span');
+                    nameSpan.textContent = data.name || `Item ${i + 1}`;
+
+                    left.appendChild(btnVis);
+                    left.appendChild(nameSpan);
+
+                    const rightMeta = document.createElement('small');
+                    rightMeta.style.opacity = '0.6';
+                    rightMeta.style.fontSize = '10px';
+                    rightMeta.textContent = data.opacity !== undefined ? `${Math.round(data.opacity * 100)}%` : '';
+
+                    itemEl.appendChild(left);
+                    itemEl.appendChild(rightMeta);
+                }
+
+                itemEl.addEventListener('click', () => {
+                    this.setActiveIndex(i);
+                    if (this.onSelect) this.onSelect(data, i);
+                });
+
+                itemEl.addEventListener('dragstart', (e) => {
+                    this.draggedSourceIdx = i;
+                    itemEl.classList.add('dragging');
+                    e.dataTransfer.effectAllowed = 'move';
+                });
+
+                itemEl.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                    itemEl.classList.add('drag-over');
+                });
+
+                itemEl.addEventListener('dragleave', () => itemEl.classList.remove('drag-over'));
+                itemEl.addEventListener('dragend', () => {
+                    itemEl.classList.remove('dragging');
+                    itemEl.classList.remove('drag-over');
+                });
+
+                itemEl.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    itemEl.classList.remove('drag-over');
+
+                    if (this.draggedSourceIdx !== null && this.draggedSourceIdx !== i) {
+                        const moved = this.items.splice(this.draggedSourceIdx, 1)[0];
+                        this.items.splice(i, 0, moved);
+                        this.activeIndex = i;
+                        this.render();
+                        if (this.onReorder) this.onReorder(this.items, this.draggedSourceIdx, i);
+                    }
+                    this.draggedSourceIdx = null;
+                });
+
+                itemEl.addEventListener('touchstart', () => { this.touchSourceIdx = i; }, { passive: true });
+                itemEl.addEventListener('touchend', (e) => {
+                    if (this.touchSourceIdx === null) return;
+                    const touch = e.changedTouches[0];
+                    const targetEl = document.elementFromPoint(touch.clientX, touch.clientY);
+                    const dropItem = targetEl ? targetEl.closest('.ui-reorder-item') : null;
+
+                    if (dropItem && dropItem !== itemEl) {
+                        const allDomItems = Array.from(this.element.children);
+                        const dropDomIdx = allDomItems.indexOf(dropItem);
+                        if (dropDomIdx !== -1) {
+                            const targetIdx = (this.items.length - 1) - dropDomIdx;
+                            const moved = this.items.splice(this.touchSourceIdx, 1)[0];
+                            this.items.splice(targetIdx, 0, moved);
+                            this.activeIndex = targetIdx;
+                            this.render();
+                            if (this.onReorder) this.onReorder(this.items, this.touchSourceIdx, targetIdx);
+                        }
+                    }
+                    this.touchSourceIdx = null;
+                });
+
+                this.element.appendChild(itemEl);
+            }
+        }
+    }
+
+    class UITable extends UIBaseComponent {
+        constructor({ columns = [], data = [], endpoint = null, pageSize = 5, onRowDelete, onRowClick } = {}) {
+            super();
+            this.columns = columns;
+            this.data = [...data];
+            this.filteredData = [...data];
+            this.endpoint = endpoint;
+            this.pageSize = pageSize;
+            this.currentPage = 1;
+            this.searchQuery = '';
+            this.draggedColIdx = null;
+            this.onRowDelete = onRowDelete;
+            this.onRowClick = onRowClick;
+
+            this.element = document.createElement('div');
+            this.element.className = 'ui-table-container';
+
+            this.element.innerHTML = `
+                <div class="ui-table-toolbar">
+                    <input type="text" class="ui-input ui-input-text ui-table-search" placeholder="Buscar...">
+                    <button class="ui-btn btn-refresh">↻</button>
+                </div>
+                <div class="ui-table-scroll">
+                    <table class="ui-table">
+                        <thead><tr></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="ui-table-cards"></div>
+                <div class="ui-table-footer">
+                    <span class="ui-table-info"></span>
+                    <div class="ui-table-pagination">
+                        <button class="ui-btn btn-prev">◀</button>
+                        <span class="ui-label page-label"></span>
+                        <button class="ui-btn btn-next">▶</button>
+                    </div>
+                </div>
+            `;
+
+            this.theadTr = this.element.querySelector('thead tr');
+            this.tbody = this.element.querySelector('tbody');
+            this.cardsContainer = this.element.querySelector('.ui-table-cards');
+            this.searchInput = this.element.querySelector('.ui-table-search');
+            this.btnRefresh = this.element.querySelector('.btn-refresh');
+            this.btnPrev = this.element.querySelector('.btn-prev');
+            this.btnNext = this.element.querySelector('.btn-next');
+            this.infoSpan = this.element.querySelector('.ui-table-info');
+            this.pageLabel = this.element.querySelector('.page-label');
+
+            this.bindEvents();
+            if (this.endpoint) this.fetchData(); else this.render();
+        }
+
+        bindEvents() {
+            this.searchInput.addEventListener('input', (e) => {
+                this.searchQuery = e.target.value.toLowerCase();
+                this.currentPage = 1;
+                this.applyFilter();
+            });
+
+            this.btnRefresh.addEventListener('click', () => {
+                if (this.endpoint) this.fetchData(); else this.render();
+            });
+
+            this.btnPrev.addEventListener('click', () => {
+                if (this.currentPage > 1) {
+                    this.currentPage--;
+                    this.render();
+                }
+            });
+
+            this.btnNext.addEventListener('click', () => {
+                const totalPages = Math.ceil(this.filteredData.length / this.pageSize) || 1;
+                if (this.currentPage < totalPages) {
+                    this.currentPage++;
+                    this.render();
+                }
+            });
+        }
+
+        async fetchData() {
+            this.btnRefresh.disabled = true;
+            try {
+                const res = await fetch(this.endpoint);
+                const json = await res.json();
+                this.data = Array.isArray(json) ? json : (json.data || []);
+                this.applyFilter();
+            } catch (err) {
+                console.error(err);
+            } finally {
+                this.btnRefresh.disabled = false;
+            }
+        }
+
+        applyFilter() {
+            if (!this.searchQuery) {
+                this.filteredData = [...this.data];
+            } else {
+                this.filteredData = this.data.filter(row => {
+                    return this.columns.some(col => {
+                        const val = row[col.key];
+                        return String(val !== undefined ? val : '').toLowerCase().includes(this.searchQuery);
+                    });
+                });
+            }
+            this.render();
+        }
+
+        deleteRow(item, index) {
+            const originalIdx = this.data.indexOf(item);
+            if (originalIdx !== -1) {
+                this.data.splice(originalIdx, 1);
+            }
+            if (this.onRowDelete) {
+                this.onRowDelete(item, originalIdx, this);
+            }
+            this.applyFilter();
+        }
+
+        renderHeaders() {
+            this.theadTr.innerHTML = '';
+            this.columns.forEach((col, idx) => {
+                const th = document.createElement('th');
+                th.textContent = col.label || col.key;
+                th.draggable = true;
+
+                th.addEventListener('dragstart', (e) => {
+                    this.draggedColIdx = idx;
+                    e.dataTransfer.effectAllowed = 'move';
+                });
+
+                th.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    th.classList.add('drag-over');
+                });
+
+                th.addEventListener('dragleave', () => th.classList.remove('drag-over'));
+                th.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    th.classList.remove('drag-over');
+                    if (this.draggedColIdx !== null && this.draggedColIdx !== idx) {
+                        const dragged = this.columns.splice(this.draggedColIdx, 1)[0];
+                        this.columns.splice(idx, 0, dragged);
+                        this.render();
+                    }
+                    this.draggedColIdx = null;
+                });
+
+                this.theadTr.appendChild(th);
+            });
+
+            const thAction = document.createElement('th');
+            thAction.textContent = 'Acciones';
+            this.theadTr.appendChild(thAction);
+        }
+
+        render() {
+            this.renderHeaders();
+            this.tbody.innerHTML = '';
+            this.cardsContainer.innerHTML = '';
+
+            const start = (this.currentPage - 1) * this.pageSize;
+            const end = start + this.pageSize;
+            const pageData = this.filteredData.slice(start, end);
+            const totalPages = Math.ceil(this.filteredData.length / this.pageSize) || 1;
+
+            this.infoSpan.textContent = `${this.filteredData.length} filas`;
+            this.pageLabel.textContent = `${this.currentPage}/${totalPages}`;
+            this.btnPrev.disabled = this.currentPage <= 1;
+            this.btnNext.disabled = this.currentPage >= totalPages;
+
+            pageData.forEach((row, rIdx) => {
+                const tr = document.createElement('tr');
+                if (this.onRowClick) {
+                    tr.style.cursor = 'pointer';
+                    tr.addEventListener('click', (e) => {
+                        if (!e.target.closest('button')) this.onRowClick(row, rIdx, this);
+                    });
+                }
+
+                this.columns.forEach(col => {
+                    const td = document.createElement('td');
+                    td.textContent = row[col.key] !== undefined ? row[col.key] : '';
+                    tr.appendChild(td);
+                });
+
+                const tdActions = document.createElement('td');
+                tdActions.className = 'ui-table-actions-cell';
+                const delBtn = document.createElement('button');
+                delBtn.className = 'ui-btn ui-btn-danger';
+                delBtn.textContent = '✕';
+                delBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.deleteRow(row, start + rIdx);
+                });
+                tdActions.appendChild(delBtn);
+                tr.appendChild(tdActions);
+                this.tbody.appendChild(tr);
+
+                const card = document.createElement('div');
+                card.className = 'ui-table-card';
+                if (this.onRowClick) {
+                    card.addEventListener('click', (e) => {
+                        if (!e.target.closest('button')) this.onRowClick(row, rIdx, this);
+                    });
+                }
+
+                this.columns.forEach(col => {
+                    const crow = document.createElement('div');
+                    crow.className = 'ui-table-card-row';
+                    crow.innerHTML = `
+                        <span class="ui-table-card-label">${col.label || col.key}</span>
+                        <span class="ui-table-card-val">${row[col.key] !== undefined ? row[col.key] : ''}</span>
+                    `;
+                    card.appendChild(crow);
+                });
+
+                const cardFooter = document.createElement('div');
+                cardFooter.style.display = 'flex';
+                cardFooter.style.justifyContent = 'flex-end';
+                cardFooter.style.marginTop = '4px';
+
+                const cardDelBtn = document.createElement('button');
+                cardDelBtn.className = 'ui-btn ui-btn-danger';
+                cardDelBtn.textContent = 'Eliminar';
+                cardDelBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.deleteRow(row, start + rIdx);
+                });
+                cardFooter.appendChild(cardDelBtn);
+                card.appendChild(cardFooter);
+
+                this.cardsContainer.appendChild(card);
+            });
+        }
+    }
+
     const UI = {
         Theme: UITheme,
         BaseComponent: UIBaseComponent,
@@ -4044,6 +4281,6 @@
     global.UIInfo = UIInfo;
     global.UILayoutManager = GlobalLayoutManager;
     global.ToolJavaScriptGio = ToolJavaScriptGio;
-    global.UIContainerFacil=UIContainerFacil;
+    global.UIContainerFacil = UIContainerFacil;
 
 })(typeof window !== 'undefined' ? window : this);
