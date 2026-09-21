@@ -379,6 +379,8 @@
             .ui-panel.collapsed .ui-panel-body { display: none !important; }
 
             .ui-panel-header {
+            user-select: none;
+    -webkit-user-select: none;
                 height: var(--ui-panel-header-h);
                 min-height: var(--ui-panel-header-h);
                 background: var(--ui-bg-surface);
@@ -2582,7 +2584,7 @@
             this.updateUI();
         }
 
-        bindEvents() {
+       bindEvents() {
             this.toggleCajon = () => {
                 this.isOpen = !this.isOpen;
                 this.element.classList.toggle('open', this.isOpen);
@@ -2590,6 +2592,9 @@
             this.toggleBtn.addEventListener('click', this.toggleCajon);
 
             const handleMove = (e) => {
+                // Evita que el navegador seleccione texto o haga scroll durante el arrastre
+                if (e.cancelable) e.preventDefault();
+
                 const cx = e.touches ? e.touches[0].clientX : e.clientX;
                 const rect = this.track.getBoundingClientRect();
                 let pos = (cx - rect.left) / rect.width;
@@ -2603,6 +2608,10 @@
             };
 
             const stopMove = () => {
+                // Restaura la selección de texto en la página al soltar
+                document.body.style.userSelect = '';
+                document.body.style.webkitUserSelect = '';
+
                 window.removeEventListener('mousemove', handleMove);
                 window.removeEventListener('mouseup', stopMove);
                 window.removeEventListener('touchmove', handleMove);
@@ -2610,15 +2619,27 @@
             };
 
             const startMove = (e) => {
+                // Previene el inicio de selección nativa del navegador
+                if (e.cancelable) e.preventDefault();
+
+                // Bloquea temporalmente la selección en todo el documento
+                document.body.style.userSelect = 'none';
+                document.body.style.webkitUserSelect = 'none';
+
+                // Si ya había texto seleccionado previamente por error, lo deselecciona
+                if (window.getSelection) {
+                    window.getSelection().removeAllRanges();
+                }
+
                 handleMove(e);
                 window.addEventListener('mousemove', handleMove);
                 window.addEventListener('mouseup', stopMove);
-                window.addEventListener('touchmove', handleMove);
+                window.addEventListener('touchmove', handleMove, { passive: false });
                 window.addEventListener('touchend', stopMove);
             };
 
             this.track.addEventListener('mousedown', startMove);
-            this.track.addEventListener('touchstart', startMove, { passive: true });
+            this.track.addEventListener('touchstart', startMove, { passive: false });
 
             this.inputMin.addEventListener('change', (e) => {
                 let v = parseFloat(e.target.value);
@@ -2646,7 +2667,6 @@
                 this.setValue(this.value);
             });
         }
-
         getValue() { return this.value; }
 
         setValue(v) {
