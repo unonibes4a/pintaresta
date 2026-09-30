@@ -64,8 +64,8 @@
                 --ui-font-weight-semibold: 600;
                 --ui-font-weight-bold: 700;
 
-                --ui-font-size-badge: 10px;
-                --ui-font-size-cajon-tag: 10px;
+                --ui-font-size-badge: 12px;
+                --ui-font-size-cajon-tag: 12px;
                 --ui-font-size-table-card-label: 11px;
                 --ui-font-size-layout-date: 10.5px;
                 --ui-font-size-label: 11px;
@@ -78,7 +78,7 @@
                 --ui-font-size-table-footer: 11px;
                 --ui-font-size-tooltip-info: 11px;
                 --ui-font-size-panel-title: 12.5px;
-                --ui-font-size-btn: 11.5px;
+                --ui-font-size-btn: 13px;
                 --ui-font-size-input: 11px;
                 --ui-font-size-select: 11px;
                 --ui-font-size-table: 11px;
