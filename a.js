@@ -33,6 +33,21 @@
             style.id = 'ui-core-library-theme';
             style.textContent = `
                 :root {
+
+                    /* VARIABLES ESPECÍFICAS DE CAD STUDIO / BRUSH ENGINE */
+                    --ui-cad-bg-stage: #0c0d12;
+                    --ui-cad-hud-bg: #14151f;
+                    --ui-cad-hud-text: var(--ui-accent, #2196F3);
+                    --ui-cad-preview-bg: #1c1d2b;
+                    --ui-cad-layer-item-bg: #2195f311;
+                    --ui-cad-layer-item-active-bg: rgba(33, 149, 243, 0.14);
+                    --ui-cad-layer-item-active-border: var(--ui-accent, #2195f32b);
+                    --ui-cad-grid-line: rgba(255, 255, 255, 0.06);
+                    --ui-cad-osnap-color: #10b981;
+                    --ui-cad-origin-marker: #fbbf24;
+                    --ui-cad-dim-color: #f43f5e;
+                    --ui-cad-layer-item-button-color: #878787;
+
                     --ui-margin-top: 4px;
                     --ui-margin-right: 4px;
                     --ui-margin-bottom: 4px;
@@ -132,18 +147,19 @@
                     --ui-bg-dropdown-item-hover: #2b2b2b;
                     --ui-bg-dropdown-item-active: #2f2f2f;
                     --ui-bg-segmented: #1a1a1a;
-                    --ui-bg-segmented-active: #2e2e2e;
+                    --ui-bg-segmented-active: rgba(33, 150, 255, 0.5);
+                    --ui-bg-segmented-active-h: rgba(33, 150, 255, 0.3);
                     --ui-bg-toggle-switch: #191919;
                     --ui-bg-slider-content: #212121;
 
                     --ui-border: #3d3d3d;
                     --ui-border-light: #3d3d3d;
-                    --ui-border-hover: #2196F3;
-                    --ui-border-focus: #2196F3;
+                    --ui-border-hover: #2195f38a;
+                    --ui-border-focus: #2195f39f;
                     --ui-border-subtle: #2d2d2d;
                     --ui-border-cajon: #3d3d3d;
                     --ui-border-list: #3d3d3d;
-                    --ui-border-active: #2196F3;
+                    --ui-border-active: #2195f3dc;
                     --ui-border-card-row: #2d2d2d;
                     --ui-border-select: #3d3d3d;
                     --ui-border-circle: #3d3d3d;
@@ -155,7 +171,7 @@
                     --ui-radius-pill: 100px;
 
                     --ui-text-main: #727272;
-                    --ui-text-muted: #595959;
+                    --ui-text-muted: #a2a2a2;
                     --ui-text-dim: #434343;
                     --ui-text-subtle: #757575;
                     --ui-text-bright: #e0e0e0;
@@ -181,10 +197,11 @@
                     --ui-danger-color: #f85149;
                     --ui-danger-hover: #ff7b72;
 
-                    --ui-accent: #2196F3;
-                    --ui-accent-hover: #42a5f5;
+                    --ui-accent: #2195f334;
+                    --ui-seg-item: #dddddd;
+                    --ui-accent-hover: #42a4f56b;
                     --ui-accent-glow: rgba(33, 149, 243, 0.38);
-                    --ui-accent-snap-border: #2196F3;
+                    --ui-accent-snap-border: #2195f381;
                     --ui-accent-snap-shadow: rgba(33, 149, 243, 0.40);
                     --ui-accent-placeholder-bg: rgba(33, 149, 243, 0.08);
                     --ui-accent-btn-shadow: rgba(33, 149, 243, 0.38);
@@ -252,6 +269,185 @@
                     max-width: 100vw;
                     overflow-x: hidden;
                 }
+
+
+
+                
+/* =========================================================
+   ESTILOS DE BRUSH ENGINE & CAD STUDIO UNIFICADOS
+   ========================================================= */
+#stage { 
+    position: fixed; 
+    inset: 0; 
+    width: 100vw; 
+    height: 100vh; 
+    overflow: hidden; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    touch-action: none; 
+    cursor: default; 
+    background-color: #282a2cd2;
+}
+#stage.is-panning { cursor: grabbing; }
+#stage.is-drawing { cursor: crosshair; }
+
+#viewport { 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    transform-origin: 0 0; 
+    will-change: transform; 
+}
+
+#layersStack { 
+    position: absolute; 
+    inset: 0; 
+    pointer-events: none; 
+}
+
+.engine-canvas-layer { 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    display: block; 
+   border: 7px solid #1a87d016;
+   border-radius: 7px;
+ 
+}
+
+.engine-layer-canvas { 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    display: block; 
+    pointer-events: none; 
+}
+
+#gridCanvas { pointer-events: none; z-index: 1; }
+#liveCanvas { pointer-events: none; z-index: 998; }
+#originCanvas { pointer-events: none; z-index: 999; }
+
+.cad-hud {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    background: var(--ui-cad-hud-bg, var(--ui-bg-panel));
+    color: var(--ui-cad-hud-text, var(--ui-accent));
+    border: 1px solid var(--ui-border);
+    border-radius: var(--ui-radius-sm);
+    padding: 6px 12px;
+    font-family: var(--ui-font-family-mono);
+    font-size: var(--ui-font-size-badge);
+    font-weight: var(--ui-font-weight-medium);
+    pointer-events: none;
+    z-index: 99999;
+    box-shadow: var(--ui-shadow-floating);
+    letter-spacing: var(--ui-letter-spacing-sm);
+}
+
+.color-preview-pill {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border-radius: var(--ui-radius-sm);
+    border: 1px solid var(--ui-border);
+    vertical-align: middle;
+    margin-left: 6px;
+}
+
+.preview-box {
+    display: block;
+    margin: 6px auto;
+    background: var(--ui-cad-preview-bg, var(--ui-bg-list));
+    border: 1px solid var(--ui-border);
+    border-radius: var(--ui-radius-sm);
+}
+
+.editor-preview {
+    display: block;
+    margin: 6px 0;
+    width: 100%;
+    height: 60px;
+    background: var(--ui-cad-preview-bg, var(--ui-bg-list));
+    border: 1px solid var(--ui-border);
+    border-radius: var(--ui-radius-sm);
+}
+
+.editor {
+    display: block;
+    margin: 8px auto;
+    background: var(--ui-cad-preview-bg, var(--ui-bg-list));
+    border: 1px solid var(--ui-border);
+    border-radius: var(--ui-radius-sm);
+    touch-action: none;
+    cursor: crosshair;
+}
+
+.layer-item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 8px;
+    margin-bottom: 4px;
+    background: var(--ui-cad-layer-item-bg, var(--ui-bg-surface));
+    border: 1px solid var(--ui-border);
+    border-radius: var(--ui-radius-sm);
+    cursor: pointer;
+    font-size: var(--ui-font-size-table);
+    color: var(--ui-text-bright);
+    transition: all var(--ui-transition-fast);
+}
+
+.layer-item-row:hover {
+    border-color: var(--ui-border-hover);
+    background: var(--ui-bg-surface-hover);
+}
+
+.layer-item-row.is-active {
+    border-color: var(--ui-cad-layer-item-active-border);
+    background: var(--ui-cad-layer-item-active-bg);
+}
+
+.layer-actions-mini {
+    display: flex;
+    gap: 4px;
+}
+.layer-actions-miniflexEnd {
+    display: flex;
+    gap: 4px;
+    overflow: scroll; 
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	align-items: center;
+	align-content: space-evenly;
+    color: var(--ui-text-main);
+     
+}
+
+.mini-btn {
+    background: var(--ui-btn-bg);
+    border: 1px solid var(--ui-border);
+    color: var(--ui-text-muted);
+    padding: 2px 6px;
+    border-radius: var(--ui-radius-sm);
+    cursor: pointer;
+    font-size: var(--ui-font-size-cajon-tag);
+    transition: all var(--ui-transition-fast);
+    
+}
+
+.mini-btn:hover {
+    background: var(--ui-btn-hover-bg);
+    border-color: var(--ui-accent);
+    color: var(--ui-text-hover);
+}
 
                 * { 
                     scrollbar-width: thin; 
@@ -696,12 +892,22 @@
                     display: flex; 
                     background: var(--ui-bg-segmented); 
                     border: 1px solid var(--ui-border); 
-                    border-radius: var(--ui-radius-pill); 
+                    border-radius:9px;// var(--ui-radius-pill); 
                     padding: 2px; 
                     width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right))); 
                     height: var(--ui-btn-height); 
                     flex-shrink: 0; 
                     margin: var(--ui-margin);
+                    overflow: scroll;
+                    display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-evenly;
+	align-items: center;
+	align-content: space-evenly;
+    
+    min-width: 290px;
+    min-height: 170px;
                 }
                 .ui-seg-item { 
                     flex: 1; 
@@ -712,16 +918,25 @@
                     font-weight: var(--ui-font-weight-medium); 
                     color: var(--ui-text-muted); 
                     cursor: pointer; 
-                    border-radius: var(--ui-radius-pill); 
+                    border-radius:9px;// var(--ui-radius-pill); 
                     transition: all var(--ui-transition-base); 
                     padding: 0 6px;
                     touch-action: manipulation;
+                    min-width: 70px;
+                    height: 40px;
+                    width: 120px;
+                    background:#3c3c3ca3;
+                    margin: 3px 3px 3px 3px;
+                    
                 }
                 .ui-seg-item.active { 
-                    background: var(--ui-bg-segmented-active); 
-                    color: var(--ui-accent); 
-                    font-weight: var(--ui-font-weight-semibold);
-                    box-shadow: 0 0 6px var(--ui-accent-glow);
+                    background: var(--ui-bg-segmented-active);  
+                    color: var(--ui-seg-item); 
+                    font-weight: var(--ui-font-weight-semibold); 
+                }
+                  .ui-seg-item:hover { 
+                    background: var(--ui-bg-segmented-active-h);  
+                     
                 }
 
                 .ui-checkbox { 
@@ -2077,55 +2292,61 @@
     }
 
     class UIContainer extends UIBaseComponent {
-        constructor({
-            id = null,
-            direction = 'column',
-            width = '290px',
-            height = 'calc(100vh - 48px)',
-            gap = 8,
-            floating = false,
-            draggable = false,
-            title = '',
-            x = 50,
-            y = 50
-        } = {}) {
-            const fallbackPrefix = title ? `cnt_${title.toLowerCase().replace(/[^a-z0-9]/g, '_')}` : 'cnt';
-            super({ id }, fallbackPrefix);
+       constructor({
+    id = null,
+    direction = 'column',
+    width = '290px',
+    height = 'calc(100vh - 48px)',
+    gap = 8,
+    floating = false,
+    draggable = false,
+    title = '',
+    x = 50,
+    y = 50
+} = {}) {
+    const fallbackPrefix = title ? `cnt_${title.toLowerCase().replace(/[^a-z0-9]/g, '_')}` : 'cnt';
+    super({ id }, fallbackPrefix);
 
-            this.direction = direction;
-            this.width = typeof width === 'number' ? `${width}px` : width;
-            this.height = typeof height === 'number' ? `${height}px` : height;
-            this.gap = gap;
-            this.isFloating = floating || draggable;
-            this.isDraggable = draggable;
-            this.title = title;
-            this.x = x;
-            this.y = y;
-            this.panels = [];
-            this.isHidden = false;
+    if (typeof direction === 'boolean') {
+        direction = direction ? 'column' : 'row';
+    } else if (direction !== 'row' && direction !== 'column') {
+        direction = 'column';
+    }
 
-            this.element = document.createElement('div');
-            this.element.className = `ui-container ui-container-${this.direction}`;
-            this.element.setAttribute('data-ui-id', this.id);
-            this.element.style.setProperty('--ui-container-gap', `${this.gap}px`);
-            this.element.style.setProperty('--ui-container-w', this.width);
-            this.element.style.setProperty('--ui-container-h', this.height);
+    this.direction = direction;
+    this.width = typeof width === 'number' ? `${width}px` : width;
+    this.height = typeof height === 'number' ? `${height}px` : height;
+    this.gap = gap;
+    this.isFloating = floating || draggable;
+    this.isDraggable = draggable;
+    this.title = title;
+    this.x = x;
+    this.y = y;
+    this.panels = [];
+    this.isHidden = false;
 
-            if (this.isFloating) {
-                this.element.classList.add('is-floating');
-                this.applyPosition();
-                if (this.title || this.isDraggable) {
-                    this.createHeader();
-                }
-            }
+    this.element = document.createElement('div');
+    this.element.className = `ui-container ui-container-${this.direction}`;
+    this.element.setAttribute('data-ui-id', this.id);
+    this.element.style.setProperty('--ui-container-gap', `${this.gap}px`);
+    this.element.style.setProperty('--ui-container-w', this.width);
+    this.element.style.setProperty('--ui-container-h', this.height);
 
-            this.placeholder = document.createElement('div');
-            this.placeholder.className = 'ui-panel-placeholder';
-            this.placeholder.style.display = 'none';
-
-            GlobalDock.registerContainer(this);
-            this.bindEvents();
+    if (this.isFloating) {
+        this.element.classList.add('is-floating');
+        this.applyPosition();
+        if (this.title || this.isDraggable) {
+            this.createHeader();
         }
+    }
+
+    this.placeholder = document.createElement('div');
+    this.placeholder.className = 'ui-panel-placeholder';
+    this.placeholder.style.display = 'none';
+
+    GlobalDock.registerContainer(this);
+    this.bindEvents();
+}
 
         applyPosition() {
             const isMobile = window.innerWidth <= 768;
@@ -4964,744 +5185,939 @@
             return this;
         }
     }
-
-    // =================================================================
-    // CLASE UIColorPicker INTEGRADA NATIVAMENTE
-    // =================================================================
-    class UIColorPicker extends UIBaseComponent {
-        constructor({
-            id = null,
-            title = 'Selector de Color',
-            x = 40,
-            y = 40,
-            floating = true,
-            initialColor = null,
-            canvas = null,
-            onChange
-        } = {}) {
-            super({ id }, 'color_picker');
-
-            this.title = title;
-            this.floating = floating;
-            this.callback = typeof onChange === 'function' ? onChange : () => {};
-
-            const initRGB = this.parseInitialRGBA(initialColor);
-            const initHSV = this.rgbToHsv(initRGB.r, initRGB.g, initRGB.b);
-            this.hue = initHSV.h;
-            this.sat = initHSV.s;
-            this.val = initHSV.v;
-            this.alpha = initRGB.a;
-
-            this.isDraggingTriangle = false;
-            this.isDraggingRing = false;
-            this.isDraggingRectSV = false;
-            this.isDraggingRectHue = false;
-            this.lastRenderedHue = -1;
-            this.cachedGlobalStats = null;
-            this.canvas = null;
-            this.ctx = null;
-            this.isRectMode = false;
-
-            this.panel = new UISmartPanel({
-                id: `${this.id}_panel`,
-                title: this.title,
-                x, y,
-                width: 290,
-                floating: this.floating
-            });
-
-            this.element = this.panel.element;
-            this.buildPickerUI();
-            this.bindEvents();
-
-            if (canvas) this.setElementoAnalizar(canvas);
-
-            requestAnimationFrame(() => {
-                this.renderTriangle();
-                this.updateUI();
-            });
-        }
-
-        parseInitialRGBA(col) {
-            const def = { r: 255, g: 0, b: 0, a: 1.0 };
-            if (!col || typeof col !== 'object') return def;
-            let r = col.r !== undefined ? Number(col.r) : 1;
-            let g = col.g !== undefined ? Number(col.g) : 0;
-            let b = col.b !== undefined ? Number(col.b) : 0;
-            let a = col.a !== undefined ? Number(col.a) : 1;
-
-            if (r <= 1 && g <= 1 && b <= 1 && (r > 0 || g > 0 || b > 0)) {
-                r = Math.round(r * 255);
-                g = Math.round(g * 255);
-                b = Math.round(b * 255);
-            } else {
-                r = Math.round(r); g = Math.round(g); b = Math.round(b);
-            }
-            return {
-                r: Math.max(0, Math.min(255, isNaN(r) ? 255 : r)),
-                g: Math.max(0, Math.min(255, isNaN(g) ? 0 : g)),
-                b: Math.max(0, Math.min(255, isNaN(b) ? 0 : b)),
-                a: Math.max(0, Math.min(1, isNaN(a) ? 1 : a))
-            };
-        }
-
-        buildPickerUI() {
-            const container = document.createElement('div');
-            container.className = 'ui-cp-root';
-
-            container.innerHTML = `
-                <div class="ui-row ui-row-align-4" style="margin-bottom: 4px;">
-                    <label class="ui-checkbox chk-rect-mode">
-                        <div class="ui-checkbox-box"><div class="ui-checkbox-mark"></div></div>
-                        <span class="ui-label">Rect</span>
-                    </label>
-                    <div style="display:flex; gap:6px;">
-                        <button class="ui-btn btn-palette" style="height:24px; padding:0 8px; font-size:10px;">Paleta</button>
-                        <button class="ui-btn btn-eyedropper" style="height:24px; padding:0 8px; font-size:10px;">Gotero</button>
-                    </div>
-                </div>
-
-                <div class="ui-cp-wheel">
-                    <div class="ui-cp-ring"></div>
-                    <canvas class="ui-cp-triangle" width="130" height="115"></canvas>
-                    <div class="ui-cp-ring-pointer"></div>
-                    <div class="ui-cp-tri-pointer"></div>
-                </div>
-
-                <div class="ui-cp-rect-container">
-                    <div class="ui-cp-rect-sv"><div class="ui-cp-rect-sv-pointer"></div></div>
-                    <div class="ui-cp-rect-hue"><div class="ui-cp-rect-hue-pointer"></div></div>
-                </div>
-
-                <div class="ui-cp-sliders">
-                    <div class="ui-cp-slider-row"><div class="ui-cp-slider-bg slider-hue-bg"></div>
-                        <input type="range" class="ui-cp-slider slider-hue" min="0" max="360" value="${this.hue}"></div>
-                    <div class="ui-cp-slider-row"><div class="ui-cp-slider-bg slider-sat-bg"></div>
-                        <input type="range" class="ui-cp-slider slider-sat" min="0" max="100" value="${Math.round(this.sat)}"></div>
-                    <div class="ui-cp-slider-row"><div class="ui-cp-slider-bg slider-val-bg"></div>
-                        <input type="range" class="ui-cp-slider slider-val" min="0" max="100" value="${Math.round(this.val)}"></div>
-                    <div class="ui-cp-slider-row"><div class="ui-cp-slider-bg slider-alpha-bg"></div>
-                        <input type="range" class="ui-cp-slider slider-alpha" min="0" max="1" step="0.01" value="${this.alpha}"></div>
-                </div>
-
-                <div class="ui-cp-preview-bar">
-                    <span class="ui-label" style="font-size:10px;">COLOR:</span>
-                    <div class="ui-cp-preview"></div>
-                </div>
-
-                <div class="ui-row ui-row-align-0" style="margin-top:6px; gap:4px;">
-                    <span class="ui-label" style="width:36px;">rgba:</span>
-                    <input type="number" step="0.01" min="0" max="1" class="ui-input inp-rgba-r" style="width:52px; padding:0 2px; text-align:center;">
-                    <input type="number" step="0.01" min="0" max="1" class="ui-input inp-rgba-g" style="width:52px; padding:0 2px; text-align:center;">
-                    <input type="number" step="0.01" min="0" max="1" class="ui-input inp-rgba-b" style="width:52px; padding:0 2px; text-align:center;">
-                    <input type="number" step="0.01" min="0" max="1" class="ui-input inp-rgba-a" style="width:52px; padding:0 2px; text-align:center;">
-                </div>
-
-                <div class="ui-row ui-row-align-0" style="gap:4px;">
-                    <span class="ui-label" style="width:36px;">RGBA:</span>
-                    <input type="number" step="1" min="0" max="255" class="ui-input inp-RGBA-r" style="width:52px; padding:0 2px; text-align:center;">
-                    <input type="number" step="1" min="0" max="255" class="ui-input inp-RGBA-g" style="width:52px; padding:0 2px; text-align:center;">
-                    <input type="number" step="1" min="0" max="255" class="ui-input inp-RGBA-b" style="width:52px; padding:0 2px; text-align:center;">
-                    <input type="number" step="1" min="0" max="255" class="ui-input inp-RGBA-a" style="width:52px; padding:0 2px; text-align:center;">
-                </div>
-
-                <div class="ui-row ui-row-align-0" style="gap:6px; align-items:flex-start;">
-                    <span class="ui-label" style="width:36px; padding-top:6px;">hex:</span>
-                    <input type="text" class="ui-input inp-hex" style="width:85px; font-family:var(--ui-font-family-mono); text-align:center;" maxlength="7">
-                    <div class="ui-cp-stats">
-                        <div class="ui-cp-stats-global"></div>
-                        <div class="ui-cp-stats-sel"></div>
-                    </div>
-                </div>
-            `;
-
-            this.panel.append(container);
-            this.dom = {
-                root: container,
-                chkRect: container.querySelector('.chk-rect-mode'),
-                btnPalette: container.querySelector('.btn-palette'),
-                btnEyedropper: container.querySelector('.btn-eyedropper'),
-                wheel: container.querySelector('.ui-cp-wheel'),
-                ring: container.querySelector('.ui-cp-ring'),
-                triangle: container.querySelector('.ui-cp-triangle'),
-                ringPointer: container.querySelector('.ui-cp-ring-pointer'),
-                triPointer: container.querySelector('.ui-cp-tri-pointer'),
-                rectContainer: container.querySelector('.ui-cp-rect-container'),
-                rectSV: container.querySelector('.ui-cp-rect-sv'),
-                rectSVPtr: container.querySelector('.ui-cp-rect-sv-pointer'),
-                rectHue: container.querySelector('.ui-cp-rect-hue'),
-                rectHuePtr: container.querySelector('.ui-cp-rect-hue-pointer'),
-                sliderHue: container.querySelector('.slider-hue'),
-                sliderSat: container.querySelector('.slider-sat'),
-                sliderVal: container.querySelector('.slider-val'),
-                sliderAlpha: container.querySelector('.slider-alpha'),
-                hueBg: container.querySelector('.slider-hue-bg'),
-                satBg: container.querySelector('.slider-sat-bg'),
-                valBg: container.querySelector('.slider-val-bg'),
-                alphaBg: container.querySelector('.slider-alpha-bg'),
-                preview: container.querySelector('.ui-cp-preview'),
-                rgbaR: container.querySelector('.inp-rgba-r'),
-                rgbaG: container.querySelector('.inp-rgba-g'),
-                rgbaB: container.querySelector('.inp-rgba-b'),
-                rgbaA: container.querySelector('.inp-rgba-a'),
-                RGBAR: container.querySelector('.inp-RGBA-r'),
-                RGBAG: container.querySelector('.inp-RGBA-g'),
-                RGBAB: container.querySelector('.inp-RGBA-b'),
-                RGBAA: container.querySelector('.inp-RGBA-a'),
-                hex: container.querySelector('.inp-hex'),
-                statsGlobal: container.querySelector('.ui-cp-stats-global'),
-                statsSel: container.querySelector('.ui-cp-stats-sel')
-            };
-
-            this.triCtx = this.dom.triangle.getContext('2d', { willReadFrequently: true });
-        }
-
-        renderTriangle() {
-            const w = this.dom.triangle.width;
-            const h = this.dom.triangle.height;
-            const img = this.triCtx.createImageData(w, h);
-            const data = img.data;
-            const hue = this.hue;
-
-            for (let y = 0; y < h; y++) {
-                const yn = y / (h - 1);
-                const halfW = 0.5 * w * yn;
-                const xStart = Math.max(0, Math.floor(0.5 * w - halfW));
-                const xEnd = Math.min(w - 1, Math.ceil(0.5 * w + halfW));
-
-                for (let x = xStart; x <= xEnd; x++) {
-                    const xn = x / (w - 1);
-                    let S = 100 * (xn + 0.5 - 0.5 * yn);
-                    let V = 100 * yn;
-                    S = S < 0 ? 0 : S > 100 ? 100 : S;
-                    V = V < 0 ? 0 : V > 100 ? 100 : V;
-
-                    const { r, g, b } = this.hsvToRgb(hue, S, V);
-                    const idx = (y * w + x) * 4;
-                    data[idx] = r;
-                    data[idx + 1] = g;
-                    data[idx + 2] = b;
-                    data[idx + 3] = 255;
-                }
-            }
-            this.triCtx.putImageData(img, 0, 0);
-            this.lastRenderedHue = hue;
-        }
-
-        bindEvents() {
-            this.dom.root.addEventListener('mousedown', (e) => e.stopPropagation());
-
-            this.dom.chkRect.addEventListener('click', () => {
-                this.isRectMode = !this.isRectMode;
-                this.dom.chkRect.classList.toggle('checked', this.isRectMode);
-                this.dom.root.classList.toggle('mode-rect', this.isRectMode);
-                this.updateUI();
-            });
-
-            this.dom.sliderHue.addEventListener('input', (e) => { this.hue = parseFloat(e.target.value); this.updateUI(); });
-            this.dom.sliderSat.addEventListener('input', (e) => { this.sat = parseFloat(e.target.value); this.updateUI(); });
-            this.dom.sliderVal.addEventListener('input', (e) => { this.val = parseFloat(e.target.value); this.updateUI(); });
-            this.dom.sliderAlpha.addEventListener('input', (e) => { this.alpha = parseFloat(e.target.value); this.updateUI(); });
-
-            this.dom.ring.addEventListener('mousedown', (e) => {
-                this.isDraggingRing = true;
-                this.updateHueFromMouse(e);
-                e.preventDefault();
-            });
-
-            this.dom.triangle.addEventListener('mousedown', (e) => {
-                this.isDraggingTriangle = true;
-                this.updateSVFromMouse(e);
-                e.preventDefault();
-            });
-
-            this.dom.rectSV.addEventListener('mousedown', (e) => {
-                this.isDraggingRectSV = true;
-                this.updateSVFromMouseRect(e);
-                e.preventDefault();
-            });
-
-            this.dom.rectHue.addEventListener('mousedown', (e) => {
-                this.isDraggingRectHue = true;
-                this.updateHueFromMouseRect(e);
-                e.preventDefault();
-            });
-
-            this._onMouseMove = (e) => {
-                if (this.isDraggingRing) this.updateHueFromMouse(e);
-                if (this.isDraggingTriangle) this.updateSVFromMouse(e);
-                if (this.isDraggingRectSV) this.updateSVFromMouseRect(e);
-                if (this.isDraggingRectHue) this.updateHueFromMouseRect(e);
-            };
-
-            this._onMouseUp = () => {
-                this.isDraggingRing = false;
-                this.isDraggingTriangle = false;
-                this.isDraggingRectSV = false;
-                this.isDraggingRectHue = false;
-            };
-
-            window.addEventListener('mousemove', this._onMouseMove);
-            window.addEventListener('mouseup', this._onMouseUp);
-
-            ['rgbaR', 'rgbaG', 'rgbaB', 'rgbaA'].forEach(k => {
-                this.dom[k].addEventListener('input', () => {
-                    this.setrgba(this.dom.rgbaR.value, this.dom.rgbaG.value, this.dom.rgbaB.value, this.dom.rgbaA.value);
-                });
-                this.dom[k].addEventListener('blur', () => this.updateUI('rgba'));
-            });
-
-            ['RGBAR', 'RGBAG', 'RGBAB', 'RGBAA'].forEach(k => {
-                this.dom[k].addEventListener('input', () => {
-                    this.setRGBA(this.dom.RGBAR.value, this.dom.RGBAG.value, this.dom.RGBAB.value, this.dom.RGBAA.value);
-                });
-                this.dom[k].addEventListener('blur', () => this.updateUI('RGBA'));
-            });
-
-            this.dom.hex.addEventListener('input', () => this.setHex(this.dom.hex.value));
-            this.dom.hex.addEventListener('blur', () => this.updateUI('hex'));
-
-            this.dom.btnEyedropper.addEventListener('click', () => this.activateEyedropper());
-            this.dom.btnPalette.addEventListener('click', () => this.openPaletteModal());
-        }
-
-        updateHueFromMouse(e) {
-            const r = this.dom.wheel.getBoundingClientRect();
-            const cx = r.left + r.width / 2;
-            const cy = r.top + r.height / 2;
-            const a = Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI);
-            this.hue = (a + 90 + 360) % 360;
-            this.dom.sliderHue.value = this.hue;
-            this.updateUI();
-        }
-
-        updateSVFromMouse(e) {
-            const r = this.dom.triangle.getBoundingClientRect();
-            const tW = this.dom.triangle.width;
-            const tH = this.dom.triangle.height;
-
-            let mx = (e.clientX - r.left) * (tW / r.width);
-            let my = (e.clientY - r.top) * (tH / r.height);
-
-            my = Math.max(0, Math.min(tH - 0.001, my));
-            const yn = my / (tH - 1);
-
-            let xn = mx / (tW - 1);
-            const minXn = 0.5 - 0.5 * yn;
-            const maxXn = 0.5 + 0.5 * yn;
-            xn = Math.max(minXn, Math.min(maxXn, xn));
-
-            let S = 100 * (xn + 0.5 - 0.5 * yn);
-            let V = 100 * yn;
-            S = Math.max(0, Math.min(100, S));
-            V = Math.max(0, Math.min(100, V));
-
-            this.sat = S;
-            this.val = V;
-            this.dom.sliderSat.value = Math.round(S);
-            this.dom.sliderVal.value = Math.round(V);
-            this.updateUI();
-        }
-
-        updateSVFromMouseRect(e) {
-            const r = this.dom.rectSV.getBoundingClientRect();
-            let mx = (e.clientX - r.left) / r.width;
-            let my = (e.clientY - r.top) / r.height;
-
-            mx = Math.max(0, Math.min(1, mx));
-            my = Math.max(0, Math.min(1, my));
-
-            this.sat = mx * 100;
-            this.val = (1 - my) * 100;
-
-            this.dom.sliderSat.value = Math.round(this.sat);
-            this.dom.sliderVal.value = Math.round(this.val);
-            this.updateUI();
-        }
-
-        updateHueFromMouseRect(e) {
-            const r = this.dom.rectHue.getBoundingClientRect();
-            let my = (e.clientY - r.top) / r.height;
-            my = Math.max(0, Math.min(1, my));
-
-            this.hue = my * 360;
-            this.dom.sliderHue.value = this.hue;
-            this.updateUI();
-        }
-
-        updateUI(source = null) {
-            const rgb = this.hsvToRgb(this.hue, this.sat, this.val);
-            const currentColor = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
-            this.dom.preview.style.backgroundColor = currentColor;
-
-            if (Math.abs(this.hue - this.lastRenderedHue) > 0.5) {
-                this.renderTriangle();
-            }
-
-            this.dom.satBg.style.background = `linear-gradient(to right, hsl(${this.hue}, 0%, 50%), hsl(${this.hue}, 100%, 50%))`;
-            this.dom.valBg.style.background = `linear-gradient(to right, black, hsl(${this.hue}, 100%, 50%))`;
-            this.dom.alphaBg.style.background = `linear-gradient(to right, transparent, ${currentColor})`;
-
-            const cW = this.dom.wheel.clientWidth, cH = this.dom.wheel.clientHeight;
-            const tW = this.dom.triangle.clientWidth, tH = this.dom.triangle.clientHeight;
-            const cx = cW / 2, cy = cH / 2, rr = (cW / 2) - 8;
-            const aR = this.hue * (Math.PI / 180);
-
-            this.dom.ringPointer.style.left = `${cx + Math.sin(aR) * rr}px`;
-            this.dom.ringPointer.style.top  = `${cy - Math.cos(aR) * rr}px`;
-
-            if (cW && tW) {
-                const yn = this.val / 100;
-                const xn = (this.sat - 50 + this.val / 2) / 100;
-                const oX = (cW - tW) / 2, oY = (cH - tH) / 2;
-                this.dom.triPointer.style.left = `${oX + xn * tW}px`;
-                this.dom.triPointer.style.top  = `${oY + yn * tH}px`;
-            }
-
-            if (this.isRectMode) {
-                this.dom.rectSV.style.background = `linear-gradient(to bottom, transparent, #000), linear-gradient(to right, #fff, transparent), hsl(${this.hue}, 100%, 50%)`;
-                this.dom.rectSVPtr.style.left = `${this.sat}%`;
-                this.dom.rectSVPtr.style.top = `${100 - this.val}%`;
-                this.dom.rectHuePtr.style.top = `${(this.hue / 360) * 100}%`;
-            }
-
-            if (source !== 'rgba') {
-                this.dom.rgbaR.value = (rgb.r / 255).toFixed(2);
-                this.dom.rgbaG.value = (rgb.g / 255).toFixed(2);
-                this.dom.rgbaB.value = (rgb.b / 255).toFixed(2);
-                this.dom.rgbaA.value = this.alpha.toFixed(2);
-            }
-            if (source !== 'RGBA') {
-                this.dom.RGBAR.value = rgb.r;
-                this.dom.RGBAG.value = rgb.g;
-                this.dom.RGBAB.value = rgb.b;
-                this.dom.RGBAA.value = Math.round(this.alpha * 255);
-            }
-            if (source !== 'hex') this.dom.hex.value = this.rgbToHex(rgb.r, rgb.g, rgb.b);
-
-            const selMax = Math.max(rgb.r, rgb.g, rgb.b);
-            const selMin = Math.min(rgb.r, rgb.g, rgb.b);
-            const selSat = selMax > 0 ? +(selMin / selMax).toFixed(3) : 0;
-            this.dom.statsSel.innerHTML = `
-                <span class="k">max:</span><span class="v">${selMax}</span><br>
-                <span class="k">min:</span><span class="v">${selMin}</span><br>
-                <span class="k">sat:</span><span class="s">${selSat}</span>
-            `;
-
-            this.notifyChange();
-        }
-
-        notifyChange() {
-            const rgb = this.hsvToRgb(this.hue, this.sat, this.val);
-            const rgba = `vec4(${(rgb.r / 255).toFixed(2)}, ${(rgb.g / 255).toFixed(2)}, ${(rgb.b / 255).toFixed(2)}, ${this.alpha.toFixed(2)})`;
-            const RGBA = `vec4(${rgb.r}, ${rgb.g}, ${rgb.b}, ${Math.round(this.alpha * 255)})`;
-            const hex = this.rgbToHex(rgb.r, rgb.g, rgb.b);
-            const selMax = Math.max(rgb.r, rgb.g, rgb.b);
-            const selMin = Math.min(rgb.r, rgb.g, rgb.b);
-
-            const info = {
-                global: this.cachedGlobalStats ? { ...this.cachedGlobalStats } : null,
-                selected: { r: rgb.r, g: rgb.g, b: rgb.b, max: selMax, min: selMin, sat: selMax > 0 ? +(selMin / selMax).toFixed(3) : 0 }
-            };
-            this.callback(rgba, RGBA, hex, info);
-        }
-
-        setHex(hex) {
-            if (typeof hex !== 'string') return;
-            hex = hex.trim().replace(/^#/, '');
-            if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
-            if (/^[0-9a-fA-F]{6}$/.test(hex)) {
-                const r = parseInt(hex.slice(0, 2), 16);
-                const g = parseInt(hex.slice(2, 4), 16);
-                const b = parseInt(hex.slice(4, 6), 16);
-                this.setFromRGB(r, g, b, this.alpha, 'hex');
-            }
-        }
-
-        setrgba(r, g, b, a) {
-            if (typeof r === 'object' && r !== null) {
-                a = r.a !== undefined ? r.a : 1;
-                b = r.b !== undefined ? r.b : 0;
-                g = r.g !== undefined ? r.g : 0;
-                r = r.r !== undefined ? r.r : 0;
-            }
-            const ir = Math.round(parseFloat(r || 0) * 255);
-            const ig = Math.round(parseFloat(g || 0) * 255);
-            const ib = Math.round(parseFloat(b || 0) * 255);
-            const ia = a !== undefined ? parseFloat(a) : this.alpha;
-            this.setFromRGB(ir, ig, ib, ia, 'rgba');
-        }
-
-        setRGBA(r, g, b, a) {
-            if (typeof r === 'object' && r !== null) {
-                a = r.a !== undefined ? r.a : 255;
-                b = r.b !== undefined ? r.b : 0;
-                g = r.g !== undefined ? r.g : 0;
-                r = r.r !== undefined ? r.r : 0;
-            }
-            const ir = Math.round(parseFloat(r || 0));
-            const ig = Math.round(parseFloat(g || 0));
-            const ib = Math.round(parseFloat(b || 0));
-            let ia = this.alpha;
-            if (a !== undefined) ia = Number(a) > 1 ? Number(a) / 255 : Number(a);
-            this.setFromRGB(ir, ig, ib, ia, 'RGBA');
-        }
-
-        setElementoAnalizar(source) {
-            if (source instanceof HTMLCanvasElement) {
-                this.canvas = source;
-                this.ctx = this.canvas.getContext('2d', { willReadFrequently: true });
-                this.updateImageStats();
-                this.updateUI();
-                return Promise.resolve();
-            }
-
-            if (source instanceof HTMLImageElement) {
-                if (!this.canvas) this.canvas = document.createElement('canvas');
-                const loadImg = () => {
-                    this.canvas.width = source.naturalWidth || source.width || 360;
-                    this.canvas.height = source.naturalHeight || source.height || 260;
-                    this.ctx = this.canvas.getContext('2d', { willReadFrequently: true });
-                    this.ctx.drawImage(source, 0, 0, this.canvas.width, this.canvas.height);
-                    this.updateImageStats();
-                    this.updateUI();
-                };
-                if (source.complete) { loadImg(); return Promise.resolve(); }
-                return new Promise(res => { source.onload = () => { loadImg(); res(); }; });
-            }
-
-            if (typeof source === 'string') {
-                if (!this.canvas) this.canvas = document.createElement('canvas');
-                return new Promise((res, rej) => {
-                    const img = new Image();
-                    img.crossOrigin = 'Anonymous';
-                    img.onload = () => {
-                        this.canvas.width = img.naturalWidth || 360;
-                        this.canvas.height = img.naturalHeight || 260;
-                        this.ctx = this.canvas.getContext('2d', { willReadFrequently: true });
-                        this.ctx.drawImage(img, 0, 0, this.canvas.width, this.canvas.height);
-                        this.updateImageStats();
-                        this.updateUI();
-                        res();
-                    };
-                    img.onerror = rej;
-                    img.src = source;
-                });
-            }
-            return Promise.reject(new Error('Elemento no compatible'));
-        }
-
-        setFromRGB(r, g, b, a, source) {
-            r = Math.max(0, Math.min(255, r));
-            g = Math.max(0, Math.min(255, g));
-            b = Math.max(0, Math.min(255, b));
-            a = Math.max(0, Math.min(1, a));
-            const hsv = this.rgbToHsv(r, g, b);
-            if (hsv.s > 0) this.hue = hsv.h;
-            this.sat = hsv.s; this.val = hsv.v; this.alpha = a;
-            this.dom.sliderHue.value = this.hue;
-            this.dom.sliderSat.value = Math.round(this.sat);
-            this.dom.sliderVal.value = Math.round(this.val);
-            this.updateUI(source);
-        }
-
-        hsvToRgb(h, s, v) {
-            h = ((h % 360) + 360) % 360 / 360; s /= 100; v /= 100;
-            const i = Math.floor(h * 6), f = h * 6 - i;
-            const p = v * (1 - s), q = v * (1 - f * s), t = v * (1 - (1 - f) * s);
-            let r, g, b;
-            switch (i % 6) {
-                case 0: r = v; g = t; b = p; break;
-                case 1: r = q; g = v; b = p; break;
-                case 2: r = p; g = v; b = t; break;
-                case 3: r = p; g = q; b = v; break;
-                case 4: r = t; g = p; b = v; break;
-                case 5: r = v; g = p; b = q; break;
-            }
-            return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
-        }
-
-        rgbToHsv(r, g, b) {
-            r /= 255; g /= 255; b /= 255;
-            const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
-            let h = 0;
-            if (d !== 0) {
-                if (mx === r) h = ((g - b) / d) % 6;
-                else if (mx === g) h = (b - r) / d + 2;
-                else h = (r - g) / d + 4;
-                h *= 60; if (h < 0) h += 360;
-            }
-            return { h, s: (mx === 0 ? 0 : d / mx) * 100, v: mx * 100 };
-        }
-
-        rgbToHex(r, g, b) {
-            const h = (n) => n.toString(16).padStart(2, '0');
-            return `#${h(r)}${h(g)}${h(b)}`;
-        }
-
-        analyzeCanvas() {
-            if (!this.canvas || !this.ctx) return null;
-            let imgData;
-            try { imgData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height); } catch (e) { return null; }
-            const data = imgData.data;
-            let mx = 0, mn = 255, sumMax = 0, sumMin = 0, count = 0;
-
-            for (let i = 0; i < data.length; i += 8) {
-                if (data[i + 3] < 128) continue;
-                const r = data[i], g = data[i + 1], b = data[i + 2];
-                const cMax = Math.max(r, g, b), cMin = Math.min(r, g, b);
-                if (cMax > mx) mx = cMax;
-                if (cMin < mn) mn = cMin;
-                sumMax += cMax; sumMin += cMin; count++;
-            }
-            if (count === 0) return null;
-            return {
-                max: mx,
-                avgMax: +(sumMax / count).toFixed(1),
-                min: mn,
-                avgMin: +(sumMin / count).toFixed(1),
-                sat: mx > 0 ? +(mn / mx).toFixed(3) : 0,
-                pixels: count
-            };
-        }
-
-        updateImageStats() {
-            this.cachedGlobalStats = this.analyzeCanvas();
-            if (!this.dom.statsGlobal) return;
-            if (!this.cachedGlobalStats) {
-                this.dom.statsGlobal.innerHTML = '';
-                return;
-            }
-            const s = this.cachedGlobalStats;
-            this.dom.statsGlobal.innerHTML = `
-                <span class="k">max:</span><span class="v">${s.max}</span> <span class="k">avg:</span><span class="v">${s.avgMax}</span><br>
-                <span class="k">min:</span><span class="v">${s.min}</span> <span class="k">avg:</span><span class="v">${s.avgMin}</span><br>
-                <span class="k">sat:</span><span class="s">${s.sat}</span>
-            `;
-        }
-
-        async activateEyedropper() {
-            if (typeof html2canvas !== 'function') {
-                console.warn('UI.ColorPicker: html2canvas no está cargado.');
-                return;
-            }
-            const captured = await html2canvas(document.body, { logging: false, scale: 1 });
-            const ctx = captured.getContext('2d', { willReadFrequently: true });
-
-            const overlay = document.createElement('div');
-            overlay.className = 'ui-cp-pick-overlay';
-            const bubble = document.createElement('div');
-            bubble.className = 'ui-cp-pick-bubble';
-            document.body.appendChild(overlay);
-            document.body.appendChild(bubble);
-
-            const onMove = (e) => {
-                const d = ctx.getImageData(e.clientX, e.clientY, 1, 1).data;
-                bubble.style.left = `${e.clientX + 14}px`;
-                bubble.style.top = `${e.clientY + 14}px`;
-                bubble.style.background = `rgb(${d[0]}, ${d[1]}, ${d[2]})`;
-                bubble.textContent = this.rgbToHex(d[0], d[1], d[2]);
-            };
-
-            const onClick = (e) => {
-                const d = ctx.getImageData(e.clientX, e.clientY, 1, 1).data;
-                this.setFromRGB(d[0], d[1], d[2], this.alpha, null);
-                cleanup();
-            };
-
-            const cleanup = () => {
-                overlay.remove(); bubble.remove();
-                window.removeEventListener('keydown', onKey);
-            };
-
-            const onKey = (e) => { if (e.key === 'Escape') cleanup(); };
-            overlay.addEventListener('mousemove', onMove);
-            overlay.addEventListener('click', onClick);
-            window.addEventListener('keydown', onKey);
-        }
-
-        openPaletteModal() {
-            if (!this.canvas) return;
-            const overlay = document.createElement('div');
-            overlay.className = 'ui-cp-modal-backdrop';
-            overlay.innerHTML = `
-                <div class="ui-cp-modal">
-                    <div class="ui-cp-modal-head">
-                        <span class="ui-panel-title">PALETA EXTRAÍDA</span>
-                        <button class="ui-icon-btn btn-close-modal">✕</button>
-                    </div>
-                    <div class="ui-cp-modal-body"></div>
-                </div>
-            `;
-            const body = overlay.querySelector('.ui-cp-modal-body');
-            const colors = [
-                { r: 230, g: 80, b: 80 }, { r: 80, g: 180, b: 230 }, { r: 90, g: 210, b: 120 },
-                { r: 230, g: 200, b: 70 }, { r: 180, g: 100, b: 230 }
-            ];
-
-            colors.forEach((c, idx) => {
-                const hex = this.rgbToHex(c.r, c.g, c.b);
-                const row = document.createElement('div');
-                row.className = 'ui-cp-palette-row';
-                row.innerHTML = `
-                    <span class="ui-label">Color #${idx + 1}</span>
-                    <input type="text" class="ui-input" readonly value="${hex}">
-                    <span class="ui-label" style="font-family:var(--ui-font-family-mono); font-size:10px;">${c.r}, ${c.g}, ${c.b}</span>
-                    <div class="ui-cp-swatch" style="background:${hex};"></div>
-                `;
-                row.querySelector('.ui-cp-swatch').addEventListener('click', () => {
-                    this.setFromRGB(c.r, c.g, c.b, this.alpha, null);
-                    overlay.remove();
-                });
-                body.appendChild(row);
-            });
-
-            overlay.querySelector('.btn-close-modal').addEventListener('click', () => overlay.remove());
-            document.body.appendChild(overlay);
-        }
-
-        getState() {
-            return {
-                ...this.panel.getState(),
-                type: 'ColorPicker',
-                color: {
-                    h: this.hue,
-                    s: this.sat,
-                    v: this.val,
-                    a: this.alpha
-                },
-                isRectMode: this.isRectMode
-            };
-        }
-
-        setState(s) {
-            if (!s) return;
-            this.panel.setState(s);
-            if (s.color) {
-                this.hue = s.color.h;
-                this.sat = s.color.s;
-                this.val = s.color.v;
-                this.alpha = s.color.a;
-                this.dom.sliderHue.value = this.hue;
-                this.dom.sliderSat.value = Math.round(this.sat);
-                this.dom.sliderVal.value = Math.round(this.val);
-                this.dom.sliderAlpha.value = this.alpha;
-            }
-            if (s.isRectMode !== undefined && s.isRectMode !== this.isRectMode) {
-                this.isRectMode = s.isRectMode;
-                this.dom.chkRect.classList.toggle('checked', this.isRectMode);
-                this.dom.root.classList.toggle('mode-rect', this.isRectMode);
-            }
-            this.updateUI();
-        }
-
-        destroy() {
-            window.removeEventListener('mousemove', this._onMouseMove);
-            window.removeEventListener('mouseup', this._onMouseUp);
-            this.panel.destroy();
-            super.destroy();
-        }
+   
+
+
+class UIColorPicker extends UIBaseComponent {
+  constructor({
+    id = null,
+    title = 'Color Picker',
+    x = 40,
+    y = 40,
+    floating = true,
+    initialColor = null,
+    canvas = null,
+    onChange = () => {},
+    onEyedropperToggle = () => {}
+  } = {}) {
+    super({ id }, 'color_picker');
+
+    this.title = title;
+    this.floating = floating;
+    this.callback = typeof onChange === 'function' ? onChange : () => {};
+    this.onEyedropperToggle = typeof onEyedropperToggle === 'function' ? onEyedropperToggle : () => {};
+
+    const initRGB = this.parseInitialRGBA(initialColor);
+    const initHSV = this.rgbToHsv(initRGB.r, initRGB.g, initRGB.b);
+    this.hue = initHSV.h;
+    this.sat = initHSV.s;
+    this.val = initHSV.v;
+    this.alpha = initRGB.a;
+
+    this.isDraggingTriangle = false;
+    this.isDraggingRing = false;
+    this.isDraggingRectSV = false;
+    this.isDraggingRectHue = false;
+    this.lastRenderedHue = -1;
+    this.cachedGlobalStats = null;
+
+    this.canvasSource = null;
+    this.currentCanvas = null;
+    this.currentCtx = null;
+    this.isRectMode = false;
+
+    this.isEyedropperActive = false;
+    this.isEyedropperMouseDown = false;
+    this._overlayEyedropper = null;
+    this._bubbleEyedropper = null;
+
+    this.panel = new UISmartPanel({
+      id: `${this.id}_panel`,
+      title: this.title,
+      x, y,
+      width: 310,
+      floating: this.floating
+    });
+
+    this.element = this.panel.element;
+    this.buildPickerUI();
+    this.bindEvents();
+
+    if (canvas) {
+      this.setCanvas(canvas);
     }
+
+    requestAnimationFrame(() => {
+      this.renderTriangle();
+      this.updateUI();
+    });
+  }
+
+  setCanvas(source) {
+    this.canvasSource = source;
+    this.refreshCanvasTarget();
+    this.updateImageStats();
+    this.updateUI();
+    return this;
+  }
+
+  setElementoAnalizar(source) {
+    this.setCanvas(source);
+    return Promise.resolve();
+  }
+
+  _resolveCanvas() {
+    let src = this.canvasSource;
+    if (typeof src === 'function') {
+      try { src = src(); } catch (e) { return null; }
+    }
+    if (typeof src === 'string') {
+      src = document.querySelector(src);
+    }
+    return (src instanceof HTMLCanvasElement) ? src : null;
+  }
+
+  refreshCanvasTarget() {
+    const target = this._resolveCanvas();
+    if (target !== this.currentCanvas) {
+      this.currentCanvas = target;
+      if (this.currentCanvas) {
+        try {
+          this.currentCtx = this.currentCanvas.getContext('2d', { willReadFrequently: true });
+        } catch (e) {
+          this.currentCtx = null;
+        }
+      } else {
+        this.currentCtx = null;
+      }
+    }
+    return this.currentCanvas;
+  }
+
+  parseInitialRGBA(col) {
+    const def = { r: 56, g: 189, b: 248, a: 1.0 };
+    if (!col || typeof col !== 'object') return def;
+    let r = col.r !== undefined ? Number(col.r) : 56;
+    let g = col.g !== undefined ? Number(col.g) : 189;
+    let b = col.b !== undefined ? Number(col.b) : 248;
+    let a = col.a !== undefined ? Number(col.a) : 1.0;
+
+    if (r <= 1 && g <= 1 && b <= 1 && (r > 0 || g > 0 || b > 0)) {
+      r = Math.round(r * 255);
+      g = Math.round(g * 255);
+      b = Math.round(b * 255);
+    } else {
+      r = Math.round(r); g = Math.round(g); b = Math.round(b);
+    }
+    return {
+      r: Math.max(0, Math.min(255, isNaN(r) ? 56 : r)),
+      g: Math.max(0, Math.min(255, isNaN(g) ? 189 : g)),
+      b: Math.max(0, Math.min(255, isNaN(b) ? 248 : b)),
+      a: Math.max(0, Math.min(1, isNaN(a) ? 1.0 : a))
+    };
+  }
+
+  buildPickerUI() {
+    const container = document.createElement('div');
+    container.className = 'ui-cp-root';
+
+    container.innerHTML = `
+      <div class="ui-row ui-row-align-4" style="margin-bottom: 4px;">
+        <label class="ui-checkbox chk-rect-mode">
+          <div class="ui-checkbox-box"><div class="ui-checkbox-mark"></div></div>
+          <span class="ui-label">Rect</span>
+        </label>
+        <div style="display:flex; gap:6px;">
+          <button class="ui-btn btn-palette" style="height:24px; padding:0 8px; font-size:10px;">Palette</button>
+          <button class="ui-btn btn-eyedropper" style="height:24px; padding:0 8px; font-size:10px;">Picker</button>
+        </div>
+      </div>
+
+      <div class="ui-cp-wheel">
+        <div class="ui-cp-ring"></div>
+        <canvas class="ui-cp-triangle" width="130" height="115"></canvas>
+        <div class="ui-cp-ring-pointer"></div>
+        <div class="ui-cp-tri-pointer"></div>
+      </div>
+
+      <div class="ui-cp-rect-container">
+        <div class="ui-cp-rect-sv"><div class="ui-cp-rect-sv-pointer"></div></div>
+        <div class="ui-cp-rect-hue"><div class="ui-cp-rect-hue-pointer"></div></div>
+      </div>
+
+      <div class="ui-cp-sliders">
+        <div class="ui-cp-slider-row"><div class="ui-cp-slider-bg slider-hue-bg"></div>
+          <input type="range" class="ui-cp-slider slider-hue" min="0" max="360" value="${this.hue}"></div>
+        <div class="ui-cp-slider-row"><div class="ui-cp-slider-bg slider-sat-bg"></div>
+          <input type="range" class="ui-cp-slider slider-sat" min="0" max="100" value="${Math.round(this.sat)}"></div>
+        <div class="ui-cp-slider-row"><div class="ui-cp-slider-bg slider-val-bg"></div>
+          <input type="range" class="ui-cp-slider slider-val" min="0" max="100" value="${Math.round(this.val)}"></div>
+        <div class="ui-cp-slider-row"><div class="ui-cp-slider-bg slider-alpha-bg"></div>
+          <input type="range" class="ui-cp-slider slider-alpha" min="0" max="1" step="0.01" value="${this.alpha}"></div>
+      </div>
+
+      <div class="ui-cp-preview-bar">
+        <span class="ui-label" style="font-size:10px;">COLOR:</span>
+        <div class="ui-cp-preview"></div>
+      </div>
+
+      <div class="ui-row ui-row-align-0" style="margin-top:6px; gap:4px;">
+        <span class="ui-label" style="width:36px;">rgba:</span>
+        <input type="number" step="0.01" min="0" max="1" class="ui-input inp-rgba-r" style="width:52px; padding:0 2px; text-align:center;">
+        <input type="number" step="0.01" min="0" max="1" class="ui-input inp-rgba-g" style="width:52px; padding:0 2px; text-align:center;">
+        <input type="number" step="0.01" min="0" max="1" class="ui-input inp-rgba-b" style="width:52px; padding:0 2px; text-align:center;">
+        <input type="number" step="0.01" min="0" max="1" class="ui-input inp-rgba-a" style="width:52px; padding:0 2px; text-align:center;">
+      </div>
+
+      <div class="ui-row ui-row-align-0" style="gap:4px;">
+        <span class="ui-label" style="width:36px;">RGBA:</span>
+        <input type="number" step="1" min="0" max="255" class="ui-input inp-RGBA-r" style="width:52px; padding:0 2px; text-align:center;">
+        <input type="number" step="1" min="0" max="255" class="ui-input inp-RGBA-g" style="width:52px; padding:0 2px; text-align:center;">
+        <input type="number" step="1" min="0" max="255" class="ui-input inp-RGBA-b" style="width:52px; padding:0 2px; text-align:center;">
+        <input type="number" step="1" min="0" max="255" class="ui-input inp-RGBA-a" style="width:52px; padding:0 2px; text-align:center;">
+      </div>
+
+      <div class="ui-row ui-row-align-0" style="gap:6px; align-items:flex-start;">
+        <span class="ui-label" style="width:36px; padding-top:6px;">hex:</span>
+        <input type="text" class="ui-input inp-hex" style="width:85px; font-family:var(--ui-font-family-mono); text-align:center;" maxlength="7">
+        <div class="ui-cp-stats">
+          <div class="ui-cp-stats-global"></div>
+          <div class="ui-cp-stats-sel"></div>
+        </div>
+      </div>
+    `;
+
+    this.panel.append(container);
+    this.dom = {
+      root: container,
+      chkRect: container.querySelector('.chk-rect-mode'),
+      btnPalette: container.querySelector('.btn-palette'),
+      btnEyedropper: container.querySelector('.btn-eyedropper'),
+      wheel: container.querySelector('.ui-cp-wheel'),
+      ring: container.querySelector('.ui-cp-ring'),
+      triangle: container.querySelector('.ui-cp-triangle'),
+      ringPointer: container.querySelector('.ui-cp-ring-pointer'),
+      triPointer: container.querySelector('.ui-cp-tri-pointer'),
+      rectContainer: container.querySelector('.ui-cp-rect-container'),
+      rectSV: container.querySelector('.ui-cp-rect-sv'),
+      rectSVPtr: container.querySelector('.ui-cp-rect-sv-pointer'),
+      rectHue: container.querySelector('.ui-cp-rect-hue'),
+      rectHuePtr: container.querySelector('.ui-cp-rect-hue-pointer'),
+      sliderHue: container.querySelector('.slider-hue'),
+      sliderSat: container.querySelector('.slider-sat'),
+      sliderVal: container.querySelector('.slider-val'),
+      sliderAlpha: container.querySelector('.slider-alpha'),
+      hueBg: container.querySelector('.slider-hue-bg'),
+      satBg: container.querySelector('.slider-sat-bg'),
+      valBg: container.querySelector('.slider-val-bg'),
+      alphaBg: container.querySelector('.slider-alpha-bg'),
+      preview: container.querySelector('.ui-cp-preview'),
+      rgbaR: container.querySelector('.inp-rgba-r'),
+      rgbaG: container.querySelector('.inp-rgba-g'),
+      rgbaB: container.querySelector('.inp-rgba-b'),
+      rgbaA: container.querySelector('.inp-rgba-a'),
+      RGBAR: container.querySelector('.inp-RGBA-r'),
+      RGBAG: container.querySelector('.inp-RGBA-g'),
+      RGBAB: container.querySelector('.inp-RGBA-b'),
+      RGBAA: container.querySelector('.inp-RGBA-a'),
+      hex: container.querySelector('.inp-hex'),
+      statsGlobal: container.querySelector('.ui-cp-stats-global'),
+      statsSel: container.querySelector('.ui-cp-stats-sel')
+    };
+
+    this.triCtx = this.dom.triangle.getContext('2d', { willReadFrequently: true });
+  }
+
+  renderTriangle() {
+    const w = this.dom.triangle.width;
+    const h = this.dom.triangle.height;
+    const img = this.triCtx.createImageData(w, h);
+    const data = img.data;
+    const hue = this.hue;
+
+    for (let y = 0; y < h; y++) {
+      const yn = y / (h - 1);
+      const halfW = 0.5 * w * yn;
+      const xStart = Math.max(0, Math.floor(0.5 * w - halfW));
+      const xEnd = Math.min(w - 1, Math.ceil(0.5 * w + halfW));
+
+      for (let x = xStart; x <= xEnd; x++) {
+        const xn = x / (w - 1);
+        let S = 100 * (xn + 0.5 - 0.5 * yn);
+        let V = 100 * yn;
+        S = S < 0 ? 0 : S > 100 ? 100 : S;
+        V = V < 0 ? 0 : V > 100 ? 100 : V;
+
+        const { r, g, b } = this.hsvToRgb(hue, S, V);
+        const idx = (y * w + x) * 4;
+        data[idx] = r;
+        data[idx + 1] = g;
+        data[idx + 2] = b;
+        data[idx + 3] = 255;
+      }
+    }
+    this.triCtx.putImageData(img, 0, 0);
+    this.lastRenderedHue = hue;
+  }
+
+  bindEvents() {
+    this.dom.root.addEventListener('mousedown', (e) => e.stopPropagation());
+
+    this.dom.chkRect.addEventListener('click', () => {
+      this.isRectMode = !this.isRectMode;
+      this.dom.chkRect.classList.toggle('checked', this.isRectMode);
+      this.dom.root.classList.toggle('mode-rect', this.isRectMode);
+      this.updateUI();
+    });
+
+    this.dom.sliderHue.addEventListener('input', (e) => { this.hue = parseFloat(e.target.value); this.renderTriangle(); this.updateUI(); });
+    this.dom.sliderSat.addEventListener('input', (e) => { this.sat = parseFloat(e.target.value); this.updateUI(); });
+    this.dom.sliderVal.addEventListener('input', (e) => { this.val = parseFloat(e.target.value); this.updateUI(); });
+    this.dom.sliderAlpha.addEventListener('input', (e) => { this.alpha = parseFloat(e.target.value); this.updateUI(); });
+
+    this.dom.ring.addEventListener('mousedown', (e) => {
+      this.isDraggingRing = true;
+      this.updateHueFromMouse(e);
+      e.preventDefault();
+    });
+
+    this.dom.triangle.addEventListener('mousedown', (e) => {
+      this.isDraggingTriangle = true;
+      this.updateSVFromMouse(e);
+      e.preventDefault();
+    });
+
+    this.dom.rectSV.addEventListener('mousedown', (e) => {
+      this.isDraggingRectSV = true;
+      this.updateSVFromMouseRect(e);
+      e.preventDefault();
+    });
+
+    this.dom.rectHue.addEventListener('mousedown', (e) => {
+      this.isDraggingRectHue = true;
+      this.updateHueFromMouseRect(e);
+      e.preventDefault();
+    });
+
+    this._onMouseMove = (e) => {
+      if (this.isDraggingRing) this.updateHueFromMouse(e);
+      if (this.isDraggingTriangle) this.updateSVFromMouse(e);
+      if (this.isDraggingRectSV) this.updateSVFromMouseRect(e);
+      if (this.isDraggingRectHue) this.updateHueFromMouseRect(e);
+    };
+
+    this._onMouseUp = () => {
+      this.isDraggingRing = false;
+      this.isDraggingTriangle = false;
+      this.isDraggingRectSV = false;
+      this.isDraggingRectHue = false;
+    };
+
+    window.addEventListener('mousemove', this._onMouseMove);
+    window.addEventListener('mouseup', this._onMouseUp);
+
+    const onRgbaChange = () => {
+      const r = parseFloat(this.dom.rgbaR.value) || 0;
+      const g = parseFloat(this.dom.rgbaG.value) || 0;
+      const b = parseFloat(this.dom.rgbaB.value) || 0;
+      const a = this.dom.rgbaA.value !== '' ? parseFloat(this.dom.rgbaA.value) : this.alpha;
+      this.setFromRGB(Math.round(r * 255), Math.round(g * 255), Math.round(b * 255), a, 'rgba');
+    };
+    [this.dom.rgbaR, this.dom.rgbaG, this.dom.rgbaB, this.dom.rgbaA].forEach(k => {
+      k.addEventListener('input', onRgbaChange);
+    });
+
+    const onRGBAChange = () => {
+      const r = parseFloat(this.dom.RGBAR.value) || 0;
+      const g = parseFloat(this.dom.RGBAG.value) || 0;
+      const b = parseFloat(this.dom.RGBAB.value) || 0;
+      const a = this.dom.RGBAA.value !== '' ? parseFloat(this.dom.RGBAA.value) / 255 : this.alpha;
+      this.setFromRGB(Math.round(r), Math.round(g), Math.round(b), a, 'RGBA');
+    };
+    [this.dom.RGBAR, this.dom.RGBAG, this.dom.RGBAB, this.dom.RGBAA].forEach(k => {
+      k.addEventListener('input', onRGBAChange);
+    });
+
+    this.dom.hex.addEventListener('input', () => this.setHex(this.dom.hex.value));
+    this.dom.btnEyedropper.addEventListener('click', () => this.toggleEyedropper());
+    this.dom.btnPalette.addEventListener('click', () => this.openPaletteModal());
+  }
+
+  updateHueFromMouse(e) {
+    const r = this.dom.wheel.getBoundingClientRect();
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    const a = Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI);
+    this.hue = (a + 90 + 360) % 360;
+    this.dom.sliderHue.value = Math.round(this.hue);
+    this.renderTriangle();
+    this.updateUI();
+  }
+
+  updateSVFromMouse(e) {
+    const r = this.dom.triangle.getBoundingClientRect();
+    const tW = this.dom.triangle.width;
+    const tH = this.dom.triangle.height;
+
+    let mx = (e.clientX - r.left) * (tW / r.width);
+    let my = (e.clientY - r.top) * (tH / r.height);
+
+    my = Math.max(0, Math.min(tH - 0.001, my));
+    const yn = my / (tH - 1);
+
+    let xn = mx / (tW - 1);
+    const minXn = 0.5 - 0.5 * yn;
+    const maxXn = 0.5 + 0.5 * yn;
+    xn = Math.max(minXn, Math.min(maxXn, xn));
+
+    let S = 100 * (xn + 0.5 - 0.5 * yn);
+    let V = 100 * yn;
+    S = Math.max(0, Math.min(100, S));
+    V = Math.max(0, Math.min(100, V));
+
+    this.sat = S;
+    this.val = V;
+    this.dom.sliderSat.value = Math.round(S);
+    this.dom.sliderVal.value = Math.round(V);
+    this.updateUI();
+  }
+
+  updateSVFromMouseRect(e) {
+    const r = this.dom.rectSV.getBoundingClientRect();
+    let mx = (e.clientX - r.left) / r.width;
+    let my = (e.clientY - r.top) / r.height;
+
+    mx = Math.max(0, Math.min(1, mx));
+    my = Math.max(0, Math.min(1, my));
+
+    this.sat = mx * 100;
+    this.val = (1 - my) * 100;
+
+    this.dom.sliderSat.value = Math.round(this.sat);
+    this.dom.sliderVal.value = Math.round(this.val);
+    this.updateUI();
+  }
+
+  updateHueFromMouseRect(e) {
+    const r = this.dom.rectHue.getBoundingClientRect();
+    let my = (e.clientY - r.top) / r.height;
+    my = Math.max(0, Math.min(1, my));
+
+    this.hue = my * 360;
+    this.dom.sliderHue.value = Math.round(this.hue);
+    this.renderTriangle();
+    this.updateUI();
+  }
+
+  updateUI(source = null) {
+    const rgb = this.hsvToRgb(this.hue, this.sat, this.val);
+    const currentColor = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+    this.dom.preview.style.backgroundColor = currentColor;
+
+    if (Math.abs(this.hue - this.lastRenderedHue) > 0.5) {
+      this.renderTriangle();
+    }
+
+    this.dom.satBg.style.background = `linear-gradient(to right, hsl(${this.hue}, 0%, 50%), hsl(${this.hue}, 100%, 50%))`;
+    this.dom.valBg.style.background = `linear-gradient(to right, black, hsl(${this.hue}, 100%, 50%))`;
+    this.dom.alphaBg.style.background = `linear-gradient(to right, transparent, ${currentColor})`;
+
+    const cW = this.dom.wheel.clientWidth, cH = this.dom.wheel.clientHeight;
+    const tW = this.dom.triangle.clientWidth, tH = this.dom.triangle.clientHeight;
+    const cx = cW / 2, cy = cH / 2, rr = (cW / 2) - 8;
+    const aR = (this.hue - 90) * (Math.PI / 180);
+
+    this.dom.ringPointer.style.left = `${cx + Math.cos(aR) * rr}px`;
+    this.dom.ringPointer.style.top  = `${cy + Math.sin(aR) * rr}px`;
+
+    if (cW && tW) {
+      const yn = this.val / 100;
+      const xn = (this.sat - 50 + this.val / 2) / 100;
+      const oX = (cW - tW) / 2, oY = (cH - tH) / 2;
+      this.dom.triPointer.style.left = `${oX + xn * tW}px`;
+      this.dom.triPointer.style.top  = `${oY + yn * tH}px`;
+    }
+
+    if (this.isRectMode) {
+      this.dom.rectSV.style.background = `linear-gradient(to bottom, transparent, #000), linear-gradient(to right, #fff, transparent), hsl(${this.hue}, 100%, 50%)`;
+      this.dom.rectSVPtr.style.left = `${this.sat}%`;
+      this.dom.rectSVPtr.style.top = `${100 - this.val}%`;
+      this.dom.rectHuePtr.style.top = `${(this.hue / 360) * 100}%`;
+    }
+
+    if (source !== 'rgba') {
+      this.dom.rgbaR.value = (rgb.r / 255).toFixed(2);
+      this.dom.rgbaG.value = (rgb.g / 255).toFixed(2);
+      this.dom.rgbaB.value = (rgb.b / 255).toFixed(2);
+      this.dom.rgbaA.value = Number(this.alpha).toFixed(2);
+    }
+    if (source !== 'RGBA') {
+      this.dom.RGBAR.value = rgb.r;
+      this.dom.RGBAG.value = rgb.g;
+      this.dom.RGBAB.value = rgb.b;
+      this.dom.RGBAA.value = Math.round(this.alpha * 255);
+    }
+    if (source !== 'hex') this.dom.hex.value = this.rgbToHex(rgb.r, rgb.g, rgb.b);
+
+    const selMax = Math.max(rgb.r, rgb.g, rgb.b);
+    const selMin = Math.min(rgb.r, rgb.g, rgb.b);
+    const selSat = selMax > 0 ? +(selMin / selMax).toFixed(3) : 0;
+    this.dom.statsSel.innerHTML = `
+      <span class="k">max:</span><span class="v">${selMax}</span><br>
+      <span class="k">min:</span><span class="v">${selMin}</span><br>
+      <span class="k">sat:</span><span class="s">${selSat}</span>
+    `;
+
+    this.notifyChange();
+  }
+
+  notifyChange() {
+    const rgb = this.hsvToRgb(this.hue, this.sat, this.val);
+    const rgba = `vec4(${(rgb.r / 255).toFixed(2)}, ${(rgb.g / 255).toFixed(2)}, ${(rgb.b / 255).toFixed(2)}, ${Number(this.alpha).toFixed(2)})`;
+    const RGBA = `vec4(${rgb.r}, ${rgb.g}, ${rgb.b}, ${Math.round(this.alpha * 255)})`;
+    const hex = this.rgbToHex(rgb.r, rgb.g, rgb.b);
+    const selMax = Math.max(rgb.r, rgb.g, rgb.b);
+    const selMin = Math.min(rgb.r, rgb.g, rgb.b);
+    const delta = selMax - selMin;
+
+    const info = {
+      global: this.cachedGlobalStats ? { ...this.cachedGlobalStats } : null,
+      selected: {
+        r: rgb.r, g: rgb.g, b: rgb.b,
+        max: selMax, min: selMin, delta: delta,
+        sat: selMax > 0 ? +(selMin / selMax).toFixed(3) : 0,
+        minOverMax: selMax > 0 ? +(selMin / selMax).toFixed(4) : 0,
+        maxOverMin: selMin > 0 ? +(selMax / selMin).toFixed(4) : (selMax > 0 ? Infinity : 1)
+      },
+      stats: {
+        max: selMax,
+        min: selMin,
+        delta: delta,
+        minOverMax: selMax > 0 ? +(selMin / selMax).toFixed(4) : 0,
+        maxOverMin: selMin > 0 ? +(selMax / selMin).toFixed(4) : (selMax > 0 ? Infinity : 1)
+      },
+      rgba: {
+        r: +(rgb.r / 255).toFixed(4),
+        g: +(rgb.g / 255).toFixed(4),
+        b: +(rgb.b / 255).toFixed(4),
+        a: +Number(this.alpha).toFixed(4)
+      },
+      RGBA: {
+        r: rgb.r, g: rgb.g, b: rgb.b, a: Math.round(this.alpha * 255)
+      },
+      hex: hex,
+      eyedropperActive: this.isEyedropperActive
+    };
+    this.callback(rgba, RGBA, hex, info);
+  }
+
+  setHex(hex) {
+    if (typeof hex !== 'string') return;
+    hex = hex.trim().replace(/^#/, '');
+    if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+    if (/^[0-9a-fA-F]{6}$/.test(hex)) {
+      const r = parseInt(hex.slice(0, 2), 16);
+      const g = parseInt(hex.slice(2, 4), 16);
+      const b = parseInt(hex.slice(4, 6), 16);
+      this.setFromRGB(r, g, b, this.alpha, 'hex');
+    }
+  }
+
+  setrgba(r, g, b, a) {
+    if (typeof r === 'object' && r !== null) {
+      a = r.a !== undefined ? r.a : 1;
+      b = r.b !== undefined ? r.b : 0;
+      g = r.g !== undefined ? r.g : 0;
+      r = r.r !== undefined ? r.r : 0;
+    }
+    const ir = Math.round(parseFloat(r || 0) * 255);
+    const ig = Math.round(parseFloat(g || 0) * 255);
+    const ib = Math.round(parseFloat(b || 0) * 255);
+    const ia = a !== undefined ? parseFloat(a) : this.alpha;
+    this.setFromRGB(ir, ig, ib, ia, 'rgba');
+  }
+
+  setRGBA(r, g, b, a) {
+    if (typeof r === 'object' && r !== null) {
+      a = r.a !== undefined ? r.a : 255;
+      b = r.b !== undefined ? r.b : 0;
+      g = r.g !== undefined ? r.g : 0;
+      r = r.r !== undefined ? r.r : 0;
+    }
+    const ir = Math.round(parseFloat(r || 0));
+    const ig = Math.round(parseFloat(g || 0));
+    const ib = Math.round(parseFloat(b || 0));
+    let ia = this.alpha;
+    if (a !== undefined) ia = Number(a) > 1 ? Number(a) / 255 : Number(a);
+    this.setFromRGB(ir, ig, ib, ia, 'RGBA');
+  }
+
+  setFromRGB(r, g, b, a, source) {
+    r = Math.max(0, Math.min(255, r));
+    g = Math.max(0, Math.min(255, g));
+    b = Math.max(0, Math.min(255, b));
+    a = Math.max(0, Math.min(1, a !== undefined && a !== null ? a : this.alpha));
+    const hsv = this.rgbToHsv(r, g, b);
+    if (hsv.s > 0) this.hue = hsv.h;
+    this.sat = hsv.s; this.val = hsv.v; this.alpha = a;
+    this.dom.sliderHue.value = Math.round(this.hue);
+    this.dom.sliderSat.value = Math.round(this.sat);
+    this.dom.sliderVal.value = Math.round(this.val);
+    this.dom.sliderAlpha.value = this.alpha;
+    this.renderTriangle();
+    this.updateUI(source);
+  }
+
+  hsvToRgb(h, s, v) {
+    h = ((h % 360) + 360) % 360 / 360; s /= 100; v /= 100;
+    const i = Math.floor(h * 6), f = h * 6 - i;
+    const p = v * (1 - s), q = v * (1 - f * s), t = v * (1 - (1 - f) * s);
+    let r, g, b;
+    switch (i % 6) {
+      case 0: r = v; g = t; b = p; break;
+      case 1: r = q; g = v; b = p; break;
+      case 2: r = p; g = v; b = t; break;
+      case 3: r = p; g = q; b = v; break;
+      case 4: r = t; g = p; b = v; break;
+      case 5: r = v; g = p; b = q; break;
+    }
+    return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
+  }
+
+  rgbToHsv(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+    let h = 0;
+    if (d !== 0) {
+      if (mx === r) h = ((g - b) / d) % 6;
+      else if (mx === g) h = (b - r) / d + 2;
+      else h = (r - g) / d + 4;
+      h *= 60; if (h < 0) h += 360;
+    }
+    return { h, s: (mx === 0 ? 0 : d / mx) * 100, v: mx * 100 };
+  }
+
+  rgbToHex(r, g, b) {
+    const h = (n) => n.toString(16).padStart(2, '0');
+    return `#${h(r)}${h(g)}${h(b)}`;
+  }
+
+  analyzeCanvas() {
+    const act = this._resolveCanvas();
+    if (!act || !(act instanceof HTMLCanvasElement)) return null;
+    let actCtx;
+    try { actCtx = act.getContext('2d', { willReadFrequently: true }); } catch (e) { return null; }
+    let imgData;
+    try { imgData = actCtx.getImageData(0, 0, act.width, act.height); } catch (e) { return null; }
+    const data = imgData.data;
+    let mx = 0, mn = 255, sumMax = 0, sumMin = 0, count = 0;
+
+    for (let i = 0; i < data.length; i += 16) {
+      if (data[i + 3] < 128) continue;
+      const r = data[i], g = data[i + 1], b = data[i + 2];
+      const cMax = Math.max(r, g, b), cMin = Math.min(r, g, b);
+      if (cMax > mx) mx = cMax;
+      if (cMin < mn) mn = cMin;
+      sumMax += cMax; sumMin += cMin; count++;
+    }
+    if (count === 0) return null;
+    return {
+      max: mx,
+      avgMax: +(sumMax / count).toFixed(1),
+      min: mn,
+      avgMin: +(sumMin / count).toFixed(1),
+      sat: mx > 0 ? +(mn / mx).toFixed(3) : 0,
+      pixels: count
+    };
+  }
+
+  updateImageStats() {
+    this.cachedGlobalStats = this.analyzeCanvas();
+    if (!this.dom.statsGlobal) return;
+    if (!this.cachedGlobalStats) {
+      this.dom.statsGlobal.innerHTML = '';
+      return;
+    }
+    const s = this.cachedGlobalStats;
+    this.dom.statsGlobal.innerHTML = `
+      <span class="k">max:</span><span class="v">${s.max}</span> <span class="k">avg:</span><span class="v">${s.avgMax}</span><br>
+      <span class="k">min:</span><span class="v">${s.min}</span> <span class="k">avg:</span><span class="v">${s.avgMin}</span><br>
+      <span class="k">sat:</span><span class="s">${s.sat}</span>
+    `;
+  }
+
+  samplePixelFromCanvas(clientX, clientY) {
+    let act = this._resolveCanvas();
+
+    if (!act) {
+      if (this._overlayEyedropper) this._overlayEyedropper.style.pointerEvents = 'none';
+      const el = document.elementFromPoint(clientX, clientY);
+      if (this._overlayEyedropper) this._overlayEyedropper.style.pointerEvents = 'auto';
+
+      if (el instanceof HTMLCanvasElement) {
+        act = el;
+      } else if (el) {
+        act = el.querySelector('canvas') || el.closest('canvas');
+      }
+    }
+
+    if (!act || !(act instanceof HTMLCanvasElement)) return null;
+
+    const rect = act.getBoundingClientRect();
+    if (clientX < rect.left || clientX > rect.right || clientY < rect.top || clientY > rect.bottom) {
+      return null;
+    }
+
+    const scaleX = act.width / rect.width;
+    const scaleY = act.height / rect.height;
+    const x = Math.floor((clientX - rect.left) * scaleX);
+    const y = Math.floor((clientY - rect.top) * scaleY);
+
+    if (x < 0 || y < 0 || x >= act.width || y >= act.height) return null;
+
+    try {
+      const ctx = act.getContext('2d', { willReadFrequently: true });
+      const px = ctx.getImageData(x, y, 1, 1).data;
+      return {
+        r: px[0],
+        g: px[1],
+        b: px[2],
+        a: +(px[3] / 255).toFixed(2)
+      };
+    } catch (e) {
+      return null;
+    }
+  }
+
+  toggleEyedropper() {
+    this.isEyedropperActive = !this.isEyedropperActive;
+
+    if (this.isEyedropperActive) {
+      this.dom.btnEyedropper.textContent = 'Picker (ON)';
+      this.dom.btnEyedropper.style.borderColor = '#38bdf8';
+      this.dom.btnEyedropper.style.color = '#38bdf8';
+      if (this.panel && this.panel.element) {
+        this.panel.element.style.zIndex = '1000001';
+      }
+      this.activarOverlayEyedropper();
+    } else {
+      this.dom.btnEyedropper.textContent = 'Picker';
+      this.dom.btnEyedropper.style.borderColor = '';
+      this.dom.btnEyedropper.style.color = '';
+      if (this.panel && this.panel.element) {
+        this.panel.element.style.zIndex = '';
+      }
+      this.desactivarOverlayEyedropper();
+    }
+    this.onEyedropperToggle(this.isEyedropperActive);
+  }
+
+  activarOverlayEyedropper() {
+    this.desactivarOverlayEyedropper();
+
+    const overlay = document.createElement('div');
+    overlay.className = 'ui-cp-pick-overlay';
+    overlay.style.position = 'fixed';
+    overlay.style.inset = '0';
+    overlay.style.zIndex = '999990';
+    overlay.style.cursor = 'crosshair';
+    overlay.style.userSelect = 'none';
+
+    const bubble = document.createElement('div');
+    bubble.className = 'ui-cp-pick-bubble';
+    bubble.style.position = 'fixed';
+    bubble.style.pointerEvents = 'none';
+    bubble.style.padding = '4px 8px';
+    bubble.style.borderRadius = '4px';
+    bubble.style.fontSize = '11px';
+    bubble.style.fontFamily = 'monospace';
+    bubble.style.color = '#fff';
+    bubble.style.textShadow = '0 1px 2px #000';
+    bubble.style.border = '1px solid rgba(255,255,255,0.7)';
+    bubble.style.backgroundColor = 'rgba(0,0,0,0.85)';
+    bubble.style.zIndex = '1000002';
+    bubble.style.display = 'none';
+
+    document.body.appendChild(overlay);
+    document.body.appendChild(bubble);
+
+    this._overlayEyedropper = overlay;
+    this._bubbleEyedropper = bubble;
+
+    const sample = (clientX, clientY) => {
+      const panelRect = this.panel?.element?.getBoundingClientRect();
+      if (panelRect &&
+          clientX >= panelRect.left && clientX <= panelRect.right &&
+          clientY >= panelRect.top && clientY <= panelRect.bottom) {
+        bubble.style.display = 'none';
+        return;
+      }
+
+      const px = this.samplePixelFromCanvas(clientX, clientY);
+      if (px) {
+        bubble.style.display = 'block';
+        this.setFromRGB(px.r, px.g, px.b, px.a, null);
+        bubble.style.backgroundColor = `rgb(${px.r}, ${px.g}, ${px.b})`;
+        bubble.textContent = `${this.rgbToHex(px.r, px.g, px.b)}`;
+      }
+      bubble.style.left = `${clientX + 14}px`;
+      bubble.style.top = `${clientY + 14}px`;
+    };
+
+    overlay.addEventListener('pointerdown', (e) => {
+      if (e.button === 2) {
+        e.preventDefault();
+        this.toggleEyedropper();
+        return;
+      }
+      if (e.button !== 0) return;
+      this.isEyedropperMouseDown = true;
+      sample(e.clientX, e.clientY);
+    });
+
+    this._onEyedropperMove = (e) => {
+      if (!this.isEyedropperActive) return;
+
+      const panelRect = this.panel?.element?.getBoundingClientRect();
+      if (panelRect &&
+          e.clientX >= panelRect.left && e.clientX <= panelRect.right &&
+          e.clientY >= panelRect.top && e.clientY <= panelRect.bottom) {
+        bubble.style.display = 'none';
+        return;
+      }
+
+      if (this.isEyedropperMouseDown) {
+        sample(e.clientX, e.clientY);
+      } else {
+        const px = this.samplePixelFromCanvas(e.clientX, e.clientY);
+        if (px) {
+          bubble.style.display = 'block';
+          bubble.style.backgroundColor = `rgb(${px.r}, ${px.g}, ${px.b})`;
+          bubble.textContent = `${this.rgbToHex(px.r, px.g, px.b)}`;
+        }
+        bubble.style.left = `${e.clientX + 14}px`;
+        bubble.style.top = `${e.clientY + 14}px`;
+      }
+    };
+    window.addEventListener('pointermove', this._onEyedropperMove);
+
+    this._onEyedropperUp = () => {
+      this.isEyedropperMouseDown = false;
+    };
+    window.addEventListener('pointerup', this._onEyedropperUp);
+
+    this._onEyedropperKey = (e) => {
+      if (e.key === 'Escape') this.toggleEyedropper();
+    };
+    window.addEventListener('keydown', this._onEyedropperKey);
+
+    overlay.addEventListener('contextmenu', (e) => e.preventDefault());
+  }
+
+  desactivarOverlayEyedropper() {
+    if (this._overlayEyedropper) {
+      this._overlayEyedropper.remove();
+      this._overlayEyedropper = null;
+    }
+    if (this._bubbleEyedropper) {
+      this._bubbleEyedropper.remove();
+      this._bubbleEyedropper = null;
+    }
+    if (this._onEyedropperMove) window.removeEventListener('pointermove', this._onEyedropperMove);
+    if (this._onEyedropperUp) window.removeEventListener('pointerup', this._onEyedropperUp);
+    if (this._onEyedropperKey) window.removeEventListener('keydown', this._onEyedropperKey);
+  }
+
+  openPaletteModal() {
+    const overlay = document.createElement('div');
+    overlay.className = 'ui-cp-modal-backdrop';
+    overlay.innerHTML = `
+      <div class="ui-cp-modal">
+        <div class="ui-cp-modal-head">
+          <span class="ui-panel-title">SUGGESTED PALETTE</span>
+          <button class="ui-icon-btn btn-close-modal">✕</button>
+        </div>
+        <div class="ui-cp-modal-body"></div>
+      </div>
+    `;
+    const body = overlay.querySelector('.ui-cp-modal-body');
+    const colors = [
+      { r: 230, g: 80, b: 80 }, { r: 80, g: 180, b: 230 }, { r: 90, g: 210, b: 120 },
+      { r: 230, g: 200, b: 70 }, { r: 180, g: 100, b: 230 }
+    ];
+
+    colors.forEach((c, idx) => {
+      const hex = this.rgbToHex(c.r, c.g, c.b);
+      const row = document.createElement('div');
+      row.className = 'ui-cp-palette-row';
+      row.innerHTML = `
+        <span class="ui-label">Color #${idx + 1}</span>
+        <input type="text" class="ui-input" readonly value="${hex}">
+        <span class="ui-label" style="font-family:var(--ui-font-family-mono); font-size:10px;">${c.r}, ${c.g}, ${c.b}</span>
+        <div class="ui-cp-swatch" style="background:${hex};"></div>
+      `;
+      row.querySelector('.ui-cp-swatch').addEventListener('click', () => {
+        this.setFromRGB(c.r, c.g, c.b, this.alpha, null);
+        overlay.remove();
+      });
+      body.appendChild(row);
+    });
+
+    overlay.querySelector('.btn-close-modal').addEventListener('click', () => overlay.remove());
+    document.body.appendChild(overlay);
+  }
+
+  getState() {
+    return {
+      ...this.panel.getState(),
+      type: 'ColorPicker',
+      color: {
+        h: this.hue,
+        s: this.sat,
+        v: this.val,
+        a: this.alpha
+      },
+      isRectMode: this.isRectMode
+    };
+  }
+
+  setState(s) {
+    if (!s) return;
+    this.panel.setState(s);
+    if (s.color) {
+      this.hue = s.color.h;
+      this.sat = s.color.s;
+      this.val = s.color.v;
+      this.alpha = s.color.a;
+      this.dom.sliderHue.value = Math.round(this.hue);
+      this.dom.sliderSat.value = Math.round(this.sat);
+      this.dom.sliderVal.value = Math.round(this.val);
+      this.dom.sliderAlpha.value = this.alpha;
+    }
+    if (s.isRectMode !== undefined && s.isRectMode !== this.isRectMode) {
+      this.isRectMode = s.isRectMode;
+      this.dom.chkRect.classList.toggle('checked', this.isRectMode);
+      this.dom.root.classList.toggle('mode-rect', this.isRectMode);
+    }
+    this.updateUI();
+  }
+
+  destroy() {
+    this.desactivarOverlayEyedropper();
+    window.removeEventListener('mousemove', this._onMouseMove);
+    window.removeEventListener('mouseup', this._onMouseUp);
+    this.panel.destroy();
+    super.destroy();
+  }
+}
+
+
+
+
+
+
+
+
 
     const UI = {
         Theme: UITheme,
