@@ -76,33 +76,33 @@
                     --ui-font-weight-semibold: 600;
                     --ui-font-weight-bold: 700;
 
-                    --ui-font-size-badge: 10px;
-                    --ui-font-size-cajon-tag: 10px;
-                    --ui-font-size-table-card-label: 11px;
-                    --ui-font-size-layout-date: 10.5px;
-                    --ui-font-size-label: 11px;
-                    --ui-font-size-seg: 11px;
-                    --ui-font-size-info: 11px;
-                    --ui-font-size-accordion-title: 11px;
-                    --ui-font-size-slider-label: 11.5px;
-                    --ui-font-size-slider-val: 11.5px;
-                    --ui-font-size-cajon-input: 11px;
-                    --ui-font-size-table-footer: 11px;
-                    --ui-font-size-tooltip-info: 11px;
-                    --ui-font-size-panel-title: 12.5px;
-                    --ui-font-size-btn: 11.5px;
-                    --ui-font-size-input: 11px;
-                    --ui-font-size-select: 11px;
-                    --ui-font-size-table: 11px;
-                    --ui-font-size-table-card-row: 11px;
-                    --ui-font-size-reorder-item: 11px;
-                    --ui-font-size-tooltip-title: 11.5px;
-                    --ui-font-size-icon-btn: 11px;
-                    --ui-font-size-info-close: 11px;
-                    --ui-font-size-layout-name: 11.5px;
-                    --ui-font-size-select-arrow: 9px;
-                    --ui-font-size-accordion-arrow: 9px;
-                    --ui-font-size-cajon-btn: 10px;
+                    --ui-font-size-badge: 13px;
+                    --ui-font-size-cajon-tag: 13px;
+                    --ui-font-size-table-card-label: 13px;
+                    --ui-font-size-layout-date: 13.5px;
+                    --ui-font-size-label: 13px;
+                    --ui-font-size-seg: 13px;
+                    --ui-font-size-info: 13px;
+                    --ui-font-size-accordion-title: 13px;
+                    --ui-font-size-slider-label: 13.5px;
+                    --ui-font-size-slider-val: 13.5px;
+                    --ui-font-size-cajon-input: 13px;
+                    --ui-font-size-table-footer: 13px;
+                    --ui-font-size-tooltip-info: 13px;
+                    --ui-font-size-panel-title: 13.5px;
+                    --ui-font-size-btn: 13.5px;
+                    --ui-font-size-input: 13px;
+                    --ui-font-size-select: 13px;
+                    --ui-font-size-table: 13px;
+                    --ui-font-size-table-card-row: 13px;
+                    --ui-font-size-reorder-item: 13px;
+                    --ui-font-size-tooltip-title: 13.5px;
+                    --ui-font-size-icon-btn: 13px;
+                    --ui-font-size-info-close: 13px;
+                    --ui-font-size-layout-name: 14.5px;
+                    --ui-font-size-select-arrow: 13px;
+                    --ui-font-size-accordion-arrow: 13px;
+                    --ui-font-size-cajon-btn: 13px;
 
                     --ui-letter-spacing-sm: 0.2px;
                     --ui-letter-spacing-title: 0.4px;
@@ -118,7 +118,7 @@
 
                     --ui-slider-card-padding: 8px 10px;
                     --ui-slider-track-height: 7px;
-                    --ui-slider-thumb-size: 13px;
+                    --ui-slider-thumb-size: 3px;
 
                     --ui-list-max-h: 220px;
                     --ui-modal-width: 380px;
@@ -171,7 +171,7 @@
 
                     --ui-text-main: #727272;
                     --ui-text-muted: #a2a2a2;
-                    --ui-text-dim: #434343;
+                    --ui-text-dim: #f5f0f09f;
                     --ui-text-subtle: #757575;
                     --ui-text-bright: #e0e0e0;
                     --ui-text-hover: #ffffff;
@@ -1980,16 +1980,33 @@
 
                 .ui-cp-preview-bar { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-top: 1px solid var(--ui-border-subtle); margin-top: 6px; flex-shrink: 0; }
                 .ui-cp-preview { width: var(--ui-cp-preview-size); height: var(--ui-cp-preview-size); border-radius: var(--ui-radius-sm); border: 1px solid var(--ui-border); flex-shrink: 0; }
-
+                .ui-cp-statsrgba{
+                 width: 130px;
+            min-height: 200px;
+            
+            display: block;
+              position: relative;
+         
+        display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	justify-content: flex-start;
+	align-items: stretch;
+	align-content: space-evenly;
+	 
+                }
+            .colorDm { color: var(--ui-text-dim); font-family: var(--ui-font-family-mono);
+                    font-size: 14px; }
                 .ui-cp-stats {
                     font-family: var(--ui-font-family-mono);
-                    font-size: 9px;
+                    font-size: 13px;
                     line-height: 1.35;
                     display: flex;
                     gap: 8px;
                     color: var(--ui-text-muted);
                     flex: 1;
                     overflow: hidden;
+              
                 }
                 .ui-cp-stats .k { color: var(--ui-text-dim); }
                 .ui-cp-stats .v { color: var(--ui-cp-stat-val-color); }
@@ -1997,10 +2014,10 @@
                 .ui-cp-stats-sel { border-left: 1px solid var(--ui-border-subtle); padding-left: 6px; }
 
                 .ui-cp-pick-overlay { position: fixed; inset: 0; z-index: 2147483646; cursor: crosshair; background: transparent; touch-action: none; }
-                .ui-cp-pick-bubble { position: fixed; z-index: 2147483648; pointer-events: none; padding: 4px 8px; background: #000; color: #fff; border: 1px solid #fff; border-radius: 4px; font-size: 11px; font-family: var(--ui-font-family-mono); }
+                .ui-cp-pick-bubble { position: fixed; z-index: 2147483648; pointer-events: none; padding: 4px 8px; background: #000; color: #fff; border: 1px solid #fff; border-radius: 4px; font-size: 13px; font-family: var(--ui-font-family-mono); }
 
                 .ui-cp-modal-backdrop { position: fixed; inset: 0; background: var(--ui-modal-backdrop-bg); z-index: 9999999; display: flex; align-items: center; justify-content: center; padding: 15px; }
-                .ui-cp-modal { background: var(--ui-bg-panel); border: 1px solid var(--ui-border); border-radius: var(--ui-radius-lg); width: 480px; max-width: 95vw; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: var(--ui-shadow-modal); font-size: 11px; }
+                .ui-cp-modal { background: var(--ui-bg-panel); border: 1px solid var(--ui-border); border-radius: var(--ui-radius-lg); width: 480px; max-width: 95vw; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: var(--ui-shadow-modal); font-size: 13px; }
                 .ui-cp-modal-head { height: var(--ui-panel-header-h); background: var(--ui-bg-surface); border-bottom: 1px solid var(--ui-border); display: flex; align-items: center; justify-content: space-between; padding: 0 12px; }
                 .ui-cp-modal-body { padding: 12px; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; max-height: 380px; background: var(--ui-bg-list); }
                 .ui-cp-palette-row { display: grid; grid-template-columns: 80px 80px 1fr 30px; gap: 8px; align-items: center; }
@@ -5057,7 +5074,7 @@
                 }
                 .ui-grid-card-header:active { cursor: grabbing; }
                 .ui-grid-card-title {
-                    font-size: var(--ui-font-size-panel-title, 12px);
+                    font-size: var(--ui-font-size-panel-title, 14px);
                     font-weight: 600;
                     color: var(--ui-text-panel-title, #9a9a9a);
                     display: flex;
@@ -5066,7 +5083,7 @@
                 }
                 .ui-grid-drag-handle {
                     color: var(--ui-text-dim, #555);
-                    font-size: 13px;
+                    font-size: 14px;
                     cursor: grab;
                 }
                 .ui-grid-card-tools {
@@ -5275,6 +5292,7 @@ class UIColorPicker extends UIBaseComponent {
     this.isDraggingRectHue = false;
     this.lastRenderedHue = -1;
     this.cachedGlobalStats = null;
+    this.infoDeColores=null;
 
     this.canvasSource = null;
     this.currentCanvas = null;
@@ -5383,8 +5401,8 @@ class UIColorPicker extends UIBaseComponent {
           <span class="ui-label">Rect</span>
         </label>
         <div style="display:flex; gap:6px;">
-          <button class="ui-btn btn-palette" style="height:24px; padding:0 8px; font-size:10px;">Palette</button>
-          <button class="ui-btn btn-eyedropper" style="height:24px; padding:0 8px; font-size:10px;">Picker</button>
+          <button class="ui-btn btn-palette" style="height:24px; padding:0 8px; font-size:13px;">Palette</button>
+          <button class="ui-btn btn-eyedropper" style="height:24px; padding:0 8px; font-size:13px;">Picker</button>
         </div>
       </div>
 
@@ -5412,7 +5430,7 @@ class UIColorPicker extends UIBaseComponent {
       </div>
 
       <div class="ui-cp-preview-bar">
-        <span class="ui-label" style="font-size:10px;">COLOR:</span>
+        <span class="ui-label" style="font-size:13px;">COLOR:</span>
         <div class="ui-cp-preview"></div>
       </div>
 
@@ -5438,6 +5456,12 @@ class UIColorPicker extends UIBaseComponent {
         <div class="ui-cp-stats">
           <div class="ui-cp-stats-global"></div>
           <div class="ui-cp-stats-sel"></div>
+        </div>
+         <div class="ui-cp-statsrgba">
+          <div class="mtac colorDm"> </div>
+          <div class="dfrg colorDm"> </div>
+          <div class="dfrb colorDm">< /div>
+          
         </div>
       </div>
     `;
@@ -5477,7 +5501,10 @@ class UIColorPicker extends UIBaseComponent {
       RGBAA: container.querySelector('.inp-RGBA-a'),
       hex: container.querySelector('.inp-hex'),
       statsGlobal: container.querySelector('.ui-cp-stats-global'),
-      statsSel: container.querySelector('.ui-cp-stats-sel')
+      statsSel: container.querySelector('.ui-cp-stats-sel'),
+      dfrg: container.querySelector('.dfrg'),
+      dfrb: container.querySelector('.dfrb'),
+      rounessRgba:container.querySelector('.mtac'),
     };
 
     this.triCtx = this.dom.triangle.getContext('2d', { willReadFrequently: true });
@@ -5714,9 +5741,9 @@ class UIColorPicker extends UIBaseComponent {
     }
     if (source !== 'hex') this.dom.hex.value = this.rgbToHex(rgb.r, rgb.g, rgb.b);
 
-    const selMax = Math.max(rgb.r, rgb.g, rgb.b);
-    const selMin = Math.min(rgb.r, rgb.g, rgb.b);
-    const selSat = selMax > 0 ? +(selMin / selMax).toFixed(3) : 0;
+    const selMax = Math.max(rgb.r, rgb.g, rgb.b)/255;
+    const selMin = Math.min(rgb.r, rgb.g, rgb.b)/255;
+    const selSat = selMax > 0 ? +(selMin / selMax+0.00001).toFixed(3) : 0;
     this.dom.statsSel.innerHTML = `
       <span class="k">max:</span><span class="v">${selMax}</span><br>
       <span class="k">min:</span><span class="v">${selMin}</span><br>
@@ -5734,6 +5761,11 @@ class UIColorPicker extends UIBaseComponent {
     const selMax = Math.max(rgb.r, rgb.g, rgb.b);
     const selMin = Math.min(rgb.r, rgb.g, rgb.b);
     const delta = selMax - selMin;
+    let max=selMax/255;
+      let min=selMin/255;
+      let dv=min/(max+0.00001);
+        
+ 
 
     const info = {
       global: this.cachedGlobalStats ? { ...this.cachedGlobalStats } : null,
@@ -5763,6 +5795,34 @@ class UIColorPicker extends UIBaseComponent {
       hex: hex,
       eyedropperActive: this.isEyedropperActive
     };
+   this.infoDeColores=info;
+ 
+      let max2=(this.infoDeColores.selected.max/255)*3.6;
+      let max3=(this.infoDeColores.selected.max/255)*2.5;
+      if(max2>1){max2=1.0;}
+   let dfMaxMin=(this.infoDeColores.selected.max/255-this.infoDeColores.selected.min/255).toFixed(3);
+ 
+       let metalicval=(1-dfMaxMin-(1-dv)*0.3).toFixed(3);
+      let dfrg=(this.infoDeColores.selected.r-this.infoDeColores.selected.g)/255 ;
+       let dfrb=this.infoDeColores.selected.r/255-this.infoDeColores.selected.b/255 ;
+       let mulfrg=dfrg*6;
+       if(mulfrg>0.7){mulfrg=0.7;}
+   
+      let multi=1 + 8.5745*dv - 9.5745*dv*dv;
+      let rounes= mulfrg ; 
+    
+     
+ 
+       if(rounes>1.0){rounes=1.0;}
+
+ 
+        // if(rounes<0.20){rounes=0.20;}
+       if(metalicval<0.10){metalicval=0.10;}
+      if(metalicval>1.0){metalicval=1.0;}
+           
+     this.dom.dfrg.innerHTML=`r-g: ${dfrg.toFixed(3)}  max-min: ${dfMaxMin }     `;
+     this.dom.dfrb.innerHTML=`r-b: ${dfrb.toFixed(3)} metalic: ${metalicval}   `;
+     this.dom.rounessRgba.innerHTML=`rouness: ${rounes.toFixed(3)} `;
     this.callback(rgba, RGBA, hex, info);
   }
 
@@ -5895,10 +5955,11 @@ class UIColorPicker extends UIBaseComponent {
     }
     const s = this.cachedGlobalStats;
     this.dom.statsGlobal.innerHTML = `
-      <span class="k">max:</span><span class="v">${s.max}</span> <span class="k">avg:</span><span class="v">${s.avgMax}</span><br>
+      <span class="k">max:</span><span class="v">gio ${s.max}</span> <span class="k">avg:</span><span class="v">${s.avgMax}</span><br>
       <span class="k">min:</span><span class="v">${s.min}</span> <span class="k">avg:</span><span class="v">${s.avgMin}</span><br>
       <span class="k">sat:</span><span class="s">${s.sat}</span>
     `;
+    
   }
 
   samplePixelFromCanvas(clientX, clientY) {
@@ -6108,7 +6169,7 @@ class UIColorPicker extends UIBaseComponent {
       row.innerHTML = `
         <span class="ui-label">Color #${idx + 1}</span>
         <input type="text" class="ui-input" readonly value="${hex}">
-        <span class="ui-label" style="font-family:var(--ui-font-family-mono); font-size:10px;">${c.r}, ${c.g}, ${c.b}</span>
+        <span class="ui-label" style="font-family:var(--ui-font-family-mono); font-size:13px;">${c.r}, ${c.g}, ${c.b}</span>
         <div class="ui-cp-swatch" style="background:${hex};"></div>
       `;
       row.querySelector('.ui-cp-swatch').addEventListener('click', () => {
