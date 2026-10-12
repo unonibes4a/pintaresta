@@ -76,33 +76,33 @@
                     --ui-font-weight-semibold: 600;
                     --ui-font-weight-bold: 700;
 
-                    --ui-font-size-badge: 13px;
-                    --ui-font-size-cajon-tag: 13px;
-                    --ui-font-size-table-card-label: 13px;
-                    --ui-font-size-layout-date: 13.5px;
-                    --ui-font-size-label: 13px;
-                    --ui-font-size-seg: 13px;
-                    --ui-font-size-info: 13px;
-                    --ui-font-size-accordion-title: 13px;
-                    --ui-font-size-slider-label: 13.5px;
-                    --ui-font-size-slider-val: 13.5px;
-                    --ui-font-size-cajon-input: 13px;
-                    --ui-font-size-table-footer: 13px;
-                    --ui-font-size-tooltip-info: 13px;
-                    --ui-font-size-panel-title: 13.5px;
-                    --ui-font-size-btn: 13.5px;
-                    --ui-font-size-input: 13px;
-                    --ui-font-size-select: 13px;
-                    --ui-font-size-table: 13px;
-                    --ui-font-size-table-card-row: 13px;
-                    --ui-font-size-reorder-item: 13px;
-                    --ui-font-size-tooltip-title: 13.5px;
-                    --ui-font-size-icon-btn: 13px;
-                    --ui-font-size-info-close: 13px;
-                    --ui-font-size-layout-name: 14.5px;
-                    --ui-font-size-select-arrow: 13px;
-                    --ui-font-size-accordion-arrow: 13px;
-                    --ui-font-size-cajon-btn: 13px;
+                   --ui-font-size-badge: 13px;
+--ui-font-size-cajon-tag: 13px;
+--ui-font-size-table-card-label: 13px;
+--ui-font-size-layout-date: 13px;
+--ui-font-size-label: 13px;
+--ui-font-size-seg: 13px;
+--ui-font-size-info: 13px;
+--ui-font-size-accordion-title: 13px;
+--ui-font-size-slider-label: 13px;
+--ui-font-size-slider-val: 13px;
+--ui-font-size-cajon-input: 13px;
+--ui-font-size-table-footer: 13px;
+--ui-font-size-tooltip-info: 13px;
+--ui-font-size-panel-title: 13px;
+--ui-font-size-btn: 13px;
+--ui-font-size-input: 13px;
+--ui-font-size-select: 13px;
+--ui-font-size-table: 13px;
+--ui-font-size-table-card-row: 13px;
+--ui-font-size-reorder-item: 13px;
+--ui-font-size-tooltip-title: 13px;
+--ui-font-size-icon-btn: 13px;
+--ui-font-size-info-close: 13px;
+--ui-font-size-layout-name: 13px;
+--ui-font-size-select-arrow: 13px;
+--ui-font-size-accordion-arrow: 13px;
+--ui-font-size-cajon-btn: 13px;
 
                     --ui-letter-spacing-sm: 0.2px;
                     --ui-letter-spacing-title: 0.4px;
@@ -5797,23 +5797,25 @@ class UIColorPicker extends UIBaseComponent {
     };
    this.infoDeColores=info;
  
-      let max2=(this.infoDeColores.selected.max/255)*3.6;
-      let max3=(this.infoDeColores.selected.max/255)*2.5;
+      let max2=(max)*5;
+      let max3=(this.infoDeColores.selected.max/255)*2.0;
+        if(max3>1){max3=1.0;}
       if(max2>1){max2=1.0;}
    let dfMaxMin=(this.infoDeColores.selected.max/255-this.infoDeColores.selected.min/255).toFixed(3);
  
        let metalicval=(1-dfMaxMin-(1-dv)*0.3).toFixed(3);
       let dfrg=(this.infoDeColores.selected.r-this.infoDeColores.selected.g)/255 ;
        let dfrb=this.infoDeColores.selected.r/255-this.infoDeColores.selected.b/255 ;
-       let mulfrg=dfrg*6;
+       let mulfrg=dfrg*7;
        if(mulfrg>0.7){mulfrg=0.7;}
-   
+   if(mulfrg<-0.16){mulfrg=-0.16;}
       let multi=1 + 8.5745*dv - 9.5745*dv*dv;
-      let rounes= mulfrg ; 
-    
-     
+      let rounes=( 0.2 + 5.4125*dv - 5.3125*dv*dv) ;
+        if(rounes>1.0){rounes=1.0;}
+        if(rounes<0.0){rounes=0.0;}
+        rounes=rounes+(0.3-max)*dv+(1-max2);
  
-       if(rounes>1.0){rounes=1.0;}
+    
 
  
         // if(rounes<0.20){rounes=0.20;}
