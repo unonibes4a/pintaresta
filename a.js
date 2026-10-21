@@ -1,46 +1,42 @@
- 
 (function (global) {
     'use strict';
 
     class ToolJavaScriptGio {
-        static removeClass(elemento, clase) {
-            if (!elemento || !elemento.classList) return;
-            elemento.classList.remove(clase);
+        static removeClass(el, cls) {
+            if (el && el.classList) el.classList.remove(cls);
         }
-        static addClass(elemento, clase) {
-            if (!elemento || !elemento.classList) return;
-            elemento.classList.add(clase);
+        static addClass(el, cls) {
+            if (el && el.classList) el.classList.add(cls);
         }
     }
 
     class UITheme {
-        static set(themeObj = {}) {
+        static set(theme = {}) {
             const root = document.documentElement;
-            if (!root || typeof themeObj !== 'object') return;
-            for (let [key, val] of Object.entries(themeObj)) {
+            if (!root || typeof theme !== 'object') return;
+            for (const [key, val] of Object.entries(theme)) {
                 if (val === undefined || val === null) continue;
-                let cssVar = key.trim();
-                if (!cssVar.startsWith('--')) {
-                    cssVar = cssVar.startsWith('ui-') ? `--${cssVar}` : `--ui-${cssVar}`;
+                let v = key.trim();
+                if (!v.startsWith('--')) {
+                    v = v.startsWith('ui-') ? `--${v}` : `--ui-${v}`;
                 }
-                root.style.setProperty(cssVar, String(val).trim());
+                root.style.setProperty(v, String(val).trim());
             }
         }
 
         static inject() {
-            if (document.getElementById('ui-core-library-theme')) return;
+            if (document.getElementById('ui-core-engine-styles')) return;
             const style = document.createElement('style');
-            style.id = 'ui-core-library-theme';
+            style.id = 'ui-core-engine-styles';
             style.textContent = `
                 :root {
-                    /* VARIABLES ESPECÍFICAS DE CAD STUDIO / BRUSH ENGINE */
                     --ui-cad-bg-stage: #0c0d12;
                     --ui-cad-hud-bg: #14151f;
                     --ui-cad-hud-text: var(--ui-accent, #2196F3);
                     --ui-cad-preview-bg: #1c1d2b;
-                    --ui-cad-layer-item-bg: #2195f311;
+                    --ui-cad-layer-item-bg: rgba(33, 149, 243, 0.06);
                     --ui-cad-layer-item-active-bg: rgba(33, 149, 243, 0.14);
-                    --ui-cad-layer-item-active-border: var(--ui-accent, #2195f32b);
+                    --ui-cad-layer-item-active-border: var(--ui-accent, rgba(33, 149, 243, 0.5));
                     --ui-cad-grid-line: rgba(255, 255, 255, 0.06);
                     --ui-cad-osnap-color: #10b981;
                     --ui-cad-origin-marker: #fbbf24;
@@ -76,33 +72,33 @@
                     --ui-font-weight-semibold: 600;
                     --ui-font-weight-bold: 700;
 
-                   --ui-font-size-badge: 13px;
---ui-font-size-cajon-tag: 13px;
---ui-font-size-table-card-label: 13px;
---ui-font-size-layout-date: 13px;
---ui-font-size-label: 13px;
---ui-font-size-seg: 13px;
---ui-font-size-info: 13px;
---ui-font-size-accordion-title: 13px;
---ui-font-size-slider-label: 13px;
---ui-font-size-slider-val: 13px;
---ui-font-size-cajon-input: 13px;
---ui-font-size-table-footer: 13px;
---ui-font-size-tooltip-info: 13px;
---ui-font-size-panel-title: 13px;
---ui-font-size-btn: 13px;
---ui-font-size-input: 13px;
---ui-font-size-select: 13px;
---ui-font-size-table: 13px;
---ui-font-size-table-card-row: 13px;
---ui-font-size-reorder-item: 13px;
---ui-font-size-tooltip-title: 13px;
---ui-font-size-icon-btn: 13px;
---ui-font-size-info-close: 13px;
---ui-font-size-layout-name: 13px;
---ui-font-size-select-arrow: 13px;
---ui-font-size-accordion-arrow: 13px;
---ui-font-size-cajon-btn: 13px;
+                    --ui-font-size-badge: 13px;
+                    --ui-font-size-cajon-tag: 13px;
+                    --ui-font-size-table-card-label: 13px;
+                    --ui-font-size-layout-date: 13px;
+                    --ui-font-size-label: 13px;
+                    --ui-font-size-seg: 13px;
+                    --ui-font-size-info: 13px;
+                    --ui-font-size-accordion-title: 13px;
+                    --ui-font-size-slider-label: 13px;
+                    --ui-font-size-slider-val: 13px;
+                    --ui-font-size-cajon-input: 13px;
+                    --ui-font-size-table-footer: 13px;
+                    --ui-font-size-tooltip-info: 13px;
+                    --ui-font-size-panel-title: 13px;
+                    --ui-font-size-btn: 13px;
+                    --ui-font-size-input: 13px;
+                    --ui-font-size-select: 13px;
+                    --ui-font-size-table: 13px;
+                    --ui-font-size-table-card-row: 13px;
+                    --ui-font-size-reorder-item: 13px;
+                    --ui-font-size-tooltip-title: 13px;
+                    --ui-font-size-icon-btn: 13px;
+                    --ui-font-size-info-close: 13px;
+                    --ui-font-size-layout-name: 13px;
+                    --ui-font-size-select-arrow: 13px;
+                    --ui-font-size-accordion-arrow: 13px;
+                    --ui-font-size-cajon-btn: 13px;
 
                     --ui-letter-spacing-sm: 0.2px;
                     --ui-letter-spacing-title: 0.4px;
@@ -118,7 +114,7 @@
 
                     --ui-slider-card-padding: 8px 10px;
                     --ui-slider-track-height: 7px;
-                    --ui-slider-thumb-size: 3px;
+                    --ui-slider-thumb-size: 8px;
 
                     --ui-list-max-h: 220px;
                     --ui-modal-width: 380px;
@@ -153,12 +149,12 @@
 
                     --ui-border: #3d3d3d;
                     --ui-border-light: #3d3d3d;
-                    --ui-border-hover: #2195f38a;
-                    --ui-border-focus: #2195f39f;
+                    --ui-border-hover: rgba(33, 149, 243, 0.54);
+                    --ui-border-focus: rgba(33, 149, 243, 0.62);
                     --ui-border-subtle: #2d2d2d;
                     --ui-border-cajon: #3d3d3d;
                     --ui-border-list: #3d3d3d;
-                    --ui-border-active: #2195f3dc;
+                    --ui-border-active: rgba(33, 149, 243, 0.85);
                     --ui-border-card-row: #2d2d2d;
                     --ui-border-select: #3d3d3d;
                     --ui-border-circle: #3d3d3d;
@@ -171,7 +167,7 @@
 
                     --ui-text-main: #727272;
                     --ui-text-muted: #a2a2a2;
-                    --ui-text-dim: #f5f0f09f;
+                    --ui-text-dim: rgba(245, 240, 240, 0.62);
                     --ui-text-subtle: #757575;
                     --ui-text-bright: #e0e0e0;
                     --ui-text-hover: #ffffff;
@@ -185,7 +181,7 @@
                     --ui-btn-bg: #212121;
                     --ui-btn-hover-bg: #262626;
                     --ui-primary-bg: #212121;
-                    --ui-primary-hover-bg: #2195f398;
+                    --ui-primary-hover-bg: rgba(33, 149, 243, 0.6);
                     --ui-primary-border: #3d3d3d;
                     --ui-primary-text: #9a9a9a;
                     --ui-primary-hover-text: #ffffff;
@@ -196,18 +192,18 @@
                     --ui-danger-color: #f85149;
                     --ui-danger-hover: #ff7b72;
 
-                    --ui-accent: #2195f334;
+                    --ui-accent: rgba(33, 149, 243, 0.2);
                     --ui-seg-item: #dddddd;
-                    --ui-accent-hover: #42a4f56b;
+                    --ui-accent-hover: rgba(66, 164, 245, 0.42);
                     --ui-accent-glow: rgba(33, 149, 243, 0.38);
-                    --ui-accent-snap-border: #2195f381;
-                    --ui-accent-snap-shadow: rgba(33, 149, 243, 0.40);
+                    --ui-accent-snap-border: rgba(33, 149, 243, 0.5);
+                    --ui-accent-snap-shadow: rgba(33, 149, 243, 0.4);
                     --ui-accent-placeholder-bg: rgba(33, 149, 243, 0.08);
                     --ui-accent-btn-shadow: rgba(33, 149, 243, 0.38);
 
-                    --ui-toggle-switch-active-bg: #2195f35b;
+                    --ui-toggle-switch-active-bg: rgba(33, 149, 243, 0.35);
                     --ui-toggle-thumb-active: #ffffff;
-                    --ui-checkbox-box-active-bg: #2195f3a1;
+                    --ui-checkbox-box-active-bg: rgba(33, 149, 243, 0.63);
                     --ui-checkbox-box-active-border: #2196F3;
                     --ui-checkbox-mark-color: #ffffff;
                     --ui-radio-circle-active-bg: #212121;
@@ -215,8 +211,8 @@
                     --ui-radio-dot-color: #2196F3;
 
                     --ui-slider-bg: #151515;
-                    --ui-slider-fill: #2195f327;
-                    --ui-slider-thumb: #ffffff88;
+                    --ui-slider-fill: rgba(33, 149, 243, 0.25);
+                    --ui-slider-thumb: rgba(255, 255, 255, 0.7);
                     --ui-slider-divider: #3d3d3d;
 
                     --ui-info-bg: #212121;
@@ -224,7 +220,7 @@
                     --ui-info-accent: #2196F3;
                     --ui-info-text: #595959;
                     --ui-info-close: #595959;
-                    --ui-info-close-hover: #ffffff83;
+                    --ui-info-close-hover: rgba(255, 255, 255, 0.51);
 
                     --ui-badge-bg: #191919;
                     --ui-badge-text: #9a9a9a;
@@ -242,15 +238,14 @@
                     --ui-shadow-guide: 0 0 10px rgba(33, 149, 243, 0.5);
                     --ui-shadow-dropdown: 0 10px 25px rgba(0, 0, 0, 0.7);
 
-                    --ui-transition-fast: 0.25s cubic-bezier(0.23, 1, 0.320, 1);
-                    --ui-transition-base: 0.4s cubic-bezier(0.23, 1, 0.320, 1);
-                    --ui-transition-glow: 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+                    --ui-transition-fast: 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+                    --ui-transition-base: 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+                    --ui-transition-glow: 0.5s cubic-bezier(0.23, 1, 0.32, 1);
                     --ui-ease-elastic: cubic-bezier(0.68, -0.55, 0.27, 1.55);
                     --ui-opacity-disabled: 0.35;
                     --ui-opacity-dragged: 0.95;
                     --ui-opacity-drag-item: 0.30;
 
-                    /* VARIABLES ESPECÍFICAS DE UI-COLOR-PICKER */
                     --ui-cp-wheel-size: 210px;
                     --ui-cp-triangle-w: 130px;
                     --ui-cp-triangle-h: 115px;
@@ -262,65 +257,352 @@
                     --ui-cp-stat-sat-color: #e0b96c;
                 }
 
+                *, *::before, *::after {
+                    box-sizing: border-box;
+                    margin: 0;
+                    padding: 0;
+                    font-family: var(--ui-font-family);
+                    scrollbar-width: thin;
+                    scrollbar-color: var(--ui-scrollbar-thumb) transparent;
+                }
+                    /* =========================================================
+   DATE PICKERS (UIDatePicker & UIDateRangePicker) THEME
+   ========================================================= */
+.ui-date-picker-wrap {
+    position: relative;
+    width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right)));
+    margin: var(--ui-input-margin);
+    user-select: none;
+    flex-shrink: 0 !important;
+}
+
+.ui-date-trigger {
+    width: 100%;
+    background-color: var(--ui-bg-input);
+    color: var(--ui-text-bright);
+    border: 1px solid var(--ui-border-select);
+    padding: 0 12px;
+    height: var(--ui-btn-height);
+    font-size: var(--ui-font-size-select);
+    font-family: inherit;
+    border-radius: var(--ui-radius-md);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all var(--ui-transition-fast);
+    outline: none;
+    box-sizing: border-box;
+}
+
+.ui-date-trigger:hover:not(:disabled) {
+    background-color: var(--ui-bg-surface-hover);
+    border-color: var(--ui-border-hover);
+    color: var(--ui-text-hover);
+}
+
+.ui-date-picker-wrap.is-open .ui-date-trigger {
+    background-color: var(--ui-bg-surface-hover);
+    border-color: var(--ui-accent);
+    box-shadow: 0 0 0 3px var(--ui-accent-glow);
+}
+
+.ui-date-trigger:disabled {
+    opacity: var(--ui-opacity-disabled);
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.ui-date-trigger-text {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    overflow: hidden;
+}
+
+.ui-date-icon {
+    width: 14px;
+    height: 14px;
+    stroke: var(--ui-text-muted);
+    transition: stroke var(--ui-transition-fast);
+    flex-shrink: 0;
+}
+
+.ui-date-trigger:hover .ui-date-icon,
+.ui-date-picker-wrap.is-open .ui-date-icon {
+    stroke: var(--ui-accent);
+}
+
+.ui-date-display {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: var(--ui-font-size-select);
+    color: var(--ui-text-bright);
+}
+
+.ui-date-arrow-icon {
+    width: 12px;
+    height: 12px;
+    stroke: var(--ui-text-muted);
+    transition: transform var(--ui-transition-base), stroke var(--ui-transition-fast);
+    flex-shrink: 0;
+}
+
+.ui-date-picker-wrap.is-open .ui-date-arrow-icon {
+    transform: rotate(180deg);
+    stroke: var(--ui-accent);
+}
+
+/* Dropdown Calendario */
+.ui-calendar-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    width: 275px;
+    background: var(--ui-bg-panel);
+    border: 1px solid var(--ui-border-select);
+    border-radius: var(--ui-radius-lg);
+    box-shadow: var(--ui-shadow-dropdown);
+    z-index: 1000;
+    padding: 12px;
+    display: none;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.ui-date-picker-wrap.is-open .ui-calendar-dropdown {
+    display: flex;
+}
+
+.ui-calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.ui-calendar-nav-btn {
+    background: transparent;
+    border: 1px solid var(--ui-border-select);
+    color: var(--ui-text-muted);
+    width: 24px;
+    height: 24px;
+    border-radius: var(--ui-radius-sm);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all var(--ui-transition-fast);
+}
+
+.ui-calendar-nav-btn:hover {
+    background: var(--ui-bg-surface-hover);
+    color: var(--ui-text-hover);
+    border-color: var(--ui-accent);
+}
+
+.ui-calendar-nav-btn svg {
+    width: 12px;
+    height: 12px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+}
+
+.ui-calendar-month-year {
+    font-size: var(--ui-font-size-panel-title);
+    font-weight: var(--ui-font-weight-semibold);
+    color: var(--ui-text-bright);
+    text-transform: capitalize;
+}
+
+.ui-calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    margin-bottom: 6px;
+}
+
+.ui-calendar-weekday {
+    text-align: center;
+    font-size: 10px;
+    color: var(--ui-text-dim);
+    font-weight: var(--ui-font-weight-bold);
+    text-transform: uppercase;
+    padding: 2px 0;
+}
+
+.ui-calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+}
+
+.ui-calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 11px;
+    color: var(--ui-text-muted);
+    border-radius: var(--ui-radius-sm);
+    cursor: pointer;
+    transition: all var(--ui-transition-fast);
+    border: 1px solid transparent;
+}
+
+.ui-calendar-day:hover:not(.empty):not(.disabled) {
+    background: var(--ui-bg-surface-hover);
+    color: var(--ui-text-hover);
+    border-color: var(--ui-border);
+}
+
+.ui-calendar-day.empty {
+    cursor: default;
+    opacity: 0.2;
+}
+
+.ui-calendar-day.disabled {
+    color: var(--ui-text-dim);
+    cursor: not-allowed;
+    opacity: var(--ui-opacity-disabled);
+}
+
+.ui-calendar-day.today {
+    color: var(--ui-accent);
+    font-weight: var(--ui-font-weight-bold);
+    border-color: var(--ui-accent);
+}
+
+.ui-calendar-day.selected {
+    background: var(--ui-accent) !important;
+    color: #ffffff !important;
+    font-weight: var(--ui-font-weight-semibold);
+    border-color: var(--ui-accent) !important;
+}
+
+.ui-calendar-day.in-range {
+    background: var(--ui-accent-placeholder-bg);
+    color: var(--ui-text-bright);
+    border-radius: 0;
+}
+
+.ui-calendar-day.range-start {
+    background: var(--ui-accent) !important;
+    color: #ffffff !important;
+    border-radius: var(--ui-radius-sm) 0 0 var(--ui-radius-sm);
+}
+
+.ui-calendar-day.range-end {
+    background: var(--ui-accent) !important;
+    color: #ffffff !important;
+    border-radius: 0 var(--ui-radius-sm) var(--ui-radius-sm) 0;
+}
+
+.ui-calendar-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid var(--ui-border);
+}
+
+.ui-calendar-footer-info {
+    font-size: 10px;
+    color: var(--ui-text-dim);
+}
+
+.ui-calendar-btn-clear {
+    background: transparent;
+    border: 1px solid var(--ui-border-select);
+    color: var(--ui-text-muted);
+    padding: 2px 8px;
+    font-size: 10px;
+    border-radius: var(--ui-radius-sm);
+    cursor: pointer;
+    transition: all var(--ui-transition-fast);
+}
+
+.ui-calendar-btn-clear:hover {
+    background: rgba(255, 107, 107, 0.1);
+    color: var(--ui-danger-color);
+    border-color: var(--ui-danger-color);
+}
+
+                *::-webkit-scrollbar {
+                    width: var(--ui-scrollbar-size);
+                    height: var(--ui-scrollbar-size);
+                }
+                *::-webkit-scrollbar-track {
+                    background: transparent;
+                }
+                *::-webkit-scrollbar-thumb {
+                    background: var(--ui-scrollbar-thumb);
+                    border-radius: var(--ui-radius-pill);
+                }
+                *::-webkit-scrollbar-thumb:hover {
+                    background: var(--ui-scrollbar-thumb-hover);
+                }
+
                 html, body {
-                    background-color: var(--ui-bg-base) !important;
+                    background-color: var(--ui-bg-base);
                     min-height: 100vh;
                     max-width: 100vw;
                     overflow-x: hidden;
                 }
 
-                /* =========================================================
-                   ESTILOS DE BRUSH ENGINE & CAD STUDIO UNIFICADOS
-                   ========================================================= */
-                #stage { 
-                    position: fixed; 
-                    inset: 0; 
-                    width: 100vw; 
-                    height: 100vh; 
-                    overflow: hidden; 
-                    display: flex; 
-                    align-items: center; 
-                    justify-content: center; 
-                    touch-action: none; 
-                    cursor: default; 
+                #stage {
+                    position: fixed;
+                    inset: 0;
+                    width: 100vw;
+                    height: 100vh;
+                    overflow: hidden;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    touch-action: none;
+                    cursor: default;
                     background-color: #282a2cd2;
                 }
                 #stage.is-panning { cursor: grabbing; }
                 #stage.is-drawing { cursor: crosshair; }
 
-                #viewport { 
-                    position: absolute; 
-                    top: 0; 
-                    left: 0; 
-                    transform-origin: 0 0; 
-                    will-change: transform; 
+                #viewport {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    transform-origin: 0 0;
+                    will-change: transform;
                 }
 
-                #layersStack { 
-                    position: absolute; 
-                    inset: 0; 
-                    pointer-events: none; 
+                #layersStack {
+                    position: absolute;
+                    inset: 0;
+                    pointer-events: none;
                 }
 
-                .engine-canvas-layer { 
-                    position: absolute; 
-                    top: 0; 
-                    left: 0; 
-                    width: 100%; 
-                    height: 100%; 
-                    display: block; 
-                    border: 7px solid #1a87d016;
+                .engine-canvas-layer {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    display: block;
+                    border: 7px solid rgba(26, 135, 208, 0.08);
                     border-radius: 7px;
                 }
 
-                .engine-layer-canvas { 
-                    position: absolute; 
-                    top: 0; 
-                    left: 0; 
-                    width: 100%; 
-                    height: 100%; 
-                    display: block; 
-                    pointer-events: none; 
+                .engine-layer-canvas {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    display: block;
+                    pointer-events: none;
                 }
 
                 #gridCanvas { pointer-events: none; z-index: 1; }
@@ -414,10 +696,11 @@
                     display: flex;
                     gap: 4px;
                 }
+
                 .layer-actions-miniflexEnd {
                     display: flex;
                     gap: 4px;
-                    overflow: auto; 
+                    overflow: auto;
                     flex-direction: row;
                     flex-wrap: wrap;
                     justify-content: flex-end;
@@ -441,27 +724,6 @@
                     background: var(--ui-btn-hover-bg);
                     border-color: var(--ui-accent);
                     color: var(--ui-text-hover);
-                }
-
-                * { 
-                    scrollbar-width: thin; 
-                    scrollbar-color: var(--ui-scrollbar-thumb) transparent; 
-                    box-sizing: border-box; 
-                    margin: 0; 
-                    padding: 0; 
-                    font-family: var(--ui-font-family); 
-                } 
-                *::-webkit-scrollbar { 
-                    width: var(--ui-scrollbar-size); 
-                    height: var(--ui-scrollbar-size); 
-                } 
-                *::-webkit-scrollbar-track { background: transparent; } 
-                *::-webkit-scrollbar-thumb { 
-                    background: var(--ui-scrollbar-thumb); 
-                    border-radius: var(--ui-radius-pill); 
-                } 
-                *::-webkit-scrollbar-thumb:hover { 
-                    background: var(--ui-scrollbar-thumb-hover); 
                 }
 
                 .ui-container {
@@ -533,13 +795,10 @@
                     margin: var(--ui-panel-margin);
                 }
 
-                /* =========================================================
-                   CORRECCIÓN PRINCIPAL: UI-PANEL LIMITADO Y BLINDADO
-                   ========================================================= */
                 .ui-panel {
                     width: var(--ui-panel-width);
                     max-width: 100%;
-                    max-height: calc(100vh - 48px); /* NUNCA SE SALE DE PANTALLA */
+                    max-height: calc(100vh - 48px);
                     background: var(--ui-bg-panel);
                     border-radius: var(--ui-radius-lg);
                     border: 1px solid var(--ui-border);
@@ -552,7 +811,7 @@
                     flex-shrink: 0;
                     margin: var(--ui-panel-margin);
                     box-sizing: border-box;
-                    overflow: hidden; /* Asegura recorte del borde redondeado */
+                    overflow: hidden;
                 }
                 .ui-panel.is-hidden { display: none !important; }
 
@@ -570,18 +829,18 @@
                     margin: var(--ui-panel-margin) !important;
                 }
 
-                .ui-panel.is-snapping { 
-                    border-color: var(--ui-accent-snap-border); 
-                    box-shadow: 0 0 16px var(--ui-accent-snap-shadow); 
+                .ui-panel.is-snapping {
+                    border-color: var(--ui-accent-snap-border);
+                    box-shadow: 0 0 16px var(--ui-accent-snap-shadow);
                 }
-                .ui-panel.is-dragged { 
-                    z-index: 10000 !important; 
-                    opacity: var(--ui-opacity-dragged); 
-                    cursor: grabbing !important; 
+                .ui-panel.is-dragged {
+                    z-index: 10000 !important;
+                    opacity: var(--ui-opacity-dragged);
+                    cursor: grabbing !important;
                 }
-                .ui-panel.collapsed { 
-                    height: var(--ui-panel-collapsed-h) !important; 
-                    min-height: var(--ui-panel-collapsed-h) !important; 
+                .ui-panel.collapsed {
+                    height: var(--ui-panel-collapsed-h) !important;
+                    min-height: var(--ui-panel-collapsed-h) !important;
                     max-height: var(--ui-panel-collapsed-h) !important;
                 }
                 .ui-panel.collapsed .ui-panel-body { display: none !important; }
@@ -602,12 +861,12 @@
                 }
                 .ui-panel-header:active { cursor: grabbing; }
                 .ui-header-left { display: flex; align-items: center; gap: 8px; pointer-events: none; }
-                
-                .ui-panel-title { 
-                    font-size: var(--ui-font-size-panel-title); 
-                    font-weight: var(--ui-font-weight-semibold); 
-                    color: var(--ui-text-panel-title); 
-                    letter-spacing: var(--ui-letter-spacing-title); 
+
+                .ui-panel-title {
+                    font-size: var(--ui-font-size-panel-title);
+                    font-weight: var(--ui-font-weight-semibold);
+                    color: var(--ui-text-panel-title);
+                    letter-spacing: var(--ui-letter-spacing-title);
                     margin: var(--ui-label-margin);
                     display: flex;
                     align-items: center;
@@ -627,64 +886,60 @@
                 }
 
                 .ui-header-tools { display: flex; align-items: center; gap: 4px; }
-                
-                .ui-icon-btn { 
-                    width: 24px; 
-                    height: 24px; 
-                    border-radius: var(--ui-radius-sm); 
-                    border: 1px solid transparent; 
-                    background: transparent; 
-                    color: var(--ui-text-muted); 
-                    display: flex; 
-                    align-items: center; 
-                    justify-content: center; 
-                    cursor: pointer; 
-                    font-size: var(--ui-font-size-icon-btn); 
-                    line-height: 1; 
-                    transition: all var(--ui-transition-fast); 
+
+                .ui-icon-btn {
+                    width: 24px;
+                    height: 24px;
+                    border-radius: var(--ui-radius-sm);
+                    border: 1px solid transparent;
+                    background: transparent;
+                    color: var(--ui-text-muted);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    font-size: var(--ui-font-size-icon-btn);
+                    line-height: 1;
+                    transition: all var(--ui-transition-fast);
                     touch-action: manipulation;
                 }
-                .ui-icon-btn:hover { 
-                    background: var(--ui-bg-surface-hover); 
+                .ui-icon-btn:hover {
+                    background: var(--ui-bg-surface-hover);
                     border-color: var(--ui-border);
-                    color: var(--ui-text-hover); 
+                    color: var(--ui-text-hover);
                 }
-                .ui-icon-btn.active { 
-                    color: var(--ui-accent); 
+                .ui-icon-btn.active {
+                    color: var(--ui-accent);
                     border-color: var(--ui-accent);
                     box-shadow: 0 0 6px var(--ui-accent-glow);
                 }
 
-                /* =========================================================
-                   CORRECCIÓN DE SCROLL Y ANTI-APLASTAMIENTO EN EL CUERPO
-                   ========================================================= */
                 .ui-panel-body {
                     padding: var(--ui-panel-body-padding);
                     display: flex;
                     flex-direction: column;
                     gap: var(--ui-panel-body-gap);
                     background: transparent;
-                    overflow-y: auto !important; /* SCROLL INTELIGENTE */
+                    overflow-y: auto !important;
                     overflow-x: hidden !important;
                     flex: 1 1 auto;
-                    min-height: 0; /* OBLIGATORIO PARA FLEX SCROLL */
+                    min-height: 0;
                     box-sizing: border-box;
                 }
 
-                /* NINGÚN ELEMENTO DENTRO DEL PANEL SE APLASTA */
                 .ui-panel-body > * {
                     flex-shrink: 0 !important;
                 }
 
-                .ui-row { 
-                    display: flex; 
+                .ui-row {
+                    display: flex;
                     flex-direction: row;
                     flex-wrap: wrap;
                     align-items: center;
-                    gap: 8px; 
-                    width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right))); 
-                    min-height: var(--ui-btn-height); 
-                    flex-shrink: 0 !important; 
+                    gap: 8px;
+                    width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right)));
+                    min-height: var(--ui-btn-height);
+                    flex-shrink: 0 !important;
                     margin: var(--ui-row-margin);
                 }
 
@@ -697,80 +952,77 @@
                 .ui-row-align-4 { justify-content: space-between; }
                 .ui-row-align-5 { justify-content: space-evenly; }
 
-                .ui-label { 
-                    font-size: var(--ui-font-size-label); 
-                    font-weight: var(--ui-font-weight-medium); 
-                    color: var(--ui-text-muted); 
-                    white-space: nowrap; 
+                .ui-label {
+                    font-size: var(--ui-font-size-label);
+                    font-weight: var(--ui-font-weight-medium);
+                    color: var(--ui-text-muted);
+                    white-space: nowrap;
                     margin: var(--ui-label-margin);
                     flex-shrink: 0;
                 }
 
-                .ui-btn { 
-                    background: var(--ui-btn-bg); 
-                    color: var(--ui-text-main); 
-                    border: 1px solid var(--ui-border); 
-                    padding: 0 14px; 
-                    border-radius: var(--ui-radius-pill); 
-                    font-size: var(--ui-font-size-btn); 
-                    font-weight: var(--ui-font-weight-medium); 
-                    cursor: pointer; 
-                    display: inline-flex; 
-                    align-items: center; 
-                    justify-content: center; 
-                    transition: all var(--ui-transition-glow); 
-                    height: var(--ui-btn-height); 
-                    gap: 6px; 
-                    flex-shrink: 0 !important; 
+                .ui-btn {
+                    background: var(--ui-btn-bg);
+                    color: var(--ui-text-main);
+                    border: 1px solid var(--ui-border);
+                    padding: 0 14px;
+                    border-radius: var(--ui-radius-pill);
+                    font-size: var(--ui-font-size-btn);
+                    font-weight: var(--ui-font-weight-medium);
+                    cursor: pointer;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all var(--ui-transition-glow);
+                    height: var(--ui-btn-height);
+                    gap: 6px;
+                    flex-shrink: 0 !important;
                     margin: var(--ui-btn-margin);
                     box-shadow: 0 0 0 1px transparent;
                     touch-action: manipulation;
                 }
-                .ui-btn:hover { 
-                    background: var(--ui-btn-hover-bg); 
-                    color: var(--ui-text-hover); 
-                    border-color: var(--ui-accent); 
+                .ui-btn:hover {
+                    background: var(--ui-btn-hover-bg);
+                    color: var(--ui-text-hover);
+                    border-color: var(--ui-accent);
                     box-shadow: 0 0 0 3px var(--ui-accent-glow);
                 }
                 .ui-btn:active { transform: scale(0.95); }
                 .ui-btn:disabled { opacity: var(--ui-opacity-disabled); cursor: not-allowed; pointer-events: none; }
-                
-                .ui-btn-primary { 
-                    background: var(--ui-primary-bg); 
-                    border-color: var(--ui-primary-border); 
-                    color: var(--ui-primary-text); 
+
+                .ui-btn-primary {
+                    background: var(--ui-primary-bg);
+                    border-color: var(--ui-primary-border);
+                    color: var(--ui-primary-text);
                 }
-                .ui-btn-primary:hover { 
-                    background: var(--ui-primary-hover-bg); 
-                    border-color: var(--ui-accent); 
+                .ui-btn-primary:hover {
+                    background: var(--ui-primary-hover-bg);
+                    border-color: var(--ui-accent);
                     color: var(--ui-primary-hover-text);
                     box-shadow: 0 0 0 4px var(--ui-accent-glow);
                 }
-                
-                .ui-btn-danger { 
-                    background: var(--ui-danger-bg); 
-                    border-color: var(--ui-danger-border); 
-                    color: var(--ui-danger-color); 
+
+                .ui-btn-danger {
+                    background: var(--ui-danger-bg);
+                    border-color: var(--ui-danger-border);
+                    color: var(--ui-danger-color);
                 }
-                .ui-btn-danger:hover { 
-                    border-color: var(--ui-danger-border-hover); 
-                    color: var(--ui-danger-hover); 
+                .ui-btn-danger:hover {
+                    border-color: var(--ui-danger-border-hover);
+                    color: var(--ui-danger-hover);
                     box-shadow: 0 0 0 3px rgba(248, 81, 73, 0.25);
                 }
 
-                /* =========================================================
-                   CORRECCIÓN DE INPUTS Y TEXTAREAS (ANTI-APLASTAMIENTO)
-                   ========================================================= */
-                .ui-input { 
-                    background: var(--ui-bg-input); 
-                    border: 1px solid var(--ui-border); 
-                    color: var(--ui-text-bright); 
-                    padding: 0 10px; 
-                    border-radius: var(--ui-radius-sm); 
-                    font-size: var(--ui-font-size-input); 
-                    outline: none; 
-                    height: var(--ui-btn-height); 
-                    font-weight: var(--ui-font-weight-normal); 
+                .ui-input {
+                    background: var(--ui-bg-input);
+                    border: 1px solid var(--ui-border);
+                    color: var(--ui-text-bright);
+                    padding: 0 10px;
+                    border-radius: var(--ui-radius-sm);
+                    font-size: var(--ui-font-size-input);
+                    outline: none;
+                    height: var(--ui-btn-height);
+                    font-weight: var(--ui-font-weight-normal);
                     margin: var(--ui-input-margin);
                     transition: all var(--ui-transition-fast);
                     max-width: 100%;
@@ -778,20 +1030,19 @@
                 }
                 .ui-input::placeholder { color: var(--ui-text-dim); }
                 .ui-input:hover { border-color: var(--ui-border-hover); }
-                .ui-input:focus { 
-                    border-color: var(--ui-border-focus); 
+                .ui-input:focus {
+                    border-color: var(--ui-border-focus);
                     box-shadow: 0 0 0 3px var(--ui-accent-glow);
                 }
                 .ui-input:disabled { opacity: var(--ui-opacity-disabled); cursor: not-allowed; }
                 .ui-input-text { flex: 1; min-width: 0; }
-                .ui-input-number { 
-                    width: 65px; 
-                    text-align: center; 
-                    font-variant-numeric: tabular-nums; 
-                    flex-shrink: 0; 
+                .ui-input-number {
+                    width: 65px;
+                    text-align: center;
+                    font-variant-numeric: tabular-nums;
+                    flex-shrink: 0;
                 }
 
-                /* REGLA DEDICADA PARA TEXTAREAS */
                 textarea.ui-input {
                     height: auto !important;
                     min-height: 70px;
@@ -802,13 +1053,13 @@
                     width: 100%;
                 }
 
-                .ui-select-wrap { 
-                    position: relative; 
-                    display: flex; 
-                    flex-direction: column; 
-                    flex: 1 1 100%; 
+                .ui-select-wrap {
+                    position: relative;
+                    display: flex;
+                    flex-direction: column;
+                    flex: 1 1 100%;
                     width: 100%;
-                    min-width: 0; 
+                    min-width: 0;
                     margin: var(--ui-input-margin);
                     flex-shrink: 0;
                 }
@@ -826,8 +1077,8 @@
                     width: 100%;
                     box-sizing: border-box;
                 }
-                .ui-select-trigger:hover { 
-                    border-color: var(--ui-border-hover); 
+                .ui-select-trigger:hover {
+                    border-color: var(--ui-border-hover);
                     box-shadow: 0 0 0 3px var(--ui-accent-glow);
                 }
                 .ui-select-wrap.is-open .ui-select-trigger {
@@ -914,16 +1165,16 @@
                     pointer-events: none;
                 }
 
-                .ui-segmented { 
-                    display: flex; 
-                    background: var(--ui-bg-segmented); 
-                    border: 1px solid var(--ui-border); 
-                    border-radius: 9px; 
-                    padding: 2px; 
-                    width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right))); 
-                    height: auto; 
+                .ui-segmented {
+                    display: flex;
+                    background: var(--ui-bg-segmented);
+                    border: 1px solid var(--ui-border);
+                    border-radius: 9px;
+                    padding: 2px;
+                    width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right)));
+                    height: auto;
                     min-height: var(--ui-btn-height);
-                    flex-shrink: 0 !important; 
+                    flex-shrink: 0 !important;
                     margin: var(--ui-margin);
                     overflow-x: auto;
                     flex-direction: row;
@@ -932,161 +1183,158 @@
                     align-items: center;
                     align-content: space-evenly;
                 }
-                .ui-seg-item { 
-                    flex: 1; 
-                    display: flex; 
-                    align-items: center; 
-                    justify-content: center; 
-                    font-size: var(--ui-font-size-seg); 
-                    font-weight: var(--ui-font-weight-medium); 
-                    color: var(--ui-text-muted); 
-                    cursor: pointer; 
-                    border-radius: 9px; 
-                    transition: all var(--ui-transition-base); 
+                .ui-seg-item {
+                    flex: 1;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: var(--ui-font-size-seg);
+                    font-weight: var(--ui-font-weight-medium);
+                    color: var(--ui-text-muted);
+                    cursor: pointer;
+                    border-radius: 9px;
+                    transition: all var(--ui-transition-base);
                     padding: 0 6px;
                     touch-action: manipulation;
                     min-width: 70px;
                     height: 32px;
-                    background: #3c3c3ca3;
+                    background: rgba(60, 60, 60, 0.64);
                     margin: 3px;
                 }
-                .ui-seg-item.active { 
-                    background: var(--ui-bg-segmented-active);  
-                    color: var(--ui-seg-item); 
-                    font-weight: var(--ui-font-weight-semibold); 
+                .ui-seg-item.active {
+                    background: var(--ui-bg-segmented-active);
+                    color: var(--ui-seg-item);
+                    font-weight: var(--ui-font-weight-semibold);
                 }
-                .ui-seg-item:hover { 
-                    background: var(--ui-bg-segmented-active-h);  
+                .ui-seg-item:hover {
+                    background: var(--ui-bg-segmented-active-h);
                 }
 
-                /* =========================================================
-                   CORRECCIÓN: CHECKBOXES PROTEGIDOS CONTRA COMPRESIÓN
-                   ========================================================= */
-                .ui-checkbox { 
-                    display: flex; 
-                    align-items: center; 
-                    gap: 8px; 
-                    cursor: pointer; 
+                .ui-checkbox {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    cursor: pointer;
                     margin: var(--ui-margin);
                     touch-action: manipulation;
-                    flex-shrink: 0 !important; /* NUNCA SE APLASTA */
+                    flex-shrink: 0 !important;
                     min-height: 24px;
                     user-select: none;
                 }
                 .ui-checkbox.disabled { opacity: var(--ui-opacity-disabled); cursor: not-allowed; pointer-events: none; }
-                .ui-checkbox-box { 
-                    width: 18px; 
-                    height: 18px; 
-                    background: var(--ui-bg-surface); 
-                    border: 1px solid var(--ui-border); 
-                    border-radius: var(--ui-radius-sm); 
-                    display: flex; 
-                    align-items: center; 
-                    justify-content: center; 
-                    transition: all var(--ui-transition-fast); 
-                    flex-shrink: 0 !important; 
+                .ui-checkbox-box {
+                    width: 18px;
+                    height: 18px;
+                    background: var(--ui-bg-surface);
+                    border: 1px solid var(--ui-border);
+                    border-radius: var(--ui-radius-sm);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all var(--ui-transition-fast);
+                    flex-shrink: 0 !important;
                 }
-                .ui-checkbox:hover .ui-checkbox-box { 
-                    border-color: var(--ui-accent); 
+                .ui-checkbox:hover .ui-checkbox-box {
+                    border-color: var(--ui-accent);
                     box-shadow: 0 0 0 3px var(--ui-accent-glow);
                 }
-                .ui-checkbox.checked .ui-checkbox-box { 
-                    background: var(--ui-checkbox-box-active-bg); 
-                    border-color: var(--ui-checkbox-box-active-border); 
+                .ui-checkbox.checked .ui-checkbox-box {
+                    background: var(--ui-checkbox-box-active-bg);
+                    border-color: var(--ui-checkbox-box-active-border);
                     box-shadow: 0 0 8px var(--ui-accent-glow);
                 }
-                .ui-checkbox-mark { 
-                    display: none; 
-                    width: 8px; 
-                    height: 4.5px; 
-                    border-left: 2px solid var(--ui-checkbox-mark-color); 
-                    border-bottom: 2px solid var(--ui-checkbox-mark-color); 
-                    transform: rotate(-45deg) translate(0.5px, -0.5px); 
+                .ui-checkbox-mark {
+                    display: none;
+                    width: 8px;
+                    height: 4.5px;
+                    border-left: 2px solid var(--ui-checkbox-mark-color);
+                    border-bottom: 2px solid var(--ui-checkbox-mark-color);
+                    transform: rotate(-45deg) translate(0.5px, -0.5px);
                 }
                 .ui-checkbox.checked .ui-checkbox-mark { display: block; }
 
-                .ui-radio-group { 
-                    display: flex; 
-                    align-items: center; 
+                .ui-radio-group {
+                    display: flex;
+                    align-items: center;
                     flex-wrap: wrap;
-                    gap: 12px; 
-                    margin: var(--ui-margin); 
+                    gap: 12px;
+                    margin: var(--ui-margin);
                     flex-shrink: 0 !important;
                 }
                 .ui-radio-item { display: flex; align-items: center; gap: 6px; cursor: pointer; touch-action: manipulation; flex-shrink: 0; }
                 .ui-radio-item.disabled { opacity: var(--ui-opacity-disabled); cursor: not-allowed; pointer-events: none; }
-                .ui-radio-circle { 
-                    width: 17px; 
-                    height: 17px; 
-                    border-radius: var(--ui-radius-pill); 
-                    background: var(--ui-bg-surface); 
-                    border: 1px solid var(--ui-border); 
-                    display: flex; 
-                    align-items: center; 
-                    justify-content: center; 
-                    transition: all var(--ui-transition-fast); 
-                    flex-shrink: 0 !important; 
+                .ui-radio-circle {
+                    width: 17px;
+                    height: 17px;
+                    border-radius: var(--ui-radius-pill);
+                    background: var(--ui-bg-surface);
+                    border: 1px solid var(--ui-border);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all var(--ui-transition-fast);
+                    flex-shrink: 0 !important;
                 }
-                .ui-radio-dot { 
-                    width: 8px; 
-                    height: 8px; 
-                    border-radius: var(--ui-radius-pill); 
-                    background: var(--ui-radio-dot-color); 
-                    display: none; 
+                .ui-radio-dot {
+                    width: 8px;
+                    height: 8px;
+                    border-radius: var(--ui-radius-pill);
+                    background: var(--ui-radio-dot-color);
+                    display: none;
                 }
                 .ui-radio-item:hover .ui-radio-circle {
                     border-color: var(--ui-accent);
                     box-shadow: 0 0 0 3px var(--ui-accent-glow);
                 }
-                .ui-radio-item.active .ui-radio-circle { 
-                    border-color: var(--ui-radio-circle-active-border); 
-                    background: var(--ui-radio-circle-active-bg); 
+                .ui-radio-item.active .ui-radio-circle {
+                    border-color: var(--ui-radio-circle-active-border);
+                    background: var(--ui-radio-circle-active-bg);
                     box-shadow: 0 0 6px var(--ui-accent-glow);
                 }
                 .ui-radio-item.active .ui-radio-dot { display: block; }
 
-                .ui-toggle { 
-                    display: flex; 
-                    align-items: center; 
-                    gap: 8px; 
-                    cursor: pointer; 
-                    margin: var(--ui-margin); 
+                .ui-toggle {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    cursor: pointer;
+                    margin: var(--ui-margin);
                     touch-action: manipulation;
                     flex-shrink: 0 !important;
                 }
                 .ui-toggle.disabled { opacity: var(--ui-opacity-disabled); cursor: not-allowed; pointer-events: none; }
-                .ui-toggle-switch { 
-                    width: 34px; 
-                    height: 20px; 
-                    background: var(--ui-bg-toggle-switch); 
-                    border-radius: var(--ui-radius-pill); 
-                    position: relative; 
-                    transition: all var(--ui-transition-base); 
-                    border: 1px solid var(--ui-border); 
-                    flex-shrink: 0 !important; 
+                .ui-toggle-switch {
+                    width: 34px;
+                    height: 20px;
+                    background: var(--ui-bg-toggle-switch);
+                    border-radius: var(--ui-radius-pill);
+                    position: relative;
+                    transition: all var(--ui-transition-base);
+                    border: 1px solid var(--ui-border);
+                    flex-shrink: 0 !important;
                 }
                 .ui-toggle:hover .ui-toggle-switch {
                     border-color: var(--ui-accent);
                     box-shadow: 0 0 0 3px var(--ui-accent-glow);
                 }
-                .ui-toggle-thumb { 
-                    width: 14px; 
-                    height: 14px; 
-                    background: var(--ui-text-muted); 
-                    border-radius: var(--ui-radius-pill); 
-                    position: absolute; 
-                    top: 2px; 
-                    left: 2px; 
-                    transition: all var(--ui-transition-base); 
+                .ui-toggle-thumb {
+                    width: 14px;
+                    height: 14px;
+                    background: var(--ui-text-muted);
+                    border-radius: var(--ui-radius-pill);
+                    position: absolute;
+                    top: 2px;
+                    left: 2px;
+                    transition: all var(--ui-transition-base);
                 }
-                .ui-toggle.active .ui-toggle-switch { 
-                    background: var(--ui-toggle-switch-active-bg); 
+                .ui-toggle.active .ui-toggle-switch {
+                    background: var(--ui-toggle-switch-active-bg);
                     border-color: var(--ui-accent);
                     box-shadow: 0 0 8px var(--ui-accent-glow);
                 }
-                .ui-toggle.active .ui-toggle-thumb { 
-                    background: var(--ui-toggle-thumb-active); 
-                    transform: translateX(14px); 
+                .ui-toggle.active .ui-toggle-thumb {
+                    background: var(--ui-toggle-thumb-active);
+                    transform: translateX(14px);
                 }
 
                 @keyframes ui-highlight {
@@ -1186,7 +1434,8 @@
                 }
                 .ui-tgl2-input { display: none; }
                 .ui-tgl2-track {
-                    position: absolute; inset: 0;
+                    position: absolute;
+                    inset: 0;
                     background-color: var(--ui-bg-toggle-switch);
                     border: 1px solid var(--ui-border);
                     border-radius: var(--ui-radius-pill);
@@ -1264,7 +1513,6 @@
                     cursor: pointer;
                     transition: all var(--ui-transition-base);
                     position: relative;
-               
                     color: var(--ui-text-bright);
                     border: 1px solid var(--ui-border);
                     overflow: hidden;
@@ -1278,25 +1526,17 @@
                     touch-action: manipulation;
                     flex-shrink: 0 !important;
                 }
-                .ui-btn2::before {
-                 
-                }
-                .ui-btn2:hover {
-               
-                }
-                .ui-btn2:hover::before { opacity: 1; }
                 .ui-btn2:active { transform: translateY(0px) scale(0.98); }
                 .ui-btn2-primary {
-                    background:#303030;
+                    background: #303030;
                     border: none;
                     color: white;
                     border-radius: 7px;
                     min-height: 40px;
                     min-width: 100px;
-
                 }
                 .ui-btn2-primary:hover {
-            background:#444444;
+                    background: #444444;
                 }
                 .ui-btn2-reset {
                     color: var(--ui-text-muted);
@@ -1307,116 +1547,113 @@
                     border-color: var(--ui-danger-hover);
                 }
 
-                .ui-info-box { 
-                    background: var(--ui-info-bg); 
-                    border: 1px solid var(--ui-info-border); 
-                    border-left: 3px solid var(--ui-info-accent); 
-                    padding: 8px 12px; 
-                    border-radius: var(--ui-radius-md); 
-                    font-size: var(--ui-font-size-info); 
-                    color: var(--ui-info-text); 
-                    display: flex; 
-                    align-items: center; 
-                    justify-content: space-between; 
-                    gap: 8px; 
-                    width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right))); 
-                    transition: opacity var(--ui-transition-base), transform var(--ui-transition-base); 
-                    flex-shrink: 0 !important; 
+                .ui-info-box {
+                    background: var(--ui-info-bg);
+                    border: 1px solid var(--ui-info-border);
+                    border-left: 3px solid var(--ui-info-accent);
+                    padding: 8px 12px;
+                    border-radius: var(--ui-radius-md);
+                    font-size: var(--ui-font-size-info);
+                    color: var(--ui-info-text);
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 8px;
+                    width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right)));
+                    transition: opacity var(--ui-transition-base), transform var(--ui-transition-base);
+                    flex-shrink: 0 !important;
                     margin: var(--ui-info-margin);
                     word-break: break-word;
                 }
                 .ui-info-box.fade-out { opacity: 0; transform: translateY(-4px); }
-                .ui-info-close { 
-                    background: none; 
-                    border: none; 
-                    color: var(--ui-info-close); 
-                    cursor: pointer; 
-                    font-size: var(--ui-font-size-info-close); 
-                    line-height: 1; 
-                    padding: 6px; 
+                .ui-info-close {
+                    background: none;
+                    border: none;
+                    color: var(--ui-info-close);
+                    cursor: pointer;
+                    font-size: var(--ui-font-size-info-close);
+                    line-height: 1;
+                    padding: 6px;
                     touch-action: manipulation;
                 }
                 .ui-info-close:hover { color: var(--ui-info-close-hover); }
 
-                /* =========================================================
-                   CORRECCIÓN DE ACORDEONES (ANTI-APLASTAMIENTO)
-                   ========================================================= */
-                .ui-accordion { 
-                    display: flex; 
-                    flex-direction: column; 
-                    gap: 6px; 
-                    width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right))); 
-                    flex-shrink: 0 !important; 
+                .ui-accordion {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 6px;
+                    width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right)));
+                    flex-shrink: 0 !important;
                     margin: var(--ui-accordion-margin);
                 }
-                .ui-accordion-item { 
-                    border: 1px solid var(--ui-border); 
-                    border-radius: var(--ui-radius-md); 
-                    background: var(--ui-bg-surface); 
-                    transition: border-color var(--ui-transition-base); 
+                .ui-accordion-item {
+                    border: 1px solid var(--ui-border);
+                    border-radius: var(--ui-radius-md);
+                    background: var(--ui-bg-surface);
+                    transition: border-color var(--ui-transition-base);
                     overflow: hidden;
                     flex-shrink: 0 !important;
                 }
-                .ui-accordion-item.open { 
-                    border-color: var(--ui-accent); 
+                .ui-accordion-item.open {
+                    border-color: var(--ui-accent);
                 }
-                .ui-accordion-header { 
-                    min-height: 36px; 
-                    padding: 6px 12px; 
-                    display: flex; 
-                    align-items: center; 
-                    justify-content: space-between; 
-                    cursor: pointer; 
-                    background: transparent; 
-                    transition: background var(--ui-transition-fast); 
+                .ui-accordion-header {
+                    min-height: 36px;
+                    padding: 6px 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    cursor: pointer;
+                    background: transparent;
+                    transition: background var(--ui-transition-fast);
                     touch-action: manipulation;
                 }
                 .ui-accordion-header:hover { background: var(--ui-bg-surface-hover); }
-                .ui-accordion-title { 
-                    font-size: var(--ui-font-size-accordion-title); 
-                    font-weight: var(--ui-font-weight-medium); 
-                    color: var(--ui-text-accordion); 
+                .ui-accordion-title {
+                    font-size: var(--ui-font-size-accordion-title);
+                    font-weight: var(--ui-font-weight-medium);
+                    color: var(--ui-text-accordion);
                 }
                 .ui-accordion-item.open .ui-accordion-title { color: var(--ui-text-accordion-open); }
-                .ui-accordion-arrow { 
-                    font-size: var(--ui-font-size-accordion-arrow); 
-                    color: var(--ui-text-dim); 
-                    transition: transform var(--ui-transition-base); 
+                .ui-accordion-arrow {
+                    font-size: var(--ui-font-size-accordion-arrow);
+                    color: var(--ui-text-dim);
+                    transition: transform var(--ui-transition-base);
                 }
                 .ui-accordion-item.open .ui-accordion-arrow { transform: rotate(90deg); color: var(--ui-accent); }
-                .ui-accordion-content { 
-                    display: grid; 
-                    grid-template-rows: 0fr; 
-                    transition: grid-template-rows var(--ui-transition-base); 
-                    background: var(--ui-bg-list); 
+                .ui-accordion-content {
+                    display: grid;
+                    grid-template-rows: 0fr;
+                    transition: grid-template-rows var(--ui-transition-base);
+                    background: var(--ui-bg-list);
                 }
-                .ui-accordion-item.open .ui-accordion-content { 
-                    grid-template-rows: 1fr; 
+                .ui-accordion-item.open .ui-accordion-content {
+                    grid-template-rows: 1fr;
                 }
-                .ui-accordion-body { 
-                    overflow: hidden; 
-                    min-height: 0; 
-                    display: flex; 
-                    flex-direction: column; 
-                    gap: 8px; 
-                    padding: 0 10px; 
-                    transition: padding var(--ui-transition-base); 
+                .ui-accordion-body {
+                    overflow: hidden;
+                    min-height: 0;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                    padding: 0 10px;
+                    transition: padding var(--ui-transition-base);
                 }
                 .ui-accordion-body > * {
                     flex-shrink: 0 !important;
                 }
                 .ui-accordion-item.open .ui-accordion-body { padding: 10px; }
 
-                .ui-slider-card { 
-                    width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right))); 
-                    background: var(--ui-bg-surface); 
-                    border: 1px solid var(--ui-border); 
-                    border-radius: var(--ui-radius-md); 
-                    padding: var(--ui-slider-card-padding); 
-                    display: flex; 
-                    flex-direction: column; 
+                .ui-slider-card {
+                    width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right)));
+                    background: var(--ui-bg-surface);
+                    border: 1px solid var(--ui-border);
+                    border-radius: var(--ui-radius-md);
+                    padding: var(--ui-slider-card-padding);
+                    display: flex;
+                    flex-direction: column;
                     gap: 8px;
-                    flex-shrink: 0 !important; 
+                    flex-shrink: 0 !important;
                     margin: var(--ui-slider-margin);
                     transition: border-color var(--ui-transition-fast);
                 }
@@ -1429,260 +1666,256 @@
                     gap: 8px;
                     width: 100%;
                 }
-                .ui-slider-label { 
-                    font-size: var(--ui-font-size-slider-label); 
-                    font-weight: var(--ui-font-weight-medium); 
-                    color: var(--ui-text-muted); 
-                    flex: 1; 
-                    white-space: nowrap; 
+                .ui-slider-label {
+                    font-size: var(--ui-font-size-slider-label);
+                    font-weight: var(--ui-font-weight-medium);
+                    color: var(--ui-text-muted);
+                    flex: 1;
+                    white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
                 }
                 .ui-slider-header-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-                .ui-slider-val { 
-                    font-size: var(--ui-font-size-slider-val); 
-                    font-weight: var(--ui-font-weight-semibold); 
-                    color: var(--ui-text-val); 
-                    font-variant-numeric: tabular-nums; 
+                .ui-slider-val {
+                    font-size: var(--ui-font-size-slider-val);
+                    font-weight: var(--ui-font-weight-semibold);
+                    color: var(--ui-text-val);
+                    font-variant-numeric: tabular-nums;
                 }
-                .ui-cajon-btn { 
-                    width: 22px; 
-                    height: 22px; 
-                    border: 1px solid transparent; 
-                    background: transparent; 
-                    color: var(--ui-text-dim); 
-                    cursor: pointer; 
-                    display: flex; 
-                    align-items: center; 
-                    justify-content: center; 
-                    font-size: var(--ui-font-size-cajon-btn); 
-                    border-radius: var(--ui-radius-sm); 
-                    transition: all var(--ui-transition-base); 
+                .ui-cajon-btn {
+                    width: 22px;
+                    height: 22px;
+                    border: 1px solid transparent;
+                    background: transparent;
+                    color: var(--ui-text-dim);
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: var(--ui-font-size-cajon-btn);
+                    border-radius: var(--ui-radius-sm);
+                    transition: all var(--ui-transition-base);
                     touch-action: manipulation;
                 }
                 .ui-cajon-btn:hover { color: var(--ui-text-hover); border-color: var(--ui-border); }
                 .ui-slider-card.open .ui-cajon-btn { transform: rotate(180deg); color: var(--ui-accent); }
 
                 .ui-slider-content { display: flex; align-items: center; width: 100%; padding: 6px 0; }
-                .ui-slider-track { 
-                    width: 100%; 
-                    position: relative; 
-                    height: var(--ui-slider-track-height); 
-                    display: flex; 
-                    align-items: center; 
-                    cursor: pointer; 
+                .ui-slider-track {
+                    width: 100%;
+                    position: relative;
+                    height: var(--ui-slider-track-height);
+                    display: flex;
+                    align-items: center;
+                    cursor: pointer;
                     border-radius: var(--ui-radius-pill);
                     background-color: var(--ui-slider-bg);
                     border: 1px solid var(--ui-border);
                     touch-action: none;
                 }
                 .ui-slider-bg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-                .ui-slider-fill { 
-                    position: absolute; 
-                    height: 100%; 
-                    background: var(--ui-slider-fill); 
-                    border-radius: var(--ui-radius-pill); 
-                    width: 0%; 
-                    pointer-events: none; 
+                .ui-slider-fill {
+                    position: absolute;
+                    height: 100%;
+                    background: var(--ui-slider-fill);
+                    border-radius: var(--ui-radius-pill);
+                    width: 0%;
+                    pointer-events: none;
                     box-shadow: 0 0 8px var(--ui-accent-glow);
                 }
-                .ui-slider-thumb { 
-                    width: var(--ui-slider-thumb-size); 
-                    height: var(--ui-slider-thumb-size); 
-                    background: var(--ui-slider-thumb); 
-                    border-radius: var(--ui-radius-pill); 
-                    position: absolute; 
-                    top: 50%; 
-                    transform: translate(-50%, -50%); 
-                    box-shadow: var(--ui-shadow-thumb); 
-                    pointer-events: none; 
+                .ui-slider-thumb {
+                    width: var(--ui-slider-thumb-size);
+                    height: var(--ui-slider-thumb-size);
+                    background: var(--ui-slider-thumb);
+                    border-radius: var(--ui-radius-pill);
+                    position: absolute;
+                    top: 50%;
+                    transform: translate(-50%, -50%);
+                    box-shadow: var(--ui-shadow-thumb);
+                    pointer-events: none;
                     transition: transform var(--ui-transition-fast), box-shadow var(--ui-transition-fast);
                 }
                 .ui-slider-track:hover .ui-slider-thumb {
-                    transform: translate(-50%, -50%) scale(1.2);
+                    transform: translate(-50%, -50%) scale(1.25);
                     box-shadow: 0 0 10px var(--ui-accent);
                 }
 
-                .ui-slider-cajon { 
-                    display: grid; 
-                    grid-template-rows: 0fr; 
-                    transition: grid-template-rows var(--ui-transition-base); 
-                    background: var(--ui-bg-cajon); 
-                    border-radius: var(--ui-radius-sm); 
+                .ui-slider-cajon {
+                    display: grid;
+                    grid-template-rows: 0fr;
+                    transition: grid-template-rows var(--ui-transition-base);
+                    background: var(--ui-bg-cajon);
+                    border-radius: var(--ui-radius-sm);
                 }
-                .ui-slider-card.open .ui-slider-cajon { 
-                    grid-template-rows: 1fr; 
-                    border: 1px solid var(--ui-border); 
+                .ui-slider-card.open .ui-slider-cajon {
+                    grid-template-rows: 1fr;
+                    border: 1px solid var(--ui-border);
                     margin-top: 2px;
                 }
-                .ui-slider-cajon-inner { 
-                    overflow: hidden; 
-                    min-height: 0; 
-                    display: flex; 
+                .ui-slider-cajon-inner {
+                    overflow: hidden;
+                    min-height: 0;
+                    display: flex;
                     flex-wrap: wrap;
-                    align-items: center; 
-                    justify-content: space-between; 
-                    padding: 0 8px; 
-                    gap: 6px; 
-                    transition: padding var(--ui-transition-base); 
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 0 8px;
+                    gap: 6px;
+                    transition: padding var(--ui-transition-base);
                 }
                 .ui-slider-card.open .ui-slider-cajon-inner { padding: 8px; }
-                .ui-cajon-tag { 
-                    font-size: var(--ui-font-size-cajon-tag); 
-                    font-weight: var(--ui-font-weight-medium); 
-                    color: var(--ui-text-muted); 
+                .ui-cajon-tag {
+                    font-size: var(--ui-font-size-cajon-tag);
+                    font-weight: var(--ui-font-weight-medium);
+                    color: var(--ui-text-muted);
                 }
                 .ui-cajon-group { display: flex; align-items: center; gap: 4px; }
-                .ui-cajon-input { 
-                    width: 50px; 
-                    text-align: center; 
-                    height: 24px; 
-                    padding: 0 4px; 
-                    font-size: var(--ui-font-size-cajon-input); 
+                .ui-cajon-input {
+                    width: 50px;
+                    text-align: center;
+                    height: 24px;
+                    padding: 0 4px;
+                    font-size: var(--ui-font-size-cajon-input);
                 }
 
-                .ui-snap-guide { 
-                    position: fixed; 
-                    pointer-events: none; 
-                    z-index: 99990; 
-                    border: 1.5px dashed var(--ui-accent); 
-                    border-radius: var(--ui-radius-lg); 
-                    background: var(--ui-accent-placeholder-bg); 
-                    display: none; 
-                    box-sizing: border-box; 
+                .ui-snap-guide {
+                    position: fixed;
+                    pointer-events: none;
+                    z-index: 99990;
+                    border: 1.5px dashed var(--ui-accent);
+                    border-radius: var(--ui-radius-lg);
+                    background: var(--ui-accent-placeholder-bg);
+                    display: none;
+                    box-sizing: border-box;
                 }
-                .ui-guide-line { 
-                    position: fixed; 
-                    pointer-events: none; 
-                    z-index: 999998; 
-                    background: var(--ui-accent); 
-                    box-shadow: var(--ui-shadow-guide); 
-                    display: none; 
+                .ui-guide-line {
+                    position: fixed;
+                    pointer-events: none;
+                    z-index: 999998;
+                    background: var(--ui-accent);
+                    box-shadow: var(--ui-shadow-guide);
+                    display: none;
                 }
                 .ui-guide-v { width: 1px; top: 0; bottom: 0; }
                 .ui-guide-h { height: 1px; left: 0; right: 0; }
 
-                .ui-table-container { 
-                    width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right))); 
-                    display: flex; 
-                    flex-direction: column; 
-                    gap: 6px; 
-                    background: var(--ui-bg-panel); 
-                    border: 1px solid var(--ui-border); 
-                    border-radius: var(--ui-radius-md); 
-                    overflow: hidden; 
-                    flex-shrink: 0 !important; 
+                .ui-table-container {
+                    width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right)));
+                    display: flex;
+                    flex-direction: column;
+                    gap: 6px;
+                    background: var(--ui-bg-panel);
+                    border: 1px solid var(--ui-border);
+                    border-radius: var(--ui-radius-md);
+                    overflow: hidden;
+                    flex-shrink: 0 !important;
                     margin: var(--ui-table-margin);
                 }
-                .ui-table-toolbar { 
-                    display: flex; 
-                    align-items: center; 
-                    justify-content: space-between; 
-                    gap: 8px; 
-                    padding: 8px 10px; 
-                    background: var(--ui-bg-surface); 
-                    border-bottom: 1px solid var(--ui-border); 
-                    flex-wrap: wrap; 
+                .ui-table-toolbar {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 8px;
+                    padding: 8px 10px;
+                    background: var(--ui-bg-surface);
+                    border-bottom: 1px solid var(--ui-border);
+                    flex-wrap: wrap;
                 }
                 .ui-table-search { flex: 1; min-width: 140px; }
                 .ui-table-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
                 .ui-table { width: 100%; border-collapse: collapse; text-align: left; font-size: var(--ui-font-size-table); }
-                .ui-table th { 
-                    background: var(--ui-bg-surface); 
-                    color: var(--ui-text-muted); 
-                    font-weight: var(--ui-font-weight-medium); 
-                    padding: 8px 10px; 
-                    border-bottom: 1px solid var(--ui-border); 
-                    white-space: nowrap; 
-                    cursor: grab; 
+                .ui-table th {
+                    background: var(--ui-bg-surface);
+                    color: var(--ui-text-muted);
+                    font-weight: var(--ui-font-weight-medium);
+                    padding: 8px 10px;
+                    border-bottom: 1px solid var(--ui-border);
+                    white-space: nowrap;
+                    cursor: grab;
                 }
                 .ui-table th.drag-over { background: var(--ui-bg-reorder-active); border-left: 2px solid var(--ui-accent); }
-                .ui-table td { 
-                    padding: 8px 10px; 
-                    border-bottom: 1px solid var(--ui-border-subtle); 
-                    color: var(--ui-text-main); 
-                    white-space: nowrap; 
-                    vertical-align: middle; 
+                .ui-table td {
+                    padding: 8px 10px;
+                    border-bottom: 1px solid var(--ui-border-subtle);
+                    color: var(--ui-text-main);
+                    white-space: nowrap;
+                    vertical-align: middle;
                 }
                 .ui-table tr:hover td { background: var(--ui-bg-tr-hover); color: var(--ui-text-hover); }
                 .ui-table-actions-cell { display: flex; align-items: center; gap: 6px; }
-                .ui-table-footer { 
-                    display: flex; 
-                    align-items: center; 
-                    justify-content: space-between; 
-                    padding: 8px 10px; 
-                    background: var(--ui-bg-surface); 
-                    border-top: 1px solid var(--ui-border); 
-                    font-size: var(--ui-font-size-table-footer); 
-                    color: var(--ui-text-muted); 
-                    flex-wrap: wrap; 
-                    gap: 6px; 
+                .ui-table-footer {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 8px 10px;
+                    background: var(--ui-bg-surface);
+                    border-top: 1px solid var(--ui-border);
+                    font-size: var(--ui-font-size-table-footer);
+                    color: var(--ui-text-muted);
+                    flex-wrap: wrap;
+                    gap: 6px;
                 }
                 .ui-table-pagination { display: flex; align-items: center; gap: 6px; margin-left: auto; }
                 .ui-table-cards { display: none; flex-direction: column; gap: 8px; padding: 8px; }
-                .ui-table-card { 
-                    background: var(--ui-bg-surface); 
-                    border: 1px solid var(--ui-border); 
-                    border-radius: var(--ui-radius-sm); 
-                    padding: 8px 10px; 
-                    display: flex; 
-                    flex-direction: column; 
-                    gap: 6px; 
+                .ui-table-card {
+                    background: var(--ui-bg-surface);
+                    border: 1px solid var(--ui-border);
+                    border-radius: var(--ui-radius-sm);
+                    padding: 8px 10px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 6px;
                 }
-                .ui-table-card-row { 
-                    display: flex; 
-                    justify-content: space-between; 
-                    align-items: center; 
-                    font-size: var(--ui-font-size-table-card-row); 
-                    border-bottom: 1px solid var(--ui-border-card-row); 
-                    padding-bottom: 4px; 
+                .ui-table-card-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    font-size: var(--ui-font-size-table-card-row);
+                    border-bottom: 1px solid var(--ui-border-card-row);
+                    padding-bottom: 4px;
                 }
-                .ui-table-card-label { 
-                    color: var(--ui-text-muted); 
-                    font-weight: var(--ui-font-weight-medium); 
-                    font-size: var(--ui-font-size-table-card-label); 
+                .ui-table-card-label {
+                    color: var(--ui-text-muted);
+                    font-weight: var(--ui-font-weight-medium);
+                    font-size: var(--ui-font-size-table-card-label);
                 }
                 .ui-table-card-val { color: var(--ui-text-main); }
 
-                /* =========================================================
-                   CORRECCIÓN: LISTAS DE REORDENAMIENTO Y SCROLL
-                   ========================================================= */
-                .ui-reorder-list { 
-                    display: flex; 
-                    flex-direction: column; 
-                    gap: 6px; 
-                    width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right))); 
-                    max-height: var(--ui-list-max-h); 
-                    overflow-y: auto !important; 
+                .ui-reorder-list {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 6px;
+                    width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right)));
+                    max-height: var(--ui-list-max-h);
+                    overflow-y: auto !important;
                     overflow-x: hidden !important;
-                    background: var(--ui-bg-list); 
-                    border: 1px solid var(--ui-border-list); 
-                    border-radius: var(--ui-radius-md); 
-                    padding: 6px; 
-                    box-sizing: border-box; 
-                    flex-shrink: 0 !important; 
+                    background: var(--ui-bg-list);
+                    border: 1px solid var(--ui-border-list);
+                    border-radius: var(--ui-radius-md);
+                    padding: 6px;
+                    box-sizing: border-box;
+                    flex-shrink: 0 !important;
                     margin: var(--ui-list-margin);
                 }
 
-                /* CADA HIJO DE UNA LISTA MANTIENE SU ALTURA REAL */
                 .ui-reorder-list > * {
                     flex-shrink: 0 !important;
                 }
 
-                .ui-reorder-item { 
-                    display: flex; 
-                    align-items: center; 
-                    justify-content: space-between; 
-                    padding: 8px 10px; 
-                    background: var(--ui-bg-surface); 
-                    border-radius: var(--ui-radius-sm); 
-                    cursor: grab; 
-                    border: 1px solid transparent; 
-                    font-size: var(--ui-font-size-reorder-item); 
-                    color: var(--ui-text-subtle); 
-                    touch-action: pan-y; 
-                    transition: transform var(--ui-transition-fast), background-color var(--ui-transition-fast), border-color var(--ui-transition-fast); 
-                    width: 100%; 
+                .ui-reorder-item {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 8px 10px;
+                    background: var(--ui-bg-surface);
+                    border-radius: var(--ui-radius-sm);
+                    cursor: grab;
+                    border: 1px solid transparent;
+                    font-size: var(--ui-font-size-reorder-item);
+                    color: var(--ui-text-subtle);
+                    touch-action: pan-y;
+                    transition: transform var(--ui-transition-fast), background-color var(--ui-transition-fast), border-color var(--ui-transition-fast);
+                    width: 100%;
                     margin: var(--ui-list-item-margin);
                     flex-shrink: 0 !important;
                 }
@@ -1693,19 +1926,19 @@
                 .ui-reorder-item-left { display: flex; align-items: center; gap: 8px; pointer-events: none; }
                 .ui-reorder-item-left button { pointer-events: auto; }
 
-                .ui-square-btn { 
-                    display: inline-flex; 
-                    align-items: center; 
-                    justify-content: center; 
-                    border-radius: var(--ui-radius-pill); 
-                    border: 1px solid var(--ui-border); 
-                    cursor: pointer; 
-                    transition: all var(--ui-transition-glow); 
-                    flex-shrink: 0 !important; 
-                    font-weight: var(--ui-font-weight-medium); 
-                    line-height: 1; 
-                    margin: var(--ui-margin); 
-                    -webkit-tap-highlight-color: transparent; 
+                .ui-square-btn {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: var(--ui-radius-pill);
+                    border: 1px solid var(--ui-border);
+                    cursor: pointer;
+                    transition: all var(--ui-transition-glow);
+                    flex-shrink: 0 !important;
+                    font-weight: var(--ui-font-weight-medium);
+                    line-height: 1;
+                    margin: var(--ui-margin);
+                    -webkit-tap-highlight-color: transparent;
                     box-shadow: var(--ui-shadow-btn-floating);
                     width: var(--ui-square-btn-size);
                     height: var(--ui-square-btn-size);
@@ -1714,151 +1947,148 @@
                     font-size: var(--ui-font-size-btn);
                     touch-action: none;
                 }
-                .ui-square-btn:hover { 
-                    border-color: var(--ui-accent); 
+                .ui-square-btn:hover {
+                    border-color: var(--ui-accent);
                     box-shadow: 0 0 0 4px var(--ui-accent-glow);
                 }
-                .ui-draggable-floating { 
-                    position: absolute !important; 
-                    z-index: 1000; 
-                    touch-action: none; 
+                .ui-draggable-floating {
+                    position: absolute !important;
+                    z-index: 1000;
+                    touch-action: none;
                 }
-                .ui-draggable-floating.is-dragging { 
-                    z-index: 10001 !important; 
-                    opacity: var(--ui-opacity-dragged); 
-                    cursor: grabbing !important; 
+                .ui-draggable-floating.is-dragging {
+                    z-index: 10001 !important;
+                    opacity: var(--ui-opacity-dragged);
+                    cursor: grabbing !important;
                 }
-                .ui-draggable-floating.is-snapping { 
-                    border-color: var(--ui-accent) !important; 
-                    box-shadow: 0 0 12px var(--ui-accent-btn-shadow) !important; 
+                .ui-draggable-floating.is-snapping {
+                    border-color: var(--ui-accent) !important;
+                    box-shadow: 0 0 12px var(--ui-accent-btn-shadow) !important;
                 }
 
-                .ui-square-tooltip { 
-                    position: fixed; 
-                    z-index: 999999; 
-                    pointer-events: none; 
-                    background: var(--ui-bg-dropdown-menu); 
-                    border: 1px solid var(--ui-border); 
-                    border-radius: var(--ui-radius-md); 
-                    padding: 8px 12px; 
-                    box-shadow: var(--ui-shadow-tooltip); 
-                    max-width: 240px; 
-                    opacity: 0; 
-                    transform: scale(0.94); 
-                    transition: all var(--ui-transition-fast); 
-                    display: flex; 
-                    flex-direction: column; 
-                    gap: 4px; 
+                .ui-square-tooltip {
+                    position: fixed;
+                    z-index: 999999;
+                    pointer-events: none;
+                    background: var(--ui-bg-dropdown-menu);
+                    border: 1px solid var(--ui-border);
+                    border-radius: var(--ui-radius-md);
+                    padding: 8px 12px;
+                    box-shadow: var(--ui-shadow-tooltip);
+                    max-width: 240px;
+                    opacity: 0;
+                    transform: scale(0.94);
+                    transition: all var(--ui-transition-fast);
+                    display: flex;
+                    flex-direction: column;
+                    gap: 4px;
                 }
                 .ui-square-tooltip.visible { opacity: 1; transform: scale(1); }
-                .ui-square-tooltip-title { 
-                    font-size: var(--ui-font-size-tooltip-title); 
-                    font-weight: var(--ui-font-weight-semibold); 
-                    color: var(--ui-text-bright); 
+                .ui-square-tooltip-title {
+                    font-size: var(--ui-font-size-tooltip-title);
+                    font-weight: var(--ui-font-weight-semibold);
+                    color: var(--ui-text-bright);
                 }
-                .ui-square-tooltip-info { 
-                    font-size: var(--ui-font-size-tooltip-info); 
-                    color: var(--ui-text-muted); 
-                    line-height: 1.4; 
+                .ui-square-tooltip-info {
+                    font-size: var(--ui-font-size-tooltip-info);
+                    color: var(--ui-text-muted);
+                    line-height: 1.4;
                 }
 
-                .ui-layout-modal-backdrop { 
-                    position: fixed; 
-                    inset: 0; 
-                    background: var(--ui-modal-backdrop-bg); 
-                    z-index: 9999999; 
-                    display: flex; 
-                    align-items: center; 
-                    justify-content: center; 
-                    padding: 15px; 
+                .ui-layout-modal-backdrop {
+                    position: fixed;
+                    inset: 0;
+                    background: var(--ui-modal-backdrop-bg);
+                    z-index: 9999999;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 15px;
                 }
-                .ui-layout-modal { 
-                    background: var(--ui-bg-panel); 
-                    border: 1px solid var(--ui-border); 
-                    border-radius: var(--ui-radius-lg); 
-                    width: var(--ui-modal-width); 
-                    max-width: 100%; 
-                    box-shadow: var(--ui-shadow-modal); 
-                    display: flex; 
-                    flex-direction: column; 
-                    overflow: hidden; 
-                    animation: uiModalIn var(--ui-transition-base); 
+                .ui-layout-modal {
+                    background: var(--ui-bg-panel);
+                    border: 1px solid var(--ui-border);
+                    border-radius: var(--ui-radius-lg);
+                    width: var(--ui-modal-width);
+                    max-width: 100%;
+                    box-shadow: var(--ui-shadow-modal);
+                    display: flex;
+                    flex-direction: column;
+                    overflow: hidden;
+                    animation: uiModalIn var(--ui-transition-base);
                 }
-                @keyframes uiModalIn { 
-                    from { transform: scale(0.95); opacity: 0; } 
-                    to { transform: scale(1); opacity: 1; } 
+                @keyframes uiModalIn {
+                    from { transform: scale(0.95); opacity: 0; }
+                    to { transform: scale(1); opacity: 1; }
                 }
-                .ui-layout-modal-head { 
-                    height: var(--ui-modal-header-h); 
-                    background: var(--ui-bg-surface); 
-                    border-bottom: 1px solid var(--ui-border); 
-                    display: flex; 
-                    align-items: center; 
-                    justify-content: space-between; 
-                    padding: 0 14px; 
+                .ui-layout-modal-head {
+                    height: var(--ui-modal-header-h);
+                    background: var(--ui-bg-surface);
+                    border-bottom: 1px solid var(--ui-border);
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 0 14px;
                 }
-                .ui-layout-modal-body { 
-                    padding: 14px; 
-                    display: flex; 
-                    flex-direction: column; 
-                    gap: 12px; 
-                    max-height: var(--ui-modal-max-h); 
-                    overflow-y: auto; 
+                .ui-layout-modal-body {
+                    padding: 14px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 12px;
+                    max-height: var(--ui-modal-max-h);
+                    overflow-y: auto;
                 }
-                .ui-layout-list { 
-                    display: flex; 
-                    flex-direction: column; 
-                    gap: 6px; 
-                    max-height: var(--ui-modal-list-max-h); 
-                    overflow-y: auto; 
-                    background: var(--ui-bg-list); 
-                    border: 1px solid var(--ui-border); 
-                    border-radius: var(--ui-radius-md); 
-                    padding: 6px; 
+                .ui-layout-list {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 6px;
+                    max-height: var(--ui-modal-list-max-h);
+                    overflow-y: auto;
+                    background: var(--ui-bg-list);
+                    border: 1px solid var(--ui-border);
+                    border-radius: var(--ui-radius-md);
+                    padding: 6px;
                 }
-                .ui-layout-item { 
-                    display: flex; 
-                    align-items: center; 
-                    justify-content: space-between; 
-                    padding: 7px 10px; 
-                    background: var(--ui-bg-modal-item); 
-                    border: 1px solid transparent; 
-                    border-radius: var(--ui-radius-sm); 
-                    margin: var(--ui-modal-item-margin); 
-                    transition: all var(--ui-transition-fast); 
+                .ui-layout-item {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 7px 10px;
+                    background: var(--ui-bg-modal-item);
+                    border: 1px solid transparent;
+                    border-radius: var(--ui-radius-sm);
+                    margin: var(--ui-modal-item-margin);
+                    transition: all var(--ui-transition-fast);
                     flex-shrink: 0;
                 }
-                .ui-layout-item:hover { 
-                    border-color: var(--ui-accent); 
-                    background: var(--ui-bg-modal-item-hover); 
+                .ui-layout-item:hover {
+                    border-color: var(--ui-accent);
+                    background: var(--ui-bg-modal-item-hover);
                 }
                 .ui-layout-meta { display: flex; flex-direction: column; gap: 3px; overflow: hidden; }
-                .ui-layout-name { 
-                    font-size: var(--ui-font-size-layout-name); 
-                    font-weight: var(--ui-font-weight-medium); 
-                    color: var(--ui-text-bright); 
-                    white-space: nowrap; 
-                    text-overflow: ellipsis; 
+                .ui-layout-name {
+                    font-size: var(--ui-font-size-layout-name);
+                    font-weight: var(--ui-font-weight-medium);
+                    color: var(--ui-text-bright);
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
                 }
-                .ui-layout-date { 
-                    font-size: var(--ui-font-size-layout-date); 
-                    color: var(--ui-text-muted); 
-                    font-variant-numeric: tabular-nums; 
+                .ui-layout-date {
+                    font-size: var(--ui-font-size-layout-date);
+                    color: var(--ui-text-muted);
+                    font-variant-numeric: tabular-nums;
                 }
                 .ui-layout-actions { display: flex; align-items: center; gap: 6px; }
-                .ui-badge-app { 
-                    font-size: var(--ui-font-size-badge); 
-                    background: var(--ui-badge-bg); 
-                    color: var(--ui-badge-text); 
-                    padding: 2px 7px; 
-                    border-radius: var(--ui-radius-pill); 
-                    font-weight: var(--ui-font-weight-medium); 
-                    border: 1px solid var(--ui-border); 
+                .ui-badge-app {
+                    font-size: var(--ui-font-size-badge);
+                    background: var(--ui-badge-bg);
+                    color: var(--ui-badge-text);
+                    padding: 2px 7px;
+                    border-radius: var(--ui-radius-pill);
+                    font-weight: var(--ui-font-weight-medium);
+                    border: 1px solid var(--ui-border);
                 }
 
-                /* =========================================================
-                   ESTILOS UNIFICADOS DE UI-COLOR-PICKER (CON VARIABLES UI)
-                   ========================================================= */
                 .ui-cp-root {
                     user-select: none;
                     -webkit-user-select: none;
@@ -1868,100 +2098,100 @@
                     box-sizing: border-box;
                     flex-shrink: 0;
                 }
-                .ui-cp-wheel { 
-                    position: relative; 
-                    width: var(--ui-cp-wheel-size); 
-                    height: var(--ui-cp-wheel-size); 
-                    margin: 10px auto; 
-                    display: flex; 
-                    justify-content: center; 
-                    align-items: center; 
+                .ui-cp-wheel {
+                    position: relative;
+                    width: var(--ui-cp-wheel-size);
+                    height: var(--ui-cp-wheel-size);
+                    margin: 10px auto;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
                     touch-action: none;
                     flex-shrink: 0;
                 }
-                .ui-cp-ring { 
-                    position: absolute; 
-                    width: 100%; 
-                    height: 100%; 
+                .ui-cp-ring {
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
                     border-radius: 50%;
                     background: conic-gradient(hsl(0,100%,50%), hsl(60,100%,50%), hsl(120,100%,50%), hsl(180,100%,50%), hsl(240,100%,50%), hsl(300,100%,50%), hsl(360,100%,50%));
                     -webkit-mask-image: radial-gradient(transparent 64%, black 65%);
-                    mask-image: radial-gradient(transparent 64%, black 65%); 
-                    cursor: crosshair; 
+                    mask-image: radial-gradient(transparent 64%, black 65%);
+                    cursor: crosshair;
                 }
-                .ui-cp-triangle { 
-                    position: absolute; 
-                    width: var(--ui-cp-triangle-w); 
-                    height: var(--ui-cp-triangle-h); 
-                    cursor: crosshair; 
+                .ui-cp-triangle {
+                    position: absolute;
+                    width: var(--ui-cp-triangle-w);
+                    height: var(--ui-cp-triangle-h);
+                    cursor: crosshair;
                 }
-                .ui-cp-ring-pointer, .ui-cp-tri-pointer { 
-                    position: absolute; 
-                    border-radius: 50%; 
-                    pointer-events: none; 
-                    transform: translate(-50%, -50%); 
-                    border: 2px solid #ffffff; 
-                    box-shadow: 0 0 3px rgba(0,0,0,0.8); 
-                    z-index: 10; 
-                    left: 0; 
+                .ui-cp-ring-pointer, .ui-cp-tri-pointer {
+                    position: absolute;
+                    border-radius: 50%;
+                    pointer-events: none;
+                    transform: translate(-50%, -50%);
+                    border: 2px solid #ffffff;
+                    box-shadow: 0 0 3px rgba(0,0,0,0.8);
+                    z-index: 10;
+                    left: 0;
                     top: 0;
                 }
                 .ui-cp-ring-pointer { width: var(--ui-cp-pointer-ring-size); height: var(--ui-cp-pointer-ring-size); }
                 .ui-cp-tri-pointer  { width: var(--ui-cp-pointer-tri-size); height: var(--ui-cp-pointer-tri-size); }
 
-                .ui-cp-rect-container { 
-                    display: none; 
-                    justify-content: center; 
-                    align-items: center; 
-                    gap: 10px; 
-                    margin: 10px auto; 
-                    width: 240px; 
-                    height: 210px; 
+                .ui-cp-rect-container {
+                    display: none;
+                    justify-content: center;
+                    align-items: center;
+                    gap: 10px;
+                    margin: 10px auto;
+                    width: 240px;
+                    height: 210px;
                     touch-action: none;
                     flex-shrink: 0;
                 }
                 .ui-cp-root.mode-rect .ui-cp-wheel { display: none; }
                 .ui-cp-root.mode-rect .ui-cp-rect-container { display: flex; }
-                
-                .ui-cp-rect-sv { 
-                    position: relative; 
-                    width: 210px; 
-                    height: 210px; 
-                    border-radius: var(--ui-radius-sm); 
-                    cursor: crosshair; 
+
+                .ui-cp-rect-sv {
+                    position: relative;
+                    width: 210px;
+                    height: 210px;
+                    border-radius: var(--ui-radius-sm);
+                    cursor: crosshair;
                     border: 1px solid var(--ui-border);
-                    background: linear-gradient(to bottom, transparent, #000), linear-gradient(to right, #fff, transparent), hsl(0, 100%, 50%); 
+                    background: linear-gradient(to bottom, transparent, #000), linear-gradient(to right, #fff, transparent), hsl(0, 100%, 50%);
                 }
-                .ui-cp-rect-hue { 
-                    position: relative; 
-                    width: 20px; 
-                    height: 210px; 
-                    border-radius: var(--ui-radius-sm); 
-                    cursor: pointer; 
+                .ui-cp-rect-hue {
+                    position: relative;
+                    width: 20px;
+                    height: 210px;
+                    border-radius: var(--ui-radius-sm);
+                    cursor: pointer;
                     border: 1px solid var(--ui-border);
-                    background: linear-gradient(to bottom, hsl(0,100%,50%), hsl(60,100%,50%), hsl(120,100%,50%), hsl(180,100%,50%), hsl(240,100%,50%), hsl(300,100%,50%), hsl(360,100%,50%)); 
+                    background: linear-gradient(to bottom, hsl(0,100%,50%), hsl(60,100%,50%), hsl(120,100%,50%), hsl(180,100%,50%), hsl(240,100%,50%), hsl(300,100%,50%), hsl(360,100%,50%));
                 }
-                .ui-cp-rect-sv-pointer { 
-                    position: absolute; 
-                    width: 12px; 
-                    height: 12px; 
-                    border: 2px solid #ffffff; 
-                    border-radius: 50%; 
-                    box-shadow: 0 0 3px rgba(0,0,0,0.8); 
-                    transform: translate(-50%, -50%); 
-                    pointer-events: none; 
+                .ui-cp-rect-sv-pointer {
+                    position: absolute;
+                    width: 12px;
+                    height: 12px;
+                    border: 2px solid #ffffff;
+                    border-radius: 50%;
+                    box-shadow: 0 0 3px rgba(0,0,0,0.8);
+                    transform: translate(-50%, -50%);
+                    pointer-events: none;
                     z-index: 10;
                 }
-                .ui-cp-rect-hue-pointer { 
-                    position: absolute; 
-                    width: 14px; 
-                    height: 14px; 
-                    border: 2px solid #ffffff; 
-                    border-radius: 50%; 
-                    box-shadow: 0 0 3px rgba(0,0,0,0.8); 
-                    transform: translate(-50%, -50%); 
-                    left: 50%; 
-                    pointer-events: none; 
+                .ui-cp-rect-hue-pointer {
+                    position: absolute;
+                    width: 14px;
+                    height: 14px;
+                    border: 2px solid #ffffff;
+                    border-radius: 50%;
+                    box-shadow: 0 0 3px rgba(0,0,0,0.8);
+                    transform: translate(-50%, -50%);
+                    left: 50%;
+                    pointer-events: none;
                     z-index: 10;
                 }
 
@@ -1974,23 +2204,18 @@
 
                 .ui-cp-preview-bar { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-top: 1px solid var(--ui-border-subtle); margin-top: 6px; flex-shrink: 0; }
                 .ui-cp-preview { width: var(--ui-cp-preview-size); height: var(--ui-cp-preview-size); border-radius: var(--ui-radius-sm); border: 1px solid var(--ui-border); flex-shrink: 0; }
-                .ui-cp-statsrgba{
-                 width: 130px;
-            min-height: 200px;
-            
-            display: block;
-              position: relative;
-         
-        display: flex;
-	flex-direction: column;
-	flex-wrap: nowrap;
-	justify-content: flex-start;
-	align-items: stretch;
-	align-content: space-evenly;
-	 
+                .ui-cp-statsrgba {
+                    width: 130px;
+                    min-height: 200px;
+                    position: relative;
+                    display: flex;
+                    flex-direction: column;
+                    flex-wrap: nowrap;
+                    justify-content: flex-start;
+                    align-items: stretch;
+                    align-content: space-evenly;
                 }
-            .colorDm { color: var(--ui-text-dim); font-family: var(--ui-font-family-mono);
-                    font-size: 14px; }
+                .colorDm { color: var(--ui-text-dim); font-family: var(--ui-font-family-mono); font-size: 14px; }
                 .ui-cp-stats {
                     font-family: var(--ui-font-family-mono);
                     font-size: 13px;
@@ -2000,7 +2225,6 @@
                     color: var(--ui-text-muted);
                     flex: 1;
                     overflow: hidden;
-              
                 }
                 .ui-cp-stats .k { color: var(--ui-text-dim); }
                 .ui-cp-stats .v { color: var(--ui-cp-stat-val-color); }
@@ -2017,9 +2241,6 @@
                 .ui-cp-palette-row { display: grid; grid-template-columns: 80px 80px 1fr 30px; gap: 8px; align-items: center; }
                 .ui-cp-swatch { height: 22px; border-radius: var(--ui-radius-sm); border: 1px solid var(--ui-border); cursor: pointer; }
 
-                /* =========================================================
-                   RESPONSIVE DESIGN BREAKPOINTS (MOBILE, TABLET, DESKTOP)
-                   ========================================================= */
                 @media (max-width: 992px) {
                     .ui-container-column { width: 100% !important; height: auto !important; max-height: 60vh !important; }
                     .ui-table-scroll { display: block; overflow-x: auto; }
@@ -2032,16 +2253,16 @@
                         --ui-btn-height: 36px;
                         --ui-square-btn-size: 44px;
                     }
-                    .ui-container-column { 
-                        width: 100% !important; 
-                        height: auto !important; 
-                        max-height: 50vh !important; 
+                    .ui-container-column {
+                        width: 100% !important;
+                        height: auto !important;
+                        max-height: 50vh !important;
                     }
-                    .ui-container-row { 
-                        width: 100% !important; 
+                    .ui-container-row {
+                        width: 100% !important;
                     }
-                    .ui-panel { 
-                        width: 100% !important; 
+                    .ui-panel {
+                        width: 100% !important;
                         margin: 4px 0 !important;
                     }
                     .ui-container.is-floating {
@@ -2052,7 +2273,6 @@
                     }
                     .ui-table-scroll { display: none !important; }
                     .ui-table-cards { display: flex !important; }
-                    
                     .ui-layout-modal-backdrop {
                         padding: 8px;
                         align-items: flex-end;
@@ -2067,27 +2287,36 @@
                     }
                 }
             `;
-            const target = document.head || document.documentElement;
-            if (target) target.appendChild(style);
+            (document.head || document.documentElement).appendChild(style);
         }
     }
 
     class UIRegistryManager {
-        constructor() { this.entities = new Map(); }
-        register(id, instance) { if (id) this.entities.set(id, instance); }
-        unregister(id) { if (id) this.entities.delete(id); }
-        get(id) { return this.entities.get(id); }
-        getAll() { return this.entities; }
+        constructor() {
+            this.entities = new Map();
+        }
+        register(id, instance) {
+            if (id) this.entities.set(id, instance);
+        }
+        unregister(id) {
+            if (id) this.entities.delete(id);
+        }
+        get(id) {
+            return this.entities.get(id);
+        }
+        getAll() {
+            return this.entities;
+        }
     }
     const UIRegistry = new UIRegistryManager();
 
-    let _uiInstanceCounter = 0;
+    let _uiSeq = 0;
 
     class UIBaseComponent {
-        constructor({ id = null } = {}, fallbackPrefix = 'ui_comp') {
+        constructor({ id = null } = {}, fallback = 'ui_comp') {
             UITheme.inject();
-            _uiInstanceCounter++;
-            this.id = id ? String(id).trim() : `${fallbackPrefix}_${_uiInstanceCounter}`;
+            _uiSeq++;
+            this.id = id ? String(id).trim() : `${fallback}_${_uiSeq}`;
             this.element = null;
             this.isDestroyed = false;
             this.onDestroyCallback = null;
@@ -2095,8 +2324,8 @@
         }
         mount(parent) {
             if (this.element && parent) {
-                if (parent.element) parent.element.appendChild(this.element);
-                else parent.appendChild(this.element);
+                const p = parent.element ? parent.element : parent;
+                p.appendChild(this.element);
             }
             return this;
         }
@@ -2181,10 +2410,10 @@
             }
         }
 
-        register(panel) { this.panels.add(panel); }
-        unregister(panel) { this.panels.delete(panel); }
-        registerButton(btn) { this.buttons.add(btn); }
-        unregisterButton(btn) { this.buttons.delete(btn); }
+        register(p) { this.panels.add(p); }
+        unregister(p) { this.panels.delete(p); }
+        registerButton(b) { this.buttons.add(b); }
+        unregisterButton(b) { this.buttons.delete(b); }
         registerContainer(c) { this.containers.add(c); }
         unregisterContainer(c) { this.containers.delete(c); }
 
@@ -2194,7 +2423,9 @@
             const vw = window.innerWidth + window.scrollX;
             const vh = window.innerHeight + window.scrollY;
 
-            let finalX = rawX, finalY = rawY, snapped = false;
+            let finalX = rawX;
+            let finalY = rawY;
+            let snapped = false;
 
             if (Math.abs(finalX - window.scrollX) < this.threshold) { finalX = window.scrollX; snapped = true; }
             if (Math.abs(finalY - window.scrollY) < this.threshold) { finalY = window.scrollY; snapped = true; }
@@ -2211,7 +2442,6 @@
 
                 const alignLeftDist = Math.abs(finalX - ox);
                 const alignTopDist = Math.abs(finalY - oy);
-
                 const stackBottomDist = Math.abs(finalY - (oy + oh));
                 const stackTopDist = Math.abs(finalY + dh - oy);
                 const stackRightDist = Math.abs(finalX - (ox + ow));
@@ -2265,9 +2495,12 @@
             const vw = window.innerWidth + window.scrollX;
             const vh = window.innerHeight + window.scrollY;
 
-            let finalX = rawX, finalY = rawY;
-            let snappedX = false, snappedY = false;
-            let guideXPos = null, guideYPos = null;
+            let finalX = rawX;
+            let finalY = rawY;
+            let snappedX = false;
+            let snappedY = false;
+            let guideXPos = null;
+            let guideYPos = null;
 
             if (Math.abs(finalX) < this.threshold) { finalX = 0; snappedX = true; guideXPos = 0; }
             if (Math.abs(finalY) < this.threshold) { finalY = 0; snappedY = true; guideYPos = 0; }
@@ -2276,7 +2509,10 @@
 
             for (const other of this.buttons) {
                 if (other === draggedItem || !other.element || other.element.style.display === 'none') continue;
-                const ox = other.element.offsetLeft, oy = other.element.offsetTop, ow = other.element.offsetWidth, oh = other.element.offsetHeight;
+                const ox = other.element.offsetLeft;
+                const oy = other.element.offsetTop;
+                const ow = other.element.offsetWidth;
+                const oh = other.element.offsetHeight;
 
                 if (!snappedX) {
                     if (Math.abs(finalX - ox) < this.threshold) { finalX = ox; snappedX = true; guideXPos = ox; }
@@ -2358,61 +2594,55 @@
     }
 
     class UIContainer extends UIBaseComponent {
-       constructor({
-    id = null,
-    direction = 'column',
-    width = '290px',
-    height = 'calc(100vh - 48px)',
-    gap = 8,
-    floating = false,
-    draggable = false,
-    title = '',
-    x = 50,
-    y = 50
-} = {}) {
-    const fallbackPrefix = title ? `cnt_${title.toLowerCase().replace(/[^a-z0-9]/g, '_')}` : 'cnt';
-    super({ id }, fallbackPrefix);
+        constructor({
+            id = null,
+            direction = 'column',
+            width = '290px',
+            height = 'calc(100vh - 48px)',
+            gap = 8,
+            floating = false,
+            draggable = false,
+            title = '',
+            x = 50,
+            y = 50
+        } = {}) {
+            const fallbackPrefix = title ? `cnt_${title.toLowerCase().replace(/[^a-z0-9]/g, '_')}` : 'cnt';
+            super({ id }, fallbackPrefix);
 
-    if (typeof direction === 'boolean') {
-        direction = direction ? 'column' : 'row';
-    } else if (direction !== 'row' && direction !== 'column') {
-        direction = 'column';
-    }
+            this.direction = (typeof direction === 'boolean') ? (direction ? 'column' : 'row') : (direction === 'row' ? 'row' : 'column');
+            this.width = typeof width === 'number' ? `${width}px` : width;
+            this.height = typeof height === 'number' ? `${height}px` : height;
+            this.gap = gap;
+            this.isFloating = floating || draggable;
+            this.isDraggable = draggable;
+            this.title = title;
+            this.x = x;
+            this.y = y;
+            this.panels = [];
+            this.isHidden = false;
 
-    this.direction = direction;
-    this.width = typeof width === 'number' ? `${width}px` : width;
-    this.height = typeof height === 'number' ? `${height}px` : height;
-    this.gap = gap;
-    this.isFloating = floating || draggable;
-    this.isDraggable = draggable;
-    this.title = title;
-    this.x = x;
-    this.y = y;
-    this.panels = [];
-    this.isHidden = false;
+            this.element = document.createElement('div');
+            this.element.className = `ui-container ui-container-${this.direction}`;
+            this.element.setAttribute('data-ui-id', this.id);
+            this.element.style.setProperty('--ui-container-gap', `${this.gap}px`);
+            this.element.style.setProperty('--ui-container-w', this.width);
+            this.element.style.setProperty('--ui-container-h', this.height);
 
-    this.element = document.createElement('div');
-    this.element.className = `ui-container ui-container-${this.direction}`;
-    this.element.setAttribute('data-ui-id', this.id);
-    this.element.style.setProperty('--ui-container-gap', `${this.gap}px`);
-    this.element.style.setProperty('--ui-container-w', this.width);
-    this.element.style.setProperty('--ui-container-h', this.height);
+            if (this.isFloating) {
+                this.element.classList.add('is-floating');
+                this.applyPosition();
+                if (this.title || this.isDraggable) {
+                    this.createHeader();
+                }
+            }
 
-    if (this.isFloating) {
-        this.element.classList.add('is-floating');
-        this.applyPosition();
-        if (this.title || this.isDraggable) {
-            this.createHeader();
+            this.placeholder = document.createElement('div');
+            this.placeholder.className = 'ui-panel-placeholder';
+            this.placeholder.style.display = 'none';
+
+            GlobalDock.registerContainer(this);
+            this.bindEvents();
         }
-    }
-
-    this.placeholder = document.createElement('div');
-    this.placeholder.className = 'ui-panel-placeholder';
-    this.placeholder.style.display = 'none';
-
-    GlobalDock.registerContainer(this);
-    this.bindEvents();
-}
 
         applyPosition() {
             const isMobile = window.innerWidth <= 768;
@@ -3405,7 +3635,7 @@
 
             this.element = document.createElement('div');
             this.element.className = 'ui-select-wrap';
-            
+
             this.element.innerHTML = `
                 <div class="ui-select-trigger header-dropdown">
                     <div class="ui-select-icon-circle icon-circle"></div>
@@ -4522,7 +4752,7 @@
 
                 const evaluated = GlobalDock.evaluateSmartSnap(this, cx - offsetX, cy - offsetY);
                 this.element.classList.toggle('is-snapping', evaluated.snapped);
-                this.x = evaluated.x; 
+                this.x = evaluated.x;
                 this.y = evaluated.y;
                 this.element.style.left = `${this.x}px`;
                 this.element.style.top = `${this.y}px`;
@@ -4546,7 +4776,7 @@
                 if (!this.isDraggable) return;
                 isTracking = true;
                 this.isDragging = false;
-                startClientX = e.clientX; 
+                startClientX = e.clientX;
                 startClientY = e.clientY;
                 offsetX = e.pageX - this.element.offsetLeft;
                 offsetY = e.pageY - this.element.offsetTop;
@@ -4558,7 +4788,7 @@
                 const t = e.touches[0];
                 isTracking = true;
                 this.isDragging = false;
-                startClientX = t.clientX; 
+                startClientX = t.clientX;
                 startClientY = t.clientY;
                 offsetX = t.pageX - this.element.offsetLeft;
                 offsetY = t.pageY - this.element.offsetTop;
@@ -4846,7 +5076,6 @@
                 this.data = Array.isArray(json) ? json : (json.data || []);
                 this.applyFilter();
             } catch (err) {
-                console.error(err);
             } finally {
                 this.btnRefresh.disabled = false;
             }
@@ -5092,14 +5321,14 @@
                     flex-direction: column;
                     gap: 8px;
                 }
-                
+
                 @media (max-width: 992px) {
                     .ui-responsive-grid {
                         grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)) !important;
                         gap: 10px !important;
                     }
                 }
-                
+
                 @media (max-width: 768px) {
                     .ui-responsive-grid {
                         grid-template-columns: 1fr !important;
@@ -5154,7 +5383,10 @@
                             ${draggable ? '<span class="ui-grid-drag-handle">⠿</span>' : ''}
                             <span>${title}</span>
                         </span>
-                        <div class="ui-grid-card-tools">
+                     
+ 
+
+<div class="ui-grid-card-tools">
                             ${collapsible ? '<button class="ui-icon-btn btn-col">_</button>' : ''}
                             ${closable ? '<button class="ui-icon-btn btn-cls">✕</button>' : ''}
                         </div>
@@ -5247,989 +5479,1605 @@
         }
 
         showAllClosed() {
-            this.items.forEach(({ card }) => card.style.display = 'flex');
+            this.items.forEach(({ card }) => { card.style.display = 'flex'; });
             return this;
         }
     }
-   
 
+    class UIColorPicker extends UIBaseComponent {
+        constructor({
+            id = null,
+            title = 'Color Picker',
+            x = 40,
+            y = 40,
+            floating = true,
+            initialColor = null,
+            canvas = null,
+            onChange = () => {},
+            onEyedropperToggle = () => {}
+        } = {}) {
+            super({ id }, 'color_picker');
 
-class UIColorPicker extends UIBaseComponent {
-  constructor({
-    id = null,
-    title = 'Color Picker',
-    x = 40,
-    y = 40,
-    floating = true,
-    initialColor = null,
-    canvas = null,
-    onChange = () => {},
-    onEyedropperToggle = () => {}
-  } = {}) {
-    super({ id }, 'color_picker');
+            this.title = title;
+            this.floating = floating;
+            this.callback = typeof onChange === 'function' ? onChange : () => {};
+            this.onEyedropperToggle = typeof onEyedropperToggle === 'function' ? onEyedropperToggle : () => {};
 
-    this.title = title;
-    this.floating = floating;
-    this.callback = typeof onChange === 'function' ? onChange : () => {};
-    this.onEyedropperToggle = typeof onEyedropperToggle === 'function' ? onEyedropperToggle : () => {};
+            const initRGB = this.parseInitialRGBA(initialColor);
+            const initHSV = this.rgbToHsv(initRGB.r, initRGB.g, initRGB.b);
+            this.hue = initHSV.h;
+            this.sat = initHSV.s;
+            this.val = initHSV.v;
+            this.alpha = initRGB.a;
 
-    const initRGB = this.parseInitialRGBA(initialColor);
-    const initHSV = this.rgbToHsv(initRGB.r, initRGB.g, initRGB.b);
-    this.hue = initHSV.h;
-    this.sat = initHSV.s;
-    this.val = initHSV.v;
-    this.alpha = initRGB.a;
+            this.isDraggingTriangle = false;
+            this.isDraggingRing = false;
+            this.isDraggingRectSV = false;
+            this.isDraggingRectHue = false;
+            this.lastRenderedHue = -1;
+            this.cachedGlobalStats = null;
+            this.infoDeColores = null;
 
-    this.isDraggingTriangle = false;
-    this.isDraggingRing = false;
-    this.isDraggingRectSV = false;
-    this.isDraggingRectHue = false;
-    this.lastRenderedHue = -1;
-    this.cachedGlobalStats = null;
-    this.infoDeColores=null;
+            this.canvasSource = null;
+            this.currentCanvas = null;
+            this.currentCtx = null;
+            this.isRectMode = false;
 
-    this.canvasSource = null;
-    this.currentCanvas = null;
-    this.currentCtx = null;
-    this.isRectMode = false;
+            this.isEyedropperActive = false;
+            this.isEyedropperMouseDown = false;
+            this._overlayEyedropper = null;
+            this._bubbleEyedropper = null;
 
-    this.isEyedropperActive = false;
-    this.isEyedropperMouseDown = false;
-    this._overlayEyedropper = null;
-    this._bubbleEyedropper = null;
+            this.panel = new UISmartPanel({
+                id: `${this.id}_panel`,
+                title: this.title,
+                x,
+                y,
+                width: 310,
+                floating: this.floating
+            });
 
-    this.panel = new UISmartPanel({
-      id: `${this.id}_panel`,
-      title: this.title,
-      x, y,
-      width: 310,
-      floating: this.floating
-    });
+            this.element = this.panel.element;
+            this.buildPickerUI();
+            this.bindEvents();
 
-    this.element = this.panel.element;
-    this.buildPickerUI();
-    this.bindEvents();
+            if (canvas) {
+                this.setCanvas(canvas);
+            }
 
-    if (canvas) {
-      this.setCanvas(canvas);
-    }
-
-    requestAnimationFrame(() => {
-      this.renderTriangle();
-      this.updateUI();
-    });
-  }
-
-  setCanvas(source) {
-    this.canvasSource = source;
-    this.refreshCanvasTarget();
-    this.updateImageStats();
-    this.updateUI();
-    return this;
-  }
-
-  setElementoAnalizar(source) {
-    this.setCanvas(source);
-    return Promise.resolve();
-  }
-
-  _resolveCanvas() {
-    let src = this.canvasSource;
-    if (typeof src === 'function') {
-      try { src = src(); } catch (e) { return null; }
-    }
-    if (typeof src === 'string') {
-      src = document.querySelector(src);
-    }
-    return (src instanceof HTMLCanvasElement) ? src : null;
-  }
-
-  refreshCanvasTarget() {
-    const target = this._resolveCanvas();
-    if (target !== this.currentCanvas) {
-      this.currentCanvas = target;
-      if (this.currentCanvas) {
-        try {
-          this.currentCtx = this.currentCanvas.getContext('2d', { willReadFrequently: true });
-        } catch (e) {
-          this.currentCtx = null;
+            requestAnimationFrame(() => {
+                this.renderTriangle();
+                this.updateUI();
+            });
         }
-      } else {
-        this.currentCtx = null;
-      }
-    }
-    return this.currentCanvas;
-  }
 
-  parseInitialRGBA(col) {
-    const def = { r: 56, g: 189, b: 248, a: 1.0 };
-    if (!col || typeof col !== 'object') return def;
-    let r = col.r !== undefined ? Number(col.r) : 56;
-    let g = col.g !== undefined ? Number(col.g) : 189;
-    let b = col.b !== undefined ? Number(col.b) : 248;
-    let a = col.a !== undefined ? Number(col.a) : 1.0;
-
-    if (r <= 1 && g <= 1 && b <= 1 && (r > 0 || g > 0 || b > 0)) {
-      r = Math.round(r * 255);
-      g = Math.round(g * 255);
-      b = Math.round(b * 255);
-    } else {
-      r = Math.round(r); g = Math.round(g); b = Math.round(b);
-    }
-    return {
-      r: Math.max(0, Math.min(255, isNaN(r) ? 56 : r)),
-      g: Math.max(0, Math.min(255, isNaN(g) ? 189 : g)),
-      b: Math.max(0, Math.min(255, isNaN(b) ? 248 : b)),
-      a: Math.max(0, Math.min(1, isNaN(a) ? 1.0 : a))
-    };
-  }
-
-  buildPickerUI() {
-    const container = document.createElement('div');
-    container.className = 'ui-cp-root';
-
-    container.innerHTML = `
-      <div class="ui-row ui-row-align-4" style="margin-bottom: 4px;">
-        <label class="ui-checkbox chk-rect-mode">
-          <div class="ui-checkbox-box"><div class="ui-checkbox-mark"></div></div>
-          <span class="ui-label">Rect</span>
-        </label>
-        <div style="display:flex; gap:6px;">
-          <button class="ui-btn btn-palette" style="height:24px; padding:0 8px; font-size:13px;">Palette</button>
-          <button class="ui-btn btn-eyedropper" style="height:24px; padding:0 8px; font-size:13px;">Picker</button>
-        </div>
-      </div>
-
-      <div class="ui-cp-wheel">
-        <div class="ui-cp-ring"></div>
-        <canvas class="ui-cp-triangle" width="130" height="115"></canvas>
-        <div class="ui-cp-ring-pointer"></div>
-        <div class="ui-cp-tri-pointer"></div>
-      </div>
-
-      <div class="ui-cp-rect-container">
-        <div class="ui-cp-rect-sv"><div class="ui-cp-rect-sv-pointer"></div></div>
-        <div class="ui-cp-rect-hue"><div class="ui-cp-rect-hue-pointer"></div></div>
-      </div>
-
-      <div class="ui-cp-sliders">
-        <div class="ui-cp-slider-row"><div class="ui-cp-slider-bg slider-hue-bg"></div>
-          <input type="range" class="ui-cp-slider slider-hue" min="0" max="360" value="${this.hue}"></div>
-        <div class="ui-cp-slider-row"><div class="ui-cp-slider-bg slider-sat-bg"></div>
-          <input type="range" class="ui-cp-slider slider-sat" min="0" max="100" value="${Math.round(this.sat)}"></div>
-        <div class="ui-cp-slider-row"><div class="ui-cp-slider-bg slider-val-bg"></div>
-          <input type="range" class="ui-cp-slider slider-val" min="0" max="100" value="${Math.round(this.val)}"></div>
-        <div class="ui-cp-slider-row"><div class="ui-cp-slider-bg slider-alpha-bg"></div>
-          <input type="range" class="ui-cp-slider slider-alpha" min="0" max="1" step="0.01" value="${this.alpha}"></div>
-      </div>
-
-      <div class="ui-cp-preview-bar">
-        <span class="ui-label" style="font-size:13px;">COLOR:</span>
-        <div class="ui-cp-preview"></div>
-      </div>
-
-      <div class="ui-row ui-row-align-0" style="margin-top:6px; gap:4px;">
-        <span class="ui-label" style="width:36px;">rgba:</span>
-        <input type="number" step="0.01" min="0" max="1" class="ui-input inp-rgba-r" style="width:52px; padding:0 2px; text-align:center;">
-        <input type="number" step="0.01" min="0" max="1" class="ui-input inp-rgba-g" style="width:52px; padding:0 2px; text-align:center;">
-        <input type="number" step="0.01" min="0" max="1" class="ui-input inp-rgba-b" style="width:52px; padding:0 2px; text-align:center;">
-        <input type="number" step="0.01" min="0" max="1" class="ui-input inp-rgba-a" style="width:52px; padding:0 2px; text-align:center;">
-      </div>
-
-      <div class="ui-row ui-row-align-0" style="gap:4px;">
-        <span class="ui-label" style="width:36px;">RGBA:</span>
-        <input type="number" step="1" min="0" max="255" class="ui-input inp-RGBA-r" style="width:52px; padding:0 2px; text-align:center;">
-        <input type="number" step="1" min="0" max="255" class="ui-input inp-RGBA-g" style="width:52px; padding:0 2px; text-align:center;">
-        <input type="number" step="1" min="0" max="255" class="ui-input inp-RGBA-b" style="width:52px; padding:0 2px; text-align:center;">
-        <input type="number" step="1" min="0" max="255" class="ui-input inp-RGBA-a" style="width:52px; padding:0 2px; text-align:center;">
-      </div>
-
-      <div class="ui-row ui-row-align-0" style="gap:6px; align-items:flex-start;">
-        <span class="ui-label" style="width:36px; padding-top:6px;">hex:</span>
-        <input type="text" class="ui-input inp-hex" style="width:85px; font-family:var(--ui-font-family-mono); text-align:center;" maxlength="7">
-        <div class="ui-cp-stats">
-          <div class="ui-cp-stats-global"></div>
-          <div class="ui-cp-stats-sel"></div>
-        </div>
-         <div class="ui-cp-statsrgba">
-          <div class="mtac colorDm"> </div>
-          <div class="dfrg colorDm"> </div>
-          <div class="dfrb colorDm">< /div>
-          
-        </div>
-      </div>
-    `;
-
-    this.panel.append(container);
-    this.dom = {
-      root: container,
-      chkRect: container.querySelector('.chk-rect-mode'),
-      btnPalette: container.querySelector('.btn-palette'),
-      btnEyedropper: container.querySelector('.btn-eyedropper'),
-      wheel: container.querySelector('.ui-cp-wheel'),
-      ring: container.querySelector('.ui-cp-ring'),
-      triangle: container.querySelector('.ui-cp-triangle'),
-      ringPointer: container.querySelector('.ui-cp-ring-pointer'),
-      triPointer: container.querySelector('.ui-cp-tri-pointer'),
-      rectContainer: container.querySelector('.ui-cp-rect-container'),
-      rectSV: container.querySelector('.ui-cp-rect-sv'),
-      rectSVPtr: container.querySelector('.ui-cp-rect-sv-pointer'),
-      rectHue: container.querySelector('.ui-cp-rect-hue'),
-      rectHuePtr: container.querySelector('.ui-cp-rect-hue-pointer'),
-      sliderHue: container.querySelector('.slider-hue'),
-      sliderSat: container.querySelector('.slider-sat'),
-      sliderVal: container.querySelector('.slider-val'),
-      sliderAlpha: container.querySelector('.slider-alpha'),
-      hueBg: container.querySelector('.slider-hue-bg'),
-      satBg: container.querySelector('.slider-sat-bg'),
-      valBg: container.querySelector('.slider-val-bg'),
-      alphaBg: container.querySelector('.slider-alpha-bg'),
-      preview: container.querySelector('.ui-cp-preview'),
-      rgbaR: container.querySelector('.inp-rgba-r'),
-      rgbaG: container.querySelector('.inp-rgba-g'),
-      rgbaB: container.querySelector('.inp-rgba-b'),
-      rgbaA: container.querySelector('.inp-rgba-a'),
-      RGBAR: container.querySelector('.inp-RGBA-r'),
-      RGBAG: container.querySelector('.inp-RGBA-g'),
-      RGBAB: container.querySelector('.inp-RGBA-b'),
-      RGBAA: container.querySelector('.inp-RGBA-a'),
-      hex: container.querySelector('.inp-hex'),
-      statsGlobal: container.querySelector('.ui-cp-stats-global'),
-      statsSel: container.querySelector('.ui-cp-stats-sel'),
-      dfrg: container.querySelector('.dfrg'),
-      dfrb: container.querySelector('.dfrb'),
-      rounessRgba:container.querySelector('.mtac'),
-    };
-
-    this.triCtx = this.dom.triangle.getContext('2d', { willReadFrequently: true });
-  }
-
-  renderTriangle() {
-    const w = this.dom.triangle.width;
-    const h = this.dom.triangle.height;
-    const img = this.triCtx.createImageData(w, h);
-    const data = img.data;
-    const hue = this.hue;
-
-    for (let y = 0; y < h; y++) {
-      const yn = y / (h - 1);
-      const halfW = 0.5 * w * yn;
-      const xStart = Math.max(0, Math.floor(0.5 * w - halfW));
-      const xEnd = Math.min(w - 1, Math.ceil(0.5 * w + halfW));
-
-      for (let x = xStart; x <= xEnd; x++) {
-        const xn = x / (w - 1);
-        let S = 100 * (xn + 0.5 - 0.5 * yn);
-        let V = 100 * yn;
-        S = S < 0 ? 0 : S > 100 ? 100 : S;
-        V = V < 0 ? 0 : V > 100 ? 100 : V;
-
-        const { r, g, b } = this.hsvToRgb(hue, S, V);
-        const idx = (y * w + x) * 4;
-        data[idx] = r;
-        data[idx + 1] = g;
-        data[idx + 2] = b;
-        data[idx + 3] = 255;
-      }
-    }
-    this.triCtx.putImageData(img, 0, 0);
-    this.lastRenderedHue = hue;
-  }
-
-  bindEvents() {
-    this.dom.root.addEventListener('mousedown', (e) => e.stopPropagation());
-
-    this.dom.chkRect.addEventListener('click', () => {
-      this.isRectMode = !this.isRectMode;
-      this.dom.chkRect.classList.toggle('checked', this.isRectMode);
-      this.dom.root.classList.toggle('mode-rect', this.isRectMode);
-      this.updateUI();
-    });
-
-    this.dom.sliderHue.addEventListener('input', (e) => { this.hue = parseFloat(e.target.value); this.renderTriangle(); this.updateUI(); });
-    this.dom.sliderSat.addEventListener('input', (e) => { this.sat = parseFloat(e.target.value); this.updateUI(); });
-    this.dom.sliderVal.addEventListener('input', (e) => { this.val = parseFloat(e.target.value); this.updateUI(); });
-    this.dom.sliderAlpha.addEventListener('input', (e) => { this.alpha = parseFloat(e.target.value); this.updateUI(); });
-
-    this.dom.ring.addEventListener('mousedown', (e) => {
-      this.isDraggingRing = true;
-      this.updateHueFromMouse(e);
-      e.preventDefault();
-    });
-
-    this.dom.triangle.addEventListener('mousedown', (e) => {
-      this.isDraggingTriangle = true;
-      this.updateSVFromMouse(e);
-      e.preventDefault();
-    });
-
-    this.dom.rectSV.addEventListener('mousedown', (e) => {
-      this.isDraggingRectSV = true;
-      this.updateSVFromMouseRect(e);
-      e.preventDefault();
-    });
-
-    this.dom.rectHue.addEventListener('mousedown', (e) => {
-      this.isDraggingRectHue = true;
-      this.updateHueFromMouseRect(e);
-      e.preventDefault();
-    });
-
-    this._onMouseMove = (e) => {
-      if (this.isDraggingRing) this.updateHueFromMouse(e);
-      if (this.isDraggingTriangle) this.updateSVFromMouse(e);
-      if (this.isDraggingRectSV) this.updateSVFromMouseRect(e);
-      if (this.isDraggingRectHue) this.updateHueFromMouseRect(e);
-    };
-
-    this._onMouseUp = () => {
-      this.isDraggingRing = false;
-      this.isDraggingTriangle = false;
-      this.isDraggingRectSV = false;
-      this.isDraggingRectHue = false;
-    };
-
-    window.addEventListener('mousemove', this._onMouseMove);
-    window.addEventListener('mouseup', this._onMouseUp);
-
-    const onRgbaChange = () => {
-      const r = parseFloat(this.dom.rgbaR.value) || 0;
-      const g = parseFloat(this.dom.rgbaG.value) || 0;
-      const b = parseFloat(this.dom.rgbaB.value) || 0;
-      const a = this.dom.rgbaA.value !== '' ? parseFloat(this.dom.rgbaA.value) : this.alpha;
-      this.setFromRGB(Math.round(r * 255), Math.round(g * 255), Math.round(b * 255), a, 'rgba');
-    };
-    [this.dom.rgbaR, this.dom.rgbaG, this.dom.rgbaB, this.dom.rgbaA].forEach(k => {
-      k.addEventListener('input', onRgbaChange);
-    });
-
-    const onRGBAChange = () => {
-      const r = parseFloat(this.dom.RGBAR.value) || 0;
-      const g = parseFloat(this.dom.RGBAG.value) || 0;
-      const b = parseFloat(this.dom.RGBAB.value) || 0;
-      const a = this.dom.RGBAA.value !== '' ? parseFloat(this.dom.RGBAA.value) / 255 : this.alpha;
-      this.setFromRGB(Math.round(r), Math.round(g), Math.round(b), a, 'RGBA');
-    };
-    [this.dom.RGBAR, this.dom.RGBAG, this.dom.RGBAB, this.dom.RGBAA].forEach(k => {
-      k.addEventListener('input', onRGBAChange);
-    });
-
-    this.dom.hex.addEventListener('input', () => this.setHex(this.dom.hex.value));
-    this.dom.btnEyedropper.addEventListener('click', () => this.toggleEyedropper());
-    this.dom.btnPalette.addEventListener('click', () => this.openPaletteModal());
-  }
-
-  updateHueFromMouse(e) {
-    const r = this.dom.wheel.getBoundingClientRect();
-    const cx = r.left + r.width / 2;
-    const cy = r.top + r.height / 2;
-    const a = Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI);
-    this.hue = (a + 90 + 360) % 360;
-    this.dom.sliderHue.value = Math.round(this.hue);
-    this.renderTriangle();
-    this.updateUI();
-  }
-
-  updateSVFromMouse(e) {
-    const r = this.dom.triangle.getBoundingClientRect();
-    const tW = this.dom.triangle.width;
-    const tH = this.dom.triangle.height;
-
-    let mx = (e.clientX - r.left) * (tW / r.width);
-    let my = (e.clientY - r.top) * (tH / r.height);
-
-    my = Math.max(0, Math.min(tH - 0.001, my));
-    const yn = my / (tH - 1);
-
-    let xn = mx / (tW - 1);
-    const minXn = 0.5 - 0.5 * yn;
-    const maxXn = 0.5 + 0.5 * yn;
-    xn = Math.max(minXn, Math.min(maxXn, xn));
-
-    let S = 100 * (xn + 0.5 - 0.5 * yn);
-    let V = 100 * yn;
-    S = Math.max(0, Math.min(100, S));
-    V = Math.max(0, Math.min(100, V));
-
-    this.sat = S;
-    this.val = V;
-    this.dom.sliderSat.value = Math.round(S);
-    this.dom.sliderVal.value = Math.round(V);
-    this.updateUI();
-  }
-
-  updateSVFromMouseRect(e) {
-    const r = this.dom.rectSV.getBoundingClientRect();
-    let mx = (e.clientX - r.left) / r.width;
-    let my = (e.clientY - r.top) / r.height;
-
-    mx = Math.max(0, Math.min(1, mx));
-    my = Math.max(0, Math.min(1, my));
-
-    this.sat = mx * 100;
-    this.val = (1 - my) * 100;
-
-    this.dom.sliderSat.value = Math.round(this.sat);
-    this.dom.sliderVal.value = Math.round(this.val);
-    this.updateUI();
-  }
-
-  updateHueFromMouseRect(e) {
-    const r = this.dom.rectHue.getBoundingClientRect();
-    let my = (e.clientY - r.top) / r.height;
-    my = Math.max(0, Math.min(1, my));
-
-    this.hue = my * 360;
-    this.dom.sliderHue.value = Math.round(this.hue);
-    this.renderTriangle();
-    this.updateUI();
-  }
-
-  updateUI(source = null) {
-    const rgb = this.hsvToRgb(this.hue, this.sat, this.val);
-    const currentColor = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
-    this.dom.preview.style.backgroundColor = currentColor;
-
-    if (Math.abs(this.hue - this.lastRenderedHue) > 0.5) {
-      this.renderTriangle();
-    }
-
-    this.dom.satBg.style.background = `linear-gradient(to right, hsl(${this.hue}, 0%, 50%), hsl(${this.hue}, 100%, 50%))`;
-    this.dom.valBg.style.background = `linear-gradient(to right, black, hsl(${this.hue}, 100%, 50%))`;
-    this.dom.alphaBg.style.background = `linear-gradient(to right, transparent, ${currentColor})`;
-
-    const cW = this.dom.wheel.clientWidth, cH = this.dom.wheel.clientHeight;
-    const tW = this.dom.triangle.clientWidth, tH = this.dom.triangle.clientHeight;
-    const cx = cW / 2, cy = cH / 2, rr = (cW / 2) - 8;
-    const aR = (this.hue - 90) * (Math.PI / 180);
-
-    this.dom.ringPointer.style.left = `${cx + Math.cos(aR) * rr}px`;
-    this.dom.ringPointer.style.top  = `${cy + Math.sin(aR) * rr}px`;
-
-    if (cW && tW) {
-      const yn = this.val / 100;
-      const xn = (this.sat - 50 + this.val / 2) / 100;
-      const oX = (cW - tW) / 2, oY = (cH - tH) / 2;
-      this.dom.triPointer.style.left = `${oX + xn * tW}px`;
-      this.dom.triPointer.style.top  = `${oY + yn * tH}px`;
-    }
-
-    if (this.isRectMode) {
-      this.dom.rectSV.style.background = `linear-gradient(to bottom, transparent, #000), linear-gradient(to right, #fff, transparent), hsl(${this.hue}, 100%, 50%)`;
-      this.dom.rectSVPtr.style.left = `${this.sat}%`;
-      this.dom.rectSVPtr.style.top = `${100 - this.val}%`;
-      this.dom.rectHuePtr.style.top = `${(this.hue / 360) * 100}%`;
-    }
-
-    if (source !== 'rgba') {
-      this.dom.rgbaR.value = (rgb.r / 255).toFixed(2);
-      this.dom.rgbaG.value = (rgb.g / 255).toFixed(2);
-      this.dom.rgbaB.value = (rgb.b / 255).toFixed(2);
-      this.dom.rgbaA.value = Number(this.alpha).toFixed(2);
-    }
-    if (source !== 'RGBA') {
-      this.dom.RGBAR.value = rgb.r;
-      this.dom.RGBAG.value = rgb.g;
-      this.dom.RGBAB.value = rgb.b;
-      this.dom.RGBAA.value = Math.round(this.alpha * 255);
-    }
-    if (source !== 'hex') this.dom.hex.value = this.rgbToHex(rgb.r, rgb.g, rgb.b);
-
-    const selMax = Math.max(rgb.r, rgb.g, rgb.b)/255;
-    const selMin = Math.min(rgb.r, rgb.g, rgb.b)/255;
-    const selSat = selMax > 0 ? +(selMin / selMax+0.00001).toFixed(3) : 0;
-    this.dom.statsSel.innerHTML = `
-      <span class="k">max:</span><span class="v">${selMax}</span><br>
-      <span class="k">min:</span><span class="v">${selMin}</span><br>
-      <span class="k">sat:</span><span class="s">${selSat}</span>
-    `;
-
-    this.notifyChange();
-  }
-
-  notifyChange() {
-    const rgb = this.hsvToRgb(this.hue, this.sat, this.val);
-    const rgba = `vec4(${(rgb.r / 255).toFixed(2)}, ${(rgb.g / 255).toFixed(2)}, ${(rgb.b / 255).toFixed(2)}, ${Number(this.alpha).toFixed(2)})`;
-    const RGBA = `vec4(${rgb.r}, ${rgb.g}, ${rgb.b}, ${Math.round(this.alpha * 255)})`;
-    const hex = this.rgbToHex(rgb.r, rgb.g, rgb.b);
-    const selMax = Math.max(rgb.r, rgb.g, rgb.b);
-    const selMin = Math.min(rgb.r, rgb.g, rgb.b);
-    const delta = selMax - selMin;
-    let max=selMax/255;
-      let min=selMin/255;
-      let dv=min/(max+0.00001);
-        
- 
-
-    const info = {
-      global: this.cachedGlobalStats ? { ...this.cachedGlobalStats } : null,
-      selected: {
-        r: rgb.r, g: rgb.g, b: rgb.b,
-        max: selMax, min: selMin, delta: delta,
-        sat: selMax > 0 ? +(selMin / selMax).toFixed(3) : 0,
-        minOverMax: selMax > 0 ? +(selMin / selMax).toFixed(4) : 0,
-        maxOverMin: selMin > 0 ? +(selMax / selMin).toFixed(4) : (selMax > 0 ? Infinity : 1)
-      },
-      stats: {
-        max: selMax,
-        min: selMin,
-        delta: delta,
-        minOverMax: selMax > 0 ? +(selMin / selMax).toFixed(4) : 0,
-        maxOverMin: selMin > 0 ? +(selMax / selMin).toFixed(4) : (selMax > 0 ? Infinity : 1)
-      },
-      rgba: {
-        r: +(rgb.r / 255).toFixed(4),
-        g: +(rgb.g / 255).toFixed(4),
-        b: +(rgb.b / 255).toFixed(4),
-        a: +Number(this.alpha).toFixed(4)
-      },
-      RGBA: {
-        r: rgb.r, g: rgb.g, b: rgb.b, a: Math.round(this.alpha * 255)
-      },
-      hex: hex,
-      eyedropperActive: this.isEyedropperActive
-    };
-   this.infoDeColores=info;
- 
-      let max2=(max)*5;
-      let max3=(this.infoDeColores.selected.max/255)*1.3;
-        if(max3>1){max3=1.0;}
-      if(max2>1){max2=1.0;}
-   let dfMaxMin=(this.infoDeColores.selected.max/255-this.infoDeColores.selected.min/255).toFixed(3);
- 
- 
-      let dfrg=(this.infoDeColores.selected.r-this.infoDeColores.selected.g)/255 ;
-       let dfrb=this.infoDeColores.selected.r/255-this.infoDeColores.selected.b/255 ;
-       if(dfrb<-0.13){dfrb=-0.13;}
-       if(dfrb>0.33){dfrb=0.33;}
-        if(dfrg<-0.13){dfrg=-0.13;}
-       if(dfrg>0.33){dfrg=0.33;}
-      
-        let rounescal=(0.4+dfrb);
-        if(rounescal>1){rounescal=1;}
-        if(dv>0.98){rounescal=(0.5-max)*0.5}
-       let metalicval=1-max3;
- 
-
- 
-    
-
-  
-           
-     this.dom.dfrg.innerHTML=`r-g: ${dfrg.toFixed(3)}  max-min: ${dfMaxMin }     `;
-     this.dom.dfrb.innerHTML=`r-b: ${dfrb.toFixed(3)} metalic: ${metalicval.toFixed(3)}   `;
-     this.dom.rounessRgba.innerHTML=`rouness: ${rounescal.toFixed(3)} `;
-    this.callback(rgba, RGBA, hex, info);
-  }
-
-  setHex(hex) {
-    if (typeof hex !== 'string') return;
-    hex = hex.trim().replace(/^#/, '');
-    if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
-    if (/^[0-9a-fA-F]{6}$/.test(hex)) {
-      const r = parseInt(hex.slice(0, 2), 16);
-      const g = parseInt(hex.slice(2, 4), 16);
-      const b = parseInt(hex.slice(4, 6), 16);
-      this.setFromRGB(r, g, b, this.alpha, 'hex');
-    }
-  }
-
-  setrgba(r, g, b, a) {
-    if (typeof r === 'object' && r !== null) {
-      a = r.a !== undefined ? r.a : 1;
-      b = r.b !== undefined ? r.b : 0;
-      g = r.g !== undefined ? r.g : 0;
-      r = r.r !== undefined ? r.r : 0;
-    }
-    const ir = Math.round(parseFloat(r || 0) * 255);
-    const ig = Math.round(parseFloat(g || 0) * 255);
-    const ib = Math.round(parseFloat(b || 0) * 255);
-    const ia = a !== undefined ? parseFloat(a) : this.alpha;
-    this.setFromRGB(ir, ig, ib, ia, 'rgba');
-  }
-
-  setRGBA(r, g, b, a) {
-    if (typeof r === 'object' && r !== null) {
-      a = r.a !== undefined ? r.a : 255;
-      b = r.b !== undefined ? r.b : 0;
-      g = r.g !== undefined ? r.g : 0;
-      r = r.r !== undefined ? r.r : 0;
-    }
-    const ir = Math.round(parseFloat(r || 0));
-    const ig = Math.round(parseFloat(g || 0));
-    const ib = Math.round(parseFloat(b || 0));
-    let ia = this.alpha;
-    if (a !== undefined) ia = Number(a) > 1 ? Number(a) / 255 : Number(a);
-    this.setFromRGB(ir, ig, ib, ia, 'RGBA');
-  }
-
-  setFromRGB(r, g, b, a, source) {
-    r = Math.max(0, Math.min(255, r));
-    g = Math.max(0, Math.min(255, g));
-    b = Math.max(0, Math.min(255, b));
-    a = Math.max(0, Math.min(1, a !== undefined && a !== null ? a : this.alpha));
-    const hsv = this.rgbToHsv(r, g, b);
-    if (hsv.s > 0) this.hue = hsv.h;
-    this.sat = hsv.s; this.val = hsv.v; this.alpha = a;
-    this.dom.sliderHue.value = Math.round(this.hue);
-    this.dom.sliderSat.value = Math.round(this.sat);
-    this.dom.sliderVal.value = Math.round(this.val);
-    this.dom.sliderAlpha.value = this.alpha;
-    this.renderTriangle();
-    this.updateUI(source);
-  }
-
-  hsvToRgb(h, s, v) {
-    h = ((h % 360) + 360) % 360 / 360; s /= 100; v /= 100;
-    const i = Math.floor(h * 6), f = h * 6 - i;
-    const p = v * (1 - s), q = v * (1 - f * s), t = v * (1 - (1 - f) * s);
-    let r, g, b;
-    switch (i % 6) {
-      case 0: r = v; g = t; b = p; break;
-      case 1: r = q; g = v; b = p; break;
-      case 2: r = p; g = v; b = t; break;
-      case 3: r = p; g = q; b = v; break;
-      case 4: r = t; g = p; b = v; break;
-      case 5: r = v; g = p; b = q; break;
-    }
-    return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
-  }
-
-  rgbToHsv(r, g, b) {
-    r /= 255; g /= 255; b /= 255;
-    const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
-    let h = 0;
-    if (d !== 0) {
-      if (mx === r) h = ((g - b) / d) % 6;
-      else if (mx === g) h = (b - r) / d + 2;
-      else h = (r - g) / d + 4;
-      h *= 60; if (h < 0) h += 360;
-    }
-    return { h, s: (mx === 0 ? 0 : d / mx) * 100, v: mx * 100 };
-  }
-
-  rgbToHex(r, g, b) {
-    const h = (n) => n.toString(16).padStart(2, '0');
-    return `#${h(r)}${h(g)}${h(b)}`;
-  }
-
-  analyzeCanvas() {
-    const act = this._resolveCanvas();
-    if (!act || !(act instanceof HTMLCanvasElement)) return null;
-    let actCtx;
-    try { actCtx = act.getContext('2d', { willReadFrequently: true }); } catch (e) { return null; }
-    let imgData;
-    try { imgData = actCtx.getImageData(0, 0, act.width, act.height); } catch (e) { return null; }
-    const data = imgData.data;
-    let mx = 0, mn = 255, sumMax = 0, sumMin = 0, count = 0;
-
-    for (let i = 0; i < data.length; i += 16) {
-      if (data[i + 3] < 128) continue;
-      const r = data[i], g = data[i + 1], b = data[i + 2];
-      const cMax = Math.max(r, g, b), cMin = Math.min(r, g, b);
-      if (cMax > mx) mx = cMax;
-      if (cMin < mn) mn = cMin;
-      sumMax += cMax; sumMin += cMin; count++;
-    }
-    if (count === 0) return null;
-    return {
-      max: mx,
-      avgMax: +(sumMax / count).toFixed(1),
-      min: mn,
-      avgMin: +(sumMin / count).toFixed(1),
-      sat: mx > 0 ? +(mn / mx).toFixed(3) : 0,
-      pixels: count
-    };
-  }
-
-  updateImageStats() {
-    this.cachedGlobalStats = this.analyzeCanvas();
-    if (!this.dom.statsGlobal) return;
-    if (!this.cachedGlobalStats) {
-      this.dom.statsGlobal.innerHTML = '';
-      return;
-    }
-    const s = this.cachedGlobalStats;
-    this.dom.statsGlobal.innerHTML = `
-      <span class="k">max:</span><span class="v">gio ${s.max}</span> <span class="k">avg:</span><span class="v">${s.avgMax}</span><br>
-      <span class="k">min:</span><span class="v">${s.min}</span> <span class="k">avg:</span><span class="v">${s.avgMin}</span><br>
-      <span class="k">sat:</span><span class="s">${s.sat}</span>
-    `;
-    
-  }
-
-  samplePixelFromCanvas(clientX, clientY) {
-    let act = this._resolveCanvas();
-
-    if (!act) {
-      if (this._overlayEyedropper) this._overlayEyedropper.style.pointerEvents = 'none';
-      const el = document.elementFromPoint(clientX, clientY);
-      if (this._overlayEyedropper) this._overlayEyedropper.style.pointerEvents = 'auto';
-
-      if (el instanceof HTMLCanvasElement) {
-        act = el;
-      } else if (el) {
-        act = el.querySelector('canvas') || el.closest('canvas');
-      }
-    }
-
-    if (!act || !(act instanceof HTMLCanvasElement)) return null;
-
-    const rect = act.getBoundingClientRect();
-    if (clientX < rect.left || clientX > rect.right || clientY < rect.top || clientY > rect.bottom) {
-      return null;
-    }
-
-    const scaleX = act.width / rect.width;
-    const scaleY = act.height / rect.height;
-    const x = Math.floor((clientX - rect.left) * scaleX);
-    const y = Math.floor((clientY - rect.top) * scaleY);
-
-    if (x < 0 || y < 0 || x >= act.width || y >= act.height) return null;
-
-    try {
-      const ctx = act.getContext('2d', { willReadFrequently: true });
-      const px = ctx.getImageData(x, y, 1, 1).data;
-      return {
-        r: px[0],
-        g: px[1],
-        b: px[2],
-        a: +(px[3] / 255).toFixed(2)
-      };
-    } catch (e) {
-      return null;
-    }
-  }
-
-  toggleEyedropper() {
-    this.isEyedropperActive = !this.isEyedropperActive;
-
-    if (this.isEyedropperActive) {
-      this.dom.btnEyedropper.textContent = 'Picker (ON)';
-      this.dom.btnEyedropper.style.borderColor = '#38bdf8';
-      this.dom.btnEyedropper.style.color = '#38bdf8';
-      if (this.panel && this.panel.element) {
-        this.panel.element.style.zIndex = '1000001';
-      }
-      this.activarOverlayEyedropper();
-    } else {
-      this.dom.btnEyedropper.textContent = 'Picker';
-      this.dom.btnEyedropper.style.borderColor = '';
-      this.dom.btnEyedropper.style.color = '';
-      if (this.panel && this.panel.element) {
-        this.panel.element.style.zIndex = '';
-      }
-      this.desactivarOverlayEyedropper();
-    }
-    this.onEyedropperToggle(this.isEyedropperActive);
-  }
-
-  activarOverlayEyedropper() {
-    this.desactivarOverlayEyedropper();
-
-    const overlay = document.createElement('div');
-    overlay.className = 'ui-cp-pick-overlay';
-    overlay.style.position = 'fixed';
-    overlay.style.inset = '0';
-    overlay.style.zIndex = '999990';
-    overlay.style.cursor = 'crosshair';
-    overlay.style.userSelect = 'none';
-
-    const bubble = document.createElement('div');
-    bubble.className = 'ui-cp-pick-bubble';
-    bubble.style.position = 'fixed';
-    bubble.style.pointerEvents = 'none';
-    bubble.style.padding = '4px 8px';
-    bubble.style.borderRadius = '4px';
-    bubble.style.fontSize = '11px';
-    bubble.style.fontFamily = 'monospace';
-    bubble.style.color = '#fff';
-    bubble.style.textShadow = '0 1px 2px #000';
-    bubble.style.border = '1px solid rgba(255,255,255,0.7)';
-    bubble.style.backgroundColor = 'rgba(0,0,0,0.85)';
-    bubble.style.zIndex = '1000002';
-    bubble.style.display = 'none';
-
-    document.body.appendChild(overlay);
-    document.body.appendChild(bubble);
-
-    this._overlayEyedropper = overlay;
-    this._bubbleEyedropper = bubble;
-
-    const sample = (clientX, clientY) => {
-      const panelRect = this.panel?.element?.getBoundingClientRect();
-      if (panelRect &&
-          clientX >= panelRect.left && clientX <= panelRect.right &&
-          clientY >= panelRect.top && clientY <= panelRect.bottom) {
-        bubble.style.display = 'none';
-        return;
-      }
-
-      const px = this.samplePixelFromCanvas(clientX, clientY);
-      if (px) {
-        bubble.style.display = 'block';
-        this.setFromRGB(px.r, px.g, px.b, px.a, null);
-        bubble.style.backgroundColor = `rgb(${px.r}, ${px.g}, ${px.b})`;
-        bubble.textContent = `${this.rgbToHex(px.r, px.g, px.b)}`;
-      }
-      bubble.style.left = `${clientX + 14}px`;
-      bubble.style.top = `${clientY + 14}px`;
-    };
-
-    overlay.addEventListener('pointerdown', (e) => {
-      if (e.button === 2) {
-        e.preventDefault();
-        this.toggleEyedropper();
-        return;
-      }
-      if (e.button !== 0) return;
-      this.isEyedropperMouseDown = true;
-      sample(e.clientX, e.clientY);
-    });
-
-    this._onEyedropperMove = (e) => {
-      if (!this.isEyedropperActive) return;
-
-      const panelRect = this.panel?.element?.getBoundingClientRect();
-      if (panelRect &&
-          e.clientX >= panelRect.left && e.clientX <= panelRect.right &&
-          e.clientY >= panelRect.top && e.clientY <= panelRect.bottom) {
-        bubble.style.display = 'none';
-        return;
-      }
-
-      if (this.isEyedropperMouseDown) {
-        sample(e.clientX, e.clientY);
-      } else {
-        const px = this.samplePixelFromCanvas(e.clientX, e.clientY);
-        if (px) {
-          bubble.style.display = 'block';
-          bubble.style.backgroundColor = `rgb(${px.r}, ${px.g}, ${px.b})`;
-          bubble.textContent = `${this.rgbToHex(px.r, px.g, px.b)}`;
+        setCanvas(source) {
+            this.canvasSource = source;
+            this.refreshCanvasTarget();
+            this.updateImageStats();
+            this.updateUI();
+            return this;
         }
-        bubble.style.left = `${e.clientX + 14}px`;
-        bubble.style.top = `${e.clientY + 14}px`;
-      }
-    };
-    window.addEventListener('pointermove', this._onEyedropperMove);
 
-    this._onEyedropperUp = () => {
-      this.isEyedropperMouseDown = false;
-    };
-    window.addEventListener('pointerup', this._onEyedropperUp);
+        setElementoAnalizar(source) {
+            this.setCanvas(source);
+            return Promise.resolve();
+        }
 
-    this._onEyedropperKey = (e) => {
-      if (e.key === 'Escape') this.toggleEyedropper();
-    };
-    window.addEventListener('keydown', this._onEyedropperKey);
+        _resolveCanvas() {
+            let src = this.canvasSource;
+            if (typeof src === 'function') {
+                try { src = src(); } catch (e) { return null; }
+            }
+            if (typeof src === 'string') {
+                src = document.querySelector(src);
+            }
+            return (src instanceof HTMLCanvasElement) ? src : null;
+        }
 
-    overlay.addEventListener('contextmenu', (e) => e.preventDefault());
-  }
+        refreshCanvasTarget() {
+            const target = this._resolveCanvas();
+            if (target !== this.currentCanvas) {
+                this.currentCanvas = target;
+                if (this.currentCanvas) {
+                    try {
+                        this.currentCtx = this.currentCanvas.getContext('2d', { willReadFrequently: true });
+                    } catch (e) {
+                        this.currentCtx = null;
+                    }
+                } else {
+                    this.currentCtx = null;
+                }
+            }
+            return this.currentCanvas;
+        }
 
-  desactivarOverlayEyedropper() {
-    if (this._overlayEyedropper) {
-      this._overlayEyedropper.remove();
-      this._overlayEyedropper = null;
+        parseInitialRGBA(col) {
+            const def = { r: 56, g: 189, b: 248, a: 1.0 };
+            if (!col || typeof col !== 'object') return def;
+            let r = col.r !== undefined ? Number(col.r) : 56;
+            let g = col.g !== undefined ? Number(col.g) : 189;
+            let b = col.b !== undefined ? Number(col.b) : 248;
+            let a = col.a !== undefined ? Number(col.a) : 1.0;
+
+            if (r <= 1 && g <= 1 && b <= 1 && (r > 0 || g > 0 || b > 0)) {
+                r = Math.round(r * 255);
+                g = Math.round(g * 255);
+                b = Math.round(b * 255);
+            } else {
+                r = Math.round(r);
+                g = Math.round(g);
+                b = Math.round(b);
+            }
+            return {
+                r: Math.max(0, Math.min(255, isNaN(r) ? 56 : r)),
+                g: Math.max(0, Math.min(255, isNaN(g) ? 189 : g)),
+                b: Math.max(0, Math.min(255, isNaN(b) ? 248 : b)),
+                a: Math.max(0, Math.min(1, isNaN(a) ? 1.0 : a))
+            };
+        }
+
+        buildPickerUI() {
+            const container = document.createElement('div');
+            container.className = 'ui-cp-root';
+
+            container.innerHTML = `
+                <div class="ui-row ui-row-align-4" style="margin-bottom: 4px;">
+                    <label class="ui-checkbox chk-rect-mode">
+                        <div class="ui-checkbox-box"><div class="ui-checkbox-mark"></div></div>
+                        <span class="ui-label">Rect</span>
+                    </label>
+                    <div style="display:flex; gap:6px;">
+                        <button class="ui-btn btn-palette" style="height:24px; padding:0 8px; font-size:13px;">Palette</button>
+                        <button class="ui-btn btn-eyedropper" style="height:24px; padding:0 8px; font-size:13px;">Picker</button>
+                    </div>
+                </div>
+
+                <div class="ui-cp-wheel">
+                    <div class="ui-cp-ring"></div>
+                    <canvas class="ui-cp-triangle" width="130" height="115"></canvas>
+                    <div class="ui-cp-ring-pointer"></div>
+                    <div class="ui-cp-tri-pointer"></div>
+                </div>
+
+                <div class="ui-cp-rect-container">
+                    <div class="ui-cp-rect-sv"><div class="ui-cp-rect-sv-pointer"></div></div>
+                    <div class="ui-cp-rect-hue"><div class="ui-cp-rect-hue-pointer"></div></div>
+                </div>
+
+                <div class="ui-cp-sliders">
+                    <div class="ui-cp-slider-row"><div class="ui-cp-slider-bg slider-hue-bg"></div>
+                        <input type="range" class="ui-cp-slider slider-hue" min="0" max="360" value="${this.hue}"></div>
+                    <div class="ui-cp-slider-row"><div class="ui-cp-slider-bg slider-sat-bg"></div>
+                        <input type="range" class="ui-cp-slider slider-sat" min="0" max="100" value="${Math.round(this.sat)}"></div>
+                    <div class="ui-cp-slider-row"><div class="ui-cp-slider-bg slider-val-bg"></div>
+                        <input type="range" class="ui-cp-slider slider-val" min="0" max="100" value="${Math.round(this.val)}"></div>
+                    <div class="ui-cp-slider-row"><div class="ui-cp-slider-bg slider-alpha-bg"></div>
+                        <input type="range" class="ui-cp-slider slider-alpha" min="0" max="1" step="0.01" value="${this.alpha}"></div>
+                </div>
+
+                <div class="ui-cp-preview-bar">
+                    <span class="ui-label" style="font-size:13px;">COLOR:</span>
+                    <div class="ui-cp-preview"></div>
+                </div>
+
+                <div class="ui-row ui-row-align-0" style="margin-top:6px; gap:4px;">
+                    <span class="ui-label" style="width:36px;">rgba:</span>
+                    <input type="number" step="0.01" min="0" max="1" class="ui-input inp-rgba-r" style="width:52px; padding:0 2px; text-align:center;">
+                    <input type="number" step="0.01" min="0" max="1" class="ui-input inp-rgba-g" style="width:52px; padding:0 2px; text-align:center;">
+                    <input type="number" step="0.01" min="0" max="1" class="ui-input inp-rgba-b" style="width:52px; padding:0 2px; text-align:center;">
+                    <input type="number" step="0.01" min="0" max="1" class="ui-input inp-rgba-a" style="width:52px; padding:0 2px; text-align:center;">
+                </div>
+
+                <div class="ui-row ui-row-align-0" style="gap:4px;">
+                    <span class="ui-label" style="width:36px;">RGBA:</span>
+                    <input type="number" step="1" min="0" max="255" class="ui-input inp-RGBA-r" style="width:52px; padding:0 2px; text-align:center;">
+                    <input type="number" step="1" min="0" max="255" class="ui-input inp-RGBA-g" style="width:52px; padding:0 2px; text-align:center;">
+                    <input type="number" step="1" min="0" max="255" class="ui-input inp-RGBA-b" style="width:52px; padding:0 2px; text-align:center;">
+                    <input type="number" step="1" min="0" max="255" class="ui-input inp-RGBA-a" style="width:52px; padding:0 2px; text-align:center;">
+                </div>
+
+                <div class="ui-row ui-row-align-0" style="gap:6px; align-items:flex-start;">
+                    <span class="ui-label" style="width:36px; padding-top:6px;">hex:</span>
+                    <input type="text" class="ui-input inp-hex" style="width:85px; font-family:var(--ui-font-family-mono); text-align:center;" maxlength="7">
+                    <div class="ui-cp-stats">
+                        <div class="ui-cp-stats-global"></div>
+                        <div class="ui-cp-stats-sel"></div>
+                    </div>
+                    <div class="ui-cp-statsrgba">
+                        <div class="mtac colorDm"></div>
+                        <div class="dfrg colorDm"></div>
+                        <div class="dfrb colorDm"></div>
+                    </div>
+                </div>
+            `;
+
+            this.panel.append(container);
+            this.dom = {
+                root: container,
+                chkRect: container.querySelector('.chk-rect-mode'),
+                btnPalette: container.querySelector('.btn-palette'),
+                btnEyedropper: container.querySelector('.btn-eyedropper'),
+                wheel: container.querySelector('.ui-cp-wheel'),
+                ring: container.querySelector('.ui-cp-ring'),
+                triangle: container.querySelector('.ui-cp-triangle'),
+                ringPointer: container.querySelector('.ui-cp-ring-pointer'),
+                triPointer: container.querySelector('.ui-cp-tri-pointer'),
+                rectContainer: container.querySelector('.ui-cp-rect-container'),
+                rectSV: container.querySelector('.ui-cp-rect-sv'),
+                rectSVPtr: container.querySelector('.ui-cp-rect-sv-pointer'),
+                rectHue: container.querySelector('.ui-cp-rect-hue'),
+                rectHuePtr: container.querySelector('.ui-cp-rect-hue-pointer'),
+                sliderHue: container.querySelector('.slider-hue'),
+                sliderSat: container.querySelector('.slider-sat'),
+                sliderVal: container.querySelector('.slider-val'),
+                sliderAlpha: container.querySelector('.slider-alpha'),
+                hueBg: container.querySelector('.slider-hue-bg'),
+                satBg: container.querySelector('.slider-sat-bg'),
+                valBg: container.querySelector('.slider-val-bg'),
+                alphaBg: container.querySelector('.slider-alpha-bg'),
+                preview: container.querySelector('.ui-cp-preview'),
+                rgbaR: container.querySelector('.inp-rgba-r'),
+                rgbaG: container.querySelector('.inp-rgba-g'),
+                rgbaB: container.querySelector('.inp-rgba-b'),
+                rgbaA: container.querySelector('.inp-rgba-a'),
+                RGBAR: container.querySelector('.inp-RGBA-r'),
+                RGBAG: container.querySelector('.inp-RGBA-g'),
+                RGBAB: container.querySelector('.inp-RGBA-b'),
+                RGBAA: container.querySelector('.inp-RGBA-a'),
+                hex: container.querySelector('.inp-hex'),
+                statsGlobal: container.querySelector('.ui-cp-stats-global'),
+                statsSel: container.querySelector('.ui-cp-stats-sel'),
+                dfrg: container.querySelector('.dfrg'),
+                dfrb: container.querySelector('.dfrb'),
+                rounessRgba: container.querySelector('.mtac')
+            };
+
+            this.triCtx = this.dom.triangle.getContext('2d', { willReadFrequently: true });
+        }
+
+        renderTriangle() {
+            const w = this.dom.triangle.width;
+            const h = this.dom.triangle.height;
+            const img = this.triCtx.createImageData(w, h);
+            const data = img.data;
+            const hue = this.hue;
+
+            for (let y = 0; y < h; y++) {
+                const yn = y / (h - 1);
+                const halfW = 0.5 * w * yn;
+                const xStart = Math.max(0, Math.floor(0.5 * w - halfW));
+                const xEnd = Math.min(w - 1, Math.ceil(0.5 * w + halfW));
+
+                for (let x = xStart; x <= xEnd; x++) {
+                    const xn = x / (w - 1);
+                    let S = 100 * (xn + 0.5 - 0.5 * yn);
+                    let V = 100 * yn;
+                    S = S < 0 ? 0 : S > 100 ? 100 : S;
+                    V = V < 0 ? 0 : V > 100 ? 100 : V;
+
+                    const { r, g, b } = this.hsvToRgb(hue, S, V);
+                    const idx = (y * w + x) * 4;
+                    data[idx] = r;
+                    data[idx + 1] = g;
+                    data[idx + 2] = b;
+                    data[idx + 3] = 255;
+                }
+            }
+            this.triCtx.putImageData(img, 0, 0);
+            this.lastRenderedHue = hue;
+        }
+
+        bindEvents() {
+            this.dom.root.addEventListener('mousedown', (e) => e.stopPropagation());
+
+            this.dom.chkRect.addEventListener('click', () => {
+                this.isRectMode = !this.isRectMode;
+                this.dom.chkRect.classList.toggle('checked', this.isRectMode);
+                this.dom.root.classList.toggle('mode-rect', this.isRectMode);
+                this.updateUI();
+            });
+
+            this.dom.sliderHue.addEventListener('input', (e) => {
+                this.hue = parseFloat(e.target.value);
+                this.renderTriangle();
+                this.updateUI();
+            });
+            this.dom.sliderSat.addEventListener('input', (e) => {
+                this.sat = parseFloat(e.target.value);
+                this.updateUI();
+            });
+            this.dom.sliderVal.addEventListener('input', (e) => {
+                this.val = parseFloat(e.target.value);
+                this.updateUI();
+            });
+            this.dom.sliderAlpha.addEventListener('input', (e) => {
+                this.alpha = parseFloat(e.target.value);
+                this.updateUI();
+            });
+
+            this.dom.ring.addEventListener('mousedown', (e) => {
+                this.isDraggingRing = true;
+                this.updateHueFromMouse(e);
+                e.preventDefault();
+            });
+
+            this.dom.triangle.addEventListener('mousedown', (e) => {
+                this.isDraggingTriangle = true;
+                this.updateSVFromMouse(e);
+                e.preventDefault();
+            });
+
+            this.dom.rectSV.addEventListener('mousedown', (e) => {
+                this.isDraggingRectSV = true;
+                this.updateSVFromMouseRect(e);
+                e.preventDefault();
+            });
+
+            this.dom.rectHue.addEventListener('mousedown', (e) => {
+                this.isDraggingRectHue = true;
+                this.updateHueFromMouseRect(e);
+                e.preventDefault();
+            });
+
+            this._onMouseMove = (e) => {
+                if (this.isDraggingRing) this.updateHueFromMouse(e);
+                if (this.isDraggingTriangle) this.updateSVFromMouse(e);
+                if (this.isDraggingRectSV) this.updateSVFromMouseRect(e);
+                if (this.isDraggingRectHue) this.updateHueFromMouseRect(e);
+            };
+
+            this._onMouseUp = () => {
+                this.isDraggingRing = false;
+                this.isDraggingTriangle = false;
+                this.isDraggingRectSV = false;
+                this.isDraggingRectHue = false;
+            };
+
+            window.addEventListener('mousemove', this._onMouseMove);
+            window.addEventListener('mouseup', this._onMouseUp);
+
+            const onRgbaChange = () => {
+                const r = parseFloat(this.dom.rgbaR.value) || 0;
+                const g = parseFloat(this.dom.rgbaG.value) || 0;
+                const b = parseFloat(this.dom.rgbaB.value) || 0;
+                const a = this.dom.rgbaA.value !== '' ? parseFloat(this.dom.rgbaA.value) : this.alpha;
+                this.setFromRGB(Math.round(r * 255), Math.round(g * 255), Math.round(b * 255), a, 'rgba');
+            };
+            [this.dom.rgbaR, this.dom.rgbaG, this.dom.rgbaB, this.dom.rgbaA].forEach(k => {
+                k.addEventListener('input', onRgbaChange);
+            });
+
+            const onRGBAChange = () => {
+                const r = parseFloat(this.dom.RGBAR.value) || 0;
+                const g = parseFloat(this.dom.RGBAG.value) || 0;
+                const b = parseFloat(this.dom.RGBAB.value) || 0;
+                const a = this.dom.RGBAA.value !== '' ? parseFloat(this.dom.RGBAA.value) / 255 : this.alpha;
+                this.setFromRGB(Math.round(r), Math.round(g), Math.round(b), a, 'RGBA');
+            };
+            [this.dom.RGBAR, this.dom.RGBAG, this.dom.RGBAB, this.dom.RGBAA].forEach(k => {
+                k.addEventListener('input', onRGBAChange);
+            });
+
+            this.dom.hex.addEventListener('input', () => this.setHex(this.dom.hex.value));
+            this.dom.btnEyedropper.addEventListener('click', () => this.toggleEyedropper());
+            this.dom.btnPalette.addEventListener('click', () => this.openPaletteModal());
+        }
+
+        updateHueFromMouse(e) {
+            const r = this.dom.wheel.getBoundingClientRect();
+            const cx = r.left + r.width / 2;
+            const cy = r.top + r.height / 2;
+            const a = Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI);
+            this.hue = (a + 90 + 360) % 360;
+            this.dom.sliderHue.value = Math.round(this.hue);
+            this.renderTriangle();
+            this.updateUI();
+        }
+
+        updateSVFromMouse(e) {
+            const r = this.dom.triangle.getBoundingClientRect();
+            const tW = this.dom.triangle.width;
+            const tH = this.dom.triangle.height;
+
+            let mx = (e.clientX - r.left) * (tW / r.width);
+            let my = (e.clientY - r.top) * (tH / r.height);
+
+            my = Math.max(0, Math.min(tH - 0.001, my));
+            const yn = my / (tH - 1);
+
+            let xn = mx / (tW - 1);
+            const minXn = 0.5 - 0.5 * yn;
+            const maxXn = 0.5 + 0.5 * yn;
+            xn = Math.max(minXn, Math.min(maxXn, xn));
+
+            let S = 100 * (xn + 0.5 - 0.5 * yn);
+            let V = 100 * yn;
+            S = Math.max(0, Math.min(100, S));
+            V = Math.max(0, Math.min(100, V));
+
+            this.sat = S;
+            this.val = V;
+            this.dom.sliderSat.value = Math.round(S);
+            this.dom.sliderVal.value = Math.round(V);
+            this.updateUI();
+        }
+
+        updateSVFromMouseRect(e) {
+            const r = this.dom.rectSV.getBoundingClientRect();
+            let mx = (e.clientX - r.left) / r.width;
+            let my = (e.clientY - r.top) / r.height;
+
+            mx = Math.max(0, Math.min(1, mx));
+            my = Math.max(0, Math.min(1, my));
+
+            this.sat = mx * 100;
+            this.val = (1 - my) * 100;
+
+            this.dom.sliderSat.value = Math.round(this.sat);
+            this.dom.sliderVal.value = Math.round(this.val);
+            this.updateUI();
+        }
+
+        updateHueFromMouseRect(e) {
+            const r = this.dom.rectHue.getBoundingClientRect();
+            let my = (e.clientY - r.top) / r.height;
+            my = Math.max(0, Math.min(1, my));
+
+            this.hue = my * 360;
+            this.dom.sliderHue.value = Math.round(this.hue);
+            this.renderTriangle();
+            this.updateUI();
+        }
+
+        updateUI(source = null) {
+            const rgb = this.hsvToRgb(this.hue, this.sat, this.val);
+            const currentColor = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+            this.dom.preview.style.backgroundColor = currentColor;
+
+            if (Math.abs(this.hue - this.lastRenderedHue) > 0.5) {
+                this.renderTriangle();
+            }
+
+            this.dom.satBg.style.background = `linear-gradient(to right, hsl(${this.hue}, 0%, 50%), hsl(${this.hue}, 100%, 50%))`;
+            this.dom.valBg.style.background = `linear-gradient(to right, black, hsl(${this.hue}, 100%, 50%))`;
+            this.dom.alphaBg.style.background = `linear-gradient(to right, transparent, ${currentColor})`;
+
+            const cW = this.dom.wheel.clientWidth;
+            const cH = this.dom.wheel.clientHeight;
+            const tW = this.dom.triangle.clientWidth;
+            const tH = this.dom.triangle.clientHeight;
+            const cx = cW / 2;
+            const cy = cH / 2;
+            const rr = (cW / 2) - 8;
+            const aR = (this.hue - 90) * (Math.PI / 180);
+
+            this.dom.ringPointer.style.left = `${cx + Math.cos(aR) * rr}px`;
+            this.dom.ringPointer.style.top = `${cy + Math.sin(aR) * rr}px`;
+
+            if (cW && tW) {
+                const yn = this.val / 100;
+                const xn = (this.sat - 50 + this.val / 2) / 100;
+                const oX = (cW - tW) / 2;
+                const oY = (cH - tH) / 2;
+                this.dom.triPointer.style.left = `${oX + xn * tW}px`;
+                this.dom.triPointer.style.top = `${oY + yn * tH}px`;
+            }
+
+            if (this.isRectMode) {
+                this.dom.rectSV.style.background = `linear-gradient(to bottom, transparent, #000), linear-gradient(to right, #fff, transparent), hsl(${this.hue}, 100%, 50%)`;
+                this.dom.rectSVPtr.style.left = `${this.sat}%`;
+                this.dom.rectSVPtr.style.top = `${100 - this.val}%`;
+                this.dom.rectHuePtr.style.top = `${(this.hue / 360) * 100}%`;
+            }
+
+            if (source !== 'rgba') {
+                this.dom.rgbaR.value = (rgb.r / 255).toFixed(2);
+                this.dom.rgbaG.value = (rgb.g / 255).toFixed(2);
+                this.dom.rgbaB.value = (rgb.b / 255).toFixed(2);
+                this.dom.rgbaA.value = Number(this.alpha).toFixed(2);
+            }
+            if (source !== 'RGBA') {
+                this.dom.RGBAR.value = rgb.r;
+                this.dom.RGBAG.value = rgb.g;
+                this.dom.RGBAB.value = rgb.b;
+                this.dom.RGBAA.value = Math.round(this.alpha * 255);
+            }
+            if (source !== 'hex') {
+                this.dom.hex.value = this.rgbToHex(rgb.r, rgb.g, rgb.b);
+            }
+
+            const selMax = Math.max(rgb.r, rgb.g, rgb.b) / 255;
+            const selMin = Math.min(rgb.r, rgb.g, rgb.b) / 255;
+            const selSat = selMax > 0 ? +(selMin / selMax + 0.00001).toFixed(3) : 0;
+            this.dom.statsSel.innerHTML = `
+                <span class="k">max:</span><span class="v">${selMax}</span><br>
+                <span class="k">min:</span><span class="v">${selMin}</span><br>
+                <span class="k">sat:</span><span class="s">${selSat}</span>
+            `;
+
+            this.notifyChange();
+        }
+
+        notifyChange() {
+            const rgb = this.hsvToRgb(this.hue, this.sat, this.val);
+            const rgba = `vec4(${(rgb.r / 255).toFixed(2)}, ${(rgb.g / 255).toFixed(2)}, ${(rgb.b / 255).toFixed(2)}, ${Number(this.alpha).toFixed(2)})`;
+            const RGBA = `vec4(${rgb.r}, ${rgb.g}, ${rgb.b}, ${Math.round(this.alpha * 255)})`;
+            const hex = this.rgbToHex(rgb.r, rgb.g, rgb.b);
+            const selMax = Math.max(rgb.r, rgb.g, rgb.b);
+            const selMin = Math.min(rgb.r, rgb.g, rgb.b);
+            const delta = selMax - selMin;
+            let max = selMax / 255;
+            let min = selMin / 255;
+            let dv = min / (max + 0.00001);
+
+            const info = {
+                global: this.cachedGlobalStats ? { ...this.cachedGlobalStats } : null,
+                selected: {
+                    r: rgb.r,
+                    g: rgb.g,
+                    b: rgb.b,
+                    max: selMax,
+                    min: selMin,
+                    delta: delta,
+                    sat: selMax > 0 ? +(selMin / selMax).toFixed(3) : 0,
+                    minOverMax: selMax > 0 ? +(selMin / selMax).toFixed(4) : 0,
+                    maxOverMin: selMin > 0 ? +(selMax / selMin).toFixed(4) : (selMax > 0 ? Infinity : 1)
+                },
+                stats: {
+                    max: selMax,
+                    min: selMin,
+                    delta: delta,
+                    minOverMax: selMax > 0 ? +(selMin / selMax).toFixed(4) : 0,
+                    maxOverMin: selMin > 0 ? +(selMax / selMin).toFixed(4) : (selMax > 0 ? Infinity : 1)
+                },
+                rgba: {
+                    r: +(rgb.r / 255).toFixed(4),
+                    g: +(rgb.g / 255).toFixed(4),
+                    b: +(rgb.b / 255).toFixed(4),
+                    a: +Number(this.alpha).toFixed(4)
+                },
+                RGBA: {
+                    r: rgb.r,
+                    g: rgb.g,
+                    b: rgb.b,
+                    a: Math.round(this.alpha * 255)
+                },
+                hex: hex,
+                eyedropperActive: this.isEyedropperActive
+            };
+            this.infoDeColores = info;
+
+            let max2 = max * 5;
+            let max3 = (this.infoDeColores.selected.max / 255) * 1.3;
+            if (max3 > 1) { max3 = 1.0; }
+            if (max2 > 1) { max2 = 1.0; }
+            let dfMaxMin = (this.infoDeColores.selected.max / 255 - this.infoDeColores.selected.min / 255).toFixed(3);
+
+            let dfrg = (this.infoDeColores.selected.r - this.infoDeColores.selected.g) / 255;
+            let dfrb = this.infoDeColores.selected.r / 255 - this.infoDeColores.selected.b / 255;
+            if (dfrb < -0.13) { dfrb = -0.13; }
+            if (dfrb > 0.33) { dfrb = 0.33; }
+            if (dfrg < -0.13) { dfrg = -0.13; }
+            if (dfrg > 0.33) { dfrg = 0.33; }
+
+            let rounescal = (0.4 + dfrb);
+            if (rounescal > 1) { rounescal = 1; }
+            if (dv > 0.98) { rounescal = (0.5 - max) * 0.5; }
+            let metalicval = 1 - max3;
+
+            this.dom.dfrg.innerHTML = `r-g: ${dfrg.toFixed(3)}  max-min: ${dfMaxMin}`;
+            this.dom.dfrb.innerHTML = `r-b: ${dfrb.toFixed(3)} metalic: ${metalicval.toFixed(3)}`;
+            this.dom.rounessRgba.innerHTML = `rouness: ${rounescal.toFixed(3)}`;
+            this.callback(rgba, RGBA, hex, info);
+        }
+
+        setHex(hex) {
+            if (typeof hex !== 'string') return;
+            hex = hex.trim().replace(/^#/, '');
+            if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+            if (/^[0-9a-fA-F]{6}$/.test(hex)) {
+                const r = parseInt(hex.slice(0, 2), 16);
+                const g = parseInt(hex.slice(2, 4), 16);
+                const b = parseInt(hex.slice(4, 6), 16);
+                this.setFromRGB(r, g, b, this.alpha, 'hex');
+            }
+        }
+
+        setrgba(r, g, b, a) {
+            if (typeof r === 'object' && r !== null) {
+                a = r.a !== undefined ? r.a : 1;
+                b = r.b !== undefined ? r.b : 0;
+                g = r.g !== undefined ? r.g : 0;
+                r = r.r !== undefined ? r.r : 0;
+            }
+            const ir = Math.round(parseFloat(r || 0) * 255);
+            const ig = Math.round(parseFloat(g || 0) * 255);
+            const ib = Math.round(parseFloat(b || 0) * 255);
+            const ia = a !== undefined ? parseFloat(a) : this.alpha;
+            this.setFromRGB(ir, ig, ib, ia, 'rgba');
+        }
+
+        setRGBA(r, g, b, a) {
+            if (typeof r === 'object' && r !== null) {
+                a = r.a !== undefined ? r.a : 255;
+                b = r.b !== undefined ? r.b : 0;
+                g = r.g !== undefined ? r.g : 0;
+                r = r.r !== undefined ? r.r : 0;
+            }
+            const ir = Math.round(parseFloat(r || 0));
+            const ig = Math.round(parseFloat(g || 0));
+            const ib = Math.round(parseFloat(b || 0));
+            let ia = this.alpha;
+            if (a !== undefined) ia = Number(a) > 1 ? Number(a) / 255 : Number(a);
+            this.setFromRGB(ir, ig, ib, ia, 'RGBA');
+        }
+
+        setFromRGB(r, g, b, a, source) {
+            r = Math.max(0, Math.min(255, r));
+            g = Math.max(0, Math.min(255, g));
+            b = Math.max(0, Math.min(255, b));
+            a = Math.max(0, Math.min(1, a !== undefined && a !== null ? a : this.alpha));
+            const hsv = this.rgbToHsv(r, g, b);
+            if (hsv.s > 0) this.hue = hsv.h;
+            this.sat = hsv.s;
+            this.val = hsv.v;
+            this.alpha = a;
+            this.dom.sliderHue.value = Math.round(this.hue);
+            this.dom.sliderSat.value = Math.round(this.sat);
+            this.dom.sliderVal.value = Math.round(this.val);
+            this.dom.sliderAlpha.value = this.alpha;
+            this.renderTriangle();
+            this.updateUI(source);
+        }
+
+        hsvToRgb(h, s, v) {
+            h = ((h % 360) + 360) % 360 / 360;
+            s /= 100;
+            v /= 100;
+            const i = Math.floor(h * 6);
+            const f = h * 6 - i;
+            const p = v * (1 - s);
+            const q = v * (1 - f * s);
+            const t = v * (1 - (1 - f) * s);
+            let r, g, b;
+            switch (i % 6) {
+                case 0: r = v; g = t; b = p; break;
+                case 1: r = q; g = v; b = p; break;
+                case 2: r = p; g = v; b = t; break;
+                case 3: r = p; g = q; b = v; break;
+                case 4: r = t; g = p; b = v; break;
+                case 5: r = v; g = p; b = q; break;
+            }
+            return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
+        }
+
+        rgbToHsv(r, g, b) {
+            r /= 255;
+            g /= 255;
+            b /= 255;
+            const mx = Math.max(r, g, b);
+            const mn = Math.min(r, g, b);
+            const d = mx - mn;
+            let h = 0;
+            if (d !== 0) {
+                if (mx === r) h = ((g - b) / d) % 6;
+                else if (mx === g) h = (b - r) / d + 2;
+                else h = (r - g) / d + 4;
+                h *= 60;
+                if (h < 0) h += 360;
+            }
+            return { h, s: (mx === 0 ? 0 : d / mx) * 100, v: mx * 100 };
+        }
+
+        rgbToHex(r, g, b) {
+            const h = (n) => n.toString(16).padStart(2, '0');
+            return `#${h(r)}${h(g)}${h(b)}`;
+        }
+
+        analyzeCanvas() {
+            const act = this._resolveCanvas();
+            if (!act || !(act instanceof HTMLCanvasElement)) return null;
+            let actCtx;
+            try { actCtx = act.getContext('2d', { willReadFrequently: true }); } catch (e) { return null; }
+            let imgData;
+            try { imgData = actCtx.getImageData(0, 0, act.width, act.height); } catch (e) { return null; }
+            const data = imgData.data;
+            let mx = 0;
+            let mn = 255;
+            let sumMax = 0;
+            let sumMin = 0;
+            let count = 0;
+
+            for (let i = 0; i < data.length; i += 16) {
+                if (data[i + 3] < 128) continue;
+                const r = data[i];
+                const g = data[i + 1];
+                const b = data[i + 2];
+                const cMax = Math.max(r, g, b);
+                const cMin = Math.min(r, g, b);
+                if (cMax > mx) mx = cMax;
+                if (cMin < mn) mn = cMin;
+                sumMax += cMax;
+                sumMin += cMin;
+                count++;
+            }
+            if (count === 0) return null;
+            return {
+                max: mx,
+                avgMax: +(sumMax / count).toFixed(1),
+                min: mn,
+                avgMin: +(sumMin / count).toFixed(1),
+                sat: mx > 0 ? +(mn / mx).toFixed(3) : 0,
+                pixels: count
+            };
+        }
+
+        updateImageStats() {
+            this.cachedGlobalStats = this.analyzeCanvas();
+            if (!this.dom.statsGlobal) return;
+            if (!this.cachedGlobalStats) {
+                this.dom.statsGlobal.innerHTML = '';
+                return;
+            }
+            const s = this.cachedGlobalStats;
+            this.dom.statsGlobal.innerHTML = `
+                <span class="k">max:</span><span class="v">gio ${s.max}</span> <span class="k">avg:</span><span class="v">${s.avgMax}</span><br>
+                <span class="k">min:</span><span class="v">${s.min}</span> <span class="k">avg:</span><span class="v">${s.avgMin}</span><br>
+                <span class="k">sat:</span><span class="s">${s.sat}</span>
+            `;
+        }
+
+        samplePixelFromCanvas(clientX, clientY) {
+            let act = this._resolveCanvas();
+
+            if (!act) {
+                if (this._overlayEyedropper) this._overlayEyedropper.style.pointerEvents = 'none';
+                const el = document.elementFromPoint(clientX, clientY);
+                if (this._overlayEyedropper) this._overlayEyedropper.style.pointerEvents = 'auto';
+
+                if (el instanceof HTMLCanvasElement) {
+                    act = el;
+                } else if (el) {
+                    act = el.querySelector('canvas') || el.closest('canvas');
+                }
+            }
+
+            if (!act || !(act instanceof HTMLCanvasElement)) return null;
+
+            const rect = act.getBoundingClientRect();
+            if (clientX < rect.left || clientX > rect.right || clientY < rect.top || clientY > rect.bottom) {
+                return null;
+            }
+
+            const scaleX = act.width / rect.width;
+            const scaleY = act.height / rect.height;
+            const x = Math.floor((clientX - rect.left) * scaleX);
+            const y = Math.floor((clientY - rect.top) * scaleY);
+
+            if (x < 0 || y < 0 || x >= act.width || y >= act.height) return null;
+
+            try {
+                const ctx = act.getContext('2d', { willReadFrequently: true });
+                const px = ctx.getImageData(x, y, 1, 1).data;
+                return {
+                    r: px[0],
+                    g: px[1],
+                    b: px[2],
+                    a: +(px[3] / 255).toFixed(2)
+                };
+            } catch (e) {
+                return null;
+            }
+        }
+
+        toggleEyedropper() {
+            this.isEyedropperActive = !this.isEyedropperActive;
+
+            if (this.isEyedropperActive) {
+                this.dom.btnEyedropper.textContent = 'Picker (ON)';
+                this.dom.btnEyedropper.style.borderColor = '#38bdf8';
+                this.dom.btnEyedropper.style.color = '#38bdf8';
+                if (this.panel && this.panel.element) {
+                    this.panel.element.style.zIndex = '1000001';
+                }
+                this.activarOverlayEyedropper();
+            } else {
+                this.dom.btnEyedropper.textContent = 'Picker';
+                this.dom.btnEyedropper.style.borderColor = '';
+                this.dom.btnEyedropper.style.color = '';
+                if (this.panel && this.panel.element) {
+                    this.panel.element.style.zIndex = '';
+                }
+                this.desactivarOverlayEyedropper();
+            }
+            this.onEyedropperToggle(this.isEyedropperActive);
+        }
+
+        activarOverlayEyedropper() {
+            this.desactivarOverlayEyedropper();
+
+            const overlay = document.createElement('div');
+            overlay.className = 'ui-cp-pick-overlay';
+            overlay.style.position = 'fixed';
+            overlay.style.inset = '0';
+            overlay.style.zIndex = '999990';
+            overlay.style.cursor = 'crosshair';
+            overlay.style.userSelect = 'none';
+
+            const bubble = document.createElement('div');
+            bubble.className = 'ui-cp-pick-bubble';
+            bubble.style.position = 'fixed';
+            bubble.style.pointerEvents = 'none';
+            bubble.style.padding = '4px 8px';
+            bubble.style.borderRadius = '4px';
+            bubble.style.fontSize = '11px';
+            bubble.style.fontFamily = 'monospace';
+            bubble.style.color = '#fff';
+            bubble.style.textShadow = '0 1px 2px #000';
+            bubble.style.border = '1px solid rgba(255,255,255,0.7)';
+            bubble.style.backgroundColor = 'rgba(0,0,0,0.85)';
+            bubble.style.zIndex = '1000002';
+            bubble.style.display = 'none';
+
+            document.body.appendChild(overlay);
+            document.body.appendChild(bubble);
+
+            this._overlayEyedropper = overlay;
+            this._bubbleEyedropper = bubble;
+
+            const sample = (clientX, clientY) => {
+                const panelRect = this.panel?.element?.getBoundingClientRect();
+                if (panelRect &&
+                    clientX >= panelRect.left && clientX <= panelRect.right &&
+                    clientY >= panelRect.top && clientY <= panelRect.bottom) {
+                    bubble.style.display = 'none';
+                    return;
+                }
+
+                const px = this.samplePixelFromCanvas(clientX, clientY);
+                if (px) {
+                    bubble.style.display = 'block';
+                    this.setFromRGB(px.r, px.g, px.b, px.a, null);
+                    bubble.style.backgroundColor = `rgb(${px.r}, ${px.g}, ${px.b})`;
+                    bubble.textContent = `${this.rgbToHex(px.r, px.g, px.b)}`;
+                }
+                bubble.style.left = `${clientX + 14}px`;
+                bubble.style.top = `${clientY + 14}px`;
+            };
+
+            overlay.addEventListener('pointerdown', (e) => {
+                if (e.button === 2) {
+                    e.preventDefault();
+                    this.toggleEyedropper();
+                    return;
+                }
+                if (e.button !== 0) return;
+                this.isEyedropperMouseDown = true;
+                sample(e.clientX, e.clientY);
+            });
+
+            this._onEyedropperMove = (e) => {
+                if (!this.isEyedropperActive) return;
+
+                const panelRect = this.panel?.element?.getBoundingClientRect();
+                if (panelRect &&
+                    e.clientX >= panelRect.left && e.clientX <= panelRect.right &&
+                    e.clientY >= panelRect.top && e.clientY <= panelRect.bottom) {
+                    bubble.style.display = 'none';
+                    return;
+                }
+
+                if (this.isEyedropperMouseDown) {
+                    sample(e.clientX, e.clientY);
+                } else {
+                    const px = this.samplePixelFromCanvas(e.clientX, e.clientY);
+                    if (px) {
+                        bubble.style.display = 'block';
+                        bubble.style.backgroundColor = `rgb(${px.r}, ${px.g}, ${px.b})`;
+                        bubble.textContent = `${this.rgbToHex(px.r, px.g, px.b)}`;
+                    }
+                    bubble.style.left = `${e.clientX + 14}px`;
+                    bubble.style.top = `${e.clientY + 14}px`;
+                }
+            };
+            window.addEventListener('pointermove', this._onEyedropperMove);
+
+            this._onEyedropperUp = () => {
+                this.isEyedropperMouseDown = false;
+            };
+            window.addEventListener('pointerup', this._onEyedropperUp);
+
+            this._onEyedropperKey = (e) => {
+                if (e.key === 'Escape') this.toggleEyedropper();
+            };
+            window.addEventListener('keydown', this._onEyedropperKey);
+
+            overlay.addEventListener('contextmenu', (e) => e.preventDefault());
+        }
+
+        desactivarOverlayEyedropper() {
+            if (this._overlayEyedropper) {
+                this._overlayEyedropper.remove();
+                this._overlayEyedropper = null;
+            }
+            if (this._bubbleEyedropper) {
+                this._bubbleEyedropper.remove();
+                this._bubbleEyedropper = null;
+            }
+            if (this._onEyedropperMove) window.removeEventListener('pointermove', this._onEyedropperMove);
+            if (this._onEyedropperUp) window.removeEventListener('pointerup', this._onEyedropperUp);
+            if (this._onEyedropperKey) window.removeEventListener('keydown', this._onEyedropperKey);
+        }
+
+        openPaletteModal() {
+            const overlay = document.createElement('div');
+            overlay.className = 'ui-cp-modal-backdrop';
+            overlay.innerHTML = `
+                <div class="ui-cp-modal">
+                    <div class="ui-cp-modal-head">
+                        <span class="ui-panel-title">SUGGESTED PALETTE</span>
+                        <button class="ui-icon-btn btn-close-modal">✕</button>
+                    </div>
+                    <div class="ui-cp-modal-body"></div>
+                </div>
+            `;
+            const body = overlay.querySelector('.ui-cp-modal-body');
+            const colors = [
+                { r: 230, g: 80, b: 80 },
+                { r: 80, g: 180, b: 230 },
+                { r: 90, g: 210, b: 120 },
+                { r: 230, g: 200, b: 70 },
+                { r: 180, g: 100, b: 230 }
+            ];
+
+            colors.forEach((c, idx) => {
+                const hex = this.rgbToHex(c.r, c.g, c.b);
+                const row = document.createElement('div');
+                row.className = 'ui-cp-palette-row';
+                row.innerHTML = `
+                    <span class="ui-label">Color #${idx + 1}</span>
+                    <input type="text" class="ui-input" readonly value="${hex}">
+                    <span class="ui-label" style="font-family:var(--ui-font-family-mono); font-size:13px;">${c.r}, ${c.g}, ${c.b}</span>
+                    <div class="ui-cp-swatch" style="background:${hex};"></div>
+                `;
+                row.querySelector('.ui-cp-swatch').addEventListener('click', () => {
+                    this.setFromRGB(c.r, c.g, c.b, this.alpha, null);
+                    overlay.remove();
+                });
+                body.appendChild(row);
+            });
+
+            overlay.querySelector('.btn-close-modal').addEventListener('click', () => overlay.remove());
+            document.body.appendChild(overlay);
+        }
+
+        getState() {
+            return {
+                ...this.panel.getState(),
+                type: 'ColorPicker',
+                color: {
+                    h: this.hue,
+                    s: this.sat,
+                    v: this.val,
+                    a: this.alpha
+                },
+                isRectMode: this.isRectMode
+            };
+        }
+
+        setState(s) {
+            if (!s) return;
+            this.panel.setState(s);
+            if (s.color) {
+                this.hue = s.color.h;
+                this.sat = s.color.s;
+                this.val = s.color.v;
+                this.alpha = s.color.a;
+                this.dom.sliderHue.value = Math.round(this.hue);
+                this.dom.sliderSat.value = Math.round(this.sat);
+                this.dom.sliderVal.value = Math.round(this.val);
+                this.dom.sliderAlpha.value = this.alpha;
+            }
+            if (s.isRectMode !== undefined && s.isRectMode !== this.isRectMode) {
+                this.isRectMode = s.isRectMode;
+                this.dom.chkRect.classList.toggle('checked', this.isRectMode);
+                this.dom.root.classList.toggle('mode-rect', this.isRectMode);
+            }
+            this.updateUI();
+        }
+
+        destroy() {
+            this.desactivarOverlayEyedropper();
+            window.removeEventListener('mousemove', this._onMouseMove);
+            window.removeEventListener('mouseup', this._onMouseUp);
+            this.panel.destroy();
+            super.destroy();
+        }
     }
-    if (this._bubbleEyedropper) {
-      this._bubbleEyedropper.remove();
-      this._bubbleEyedropper = null;
+
+    const UI_MONTH_NAMES = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+/**
+ * UIDatePicker: Selección de fecha única
+ */
+class UIDatePicker extends UIBaseComponent {
+    constructor({
+        id = null,
+        value = null,
+        placeholder = 'Seleccionar fecha...',
+        minDate = null,
+        maxDate = null,
+        onChange
+    } = {}) {
+        super({ id }, 'datepicker');
+
+        this.onChange = onChange;
+        this.placeholder = placeholder;
+        this.minDate = minDate ? new Date(minDate) : null;
+        this.maxDate = maxDate ? new Date(maxDate) : null;
+        this.disabled = false;
+        this.isOpen = false;
+
+        const now = new Date();
+        this.currentMonth = now.getMonth();
+        this.currentYear = now.getFullYear();
+        this.selectedDate = value ? new Date(value) : null;
+
+        if (this.selectedDate && !isNaN(this.selectedDate.getTime())) {
+            this.currentMonth = this.selectedDate.getMonth();
+            this.currentYear = this.selectedDate.getFullYear();
+        } else {
+            this.selectedDate = null;
+        }
+
+        this.buildUI();
+        this.bindEvents();
+        this.updateDisplay();
     }
-    if (this._onEyedropperMove) window.removeEventListener('pointermove', this._onEyedropperMove);
-    if (this._onEyedropperUp) window.removeEventListener('pointerup', this._onEyedropperUp);
-    if (this._onEyedropperKey) window.removeEventListener('keydown', this._onEyedropperKey);
-  }
 
-  openPaletteModal() {
-    const overlay = document.createElement('div');
-    overlay.className = 'ui-cp-modal-backdrop';
-    overlay.innerHTML = `
-      <div class="ui-cp-modal">
-        <div class="ui-cp-modal-head">
-          <span class="ui-panel-title">SUGGESTED PALETTE</span>
-          <button class="ui-icon-btn btn-close-modal">✕</button>
-        </div>
-        <div class="ui-cp-modal-body"></div>
-      </div>
-    `;
-    const body = overlay.querySelector('.ui-cp-modal-body');
-    const colors = [
-      { r: 230, g: 80, b: 80 }, { r: 80, g: 180, b: 230 }, { r: 90, g: 210, b: 120 },
-      { r: 230, g: 200, b: 70 }, { r: 180, g: 100, b: 230 }
-    ];
+    buildUI() {
+        this.element = document.createElement('div');
+        this.element.className = 'ui-date-picker-wrap';
+        this.element.innerHTML = `
+            <button type="button" class="ui-date-trigger">
+                <div class="ui-date-trigger-text">
+                    <svg class="ui-date-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    <span class="ui-date-display">${this.placeholder}</span>
+                </div>
+                <svg class="ui-date-arrow-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </button>
+            <div class="ui-calendar-dropdown">
+                <div class="ui-calendar-header">
+                    <button class="ui-calendar-nav-btn btn-prev"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+                    <div class="ui-calendar-month-year"></div>
+                    <button class="ui-calendar-nav-btn btn-next"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+                </div>
+                <div class="ui-calendar-weekdays">
+                    <div class="ui-calendar-weekday">Lu</div><div class="ui-calendar-weekday">Ma</div><div class="ui-calendar-weekday">Mi</div>
+                    <div class="ui-calendar-weekday">Ju</div><div class="ui-calendar-weekday">Vi</div><div class="ui-calendar-weekday">Sá</div><div class="ui-calendar-weekday">Do</div>
+                </div>
+                <div class="ui-calendar-days"></div>
+                <div class="ui-calendar-footer">
+                    <span class="ui-calendar-footer-info">Selecciona un día</span>
+                    <button class="ui-calendar-btn-clear">Limpiar</button>
+                </div>
+            </div>
+        `;
 
-    colors.forEach((c, idx) => {
-      const hex = this.rgbToHex(c.r, c.g, c.b);
-      const row = document.createElement('div');
-      row.className = 'ui-cp-palette-row';
-      row.innerHTML = `
-        <span class="ui-label">Color #${idx + 1}</span>
-        <input type="text" class="ui-input" readonly value="${hex}">
-        <span class="ui-label" style="font-family:var(--ui-font-family-mono); font-size:13px;">${c.r}, ${c.g}, ${c.b}</span>
-        <div class="ui-cp-swatch" style="background:${hex};"></div>
-      `;
-      row.querySelector('.ui-cp-swatch').addEventListener('click', () => {
-        this.setFromRGB(c.r, c.g, c.b, this.alpha, null);
-        overlay.remove();
-      });
-      body.appendChild(row);
-    });
-
-    overlay.querySelector('.btn-close-modal').addEventListener('click', () => overlay.remove());
-    document.body.appendChild(overlay);
-  }
-
-  getState() {
-    return {
-      ...this.panel.getState(),
-      type: 'ColorPicker',
-      color: {
-        h: this.hue,
-        s: this.sat,
-        v: this.val,
-        a: this.alpha
-      },
-      isRectMode: this.isRectMode
-    };
-  }
-
-  setState(s) {
-    if (!s) return;
-    this.panel.setState(s);
-    if (s.color) {
-      this.hue = s.color.h;
-      this.sat = s.color.s;
-      this.val = s.color.v;
-      this.alpha = s.color.a;
-      this.dom.sliderHue.value = Math.round(this.hue);
-      this.dom.sliderSat.value = Math.round(this.sat);
-      this.dom.sliderVal.value = Math.round(this.val);
-      this.dom.sliderAlpha.value = this.alpha;
+        this.trigger = this.element.querySelector('.ui-date-trigger');
+        this.display = this.element.querySelector('.ui-date-display');
+        this.monthYearEl = this.element.querySelector('.ui-calendar-month-year');
+        this.daysEl = this.element.querySelector('.ui-calendar-days');
+        this.footerInfo = this.element.querySelector('.ui-calendar-footer-info');
+        this.btnClear = this.element.querySelector('.ui-calendar-btn-clear');
+        this.btnPrev = this.element.querySelector('.btn-prev');
+        this.btnNext = this.element.querySelector('.btn-next');
     }
-    if (s.isRectMode !== undefined && s.isRectMode !== this.isRectMode) {
-      this.isRectMode = s.isRectMode;
-      this.dom.chkRect.classList.toggle('checked', this.isRectMode);
-      this.dom.root.classList.toggle('mode-rect', this.isRectMode);
-    }
-    this.updateUI();
-  }
 
-  destroy() {
-    this.desactivarOverlayEyedropper();
-    window.removeEventListener('mousemove', this._onMouseMove);
-    window.removeEventListener('mouseup', this._onMouseUp);
-    this.panel.destroy();
-    super.destroy();
-  }
+    bindEvents() {
+        this.trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (!this.disabled) this.toggle();
+        });
+
+        this.btnPrev.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.changeMonth(-1);
+        });
+
+        this.btnNext.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.changeMonth(1);
+        });
+
+        this.btnClear.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.clear();
+        });
+
+        this.onDocClick = (e) => {
+            if (!this.element.contains(e.target)) this.close();
+        };
+        this.onDocKey = (e) => {
+            if (e.key === 'Escape') this.close();
+        };
+
+        document.addEventListener('click', this.onDocClick);
+        document.addEventListener('keydown', this.onDocKey);
+    }
+
+    toggle() { this.isOpen ? this.close() : this.open(); }
+
+    open() {
+        if (this.disabled || this.isOpen) return;
+        document.querySelectorAll('.ui-date-picker-wrap.is-open').forEach(el => {
+            if (el !== this.element) el.classList.remove('is-open');
+        });
+        this.isOpen = true;
+        this.element.classList.add('is-open');
+        this.renderCalendar();
+    }
+
+    close() {
+        if (!this.isOpen) return;
+        this.isOpen = false;
+        this.element.classList.remove('is-open');
+    }
+
+    changeMonth(delta) {
+        this.currentMonth += delta;
+        if (this.currentMonth < 0) {
+            this.currentMonth = 11;
+            this.currentYear--;
+        } else if (this.currentMonth > 11) {
+            this.currentMonth = 0;
+            this.currentYear++;
+        }
+        this.renderCalendar();
+    }
+
+    formatDate(d) {
+        const pad = (n) => String(n).padStart(2, '0');
+        return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
+    }
+
+    updateDisplay() {
+        if (this.selectedDate) {
+            this.display.textContent = this.formatDate(this.selectedDate);
+            this.footerInfo.textContent = 'Fecha seleccionada';
+        } else {
+            this.display.textContent = this.placeholder;
+            this.footerInfo.textContent = 'Selecciona un día';
+        }
+    }
+
+    isDateDisabled(date) {
+        const time = date.getTime();
+        if (this.minDate && time < new Date(this.minDate.getFullYear(), this.minDate.getMonth(), this.minDate.getDate()).getTime()) return true;
+        if (this.maxDate && time > new Date(this.maxDate.getFullYear(), this.maxDate.getMonth(), this.maxDate.getDate()).getTime()) return true;
+        return false;
+    }
+
+    renderCalendar() {
+        this.monthYearEl.textContent = `${UI_MONTH_NAMES[this.currentMonth]} ${this.currentYear}`;
+        this.daysEl.innerHTML = '';
+
+        let firstDay = new Date(this.currentYear, this.currentMonth, 1).getDay();
+        firstDay = firstDay === 0 ? 6 : firstDay - 1;
+        const daysInMonth = new Date(this.currentYear, this.currentMonth + 1, 0).getDate();
+        const prevMonthDays = new Date(this.currentYear, this.currentMonth, 0).getDate();
+
+        for (let i = firstDay - 1; i >= 0; i--) {
+            const day = document.createElement('div');
+            day.className = 'ui-calendar-day empty';
+            day.textContent = prevMonthDays - i;
+            this.daysEl.appendChild(day);
+        }
+
+        const today = new Date();
+        const isTodayMonth = today.getFullYear() === this.currentYear && today.getMonth() === this.currentMonth;
+
+        for (let d = 1; d <= daysInMonth; d++) {
+            const thisDate = new Date(this.currentYear, this.currentMonth, d);
+            const day = document.createElement('div');
+            day.className = 'ui-calendar-day';
+            day.textContent = d;
+
+            if (isTodayMonth && d === today.getDate()) day.classList.add('today');
+
+            if (this.isDateDisabled(thisDate)) {
+                day.classList.add('disabled');
+            } else {
+                if (this.selectedDate &&
+                    this.selectedDate.getFullYear() === this.currentYear &&
+                    this.selectedDate.getMonth() === this.currentMonth &&
+                    this.selectedDate.getDate() === d) {
+                    day.classList.add('selected');
+                }
+                day.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.selectDate(thisDate);
+                });
+            }
+
+            this.daysEl.appendChild(day);
+        }
+    }
+
+    selectDate(date) {
+        this.selectedDate = new Date(date);
+        this.updateDisplay();
+        this.close();
+        if (this.onChange) this.onChange(this.getValue(), this);
+    }
+
+    clear() {
+        this.selectedDate = null;
+        this.updateDisplay();
+        this.renderCalendar();
+        if (this.onChange) this.onChange(null, this);
+    }
+
+    getValue() {
+        return this.selectedDate ? new Date(this.selectedDate) : null;
+    }
+
+    setValue(val) {
+        if (!val) {
+            this.clear();
+            return this;
+        }
+        this.selectedDate = new Date(val);
+        if (!isNaN(this.selectedDate.getTime())) {
+            this.currentMonth = this.selectedDate.getMonth();
+            this.currentYear = this.selectedDate.getFullYear();
+            this.updateDisplay();
+            if (this.isOpen) this.renderCalendar();
+        }
+        return this;
+    }
+
+    setDisabled(v) {
+        this.disabled = !!v;
+        this.trigger.disabled = this.disabled;
+        if (this.disabled) this.close();
+        return this;
+    }
+
+    getState() {
+        return {
+            type: 'DatePicker',
+            value: this.selectedDate ? this.selectedDate.toISOString() : null,
+            disabled: this.disabled
+        };
+    }
+
+    setState(s) {
+        if (!s) return;
+        if (s.value) this.setValue(s.value);
+        if (s.disabled !== undefined) this.setDisabled(s.disabled);
+    }
+
+    destroy() {
+        document.removeEventListener('click', this.onDocClick);
+        document.removeEventListener('keydown', this.onDocKey);
+        super.destroy();
+    }
 }
 
+/**
+ * UIDateRangePicker: Selección de rango de fechas (Inicio y Fin)
+ */
+class UIDateRangePicker extends UIBaseComponent {
+    constructor({
+        id = null,
+        startDate = null,
+        endDate = null,
+        placeholder = 'Seleccionar rango...',
+        minDate = null,
+        maxDate = null,
+        onChange
+    } = {}) {
+        super({ id }, 'daterangepicker');
 
+        this.onChange = onChange;
+        this.placeholder = placeholder;
+        this.minDate = minDate ? new Date(minDate) : null;
+        this.maxDate = maxDate ? new Date(maxDate) : null;
+        this.disabled = false;
+        this.isOpen = false;
 
+        const now = new Date();
+        this.currentMonth = now.getMonth();
+        this.currentYear = now.getFullYear();
 
+        this.startDate = startDate ? new Date(startDate) : null;
+        this.endDate = endDate ? new Date(endDate) : null;
 
+        if (this.startDate && !isNaN(this.startDate.getTime())) {
+            this.currentMonth = this.startDate.getMonth();
+            this.currentYear = this.startDate.getFullYear();
+        }
 
+        this.buildUI();
+        this.bindEvents();
+        this.updateDisplay();
+    }
 
+    buildUI() {
+        this.element = document.createElement('div');
+        this.element.className = 'ui-date-picker-wrap';
+        this.element.innerHTML = `
+            <button type="button" class="ui-date-trigger">
+                <div class="ui-date-trigger-text">
+                    <svg class="ui-date-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    <span class="ui-date-display">${this.placeholder}</span>
+                </div>
+                <svg class="ui-date-arrow-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </button>
+            <div class="ui-calendar-dropdown">
+                <div class="ui-calendar-header">
+                    <button class="ui-calendar-nav-btn btn-prev"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+                    <div class="ui-calendar-month-year"></div>
+                    <button class="ui-calendar-nav-btn btn-next"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+                </div>
+                <div class="ui-calendar-weekdays">
+                    <div class="ui-calendar-weekday">Lu</div><div class="ui-calendar-weekday">Ma</div><div class="ui-calendar-weekday">Mi</div>
+                    <div class="ui-calendar-weekday">Ju</div><div class="ui-calendar-weekday">Vi</div><div class="ui-calendar-weekday">Sá</div><div class="ui-calendar-weekday">Do</div>
+                </div>
+                <div class="ui-calendar-days"></div>
+                <div class="ui-calendar-footer">
+                    <span class="ui-calendar-footer-info">Haz clic para seleccionar</span>
+                    <button class="ui-calendar-btn-clear">Limpiar</button>
+                </div>
+            </div>
+        `;
 
+        this.trigger = this.element.querySelector('.ui-date-trigger');
+        this.display = this.element.querySelector('.ui-date-display');
+        this.monthYearEl = this.element.querySelector('.ui-calendar-month-year');
+        this.daysEl = this.element.querySelector('.ui-calendar-days');
+        this.footerInfo = this.element.querySelector('.ui-calendar-footer-info');
+        this.btnClear = this.element.querySelector('.ui-calendar-btn-clear');
+        this.btnPrev = this.element.querySelector('.btn-prev');
+        this.btnNext = this.element.querySelector('.btn-next');
+    }
+
+    bindEvents() {
+        this.trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (!this.disabled) this.toggle();
+        });
+
+        this.btnPrev.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.changeMonth(-1);
+        });
+
+        this.btnNext.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.changeMonth(1);
+        });
+
+        this.btnClear.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.clear();
+        });
+
+        this.onDocClick = (e) => {
+            if (!this.element.contains(e.target)) this.close();
+        };
+        this.onDocKey = (e) => {
+            if (e.key === 'Escape') this.close();
+        };
+
+        document.addEventListener('click', this.onDocClick);
+        document.addEventListener('keydown', this.onDocKey);
+    }
+
+    toggle() { this.isOpen ? this.close() : this.open(); }
+
+    open() {
+        if (this.disabled || this.isOpen) return;
+        document.querySelectorAll('.ui-date-picker-wrap.is-open').forEach(el => {
+            if (el !== this.element) el.classList.remove('is-open');
+        });
+        this.isOpen = true;
+        this.element.classList.add('is-open');
+        this.renderCalendar();
+    }
+
+    close() {
+        if (!this.isOpen) return;
+        this.isOpen = false;
+        this.element.classList.remove('is-open');
+    }
+
+    changeMonth(delta) {
+        this.currentMonth += delta;
+        if (this.currentMonth < 0) {
+            this.currentMonth = 11;
+            this.currentYear--;
+        } else if (this.currentMonth > 11) {
+            this.currentMonth = 0;
+            this.currentYear++;
+        }
+        this.renderCalendar();
+    }
+
+    formatDate(d) {
+        const pad = (n) => String(n).padStart(2, '0');
+        return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
+    }
+
+    updateDisplay() {
+        if (this.startDate && this.endDate) {
+            this.display.textContent = `${this.formatDate(this.startDate)} → ${this.formatDate(this.endDate)}`;
+            const diff = Math.ceil(Math.abs(this.endDate - this.startDate) / (1000 * 60 * 60 * 24)) + 1;
+            this.footerInfo.textContent = `${diff} día${diff > 1 ? 's' : ''} seleccionado${diff > 1 ? 's' : ''}`;
+        } else if (this.startDate) {
+            this.display.textContent = `${this.formatDate(this.startDate)} → ...`;
+            this.footerInfo.textContent = 'Selecciona la fecha fin';
+        } else {
+            this.display.textContent = this.placeholder;
+            this.footerInfo.textContent = 'Haz clic para seleccionar';
+        }
+    }
+
+    isDateDisabled(date) {
+        const time = date.getTime();
+        if (this.minDate && time < new Date(this.minDate.getFullYear(), this.minDate.getMonth(), this.minDate.getDate()).getTime()) return true;
+        if (this.maxDate && time > new Date(this.maxDate.getFullYear(), this.maxDate.getMonth(), this.maxDate.getDate()).getTime()) return true;
+        return false;
+    }
+
+    renderCalendar() {
+        this.monthYearEl.textContent = `${UI_MONTH_NAMES[this.currentMonth]} ${this.currentYear}`;
+        this.daysEl.innerHTML = '';
+
+        let firstDay = new Date(this.currentYear, this.currentMonth, 1).getDay();
+        firstDay = firstDay === 0 ? 6 : firstDay - 1;
+        const daysInMonth = new Date(this.currentYear, this.currentMonth + 1, 0).getDate();
+        const prevMonthDays = new Date(this.currentYear, this.currentMonth, 0).getDate();
+
+        for (let i = firstDay - 1; i >= 0; i--) {
+            const day = document.createElement('div');
+            day.className = 'ui-calendar-day empty';
+            day.textContent = prevMonthDays - i;
+            this.daysEl.appendChild(day);
+        }
+
+        const today = new Date();
+        const todayTime = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+
+        const sTime = this.startDate ? new Date(this.startDate.getFullYear(), this.startDate.getMonth(), this.startDate.getDate()).getTime() : null;
+        const eTime = this.endDate ? new Date(this.endDate.getFullYear(), this.endDate.getMonth(), this.endDate.getDate()).getTime() : null;
+
+        for (let d = 1; d <= daysInMonth; d++) {
+            const thisDate = new Date(this.currentYear, this.currentMonth, d);
+            const thisTime = thisDate.getTime();
+            const day = document.createElement('div');
+            day.className = 'ui-calendar-day';
+            day.textContent = d;
+
+            if (thisTime === todayTime) day.classList.add('today');
+
+            if (this.isDateDisabled(thisDate)) {
+                day.classList.add('disabled');
+            } else {
+                if (sTime && eTime) {
+                    if (thisTime === sTime) day.classList.add('selected', 'range-start');
+                    else if (thisTime === eTime) day.classList.add('selected', 'range-end');
+                    else if (thisTime > sTime && thisTime < eTime) day.classList.add('in-range');
+                } else if (sTime && thisTime === sTime) {
+                    day.classList.add('selected');
+                }
+
+                day.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.selectDay(thisDate);
+                });
+            }
+
+            this.daysEl.appendChild(day);
+        }
+    }
+
+    selectDay(date) {
+        if (!this.startDate || (this.startDate && this.endDate)) {
+            this.startDate = date;
+            this.endDate = null;
+        } else {
+            if (date < this.startDate) {
+                this.endDate = this.startDate;
+                this.startDate = date;
+            } else {
+                this.endDate = date;
+            }
+        }
+
+        this.updateDisplay();
+        this.renderCalendar();
+
+        if (this.startDate && this.endDate) {
+            if (this.onChange) this.onChange(this.getValue(), this);
+        }
+    }
+
+    clear() {
+        this.startDate = null;
+        this.endDate = null;
+        this.updateDisplay();
+        this.renderCalendar();
+        if (this.onChange) this.onChange(this.getValue(), this);
+    }
+
+    getValue() {
+        return {
+            start: this.startDate ? new Date(this.startDate) : null,
+            end: this.endDate ? new Date(this.endDate) : null
+        };
+    }
+
+    setValue(val) {
+        if (!val || typeof val !== 'object') {
+            this.clear();
+            return this;
+        }
+        this.startDate = val.start ? new Date(val.start) : null;
+        this.endDate = val.end ? new Date(val.end) : null;
+        if (this.startDate && !isNaN(this.startDate.getTime())) {
+            this.currentMonth = this.startDate.getMonth();
+            this.currentYear = this.startDate.getFullYear();
+        }
+        this.updateDisplay();
+        if (this.isOpen) this.renderCalendar();
+        return this;
+    }
+
+    setDisabled(v) {
+        this.disabled = !!v;
+        this.trigger.disabled = this.disabled;
+        if (this.disabled) this.close();
+        return this;
+    }
+
+    getState() {
+        return {
+            type: 'DateRangePicker',
+            start: this.startDate ? this.startDate.toISOString() : null,
+            end: this.endDate ? this.endDate.toISOString() : null,
+            disabled: this.disabled
+        };
+    }
+
+    setState(s) {
+        if (!s) return;
+        this.setValue({ start: s.start, end: s.end });
+        if (s.disabled !== undefined) this.setDisabled(s.disabled);
+    }
+
+    destroy() {
+        document.removeEventListener('click', this.onDocClick);
+        document.removeEventListener('keydown', this.onDocKey);
+        super.destroy();
+    }
+}
 
     const UI = {
         Theme: UITheme,
@@ -6264,7 +7112,9 @@ class UIColorPicker extends UIBaseComponent {
         InputText2: UIInputText2,
         InputNumber2: UIInputNumber2,
         Button2: UIButton2,
-        ColorPicker: UIColorPicker
+        ColorPicker: UIColorPicker,
+        DatePicker: UIDatePicker,
+        DateRangePicker: UIDateRangePicker   // <--- AÑADIDO
     };
 
     global.UI = UI;
@@ -6298,8 +7148,7 @@ class UIColorPicker extends UIBaseComponent {
     global.UIInputNumber2 = UIInputNumber2;
     global.UIButton2 = UIButton2;
     global.UIColorPicker = UIColorPicker;
+    global.UIDatePicker = UIDatePicker;
+    global.UIDateRangePicker = UIDateRangePicker; // <--- AÑADIDO
 
 })(typeof window !== 'undefined' ? window : this);
-
-
- 
