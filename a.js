@@ -1141,10 +1141,10 @@
                        border-radius: 10px;
                        border: none;
                    background: rgba(255, 255, 255, 0.05);
-                    color: var(--ui-text-bright);
+                    color: #1979d386;
                 }
                 .ui-btn-primary:hover {
-                  color: #777777;
+                  color: #1979d3;
                 }
 
                 .ui-btn-danger {
