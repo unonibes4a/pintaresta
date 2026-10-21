@@ -1137,15 +1137,14 @@
                 .ui-btn:disabled { opacity: var(--ui-opacity-disabled); cursor: not-allowed; pointer-events: none; }
 
                 .ui-btn-primary {
-                    background: var(--ui-primary-bg);
-                    border-color: var(--ui-primary-border);
-                    color: var(--ui-primary-text);
+                    background: var(--ui-accentBt);
+                       border-radius: 10px;
+                       border: none;
+                   background: rgba(255, 255, 255, 0.05);
+                    color: var(--ui-text-bright);
                 }
                 .ui-btn-primary:hover {
-                    background: var(--ui-primary-hover-bg);
-                    border-color: var(--ui-primary-hover-bg);
-                    color: var(--ui-primary-hover-text);
-                    box-shadow: 0 0 0 3px var(--ui-accent-glow);
+                  color: #777777;
                 }
 
                 .ui-btn-danger {
