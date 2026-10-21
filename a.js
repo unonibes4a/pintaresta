@@ -1264,7 +1264,7 @@
                     cursor: pointer;
                     transition: all var(--ui-transition-base);
                     position: relative;
-                    background: var(--ui-btn-bg);
+               
                     color: var(--ui-text-bright);
                     border: 1px solid var(--ui-border);
                     overflow: hidden;
@@ -1279,30 +1279,24 @@
                     flex-shrink: 0 !important;
                 }
                 .ui-btn2::before {
-                    content: '';
-                    position: absolute;
-                    inset: -2px;
-                    background: linear-gradient(90deg, transparent, var(--ui-accent), transparent);
-                    border-radius: inherit;
-                    opacity: 0;
-                    transition: opacity var(--ui-transition-base);
-                    z-index: -1;
-                    filter: blur(5px);
+                 
                 }
                 .ui-btn2:hover {
-                    color: var(--ui-text-hover);
-                    border-color: var(--ui-accent);
-                    transform: translateY(-2px);
+               
                 }
                 .ui-btn2:hover::before { opacity: 1; }
                 .ui-btn2:active { transform: translateY(0px) scale(0.98); }
                 .ui-btn2-primary {
-                    background: linear-gradient(135deg, var(--ui-accent), #4f46e5);
+                    background:#303030;
                     border: none;
                     color: white;
+                    border-radius: 7px;
+                    min-height: 40px;
+                    min-width: 100px;
+
                 }
                 .ui-btn2-primary:hover {
-                    box-shadow: 0 6px 16px -4px var(--ui-accent-glow);
+            background:#444444;
                 }
                 .ui-btn2-reset {
                     color: var(--ui-text-muted);
@@ -5798,33 +5792,33 @@ class UIColorPicker extends UIBaseComponent {
    this.infoDeColores=info;
  
       let max2=(max)*5;
-      let max3=(this.infoDeColores.selected.max/255)*2.0;
+      let max3=(this.infoDeColores.selected.max/255)*1.3;
         if(max3>1){max3=1.0;}
       if(max2>1){max2=1.0;}
    let dfMaxMin=(this.infoDeColores.selected.max/255-this.infoDeColores.selected.min/255).toFixed(3);
  
-       let metalicval=(1-dfMaxMin-(1-dv)*0.3).toFixed(3);
+ 
       let dfrg=(this.infoDeColores.selected.r-this.infoDeColores.selected.g)/255 ;
        let dfrb=this.infoDeColores.selected.r/255-this.infoDeColores.selected.b/255 ;
-       let mulfrg=dfrg*7;
-       if(mulfrg>0.7){mulfrg=0.7;}
-   if(mulfrg<-0.16){mulfrg=-0.16;}
-      let multi=1 + 8.5745*dv - 9.5745*dv*dv;
-      let rounes=( 0.2 + 5.4125*dv - 5.3125*dv*dv) ;
-        if(rounes>1.0){rounes=1.0;}
-        if(rounes<0.0){rounes=0.0;}
-        rounes=rounes+(0.3-max)*dv+(1-max2);
+       if(dfrb<-0.13){dfrb=-0.13;}
+       if(dfrb>0.33){dfrb=0.33;}
+        if(dfrg<-0.13){dfrg=-0.13;}
+       if(dfrg>0.33){dfrg=0.33;}
+      
+        let rounescal=(0.4+dfrb);
+        if(rounescal>1){rounescal=1;}
+        if(dv>0.98){rounescal=(0.5-max)*0.5}
+       let metalicval=1-max3;
+ 
+
  
     
 
- 
-        // if(rounes<0.20){rounes=0.20;}
-       if(metalicval<0.10){metalicval=0.10;}
-      if(metalicval>1.0){metalicval=1.0;}
+  
            
      this.dom.dfrg.innerHTML=`r-g: ${dfrg.toFixed(3)}  max-min: ${dfMaxMin }     `;
-     this.dom.dfrb.innerHTML=`r-b: ${dfrb.toFixed(3)} metalic: ${metalicval}   `;
-     this.dom.rounessRgba.innerHTML=`rouness: ${rounes.toFixed(3)} `;
+     this.dom.dfrb.innerHTML=`r-b: ${dfrb.toFixed(3)} metalic: ${metalicval.toFixed(3)}   `;
+     this.dom.rounessRgba.innerHTML=`rouness: ${rounescal.toFixed(3)} `;
     this.callback(rgba, RGBA, hex, info);
   }
 
@@ -6306,5 +6300,6 @@ class UIColorPicker extends UIBaseComponent {
     global.UIColorPicker = UIColorPicker;
 
 })(typeof window !== 'undefined' ? window : this);
+
 
  
