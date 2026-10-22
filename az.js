@@ -3319,3 +3319,497 @@ class UIDockEngine {
     });
   }
 }
+
+// Inyección de estilos específicos para UIConfigurableSlider y UIContainer flotante
+(function injectConfigurableStyles() {
+  if (document.getElementById('ui-configurable-addons-css')) return;
+  const style = document.createElement('style');
+  style.id = 'ui-configurable-addons-css';
+  style.textContent = `
+    /* Estilos para Contenedor Arrastrable / Flotante */
+    .ui-container.is-floating {
+      position: fixed !important;
+      z-index: 600;
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.7);
+      background: var(--bg-panel);
+    }
+    .ui-container-header {
+      padding: 6px 10px;
+      height: 32px;
+      background: var(--bg-elevated);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: grab;
+      user-select: none;
+      flex-shrink: 0;
+    }
+    .ui-container-header:active { cursor: grabbing; }
+
+    /* Estilos para UIConfigurableSlider */
+    .ui-slider-card {
+      width: 100%;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-shrink: 0;
+      box-sizing: border-box;
+      transition: border-color 0.15s;
+    }
+    .ui-slider-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+    }
+    .ui-slider-card .ui-slider-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ui-slider-header-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .ui-slider-card .ui-slider-val {
+      font-size: 10px;
+      font-family: var(--font-mono);
+      color: var(--text-primary);
+      background: var(--bg-input);
+      padding: 2px 6px;
+      border-radius: 3px;
+      border: 1px solid var(--border-subtle);
+      min-width: 26px;
+      text-align: center;
+    }
+    .ui-cajon-btn {
+      width: 18px;
+      height: 18px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      border-radius: 3px;
+      transition: all 0.15s;
+      padding: 0;
+    }
+    .ui-cajon-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-hover);
+    }
+    .ui-slider-card.open .ui-cajon-btn {
+      transform: rotate(180deg);
+      color: var(--accent);
+    }
+    .ui-slider-content {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding: 2px 0;
+    }
+    .ui-slider-track {
+      width: 100%;
+      position: relative;
+      height: 4px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      border-radius: 2px;
+      background-color: var(--border-strong);
+      touch-action: none;
+    }
+    .ui-slider-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    .ui-slider-fill {
+      position: absolute;
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      width: 0%;
+      pointer-events: none;
+    }
+    .ui-slider-thumb {
+      width: 12px;
+      height: 12px;
+      background: #ffffff;
+      border: 2px solid var(--bg-panel);
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+      pointer-events: none;
+      transition: transform 0.1s;
+    }
+    .ui-slider-track:hover .ui-slider-thumb {
+      transform: translate(-50%, -50%) scale(1.15);
+      background: var(--accent);
+    }
+    .ui-slider-cajon {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.2s ease;
+      background: var(--bg-list);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .ui-slider-card.open .ui-slider-cajon {
+      grid-template-rows: 1fr;
+      border: 1px solid var(--border-subtle);
+      margin-top: 2px;
+    }
+    .ui-slider-cajon-inner {
+      overflow: hidden;
+      min-height: 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 6px;
+      gap: 4px;
+      transition: padding 0.2s ease;
+    }
+    .ui-slider-card.open .ui-slider-cajon-inner {
+      padding: 6px;
+    }
+    .ui-cajon-tag {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .ui-cajon-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .ui-cajon-input {
+      width: 48px !important;
+      text-align: center;
+      height: 20px !important;
+      padding: 0 2px !important;
+      font-size: 10px !important;
+    }
+  `;
+  (document.head || document.documentElement).appendChild(style);
+})();
+
+/**
+ * Contenedor con capacidad para acoplarse o flotar y arrastrarse
+ */
+class UIContainerDos extends UIBaseComponent {
+  constructor(options = {}) {
+    super(options, 'container');
+    this._width = options.width || 280;
+    this._position = options.position || 'right';
+    this.draggable = !!options.draggable;
+    this.floating = !!options.floating || this.draggable;
+    this.title = options.title || '';
+    this.x = options.x || 60;
+    this.y = options.y || 60;
+
+    this.onPanelAdd = options.onPanelAdd || null;
+    this.onPanelRemove = options.onPanelRemove || null;
+
+    this.panels = [];
+    this.buildUI();
+    this.bindEvents();
+  }
+
+  buildUI() {
+    this.element = document.createElement('div');
+    this.element.className = `ui-container bordered-${this._position}`;
+    this.element.style.width = typeof this._width === 'number' ? `${this._width}px` : this._width;
+
+    if (this.floating) {
+      this.element.classList.add('is-floating');
+      this.element.style.left = `${this.x}px`;
+      this.element.style.top = `${this.y}px`;
+      if (document.body) document.body.appendChild(this.element);
+    }
+
+    if (this.draggable || this.title) {
+      this.header = document.createElement('div');
+      this.header.className = 'ui-container-header';
+      this.header.innerHTML = `
+        <span class="ui-panel-title">${this.title || 'CONTENEDOR'}</span>
+        <button class="ui-tool-btn btn-cls-cnt">✕</button>
+      `;
+      this.element.appendChild(this.header);
+      this.header.querySelector('.btn-cls-cnt').addEventListener('click', () => {
+        this.element.style.display = 'none';
+      });
+    }
+
+    this._placeholder = document.createElement('div');
+    this._placeholder.className = 'ui-placeholder';
+    this._placeholder.style.display = 'none';
+    this.element.appendChild(this._placeholder);
+  }
+
+  bindEvents() {
+    if (!this.draggable) return;
+
+    let startX = 0, startY = 0, initX = 0, initY = 0, dragging = false;
+    const trigger = this.header || this.element;
+
+    const onPointerMove = (e) => {
+      const cx = e.touches ? e.touches[0].clientX : e.clientX;
+      const cy = e.touches ? e.touches[0].clientY : e.clientY;
+      const dx = cx - startX;
+      const dy = cy - startY;
+
+      if (!dragging && Math.hypot(dx, dy) > 5) dragging = true;
+
+      if (dragging) {
+        if (e.cancelable) e.preventDefault();
+        this.x = Math.max(0, Math.min(window.innerWidth - this.element.offsetWidth, initX + dx));
+        this.y = Math.max(0, Math.min(window.innerHeight - this.element.offsetHeight, initY + dy));
+        this.element.style.left = `${this.x}px`;
+        this.element.style.top = `${this.y}px`;
+      }
+    };
+
+    const onPointerUp = () => {
+      dragging = false;
+      window.removeEventListener('mousemove', onPointerMove);
+      window.removeEventListener('mouseup', onPointerUp);
+      window.removeEventListener('touchmove', onPointerMove);
+      window.removeEventListener('touchend', onPointerUp);
+    };
+
+    const onPointerDown = (e) => {
+      if (e.target.closest('button, input, select, .ui-panel, .ui-slider-card')) return;
+      startX = e.touches ? e.touches[0].clientX : e.clientX;
+      startY = e.touches ? e.touches[0].clientY : e.clientY;
+      initX = this.element.offsetLeft;
+      initY = this.element.offsetTop;
+
+      window.addEventListener('mousemove', onPointerMove);
+      window.addEventListener('mouseup', onPointerUp);
+      window.addEventListener('touchmove', onPointerMove, { passive: false });
+      window.addEventListener('touchend', onPointerUp);
+    };
+
+    trigger.addEventListener('mousedown', onPointerDown);
+    trigger.addEventListener('touchstart', onPointerDown, { passive: true });
+  }
+
+  showPlaceholder(clientY) {
+    this._placeholder.style.display = 'block';
+    const children = Array.from(this.element.children).filter(c => c !== this._placeholder && c !== this.header);
+    let target = null;
+    for (const child of children) {
+      const rect = child.getBoundingClientRect();
+      if (clientY < rect.top + rect.height / 2) {
+        target = child;
+        break;
+      }
+    }
+    if (target) this.element.insertBefore(this._placeholder, target);
+    else this.element.appendChild(this._placeholder);
+  }
+
+  hidePlaceholder() {
+    this._placeholder.style.display = 'none';
+  }
+
+  addPanel(panel) {
+    if (panel.setFloating) panel.setFloating(false);
+    if (this._placeholder.parentNode === this.element) {
+      this.element.insertBefore(panel.element || panel, this._placeholder);
+    } else {
+      this.element.appendChild(panel.element || panel);
+    }
+    this.hidePlaceholder();
+    if (!this.panels.includes(panel)) this.panels.push(panel);
+    if (this.onPanelAdd) this.onPanelAdd({ panel, sender: this });
+    return this;
+  }
+
+  removePanel(panel) {
+    const idx = this.panels.indexOf(panel);
+    if (idx !== -1) this.panels.splice(idx, 1);
+    const dom = panel.element || panel;
+    if (dom.parentNode === this.element) {
+      this.element.removeChild(dom);
+    }
+    if (this.onPanelRemove) this.onPanelRemove({ panel, sender: this });
+    return this;
+  }
+}
+
+/**
+ * Control Slider configurable con valores de paso, min y max editables mediante drawer/cajón
+ */
+class UIConfigurableSlider extends UIBaseComponent {
+  constructor({ label = '', min = 0, max = 100, step = 1, value = 50, onChange = null } = {}) {
+    super({}, 'configurableslider');
+    this.label = label;
+    this.min = min;
+    this.max = max;
+    this.step = step;
+    this.value = Math.max(this.min, Math.min(this.max, value));
+    this.onChange = onChange;
+    this.isOpen = false;
+
+    this.element = document.createElement('div');
+    this.element.className = 'ui-slider-card';
+    this.element.innerHTML = `
+      <div class="ui-slider-card-header">
+        <span class="ui-slider-label">${this.label}</span>
+        <div class="ui-slider-header-right">
+          <span class="ui-slider-val"></span>
+          <button class="ui-cajon-btn" title="Configurar Min/Max">▼</button>
+        </div>
+      </div>
+      <div class="ui-slider-content">
+        <div class="ui-slider-track">
+          <div class="ui-slider-bg"><div class="ui-slider-fill"></div></div>
+          <div class="ui-slider-thumb"></div>
+        </div>
+      </div>
+      <div class="ui-slider-cajon">
+        <div class="ui-slider-cajon-inner">
+          <div class="ui-cajon-group">
+            <span class="ui-cajon-tag">Min</span>
+            <input type="number" class="ui-input ui-cajon-input input-min" value="${this.min}" step="${this.step}">
+          </div>
+          <div class="ui-cajon-group">
+            <span class="ui-cajon-tag">Max</span>
+            <input type="number" class="ui-input ui-cajon-input input-max" value="${this.max}" step="${this.step}">
+          </div>
+          <div class="ui-cajon-group">
+            <span class="ui-cajon-tag">Paso</span>
+            <input type="number" class="ui-input ui-cajon-input input-step" value="${this.step}" step="any">
+          </div>
+        </div>
+      </div>
+    `;
+
+    this.track = this.element.querySelector('.ui-slider-track');
+    this.fill = this.element.querySelector('.ui-slider-fill');
+    this.thumb = this.element.querySelector('.ui-slider-thumb');
+    this.valDisplay = this.element.querySelector('.ui-slider-val');
+    this.toggleBtn = this.element.querySelector('.ui-cajon-btn');
+
+    this.inputMin = this.element.querySelector('.input-min');
+    this.inputMax = this.element.querySelector('.input-max');
+    this.inputStep = this.element.querySelector('.input-step');
+
+    this.bindEvents();
+    this.updateUI();
+  }
+
+  bindEvents() {
+    this.toggleCajon = () => {
+      this.isOpen = !this.isOpen;
+      this.element.classList.toggle('open', this.isOpen);
+    };
+    this.toggleBtn.addEventListener('click', this.toggleCajon);
+
+    const handleMove = (e) => {
+      if (e.cancelable) e.preventDefault();
+      const cx = e.touches ? e.touches[0].clientX : e.clientX;
+      const rect = this.track.getBoundingClientRect();
+      let pos = (cx - rect.left) / rect.width;
+      pos = Math.max(0, Math.min(1, pos));
+      let rawVal = this.min + pos * (this.max - this.min);
+      const steps = Math.round((rawVal - this.min) / this.step);
+      this.value = Number((this.min + steps * this.step).toFixed(2));
+      this.value = Math.max(this.min, Math.min(this.max, this.value));
+      this.updateUI();
+      if (this.onChange) this.onChange({ value: this.value, sender: this });
+    };
+
+    const stopMove = () => {
+      document.body.style.userSelect = '';
+      window.removeEventListener('mousemove', handleMove);
+      window.removeEventListener('mouseup', stopMove);
+      window.removeEventListener('touchmove', handleMove);
+      window.removeEventListener('touchend', stopMove);
+    };
+
+    const startMove = (e) => {
+      if (e.cancelable) e.preventDefault();
+      document.body.style.userSelect = 'none';
+      handleMove(e);
+      window.addEventListener('mousemove', handleMove);
+      window.addEventListener('mouseup', stopMove);
+      window.addEventListener('touchmove', handleMove, { passive: false });
+      window.addEventListener('touchend', stopMove);
+    };
+
+    this.track.addEventListener('mousedown', startMove);
+    this.track.addEventListener('touchstart', startMove, { passive: false });
+
+    this.inputMin.addEventListener('change', (e) => {
+      let v = parseFloat(e.target.value);
+      if (isNaN(v)) v = 0;
+      if (v >= this.max) v = this.max - this.step;
+      this.min = v;
+      this.inputMin.value = this.min;
+      this.setValue(this.value);
+    });
+
+    this.inputMax.addEventListener('change', (e) => {
+      let v = parseFloat(e.target.value);
+      if (isNaN(v)) v = 0;
+      if (v <= this.min) v = this.min + this.step;
+      this.max = v;
+      this.inputMax.value = this.max;
+      this.setValue(this.value);
+    });
+
+    this.inputStep.addEventListener('change', (e) => {
+      let v = parseFloat(e.target.value);
+      if (isNaN(v) || v <= 0) v = 1;
+      this.step = v;
+      this.inputStep.value = this.step;
+      this.setValue(this.value);
+    });
+  }
+
+  getValue() { return this.value; }
+
+  setValue(v) {
+    this.value = Math.max(this.min, Math.min(this.max, v));
+    this.updateUI();
+    if (this.onChange) this.onChange({ value: this.value, sender: this });
+    return this;
+  }
+
+  updateUI() {
+    const range = this.max - this.min;
+    const percent = range > 0 ? Math.max(0, Math.min(100, ((this.value - this.min) / range) * 100)) : 0;
+    this.fill.style.width = `${percent}%`;
+    this.thumb.style.left = `${percent}%`;
+    this.valDisplay.textContent = this.value;
+  }
+
+  destroy() {
+    if (this.toggleBtn) this.toggleBtn.removeEventListener('click', this.toggleCajon);
+    super.destroy();
+  }
+}
