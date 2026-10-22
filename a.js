@@ -65,6 +65,8 @@
                     --ui-panel-body-padding: 10px;
                     --ui-panel-body-gap: 8px;
                     --ui-accentBt:#353535;
+                    --ui-text-mainBt:#898989;
+                    --ui-text-mainBTHover:rgba(255, 255, 255, 0.7);
 
                     --ui-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
                     --ui-font-family-mono: "SF Mono", Menlo, Consolas, monospace;
@@ -1140,11 +1142,15 @@
                     background: var(--ui-accentBt);
                        border-radius: 10px;
                        border: none;
-                   background: rgba(255, 255, 255, 0.05);
-                    color: #1979d386;
+    
+                    color: var(--ui-text-mainBT);
+                   
                 }
                 .ui-btn-primary:hover {
-                  color: #1979d3;
+             color: var(--ui-text-mainBTHover);
+                     background: var(--ui-accentBt);
+                       border-radius: 10px;
+                       border: none;
                 }
 
                 .ui-btn-danger {
@@ -1550,12 +1556,12 @@
                 .ui-btn2-primary {
                     background: var(--ui-accentBt);
                        border-radius: 10px;
-                       border: none;
-                   background: rgba(255, 255, 255, 0.05);
-                    color: var(--ui-text-bright);
+                       border: none;      
+                    color: var(--ui-text-mainBt);
                 }
                 .ui-btn2-primary:hover {
-                  color: #777777;
+                  color: var(--ui-text-mainBTHover);
+                   
                 }
                 .ui-btn2-reset {
                     background: transparent;
