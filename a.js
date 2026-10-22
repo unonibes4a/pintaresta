@@ -2,6 +2,13 @@
     'use strict';
 
     class ToolJavaScriptGio {
+        static aplicarClase(target, ...clases) {
+    const el = (target && target.element) ? target.element : target;
+    if (el && el.classList) {
+        el.classList.add(...clases);
+    }
+    return el;
+}
         static removeClass(el, cls) {
             if (el && el.classList) el.classList.remove(cls);
         }
@@ -126,7 +133,7 @@
                     --ui-modal-list-max-h: 260px;
                     --ui-square-btn-size: 38px;
 
-                    --ui-bg-base: #121212;
+                    --ui-bg-base: #000000;
                     --ui-bg-panel: #1e1e1e;
                     --ui-bg-surface: #1e1e1e;
                     --ui-bg-surface-hover: #333333;
@@ -1331,6 +1338,7 @@
                 .ui-radio-item.active .ui-radio-dot { display: block; transform: scale(1); }
 
                 .ui-toggle {
+               
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
@@ -1340,6 +1348,7 @@
                     touch-action: manipulation;
                     flex-shrink: 0 !important;
                     width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right)));
+                     max-width: 100px; 
                 }
                 .ui-toggle.disabled { opacity: var(--ui-opacity-disabled); cursor: not-allowed; pointer-events: none; }
                 .ui-toggle-switch {
@@ -5552,7 +5561,7 @@ box-shadow: 5px 5px 15px 5px #000000;
             this.canvasSource = null;
             this.currentCanvas = null;
             this.currentCtx = null;
-            this.isRectMode = false;
+            this.isRectMode = true;
 
             this.isEyedropperActive = false;
             this.isEyedropperMouseDown = false;
@@ -5807,8 +5816,12 @@ box-shadow: 5px 5px 15px 5px #000000;
                 this.dom.chkRect.classList.toggle('checked', this.isRectMode);
                 this.dom.root.classList.toggle('mode-rect', this.isRectMode);
                 this.updateUI();
+         
             });
 
+
+     
+             
             this.dom.sliderHue.addEventListener('input', (e) => {
                 this.hue = parseFloat(e.target.value);
                 this.renderTriangle();
@@ -6370,8 +6383,8 @@ box-shadow: 5px 5px 15px 5px #000000;
                 if (px) {
                     bubble.style.display = 'block';
                     this.setFromRGB(px.r, px.g, px.b, px.a, null);
-                    bubble.style.backgroundColor = `rgb(${px.r}, ${px.g}, ${px.b})`;
-                    bubble.textContent = `${this.rgbToHex(px.r, px.g, px.b)}`;
+                      bubble.style.backgroundColor = `rgb(${0}, ${0}, ${0})`;
+                       bubble.textContent = `r:${(px.r/255).toFixed(2)}, g:${(px.g/255).toFixed(2)}, b:${(px.b/255).toFixed(2)}, a:${px.a}`;
                 }
                 bubble.style.left = `${clientX + 14}px`;
                 bubble.style.top = `${clientY + 14}px`;
@@ -6405,8 +6418,8 @@ box-shadow: 5px 5px 15px 5px #000000;
                     const px = this.samplePixelFromCanvas(e.clientX, e.clientY);
                     if (px) {
                         bubble.style.display = 'block';
-                        bubble.style.backgroundColor = `rgb(${px.r}, ${px.g}, ${px.b})`;
-                        bubble.textContent = `${this.rgbToHex(px.r, px.g, px.b)}`;
+                        bubble.style.backgroundColor = `rgb(${0}, ${0}, ${0})`;
+                       bubble.textContent = `r:${(px.r/255).toFixed(2)}, g:${(px.g/255).toFixed(2)}, b:${(px.b/255).toFixed(2)}, a:${px.a}`;
                     }
                     bubble.style.left = `${e.clientX + 14}px`;
                     bubble.style.top = `${e.clientY + 14}px`;
