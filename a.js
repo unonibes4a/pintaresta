@@ -64,7 +64,7 @@
                     --ui-container-gap: 8px;
                     --ui-panel-body-padding: 10px;
                     --ui-panel-body-gap: 8px;
-                    --ui-accentBt:rgba(255, 255, 255, 0.6);
+                    --ui-accentBt:rgba(39, 39, 39, 0.77);
                     --ui-text-mainBt:#898989;
                     --ui-text-mainBTHover:rgba(255, 255, 255, 0.7);
 
@@ -161,6 +161,7 @@
                     --ui-border-card-row: #2c2c2c;
                     --ui-border-select: #3a3a3a;
                     --ui-border-circle: #3a3a3a;
+                    --ui-accentaccordion: rgba(92, 156, 230, 0.23);
 
                     --ui-radius-sm: 6px;
                     --ui-radius-md: 6px;
@@ -1620,8 +1621,10 @@
                     flex-shrink: 0 !important;
                 }
                 .ui-accordion-item.open {
-                border-color: var(--ui-accent);  
-          border-radius: 7px;
+                border-color: var(--ui-accentaccordion);  
+                 border-radius: 7px;
+                 -webkit-box-shadow: 5px 5px 15px 5px #000000; 
+box-shadow: 5px 5px 15px 5px #000000;
                 }
                 .ui-accordion-header {
                     min-height: 36px;
