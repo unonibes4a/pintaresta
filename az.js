@@ -14,7 +14,7 @@ class UITheme {
       '--text-secondary': '#8a8a8a',
       '--text-muted': '#555555',
       '--text-dim': '#444444',
-      '--accent': '#5c9ce6',
+      '--accent': '#242424d0',
       '--accent-alpha': 'rgba(92, 156, 230, 0.5)',
       '--accent-dim': 'rgba(92, 156, 230, 0.15)',
       '--danger-bg': '#2a1a1a',
@@ -486,7 +486,7 @@ class UITheme {
       .ui-btn.secondary { background: transparent; border-color: var(--border-strong); color: var(--text-secondary); }
       .ui-btn.secondary:hover { background: var(--bg-hover); color: var(--text-primary); }
       .ui-btn.primary { background: var(--accent); color: #fff; }
-      .ui-btn.primary:hover { background: #6fa9ec; }
+      .ui-btn.primary:hover { background: #6fa9ec94; }
       .ui-btn.ui-btn-danger {
         background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger-text);
         padding: 3px 6px; height: 22px; flex: none;
@@ -3132,7 +3132,7 @@ class UISmartPanel extends UIBaseComponent {
   }
 }
 
-class UIContainer extends UIBaseComponent {
+class UIContainer2 extends UIBaseComponent {
   constructor(options = {}) {
     super(options, 'container');
     this._width = options.width || 280;
@@ -3321,278 +3321,454 @@ class UIDockEngine {
 }
 
 // Inyección de estilos específicos para UIConfigurableSlider y UIContainer flotante
-(function injectConfigurableStyles() {
-  if (document.getElementById('ui-configurable-addons-css')) return;
+ // Inyección de estilos limpia y sin conflictos
+(function injectUncrushableStyles() {
+  if (document.getElementById('ui-container-uncrushable-css')) return;
   const style = document.createElement('style');
-  style.id = 'ui-configurable-addons-css';
+  style.id = 'ui-container-uncrushable-css';
   style.textContent = `
-    /* Estilos para Contenedor Arrastrable / Flotante */
-    .ui-container.is-floating {
-      position: fixed !important;
-      z-index: 600;
-      border: 1px solid var(--border-strong);
-      border-radius: 6px;
-      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.7);
-      background: var(--bg-panel);
+    .ui-container {
+      display: flex !important;
+      flex-direction: column !important;
+      box-sizing: border-box !important;
     }
-    .ui-container-header {
-      padding: 6px 10px;
-      height: 32px;
-      background: var(--bg-elevated);
-      border-bottom: 1px solid var(--border-subtle);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: grab;
-      user-select: none;
-      flex-shrink: 0;
-    }
-    .ui-container-header:active { cursor: grabbing; }
 
-    /* Estilos para UIConfigurableSlider */
-    .ui-slider-card {
+    .ui-container-header {
+      height: 34px !important;
+      min-height: 34px !important;
+      padding: 0 10px !important;
+      background: var(--bg-elevated, #252526) !important;
+      border-bottom: 1px solid var(--border-subtle, #2c2c2c) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      cursor: grab !important;
+      user-select: none !important;
+      flex-shrink: 0 !important;
+      z-index: 10 !important;
+    }
+    .ui-container-header:active {
+      cursor: grabbing !important;
+    }
+
+    .ui-container-header .ui-panel-tools {
+      display: flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+    }
+
+    /* ESTADO MINIMIZADO / COLAPSADO (Solución al bloqueo) */
+    .ui-container.collapsed {
+      height: 34px !important;
+      min-height: 34px !important;
+      max-height: 34px !important;
+      overflow: hidden !important;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.5) !important;
+    }
+    .ui-container.collapsed .ui-container-body,
+    .ui-container.collapsed .ui-placeholder,
+    .ui-container.collapsed .ui-resizer {
+      display: none !important; /* Oculta SOLO cuerpo y tiradores, jamás el header */
+    }
+
+    .ui-container-body {
+      flex: 1 1 auto;
       width: 100%;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 6px;
-      padding: 8px 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      flex-shrink: 0;
       box-sizing: border-box;
-      transition: border-color 0.15s;
-    }
-    .ui-slider-card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      width: 100%;
-    }
-    .ui-slider-card .ui-slider-label {
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      flex: 1;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .ui-slider-header-right {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-    .ui-slider-card .ui-slider-val {
-      font-size: 10px;
-      font-family: var(--font-mono);
-      color: var(--text-primary);
-      background: var(--bg-input);
-      padding: 2px 6px;
-      border-radius: 3px;
-      border: 1px solid var(--border-subtle);
-      min-width: 26px;
-      text-align: center;
-    }
-    .ui-cajon-btn {
-      width: 18px;
-      height: 18px;
-      border: 1px solid transparent;
-      background: transparent;
-      color: var(--text-muted);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 9px;
-      border-radius: 3px;
-      transition: all 0.15s;
-      padding: 0;
-    }
-    .ui-cajon-btn:hover {
-      color: var(--text-primary);
-      background: var(--bg-hover);
-    }
-    .ui-slider-card.open .ui-cajon-btn {
-      transform: rotate(180deg);
-      color: var(--accent);
-    }
-    .ui-slider-content {
-      display: flex;
-      align-items: center;
-      width: 100%;
-      padding: 2px 0;
-    }
-    .ui-slider-track {
-      width: 100%;
-      position: relative;
-      height: 4px;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      border-radius: 2px;
-      background-color: var(--border-strong);
-      touch-action: none;
-    }
-    .ui-slider-bg {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-    }
-    .ui-slider-fill {
-      position: absolute;
-      height: 100%;
-      background: var(--accent);
-      border-radius: 2px;
-      width: 0%;
-      pointer-events: none;
-    }
-    .ui-slider-thumb {
-      width: 12px;
-      height: 12px;
-      background: #ffffff;
-      border: 2px solid var(--bg-panel);
-      border-radius: 50%;
-      position: absolute;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 1px 4px rgba(0,0,0,0.5);
-      pointer-events: none;
-      transition: transform 0.1s;
-    }
-    .ui-slider-track:hover .ui-slider-thumb {
-      transform: translate(-50%, -50%) scale(1.15);
-      background: var(--accent);
-    }
-    .ui-slider-cajon {
-      display: grid;
-      grid-template-rows: 0fr;
-      transition: grid-template-rows 0.2s ease;
-      background: var(--bg-list);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    .ui-slider-card.open .ui-slider-cajon {
-      grid-template-rows: 1fr;
-      border: 1px solid var(--border-subtle);
-      margin-top: 2px;
-    }
-    .ui-slider-cajon-inner {
-      overflow: hidden;
+      padding: 12px;
+      overflow-y: auto !important;
+      overflow-x: auto !important;
       min-height: 0;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 6px;
-      gap: 4px;
-      transition: padding 0.2s ease;
     }
-    .ui-slider-card.open .ui-slider-cajon-inner {
-      padding: 6px;
+
+    /* AUTO GRID (Respeta alturas reales de 500px, 700px sin aplastar) */
+    .ui-container-body.mode-grid {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fit, minmax(var(--grid-min-col, 300px), 1fr)) !important;
+      grid-auto-rows: min-content !important;
+      align-items: start !important;
+      justify-items: stretch !important;
+      gap: var(--grid-gap, 14px);
     }
-    .ui-cajon-tag {
-      font-size: 10px;
-      color: var(--text-muted);
+
+    .ui-container-body.mode-rows {
+      display: grid !important;
+      grid-template-columns: none !important;
+      grid-auto-flow: column !important;
+      grid-auto-columns: min-content !important;
+      align-items: start !important;
+      gap: var(--grid-gap, 14px);
+      overflow-x: auto !important;
+      overflow-y: hidden !important;
     }
-    .ui-cajon-group {
-      display: flex;
-      align-items: center;
-      gap: 4px;
+
+    .ui-container-body.mode-stack {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: stretch !important;
+      gap: var(--grid-gap, 12px);
     }
-    .ui-cajon-input {
-      width: 48px !important;
-      text-align: center;
-      height: 20px !important;
-      padding: 0 2px !important;
-      font-size: 10px !important;
+
+    .ui-real-slot {
+      box-sizing: border-box;
+      flex-shrink: 0 !important;
+      width: 100%;
+      height: auto;
+      background: var(--bg-surface, #1e1e1e);
+      border: 1px solid var(--border-subtle, #2c2c2c);
+      border-radius: 8px;
+      padding: 12px;
+      overflow: visible;
+      transition: border-color 0.15s ease;
+    }
+    .ui-real-slot:hover {
+      border-color: var(--accent, #3b82f6);
     }
   `;
   (document.head || document.documentElement).appendChild(style);
 })();
 
-/**
- * Contenedor con capacidad para acoplarse o flotar y arrastrarse
- */
-class UIContainerDos extends UIBaseComponent {
+class UIContainer extends UIBaseComponent {
   constructor(options = {}) {
     super(options, 'container');
-    this._width = options.width || 280;
+
+    this.layoutMode = options.layoutMode || 'grid';
+    this.itemMinCol = options.itemMinCol || 300;
+    this.gap = options.gap !== undefined ? options.gap : 14;
+
+    this.minWidth = options.minWidth !== undefined ? options.minWidth : 300;
+    this.maxWidth = options.maxWidth || null;
+    this.minHeight = options.minHeight || 150;
+    this.maxHeight = options.maxHeight || null;
+    this.resizable = options.resizable !== false;
+
+    this._width = Math.max(this.minWidth, options.width || 340);
+    this._height = options.height || null;
+    this._savedHeight = this._height ? (typeof this._height === 'number' ? `${this._height}px` : this._height) : null;
+    this.collapsed = false;
+
     this._position = options.position || 'right';
     this.draggable = !!options.draggable;
     this.floating = !!options.floating || this.draggable;
     this.title = options.title || '';
     this.x = options.x || 60;
     this.y = options.y || 60;
+    this.snapThreshold = options.snapThreshold || 20;
 
     this.onPanelAdd = options.onPanelAdd || null;
     this.onPanelRemove = options.onPanelRemove || null;
+    this.onResize = options.onResize || null;
+    this.onCollapse = options.onCollapse || null;
 
     this.panels = [];
     this.buildUI();
     this.bindEvents();
+    if (this.resizable) this.bindResizeEvents();
   }
 
   buildUI() {
     this.element = document.createElement('div');
     this.element.className = `ui-container bordered-${this._position}`;
-    this.element.style.width = typeof this._width === 'number' ? `${this._width}px` : this._width;
+    this.element.style.minWidth = `${this.minWidth}px`;
+    this.element.style.maxWidth = '100vw';
+    this.setWidth(this._width);
+    if (this._height) this.setHeight(this._height);
 
     if (this.floating) {
       this.element.classList.add('is-floating');
+      this.element.style.position = 'fixed';
+      this.element.style.zIndex = '600';
       this.element.style.left = `${this.x}px`;
       this.element.style.top = `${this.y}px`;
       if (document.body) document.body.appendChild(this.element);
     }
 
-    if (this.draggable || this.title) {
-      this.header = document.createElement('div');
-      this.header.className = 'ui-container-header';
-      this.header.innerHTML = `
-        <span class="ui-panel-title">${this.title || 'CONTENEDOR'}</span>
-        <button class="ui-tool-btn btn-cls-cnt">✕</button>
-      `;
-      this.element.appendChild(this.header);
-      this.header.querySelector('.btn-cls-cnt').addEventListener('click', () => {
-        this.element.style.display = 'none';
-      });
-    }
+    // Cabecera permanente
+    this.header = document.createElement('div');
+    this.header.className = 'ui-container-header';
+    this.header.innerHTML = `
+      <span class="ui-panel-title">${this.title || 'CONTENEDOR'}</span>
+      <div class="ui-panel-tools">
+        <button type="button" class="ui-tool-btn btn-collapse" title="Minimizar / Expandir">_</button>
+        <button type="button" class="ui-tool-btn btn-cls-cnt" title="Cerrar">✕</button>
+      </div>
+    `;
+    this.element.appendChild(this.header);
+
+    this.btnCollapse = this.header.querySelector('.btn-collapse');
+    this.btnClose = this.header.querySelector('.btn-cls-cnt');
+
+    // Evento Minimizar / Expandir
+    this.btnCollapse.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.toggleCollapse();
+    });
+
+    // Evento Cerrar
+    this.btnClose.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.element.style.display = 'none';
+    });
+
+    // Cuerpo
+    this.body = document.createElement('div');
+    this.body.className = `ui-container-body mode-${this.layoutMode}`;
+    this.body.style.setProperty('--grid-min-col', `${this.itemMinCol}px`);
+    this.body.style.setProperty('--grid-gap', `${this.gap}px`);
+    this.element.appendChild(this.body);
 
     this._placeholder = document.createElement('div');
     this._placeholder.className = 'ui-placeholder';
     this._placeholder.style.display = 'none';
-    this.element.appendChild(this._placeholder);
+    this.body.appendChild(this._placeholder);
+
+    // Tiradores con clase explícita .ui-resizer
+    if (this.resizable) {
+      this.resizerR = document.createElement('div');
+      this.resizerR.className = 'ui-resizer';
+      this.resizerR.style.cssText = 'position:absolute; top:0; right:0; width:8px; height:100%; cursor:ew-resize; z-index:100; touch-action:none;';
+      
+      this.resizerB = document.createElement('div');
+      this.resizerB.className = 'ui-resizer';
+      this.resizerB.style.cssText = 'position:absolute; bottom:0; left:0; width:100%; height:8px; cursor:ns-resize; z-index:100; touch-action:none;';
+
+      this.resizerSE = document.createElement('div');
+      this.resizerSE.className = 'ui-resizer';
+      this.resizerSE.style.cssText = 'position:absolute; bottom:0; right:0; width:14px; height:14px; cursor:nwse-resize; z-index:101; touch-action:none;';
+
+      this.element.appendChild(this.resizerR);
+      this.element.appendChild(this.resizerB);
+      this.element.appendChild(this.resizerSE);
+    }
+  }
+
+  // --- MINIMIZAR Y EXPANDIR SIN BLOQUEOS ---
+  toggleCollapse() {
+    this.collapsed = !this.collapsed;
+
+    if (this.collapsed) {
+      // Guardar la altura antes de cerrar
+      this._savedHeight = this.element.style.height || `${this.element.offsetHeight}px`;
+      this.element.classList.add('collapsed');
+      this.btnCollapse.textContent = '□';
+    } else {
+      // Restaurar la altura que tenía
+      this.element.classList.remove('collapsed');
+      if (this._savedHeight) {
+        this.element.style.height = this._savedHeight;
+      } else {
+        this.element.style.height = '';
+      }
+      this.btnCollapse.textContent = '_';
+    }
+
+    if (this.onCollapse) {
+      this.onCollapse({ collapsed: this.collapsed, sender: this });
+    }
+    return this;
+  }
+
+  addItem(content, options = {}) {
+    if (options.raw) {
+      const dom = content.element || content;
+      this.body.appendChild(dom);
+      return dom;
+    }
+
+    const slot = document.createElement('div');
+    slot.className = 'ui-real-slot';
+
+    if (options.colSpan && options.colSpan > 1) slot.style.gridColumn = `span ${options.colSpan}`;
+    if (options.rowSpan && options.rowSpan > 1) slot.style.gridRow = `span ${options.rowSpan}`;
+    if (options.height) slot.style.height = typeof options.height === 'number' ? `${options.height}px` : options.height;
+    if (options.width) slot.style.width = typeof options.width === 'number' ? `${options.width}px` : options.width;
+
+    if (typeof content === 'string') {
+      slot.innerHTML = content;
+    } else if (content instanceof HTMLElement) {
+      slot.appendChild(content);
+    } else if (content && content.element instanceof HTMLElement) {
+      slot.appendChild(content.element);
+    }
+
+    this.body.appendChild(slot);
+    return slot;
+  }
+
+  setLayoutMode(mode) {
+    if (!['grid', 'rows', 'stack'].includes(mode)) return this;
+    this.layoutMode = mode;
+    this.body.className = `ui-container-body mode-${this.layoutMode}`;
+    return this;
+  }
+
+  setWidth(w) {
+    let widthVal = typeof w === 'number' ? Math.max(this.minWidth, w) : w;
+    if (this.maxWidth && typeof w === 'number') widthVal = Math.min(this.maxWidth, widthVal);
+    this._width = widthVal;
+    this.element.style.width = typeof widthVal === 'number' ? `${widthVal}px` : widthVal;
+    return this;
+  }
+
+  setHeight(h) {
+    let heightVal = typeof h === 'number' ? Math.max(this.minHeight, h) : h;
+    if (this.maxHeight && typeof h === 'number') heightVal = Math.min(this.maxHeight, heightVal);
+    this._height = heightVal;
+    this._savedHeight = `${heightVal}px`;
+    this.element.style.height = typeof heightVal === 'number' ? `${heightVal}px` : heightVal;
+    return this;
+  }
+
+  setSize(w, h) {
+    this.setWidth(w);
+    if (h !== undefined) this.setHeight(h);
+    return this;
+  }
+
+  bindResizeEvents() {
+    const initResize = (e, direction) => {
+      if (this.collapsed) return;
+      e.stopPropagation();
+      e.preventDefault();
+
+      const startX = e.touches ? e.touches[0].clientX : e.clientX;
+      const startY = e.touches ? e.touches[0].clientY : e.clientY;
+      const startW = this.element.offsetWidth;
+      const startH = this.element.offsetHeight;
+
+      const onPointerMove = (ev) => {
+        const currentX = ev.touches ? ev.touches[0].clientX : ev.clientX;
+        const currentY = ev.touches ? ev.touches[0].clientY : ev.clientY;
+
+        if (direction === 'horizontal' || direction === 'both') {
+          this.setWidth(startW + (currentX - startX));
+        }
+        if (direction === 'vertical' || direction === 'both') {
+          this.setHeight(startH + (currentY - startY));
+        }
+
+        if (this.onResize) {
+          this.onResize({ width: this.element.offsetWidth, height: this.element.offsetHeight, sender: this });
+        }
+      };
+
+      const onPointerUp = () => {
+        window.removeEventListener('mousemove', onPointerMove);
+        window.removeEventListener('mouseup', onPointerUp);
+        window.removeEventListener('touchmove', onPointerMove);
+        window.removeEventListener('touchend', onPointerUp);
+      };
+
+      window.addEventListener('mousemove', onPointerMove);
+      window.addEventListener('mouseup', onPointerUp);
+      window.addEventListener('touchmove', onPointerMove, { passive: false });
+      window.addEventListener('touchend', onPointerUp);
+    };
+
+    this.resizerR.addEventListener('mousedown', (e) => initResize(e, 'horizontal'));
+    this.resizerR.addEventListener('touchstart', (e) => initResize(e, 'horizontal'), { passive: false });
+
+    this.resizerB.addEventListener('mousedown', (e) => initResize(e, 'vertical'));
+    this.resizerB.addEventListener('touchstart', (e) => initResize(e, 'vertical'), { passive: false });
+
+    this.resizerSE.addEventListener('mousedown', (e) => initResize(e, 'both'));
+    this.resizerSE.addEventListener('touchstart', (e) => initResize(e, 'both'), { passive: false });
+  }
+
+  _getGuide() {
+    let guide = document.querySelector('.ui-snap-guide');
+    if (!guide) {
+      guide = document.createElement('div');
+      guide.className = 'ui-snap-guide';
+      document.body.appendChild(guide);
+    }
+    return guide;
+  }
+
+  _calculateSnap(rawX, rawY, width, height) {
+    const T = this.snapThreshold;
+    let finalX = rawX;
+    let finalY = rawY;
+    let snapped = false;
+
+    const winW = window.innerWidth;
+    const winH = window.innerHeight;
+
+    if (Math.abs(finalX) < T) { finalX = 0; snapped = true; }
+    if (Math.abs(finalY - 32) < T) { finalY = 32; snapped = true; }
+    else if (Math.abs(finalY) < T) { finalY = 0; snapped = true; }
+    if (Math.abs(finalX + width - winW) < T) { finalX = winW - width; snapped = true; }
+    if (Math.abs(finalY + height - winH) < T) { finalY = winH - height; snapped = true; }
+
+    const others = Array.from(document.querySelectorAll('.ui-container, .ui-panel'))
+      .filter(el => el !== this.element && el.offsetParent !== null);
+
+    for (const other of others) {
+      const r = other.getBoundingClientRect();
+      if (Math.abs(finalX - r.right) < T && finalY < r.bottom && finalY + height > r.top) {
+        finalX = r.right; snapped = true;
+      }
+      if (Math.abs(finalX + width - r.left) < T && finalY < r.bottom && finalY + height > r.top) {
+        finalX = r.left - width; snapped = true;
+      }
+      if (Math.abs(finalY - r.bottom) < T && finalX < r.right && finalX + width > r.left) {
+        finalY = r.bottom; snapped = true;
+      }
+      if (Math.abs(finalY + height - r.top) < T && finalX < r.right && finalX + width > r.left) {
+        finalY = r.top - height; snapped = true;
+      }
+    }
+
+    return { finalX, finalY, snapped };
   }
 
   bindEvents() {
     if (!this.draggable) return;
 
-    let startX = 0, startY = 0, initX = 0, initY = 0, dragging = false;
-    const trigger = this.header || this.element;
+    let shiftX = 0, shiftY = 0, dragging = false;
+    const trigger = this.header; // Arrastre garantizado siempre desde la cabecera
+    const guide = this._getGuide();
 
     const onPointerMove = (e) => {
+      if (!dragging) return;
+      if (e.cancelable) e.preventDefault();
+
       const cx = e.touches ? e.touches[0].clientX : e.clientX;
       const cy = e.touches ? e.touches[0].clientY : e.clientY;
-      const dx = cx - startX;
-      const dy = cy - startY;
 
-      if (!dragging && Math.hypot(dx, dy) > 5) dragging = true;
+      const rawX = cx - shiftX;
+      const rawY = cy - shiftY;
+      const w = this.element.offsetWidth;
+      const h = this.element.offsetHeight;
 
-      if (dragging) {
-        if (e.cancelable) e.preventDefault();
-        this.x = Math.max(0, Math.min(window.innerWidth - this.element.offsetWidth, initX + dx));
-        this.y = Math.max(0, Math.min(window.innerHeight - this.element.offsetHeight, initY + dy));
-        this.element.style.left = `${this.x}px`;
-        this.element.style.top = `${this.y}px`;
+      const snap = this._calculateSnap(rawX, rawY, w, h);
+
+      this.x = snap.finalX;
+      this.y = snap.finalY;
+      this.element.style.left = `${this.x}px`;
+      this.element.style.top = `${this.y}px`;
+
+      if (snap.snapped) {
+        this.element.classList.add('snapping');
+        guide.style.display = 'block';
+        guide.style.left = `${this.x}px`;
+        guide.style.top = `${this.y}px`;
+        guide.style.width = `${w}px`;
+        guide.style.height = `${h}px`;
+      } else {
+        this.element.classList.remove('snapping');
+        guide.style.display = 'none';
       }
     };
 
     const onPointerUp = () => {
+      if (!dragging) return;
       dragging = false;
+      this.element.classList.remove('snapping');
+      guide.style.display = 'none';
+
       window.removeEventListener('mousemove', onPointerMove);
       window.removeEventListener('mouseup', onPointerUp);
       window.removeEventListener('touchmove', onPointerMove);
@@ -3600,11 +3776,16 @@ class UIContainerDos extends UIBaseComponent {
     };
 
     const onPointerDown = (e) => {
-      if (e.target.closest('button, input, select, .ui-panel, .ui-slider-card')) return;
-      startX = e.touches ? e.touches[0].clientX : e.clientX;
-      startY = e.touches ? e.touches[0].clientY : e.clientY;
-      initX = this.element.offsetLeft;
-      initY = this.element.offsetTop;
+      // Si se hizo clic en los botones de minimizar o cerrar, no iniciar arrastre
+      if (e.target.closest('button, input, select')) return;
+
+      const cx = e.touches ? e.touches[0].clientX : e.clientX;
+      const cy = e.touches ? e.touches[0].clientY : e.clientY;
+      const rect = this.element.getBoundingClientRect();
+
+      shiftX = cx - rect.left;
+      shiftY = cy - rect.top;
+      dragging = true;
 
       window.addEventListener('mousemove', onPointerMove);
       window.addEventListener('mouseup', onPointerUp);
@@ -3616,33 +3797,9 @@ class UIContainerDos extends UIBaseComponent {
     trigger.addEventListener('touchstart', onPointerDown, { passive: true });
   }
 
-  showPlaceholder(clientY) {
-    this._placeholder.style.display = 'block';
-    const children = Array.from(this.element.children).filter(c => c !== this._placeholder && c !== this.header);
-    let target = null;
-    for (const child of children) {
-      const rect = child.getBoundingClientRect();
-      if (clientY < rect.top + rect.height / 2) {
-        target = child;
-        break;
-      }
-    }
-    if (target) this.element.insertBefore(this._placeholder, target);
-    else this.element.appendChild(this._placeholder);
-  }
-
-  hidePlaceholder() {
-    this._placeholder.style.display = 'none';
-  }
-
   addPanel(panel) {
     if (panel.setFloating) panel.setFloating(false);
-    if (this._placeholder.parentNode === this.element) {
-      this.element.insertBefore(panel.element || panel, this._placeholder);
-    } else {
-      this.element.appendChild(panel.element || panel);
-    }
-    this.hidePlaceholder();
+    this.body.appendChild(panel.element || panel);
     if (!this.panels.includes(panel)) this.panels.push(panel);
     if (this.onPanelAdd) this.onPanelAdd({ panel, sender: this });
     return this;
@@ -3652,17 +3809,13 @@ class UIContainerDos extends UIBaseComponent {
     const idx = this.panels.indexOf(panel);
     if (idx !== -1) this.panels.splice(idx, 1);
     const dom = panel.element || panel;
-    if (dom.parentNode === this.element) {
-      this.element.removeChild(dom);
+    if (dom.parentNode === this.body) {
+      this.body.removeChild(dom);
     }
     if (this.onPanelRemove) this.onPanelRemove({ panel, sender: this });
     return this;
   }
 }
-
-/**
- * Control Slider configurable con valores de paso, min y max editables mediante drawer/cajón
- */
 class UIConfigurableSlider extends UIBaseComponent {
   constructor({ label = '', min = 0, max = 100, step = 1, value = 50, onChange = null } = {}) {
     super({}, 'configurableslider');
