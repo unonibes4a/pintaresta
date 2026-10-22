@@ -64,7 +64,7 @@
                     --ui-container-gap: 8px;
                     --ui-panel-body-padding: 10px;
                     --ui-panel-body-gap: 8px;
-                    --ui-accentBt:#353535;
+                    --ui-accentBt:rgba(255, 255, 255, 0.6);
                     --ui-text-mainBt:#898989;
                     --ui-text-mainBTHover:rgba(255, 255, 255, 0.7);
 
@@ -1621,7 +1621,7 @@
                 }
                 .ui-accordion-item.open {
                 border-color: var(--ui-accent);  
-          border-radius: 16px;
+          border-radius: 7px;
                 }
                 .ui-accordion-header {
                     min-height: 36px;
