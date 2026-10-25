@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Giovanni Suite - Pro Lab</title>
+
+  <!-- Fuente de iconos requerida por GiovanniContenedorTodo -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+  <style>
+    /* ========================================================
+       1. SCROLLBAR UNIVERSAL (Puro CSS - Hereda en todo el DOM)
+       ======================================================== */
+    :root, html, body, * {
+      scrollbar-width: thin !important;
+      scrollbar-color: #444 transparent !important;
+      box-sizing: border-box;
+    }
+
+    ::-webkit-scrollbar, *::-webkit-scrollbar {
+      width: 6px !important;
+      height: 6px !important;
+    }
+    ::-webkit-scrollbar-track, *::-webkit-scrollbar-track {
+      background: transparent !important;
+    }
+    ::-webkit-scrollbar-thumb, *::-webkit-scrollbar-thumb {
+      background: #444 !important;
+      border-radius: 3px !important;
+    }
+    ::-webkit-scrollbar-thumb:hover, *::-webkit-scrollbar-thumb:hover {
+      background: #666 !important;
+    }
+    ::-webkit-scrollbar-corner, *::-webkit-scrollbar-corner {
+      background: transparent !important;
+    }
+
+    /* ========================================================
+       2. ESTILOS GENERALES DE LA BASE
+       ======================================================== */
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #181818;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow: hidden;
+      color: #e0e0e0;
+    }
+
+    /* Elementos auxiliares personalizados */
+    .logger-box {
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-family: monospace;
+      font-size: 11px;
+      color: #4ade80;
+      height: 85px;
+      overflow-y: auto;
+      width: 100%;
+      white-space: pre-wrap;
+    }
+
+    .gio-canvas-box {
+      width: 100%;
+      height: 140px;
+      background: #141414;
+      border: 1px solid #333;
+      border-radius: 6px;
+      display: block;
+    }
+
+    .image-preview-container {
+      position: relative;
+      width: 100%;
+      height: 160px;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid #383838;
+      background: #000;
+    }
+
+    .image-preview-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: filter 0.15s ease;
+    }
+
+    .metric-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+
+    .metric-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #aaa;
+    }
+
+    .metric-bar-bg {
+      width: 100%;
+      height: 6px;
+      background: #222;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .metric-bar-fill {
+      height: 100%;
+      background: #5c9ce6;
+      border-radius: 3px;
+      transition: width 0.4s ease;
+    }
+  </style>
+
+  <!-- Carga de la librería -->
+  <script src="alibb.js"></script>
+</head>
+<body>
+
+<script>
+  let loggerBox;
+  function logEvent(msg) {
+    if (!loggerBox) return;
+    const time = new Date().toLocaleTimeString();
+    loggerBox.textContent = `[${time}] ${msg}\n` + loggerBox.textContent;
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+
+    // ========================================================
+    // APP PRINCIPAL (GiovanniContenedorTodo Shell)
+    // ========================================================
+    const app = new GiovanniContenedorTodo({
+      title: 'Sistema Giovanni Suite - Panel de Control & Laboratorio',
+      isAppContainer: true,
+      isOpen: true,
+      showReset: true,
+      showClose: false,
+      onReset: () => logEvent('Reset global de la suite solicitado.')
+    });
+    document.body.appendChild(app.element);
+
+
+    // ========================================================
+    // PANEL 1: MULTIMEDIA & EXPERIMENTOS VISUALES (CANVAS + IMAGEN)
+    // ========================================================
+    const panelGrafico = new GiovanniContenedorTodo({
+      title: 'Laboratorio Gráfico & Media Dinámica',
+      isOpen: true
+    });
+    panelGrafico.element.classList.add('giovanni-contenedor-todo-panel-wide');
+
+    // --- Subcontenedor A: Canvas Animado (Osciloscopio Neon) ---
+    const subCanvas = new GiovanniContainerSimple({
+      title: 'Osciloscopio Reactivo (Canvas HTML5)',
+      isOpen: true,
+      maxHeight: 400
+    });
+
+    const canvas = document.createElement('canvas');
+    canvas.className = 'gio-canvas-box';
+    canvas.width = 600;
+    canvas.height = 140;
+    const ctx = canvas.getContext('2d');
+
+    let waveFreq = 0.04;
+    let waveAmp = 35;
+    let waveSpeed = 0.05;
+    let step = 0;
+    let neonColor = '#5c9ce6';
+
+    function renderCanvas() {
+      ctx.fillStyle = '#141414';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Cuadrícula técnica de fondo
+      ctx.strokeStyle = '#222';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < canvas.width; x += 30) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+      }
+      for (let y = 0; y < canvas.height; y += 25) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+      }
+
+      // Onda Senoidal Neón
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = neonColor;
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = neonColor;
+
+      ctx.beginPath();
+      const centerY = canvas.height / 2;
+      for (let x = 0; x < canvas.width; x++) {
+        const y = centerY + Math.sin(x * waveFreq + step) * waveAmp;
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      ctx.shadowBlur = 0; // Reset glow
+
+      step += waveSpeed;
+      requestAnimationFrame(renderCanvas);
+    }
+    requestAnimationFrame(renderCanvas);
+
+    const sliderAmp = new GiovanniSlider({
+      label: 'Amplitud de Onda',
+      min: 5,
+      max: 60,
+      step: 1,
+      value: 35,
+      onInput: (v) => { waveAmp = v; }
+    });
+
+    const sliderSpeed = new GiovanniSlider({
+      label: 'Frecuencia & Velocidad',
+      min: 1,
+      max: 10,
+      step: 0.5,
+      value: 5,
+      onInput: (v) => {
+        waveSpeed = v * 0.01;
+        waveFreq = v * 0.008;
+      }
+    });
+
+    const toggleColor = new GiovanniToggle({
+      label: 'Modo Plasma Verde Matrix',
+      checked: false,
+      onChange: (active) => {
+        neonColor = active ? '#4ade80' : '#5c9ce6';
+        logEvent(`Color de onda cambiado a: ${active ? 'Verde Neón' : 'Azul Eléctrico'}`);
+      }
+    });
+
+    subCanvas.append(canvas);
+    subCanvas.append(sliderAmp.element);
+    subCanvas.append(sliderSpeed.element);
+    subCanvas.append(toggleColor.element);
+
+    // --- Subcontenedor B: Procesador de Imagen en Vivo ---
+    const subImagen = new GiovanniContainerSimple({
+      title: 'Editor y Procesador de Imagen (Filtros CSS)',
+      isOpen: true
+    });
+
+    const imgContainer = document.createElement('div');
+    imgContainer.className = 'image-preview-container';
+
+    const img = document.createElement('img');
+    // Imagen temática espacial / cibernética
+    img.src = 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=700&q=80';
+    img.alt = 'Hardware Preview';
+    imgContainer.appendChild(img);
+
+    let fBrillo = 100;
+    let fBlur = 0;
+    let fGrayscale = 0;
+    let fContrast = 100;
+
+    function updateFilters() {
+      img.style.filter = `brightness(${fBrillo}%) blur(${fBlur}px) grayscale(${fGrayscale}%) contrast(${fContrast}%)`;
+    }
+
+    const sliderBrillo = new GiovanniSlider({
+      label: 'Brillo (%)',
+      min: 20,
+      max: 200,
+      step: 5,
+      value: 100,
+      onInput: (v) => { fBrillo = v; updateFilters(); }
+    });
+
+    const sliderBlur = new GiovanniSlider({
+      label: 'Desenfoque (Blur px)',
+      min: 0,
+      max: 10,
+      step: 0.5,
+      value: 0,
+      onInput: (v) => { fBlur = v; updateFilters(); }
+    });
+
+    const sliderGray = new GiovanniSlider({
+      label: 'Desaturación (B&N %)',
+      min: 0,
+      max: 100,
+      step: 5,
+      value: 0,
+      onInput: (v) => { fGrayscale = v; updateFilters(); }
+    });
+
+    subImagen.append(imgContainer);
+    subImagen.append(sliderBrillo.element);
+    subImagen.append(sliderBlur.element);
+    subImagen.append(sliderGray.element);
+
+    panelGrafico.append(subCanvas.element);
+    panelGrafico.append(subImagen.element);
+    app.append(panelGrafico.element);
+
+
+    // ========================================================
+    // PANEL 2: TELEMETRÍA, RENDIMIENTO & ESTADOS
+    // ========================================================
+    const panelTelemetria = new GiovanniContenedorTodo({
+      title: 'Monitoreo de Recursos & Hardware',
+      isOpen: true
+    });
+
+    const subMetricas = new GiovanniContainerSimple({
+      title: 'Consumo de Sistema en Tiempo Real',
+      isOpen: true
+    });
+
+    function createMetricRow(label, initialVal, color = '#5c9ce6') {
+      const row = document.createElement('div');
+      row.className = 'metric-row';
+
+      const hdr = document.createElement('div');
+      hdr.className = 'metric-header';
+      hdr.innerHTML = `<span>${label}</span><b id="lbl-${label}">${initialVal}%</b>`;
+
+      const bg = document.createElement('div');
+      bg.className = 'metric-bar-bg';
+
+      const fill = document.createElement('div');
+      fill.className = 'metric-bar-fill';
+      fill.style.width = initialVal + '%';
+      fill.style.backgroundColor = color;
+
+      bg.appendChild(fill);
+      row.appendChild(hdr);
+      row.appendChild(bg);
+
+      return { row, fill, text: hdr.querySelector('b') };
+    }
+
+    const mCpu = createMetricRow('Uso de CPU', 42, '#5c9ce6');
+    const mGpu = createMetricRow('Núcleos CUDA GPU', 78, '#a855f7');
+    const mRam = createMetricRow('Memoria VRAM', 55, '#ec4899');
+
+    subMetricas.append(mCpu.row);
+    subMetricas.append(mGpu.row);
+    subMetricas.append(mRam.row);
+
+    // Simular fluctuación en vivo de las barras
+    setInterval(() => {
+      const vCpu = Math.floor(35 + Math.random() * 40);
+      const vGpu = Math.floor(60 + Math.random() * 35);
+      const vRam = Math.floor(50 + Math.random() * 15);
+
+      mCpu.fill.style.width = vCpu + '%';
+      mCpu.text.textContent = vCpu + '%';
+
+      mGpu.fill.style.width = vGpu + '%';
+      mGpu.text.textContent = vGpu + '%';
+
+      mRam.fill.style.width = vRam + '%';
+      mRam.text.textContent = vRam + '%';
+    }, 2000);
+
+    const toggleOverclock = new GiovanniToggle({
+      label: 'Activar Aceleración por Hardware',
+      checked: true,
+      onChange: (v) => logEvent(`Aceleración por hardware: ${v}`)
+    });
+    subMetricas.append(toggleOverclock.element);
+
+    panelTelemetria.append(subMetricas.element);
+    app.append(panelTelemetria.element);
+
+
+    // ========================================================
+    // PANEL 3: ENTRADAS & CONFIGURACIONES DE USUARIO
+    // ========================================================
+    const panelFormularios = new GiovanniContenedorTodo({
+      title: 'Formularios & Datos del Operador',
+      isOpen: true,
+      showReset: true,
+      onReset: () => logEvent('Reset de formulario')
+    });
+
+    const subDatos = new GiovanniContainerSimple({
+      title: 'Credenciales & Permisos',
+      isOpen: true
+    });
+
+    const inputNombre = new GiovanniInputText({
+      label: 'Nombre completo',
+      value: 'Giovanni Rossi',
+      onChange: (v) => logEvent(`Nombre: "${v}"`)
+    });
+
+    const inputEmail = new GiovanniInputText({
+      label: 'Correo Electrónico',
+      value: 'admin@giovannicore.dev',
+      onChange: (v) => logEvent(`Email: "${v}"`)
+    });
+
+    const inputNivel = new GiovanniInputNumber({
+      label: 'Nivel de Autorización',
+      min: 1,
+      max: 10,
+      step: 1,
+      value: 7,
+      onChange: (v) => logEvent(`Nivel de acceso: ${v}`)
+    });
+
+    subDatos.append(inputNombre.element);
+    subDatos.append(inputEmail.element);
+    subDatos.append(inputNivel.element);
+
+    const subOpciones = new GiovanniContainerSimple({
+      title: 'Roles de Acceso',
+      isOpen: true
+    });
+
+    const checkTerminos = new GiovanniCheckbox({
+      label: 'Modo Desarrollador Activo',
+      checked: true,
+      onChange: (v) => logEvent(`Dev mode: ${v}`)
+    });
+
+    const radioAdmin = new GiovanniRadio({
+      label: 'Perfil Superusuario',
+      name: 'user_role',
+      checked: true,
+      onChange: () => logEvent('Perfil: Superusuario')
+    });
+
+    const radioEditor = new GiovanniRadio({
+      label: 'Perfil Operador Estándar',
+      name: 'user_role',
+      checked: false,
+      onChange: () => logEvent('Perfil: Estándar')
+    });
+
+    subOpciones.append(checkTerminos.element);
+    subOpciones.append(radioAdmin.element);
+    subOpciones.append(radioEditor.element);
+
+    panelFormularios.append(subDatos.element);
+    panelFormularios.append(subOpciones.element);
+    app.append(panelFormularios.element);
+
+
+    // ========================================================
+    // PANEL 4: TABLA DE DATOS
+    // ========================================================
+    const panelTabla = new GiovanniContenedorTodo({
+      title: 'Registros de Transacciones & Red',
+      isOpen: true
+    });
+    panelTabla.element.classList.add('giovanni-contenedor-todo-panel-wide');
+
+    const tablaDatos = new GiovanniTable({
+      columns: [
+        { key: 'id', label: 'ID Nodo' },
+        { key: 'usuario', label: 'Operador' },
+        { key: 'departamento', label: 'Módulo' },
+        { key: 'rendimiento', label: 'Rendimiento' },
+        { key: 'estado', label: 'Estado' }
+      ],
+      data: [
+        { id: '#NODE-1', usuario: 'Lucía Méndez', departamento: 'Infraestructura', rendimiento: '98%', estado: 'Activo' },
+        { id: '#NODE-2', usuario: 'Carlos Vega', departamento: 'Seguridad', rendimiento: '94%', estado: 'Activo' },
+        { id: '#NODE-3', usuario: 'Mariana Ríos', departamento: 'Desarrollo', rendimiento: '89%', estado: 'En pausa' },
+        { id: '#NODE-4', usuario: 'Esteban Arce', departamento: 'Data Science', rendimiento: '99%', estado: 'Activo' },
+        { id: '#NODE-5', usuario: 'Sofia Morales', departamento: 'Diseño UX', rendimiento: '92%', estado: 'Activo' }
+      ],
+      pageSize: 4,
+      onRowClick: (row, index) => {
+        logEvent(`Nodo inspect [${index}]: ${row.usuario} (${row.id})`);
+      },
+      onRowDelete: (item) => {
+        logEvent(`Nodo desconectado: ${item.id}`);
+      }
+    });
+
+    panelTabla.append(tablaDatos.element);
+    app.append(panelTabla.element);
+
+
+    // ========================================================
+    // PANEL 5: ACCIONES RÁPIDAS & TERMINAL LOGS
+    // ========================================================
+    const panelAcciones = new GiovanniContenedorTodo({
+      title: 'Acciones Rápidas & Terminal',
+      isOpen: true
+    });
+
+    const subBotones = new GiovanniContainerSimple({
+      title: 'Ejecución de Procesos',
+      isOpen: true
+    });
+
+    const barraBotones = document.createElement('div');
+    barraBotones.style.cssText = 'display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;';
+
+    const playSvg = `<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
+    const btnPlay = new GiovanniBoton({
+      svg: playSvg, ancho: 36, alto: 36,
+      onClick: () => logEvent('Comando disparado: INICIAR TAREA')
+    });
+    btnPlay.el.style.position = 'static';
+
+    const syncSvg = `<svg viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>`;
+    const btnSync = new GiovanniBoton({
+      svg: syncSvg, ancho: 36, alto: 36,
+      onClick: () => logEvent('Sincronizando base de datos central...')
+    });
+    btnSync.el.style.position = 'static';
+
+    const stopSvg = `<svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>`;
+    const btnStop = new GiovanniBoton({
+      svg: stopSvg, ancho: 36, alto: 36,
+      onClick: () => logEvent('AVISO: Detención de emergencia ejecutada.')
+    });
+    btnStop.el.style.position = 'static';
+
+    barraBotones.appendChild(btnPlay.el);
+    barraBotones.appendChild(btnSync.el);
+    barraBotones.appendChild(btnStop.el);
+    subBotones.append(barraBotones);
+
+    const buscadorGlobal = new GiovanniSearchInput({
+      placeholder: 'Filtrar eventos y registros...',
+      onSearch: (txt) => logEvent(`Búsqueda: "${txt}"`)
+    });
+    subBotones.append(buscadorGlobal.element);
+
+    const subLogs = new GiovanniContainerSimple({
+      title: 'Salida de Terminal en Vivo',
+      isOpen: true
+    });
+
+    loggerBox = document.createElement('div');
+    loggerBox.className = 'logger-box';
+    loggerBox.textContent = '[Ready] Todos los módulos gráficos, canvas e inspectores activos.';
+    subLogs.append(loggerBox);
+
+    panelAcciones.append(subBotones.element);
+    panelAcciones.append(subLogs.element);
+    app.append(panelAcciones.element);
+
+  });
+</script>
+
+</body>
+</html>
