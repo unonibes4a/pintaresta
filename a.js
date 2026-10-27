@@ -1120,7 +1120,7 @@
 
                 .ui-btn {
                     background: var(--ui-btn-bg);
-                    color: var(--ui-text-main);
+                  
                     border: 1px solid var(--ui-border);
                     padding: 0 14px;
                     border-radius: var(--ui-radius-sm);
@@ -1136,13 +1136,9 @@
                     flex-shrink: 0 !important;
                     margin: var(--ui-btn-margin);
                     touch-action: manipulation;
+                     color: #878787;  
                 }
-                .ui-btn:hover {
-                    background: var(--ui-btn-hover-bg);
-                    color: var(--ui-text-hover);
-                    border-color: var(--ui-accent);
-                    box-shadow: 0 0 0 3px var(--ui-accent-glow);
-                }
+               
                 .ui-btn:active { transform: scale(0.98); }
                 .ui-btn:disabled { opacity: var(--ui-opacity-disabled); cursor: not-allowed; pointer-events: none; }
 
@@ -1150,7 +1146,7 @@
                 background: var(--ui-accentBt);
                 border-radius: 10px;
                 border: none;
-                //color: var(--ui-text-mainBT);                   
+                color: #878787;                   
                 }
                 .ui-btn-primary:hover {
           /*    color: var(--ui-text-mainBTHover);
