@@ -189,7 +189,7 @@
                     --ui-text-dropdown-item: #8a8a8a;
                     --ui-text-dropdown-item-hover: #5c9ce6;
 
-                    --ui-btn-bg: #252525;
+                    --ui-btn-bg: #252728;
                     --ui-btn-hover-bg: #333333;
                     --ui-primary-bg: #5c9ce6;
                     --ui-primary-hover-bg: #6fa9ec;
@@ -829,9 +829,9 @@
                     justify-content: space-between;
                     padding: 6px 8px;
                     margin-bottom: 4px;
-                    background: var(--ui-cad-layer-item-bg, var(--ui-bg-surface));
-                    border: 1px solid var(--ui-border);
-                    border-radius: var(--ui-radius-sm);
+                         background-color: #222324;
+                    border: 3px solid #222324ce;
+                    border-radius:10px;
                     cursor: pointer;
                     font-size: var(--ui-font-size-table);
                     color: var(--ui-text-bright);
@@ -845,8 +845,9 @@
                 }
 
                 .layer-item-row.is-active {
-                    border-color: var(--ui-cad-layer-item-active-border);
-                    background: var(--ui-cad-layer-item-active-bg);
+                     
+                
+            background-color: #121212;
                 }
 
                 .layer-actions-mini {
@@ -1089,15 +1090,17 @@
                 }
 
                 .ui-row {
-                    display: flex;
-                    flex-direction: row;
-                    flex-wrap: wrap;
-                    align-items: center;
-                    gap: 8px;
-                    width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right)));
-                    min-height: var(--ui-btn-height);
-                    flex-shrink: 0 !important;
-                    margin: var(--ui-row-margin);
+                display: flex;
+                flex-wrap: wrap;         
+                width: 87%;
+                box-sizing: border-box;
+                }
+
+                .ui-row > * {
+                min-width: 50px;        
+                flex: 1 1 50px; 
+                margin: 7px;           
+                box-sizing: border-box;  
                 }
 
                 .ui-row-align-0 { justify-content: flex-start; }
@@ -1131,13 +1134,18 @@
                     align-items: center;
                     justify-content: center;
                     transition: all var(--ui-transition-fast);
-                    height: var(--ui-btn-height);
-                    gap: 6px;
-                    flex-shrink: 0 !important;
-                    margin: var(--ui-btn-margin);
-                    touch-action: manipulation;
+                    height: 60px;
+                    width: 60px; 
+                  
+                  
+                   
+             
+   
                      color: #878787;  
                 }
+                     .ui-btn:hover{
+                      color: #1c66c1; 
+                     }
                
                 .ui-btn:active { transform: scale(0.98); }
                 .ui-btn:disabled { opacity: var(--ui-opacity-disabled); cursor: not-allowed; pointer-events: none; }
@@ -1743,7 +1751,7 @@ box-shadow: 5px 5px 15px 5px #000000;
                     align-items: center;
                     cursor: pointer;
                     border-radius: 2px;
-                    background-color: var(--ui-border);
+                    background-color: #333333;
                     border: none;
                     touch-action: none;
                 }
@@ -1759,7 +1767,7 @@ box-shadow: 5px 5px 15px 5px #000000;
                 .ui-slider-thumb {
                     width: 14px;
                     height: 14px;
-                    background: #ffffff;
+                    background: #444444;
                     border: 2px solid var(--ui-bg-panel);
                     border-radius: 50%;
                     position: absolute;
@@ -2751,23 +2759,42 @@ box-shadow: 5px 5px 15px 5px #000000;
         }
 
         addPanel(...panels) {
-            panels.forEach(p => {
-                if (p instanceof UISmartPanel) {
-                    p.element.classList.add('ui-panel-static');
-                    p.floating = false;
-                    p.parentContainer = this;
-                    p.lastParentContainer = this;
-                    p.inResponsiveGrid = false;
-                    GlobalDock.unregister(p);
-                    p.updateFloatButtonUI();
-                    if (!this.panels.includes(p)) this.panels.push(p);
-                    this.element.appendChild(p.element);
-                } else if (p.mount) {
-                    p.mount(this.element);
-                }
-            });
-            return this;
+    panels.forEach(p => {
+        // 1. Ignorar valores nulos/undefined (evita el error 'mount' de undefined)
+        if (!p) {
+            console.warn('UIContainer.addPanel: se recibió un panel undefined/null, ignorando.');
+            return;
         }
+
+        // 2. Si por error llega un array, aplanarlo y procesarlo
+        if (Array.isArray(p)) {
+            this.addPanel(...p);
+            return;
+        }
+
+        // 3. Lógica original para paneles inteligentes
+        if (p instanceof UISmartPanel) {
+            p.element.classList.add('ui-panel-static');
+            p.floating = false;
+            p.parentContainer = this;
+            p.lastParentContainer = this;
+            p.inResponsiveGrid = false;
+            GlobalDock.unregister(p);
+            p.updateFloatButtonUI();
+            if (!this.panels.includes(p)) this.panels.push(p);
+            this.element.appendChild(p.element);
+        } 
+        // 4. Comprobar que 'mount' es una función antes de llamarla
+        else if (typeof p.mount === 'function') {
+            p.mount(this.element);
+        } 
+        // 5. Avisar si el objeto no es válido
+        else {
+            console.warn('UIContainer.addPanel: objeto no válido (no es UISmartPanel ni tiene mount):', p);
+        }
+    });
+    return this;
+}
 
         removePanel(panel) {
             const idx = this.panels.indexOf(panel);
