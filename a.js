@@ -72,8 +72,8 @@
                     --ui-panel-body-padding: 10px;
                     --ui-panel-body-gap: 8px;
                     --ui-accentBt:rgba(39, 39, 39, 0.77);
-                    --ui-text-mainBt:#898989;
-                    --ui-text-mainBTHover:rgba(255, 255, 255, 0.7);
+                    --ui-text-mainBt:#ffffff;
+                    --ui-text-mainBTHover:rgba(41, 41, 41, 0.77);
 
                     --ui-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
                     --ui-font-family-mono: "SF Mono", Menlo, Consolas, monospace;
@@ -1147,18 +1147,16 @@
                 .ui-btn:disabled { opacity: var(--ui-opacity-disabled); cursor: not-allowed; pointer-events: none; }
 
                 .ui-btn-primary {
-                    background: var(--ui-accentBt);
-                       border-radius: 10px;
-                       border: none;
-    
-                    color: var(--ui-text-mainBT);
-                   
+                background: var(--ui-accentBt);
+                border-radius: 10px;
+                border: none;
+                //color: var(--ui-text-mainBT);                   
                 }
                 .ui-btn-primary:hover {
-             color: var(--ui-text-mainBTHover);
+          /*    color: var(--ui-text-mainBTHover);
                      background: var(--ui-accentBt);
                        border-radius: 10px;
-                       border: none;
+                       border: none; */
                 }
 
                 .ui-btn-danger {
