@@ -135,13 +135,13 @@
 
                     --ui-bg-base: #000000;
                     --ui-bg-panel: #1e1e1e;
-                    --ui-bg-surface: #1e1e1e;
-                    --ui-bg-surface-hover: #333333;
+                    --ui-bg-surface: #333333;
+                    --ui-bg-surface-hover: #373737;
                     --ui-bg-input: #252525;
                     --ui-bg-input-hover: #2b2b2b;
                     --ui-bg-input-focus: #282828;
                     --ui-bg-cajon: #1a1a1a;
-                    --ui-bg-list: #1a1a1a;
+                    --ui-bg-list: #333333;
                     --ui-bg-tr-hover: #272727;
                     --ui-bg-modal-item: #212121;
                     --ui-bg-modal-item-hover: #282828;
@@ -152,8 +152,8 @@
                     --ui-bg-dropdown-item-hover: #333333;
                     --ui-bg-dropdown-item-active: rgba(92, 156, 230, 0.12);
                     --ui-bg-segmented: #1a1a1a;
-                    --ui-bg-segmented-active: rgba(92, 156, 230, 0.5);
-                    --ui-bg-segmented-active-h: rgba(92, 156, 230, 0.3);
+                    --ui-bg-segmented-active:#2160c7; 
+                    --ui-bg-segmented-active-h:#2160c7;  
                     --ui-bg-toggle-switch: #2b2b2b;
                     --ui-bg-slider-content: #212121;
 
@@ -189,7 +189,7 @@
                     --ui-text-dropdown-item: #8a8a8a;
                     --ui-text-dropdown-item-hover: #5c9ce6;
 
-                    --ui-btn-bg: #252728;
+                    --ui-btn-bg: #2d2d2d;
                     --ui-btn-hover-bg: #333333;
                     --ui-primary-bg: #5c9ce6;
                     --ui-primary-hover-bg: #6fa9ec;
@@ -203,16 +203,16 @@
                     --ui-danger-color: #f85149;
                     --ui-danger-hover: #ff7b72;
 
-                    --ui-accent: #1699d693;
+                    --ui-accent: #2160c7;
                     --ui-seg-item: #dddddd;
-                    --ui-accent-hover: rgba(92, 156, 230, 0.42);
+                    --ui-accent-hover: #2160c7;
                     --ui-accent-glow: rgba(92, 156, 230, 0.15);
                     --ui-accent-snap-border: rgba(92, 156, 230, 0.5);
                     --ui-accent-snap-shadow: rgba(92, 156, 230, 0.4);
                     --ui-accent-placeholder-bg: rgba(92, 156, 230, 0.08);
                     --ui-accent-btn-shadow: rgba(92, 156, 230, 0.38);
 
-                    --ui-toggle-switch-active-bg: #5c9ce6;
+                    --ui-toggle-switch-active-bg: #333333;
                     --ui-toggle-thumb-active: #ffffff;
                     --ui-checkbox-box-active-bg: #5c9ce6;
                     --ui-checkbox-box-active-border: #5c9ce6;
@@ -1134,34 +1134,26 @@
                     align-items: center;
                     justify-content: center;
                     transition: all var(--ui-transition-fast);
-                    height: 60px;
-                    width: 60px; 
-                  
-                  
-                   
-             
-   
-                     color: #878787;  
+                    height: 45px;
+                    width: 40px;
+                    border-radius: 12px;
+                    color: #878787;  
                 }
                      .ui-btn:hover{
-                      color: #1c66c1; 
+                      color: var(--ui-bg-segmented-active-h);
+                        
                      }
                
                 .ui-btn:active { transform: scale(0.98); }
                 .ui-btn:disabled { opacity: var(--ui-opacity-disabled); cursor: not-allowed; pointer-events: none; }
 
                 .ui-btn-primary {
-                background: var(--ui-accentBt);
-                border-radius: 10px;
-                border: none;
+                /* background: var(--ui-accentBt);
+                 
+               */
                 color: #878787;                   
                 }
-                .ui-btn-primary:hover {
-          /*    color: var(--ui-text-mainBTHover);
-                     background: var(--ui-accentBt);
-                       border-radius: 10px;
-                       border: none; */
-                }
+               
 
                 .ui-btn-danger {
                     background: var(--ui-danger-bg);
@@ -1247,13 +1239,13 @@
                     touch-action: manipulation;
                     min-width: 70px;
                     height: 28px;
-                    background: transparent;
+                    
                     margin: 2px;
                 }
                 .ui-seg-item.active {
-                    background: var(--ui-bg-segmented-active);
-                    color: #ffffff;
-                    font-weight: var(--ui-font-weight-semibold);
+                    color: var(--ui-bg-segmented-active-h);
+                  
+                 
                 }
                 .ui-seg-item:hover {
                     background: var(--ui-bg-segmented-active-h);
@@ -1758,8 +1750,8 @@ box-shadow: 5px 5px 15px 5px #000000;
                 .ui-slider-bg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
                 .ui-slider-fill {
                     position: absolute;
-                    height: 100%;
-                    background: #292a2c23;
+                    height: 1px;
+                    background: #b9b9b9;
                     border-radius: 2px;
                     width: 0%;
                     pointer-events: none;
@@ -1767,8 +1759,8 @@ box-shadow: 5px 5px 15px 5px #000000;
                 .ui-slider-thumb {
                     width: 14px;
                     height: 14px;
-                    background: #444444;
-                    border: 2px solid var(--ui-bg-panel);
+                    background: #4a4a4a;
+                    border: 2.5px solid #b2b2b2;
                     border-radius: 50%;
                     position: absolute;
                     top: 50%;
@@ -1778,8 +1770,8 @@ box-shadow: 5px 5px 15px 5px #000000;
                     transition: transform 0.1s, background 0.1s;
                 }
                 .ui-slider-track:hover .ui-slider-thumb {
-                    transform: translate(-50%, -50%) scale(1.15);
-                    background: var(--ui-accent);
+                    transform: translate(-50%, -50%) scale(1.1);
+                    background: rgb(153, 153, 150);
                 }
 
                 .ui-slider-cajon {
@@ -3500,7 +3492,6 @@ box-shadow: 5px 5px 15px 5px #000000;
             this.element = document.createElement('button');
             this.element.className = `ui-btn ${variant === 'primary' ? 'ui-btn-primary' : variant === 'danger' ? 'ui-btn-danger' : ''}`;
             this.element.textContent = text;
-
             this.handleClick = (e) => { if (onClick) onClick(e, this); };
             this.element.addEventListener('click', this.handleClick);
         }
@@ -5339,7 +5330,7 @@ box-shadow: 5px 5px 15px 5px #000000;
                     transform: scale(0.97);
                 }
                 .ui-grid-card.drag-over {
-                    border-color: var(--ui-accent, #2196F3) !important;
+                    border-color: var(--ui-accent) !important;
                     box-shadow: 0 0 12px var(--ui-accent-glow, rgba(33,149,243,0.4)) !important;
                 }
                 .ui-grid-card.is-collapsed .ui-panel-body,
