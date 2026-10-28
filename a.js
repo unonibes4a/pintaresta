@@ -46,6 +46,10 @@
                     --textoActivo: #e3e3e3;
                     --textodisable: #60605f;
                     --textoActvioBlue: #2160c7;
+                    --textoledBrillo: #4e92ff;
+                     
+
+                    
                 
                      
                      
@@ -1361,7 +1365,7 @@
                 .ui-toggle-switch {
                     width: 32px;
                     height: 18px;
-                    background: var(--ui-border);
+                
                     border-radius: 18px;
                     position: relative;
                     transition: 0.25s;
@@ -1370,7 +1374,7 @@
                 .ui-toggle-thumb {
                     width: 12px;
                     height: 12px;
-                    background: #888888;
+                    background: var(--textodisable);
                     border-radius: 50%;
                     position: absolute;
                     top: 3px;
@@ -1378,11 +1382,16 @@
                     transition: 0.25s;
                 }
                 .ui-toggle.active .ui-toggle-switch {
-                    background: var(--ui-accent);
+                    background:var(--backg0);
                 }
                 .ui-toggle.active .ui-toggle-thumb {
-                    background: #ffffff;
+       
                     transform: translateX(14px);
+                    background: var(--textoledBrillo);
+          
+
+                        -webkit-box-shadow: 0px 1px 57px 13px var(--textoledBrillo);
+box-shadow: 0px 1px 57px 13px var(--textoledBrillo);
                 }
 
                 @keyframes ui-highlight {
