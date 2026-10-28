@@ -37,6 +37,21 @@
             style.id = 'ui-core-engine-styles';
             style.textContent = `
                 :root {
+                    --backg0: #262626;
+                    --backg1: #2d2d2d;
+                    --backg2: #333333;
+                    --backg3: #242424;
+                    --borde: #4d4d4d;
+                    --texto: #cccccc;
+                    --textoActivo: #e3e3e3;
+                    --textodisable: #60605f;
+                    --textoActvioBlue: #2160c7;
+                
+                     
+                     
+
+                     
+                     
                     --ui-cad-bg-stage: #0c0d12;
                     --ui-cad-hud-bg: #14151f;
                     --ui-cad-hud-text: var(--ui-accent, #5c9ce6);
@@ -1137,7 +1152,7 @@
                     height: 45px;
                     width: 40px;
                     border-radius: 12px;
-                    color: #878787;  
+                 color: var(--texto);  
                 }
                      .ui-btn:hover{
                       color: var(--ui-bg-segmented-active-h);
@@ -1148,12 +1163,10 @@
                 .ui-btn:disabled { opacity: var(--ui-opacity-disabled); cursor: not-allowed; pointer-events: none; }
 
                 .ui-btn-primary {
-                /* background: var(--ui-accentBt);
-                 
-               */
-                color: #878787;                   
+                
+                                
                 }
-               
+           
 
                 .ui-btn-danger {
                     background: var(--ui-danger-bg);
@@ -1307,7 +1320,7 @@
                     height: 16px;
                     border-radius: 50%;
                     background: transparent;
-                    border: 1.5px solid var(--ui-border);
+                    border: 2.0px solid var(--textodisable);
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -1318,13 +1331,13 @@
                     width: 8px;
                     height: 8px;
                     border-radius: 50%;
-                    background: var(--ui-accent);
+                    background: var(--textoActvioBlue);
                     display: none;
                     transform: scale(0);
                     transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
                 }
                 .ui-radio-item:hover .ui-radio-circle {
-                    border-color: var(--ui-text-muted);
+                     background: var(--textoActvioBlue);
                 }
                 .ui-radio-item.active .ui-radio-circle {
                     border-color: var(--ui-accent);
@@ -1705,7 +1718,11 @@ box-shadow: 5px 5px 15px 5px #000000;
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
+                      color:var(--texto);
                 }
+                 .ui-slider-label:hover{
+                 color:var(--textoActvioBlue);
+               }
                 .ui-slider-header-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
                 .ui-slider-val {
                     font-size: 11px;
@@ -1976,8 +1993,8 @@ box-shadow: 5px 5px 15px 5px #000000;
                     box-shadow: var(--ui-shadow-btn-floating);
                     width: var(--ui-square-btn-size);
                     height: var(--ui-square-btn-size);
-                    background-color: var(--ui-btn-bg);
-                    color: var(--ui-text-bright);
+                    background-color: var(--backg0);
+                    color: var(--texto);
                     font-size: var(--ui-font-size-btn);
                     touch-action: none;
                 }
@@ -4728,8 +4745,8 @@ box-shadow: 5px 5px 15px 5px #000000;
             if (!this.element) return;
             this.element.textContent = this.text;
             this.element.style.setProperty('--ui-square-btn-size', `${this.size}px`);
-            this.element.style.backgroundColor = this.bgColor;
-            this.element.style.color = this.textColor;
+            /* this.element.style.backgroundColor = this.bgColor; */
+            /* this.element.style.color = this.textColor; */
             this.element.style.fontSize = this.fontSize;
         }
 
