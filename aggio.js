@@ -1,9 +1,755 @@
-class GiovanniContainerSimple {
-  constructor({ title, isOpen = true, showReset = false, onReset = null }) {
+ 
+  class GiovanniContenedorTodo {
+  static _containerCSSInjected = false;
+
+  static _injectContainerCSS() {
+    if (GiovanniContenedorTodo._containerCSSInjected) return;
+    GiovanniContenedorTodo._containerCSSInjected = true;
+    const style = document.createElement('style');
+    style.id = 'giovanni-contenedor-todo-container-styles';
+    style.textContent = `
+      .giovanni-contenedor-todo-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: flex-start;
+        align-content: flex-start;
+        gap: 16px;
+        padding: 16px;
+        width: 100%;
+        box-sizing: border-box;
+         overflow-y: scroll;
+      }
+      .giovanni-contenedor-todo-container > * {
+        flex: 1 1 min(300px, 100%);
+        min-width: 0;
+        box-sizing: border-box;
+        padding: 3px;
+      }
+      .giovanni-contenedor-todo-container > .giovanni-contenedor-todo-panel-wide {
+        flex: 2 1 min(500px, 100%);
+        max-width: 70%;
+      }
+      @media (max-width: 640px) {
+        .giovanni-contenedor-todo-container > .giovanni-contenedor-todo-panel-wide {
+          max-width: 100%;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  constructor({
+    title,
+    isOpen = true,
+    showReset = false,
+    showClose = true,
+    onReset = null,
+    onClose = null,
+    onToggle = null,
+    isAppContainer = false
+  }) {
+    GiovanniContenedorTodo._injectContainerCSS();
+
+    this.options = { title, isOpen, showReset, showClose, onReset, onClose, onToggle, isAppContainer };
+    this.children = [];
+
+    this.element = document.createElement('div');
+
+    if (this.options.isAppContainer) {
+      this.element.className = 'giovanni-contenedor-todo-app';
+      this.element.setAttribute('data-drop-container', 'true');
+      this.element.style.cssText = `
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+        box-sizing: border-box;
+      `;
+
+      this.header = document.createElement('div');
+      this.header.className = 'giovanni-app-header';
+      this.header.style.cssText = `
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 16px;
+        background: #2d2d2d;
+        color: #ddddd6;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        cursor: pointer;
+        user-select: none;
+        flex-shrink: 0;
+      `;
+
+      this.titleEl = document.createElement('p');
+      this.titleEl.className = 'title';
+      this.titleEl.textContent = this.options.title || 'App';
+      this.titleEl.style.cssText = 'font-size:14px;font-weight:600;margin:0;flex:1;';
+
+      const btnStyle = `
+        display:inline-flex;align-items:center;justify-content:center;
+        width:26px;height:26px;border:none;border-radius:4px;
+        background:transparent;color:#ddddd6;cursor:pointer;padding:0;flex-shrink:0;
+      `;
+      const iconStyle = `
+        font-family:'Material Symbols Outlined',sans-serif;
+        font-size:18px;line-height:1;user-select:none;
+      `;
+
+      this.resetBtn = document.createElement('button');
+      this.resetBtn.type = 'button';
+      this.resetBtn.style.cssText = btnStyle;
+      this.resetBtn.innerHTML = `<span style="${iconStyle}">restart_alt</span>`;
+      if (!this.options.showReset) this.resetBtn.style.display = 'none';
+
+      this.expandBtn = document.createElement('button');
+      this.expandBtn.type = 'button';
+      this.expandBtn.style.cssText = btnStyle;
+      this.chevron = document.createElement('span');
+      this.chevron.className = 'icon chevron';
+      this.chevron.textContent = 'expand_more';
+      this.chevron.style.cssText = iconStyle + 'transition:transform .2s ease;';
+      this.expandBtn.appendChild(this.chevron);
+
+      this.closeBtn = document.createElement('button');
+      this.closeBtn.type = 'button';
+      this.closeBtn.style.cssText = btnStyle;
+      this.closeBtn.innerHTML = `<span style="${iconStyle}">close</span>`;
+      if (!this.options.showClose) this.closeBtn.style.display = 'none';
+
+      this.header.appendChild(this.titleEl);
+      this.header.appendChild(this.resetBtn);
+      this.header.appendChild(this.expandBtn);
+      this.header.appendChild(this.closeBtn);
+
+      this.contentElement = document.createElement('div');
+      this.contentElement.className = 'giovanni-app-content';
+      this.contentElement.style.cssText = `
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: hidden;
+        transition: max-height .25s ease, opacity .2s ease;
+        max-height: 0;
+        opacity: 0;
+      `;
+
+      this.contentInner = document.createElement('div');
+      this.contentInner.className = 'giovanni-contenedor-todo-container';
+      this.contentInner.setAttribute('data-drop-container', 'true');
+      this.contentInner.style.cssText = `
+        height: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+        box-sizing: border-box;
+      `;
+
+      this.contentElement.appendChild(this.contentInner);
+      this.element.appendChild(this.header);
+      this.element.appendChild(this.contentElement);
+
+      if (this.options.isOpen) {
+        this.contentElement.style.maxHeight = 'none';
+        this.contentElement.style.opacity = '1';
+        this.contentElement.style.overflow = 'visible';
+        this.chevron.classList.add('open');
+        this.chevron.style.transform = 'rotate(180deg)';
+      }
+
+      this.expandBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.toggle();
+      });
+      this.resetBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (typeof this.options.onReset === 'function') this.options.onReset();
+      });
+      this.closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.close();
+      });
+      this.header.addEventListener('click', () => this.toggle());
+
+      this.container = this.contentInner;
+    } else {
+      // Elementos normales (paneles dragables)
+      this.element.className = 'giovanni-contenedor-todo-host';
+      this.shadow = this.element.attachShadow({ mode: 'open' });
+
+      this._injectStyles();
+      this._buildDOM();
+      this._bindEvents();
+      this._initDragAndSnap();
+
+      if (this.options.isOpen) {
+        this.contentElement.classList.add('open');
+        this.chevron.classList.add('open');
+      }
+      this.container = this.contentInner;
+    }
+  }
+
+  _injectStyles() {
+    const style = document.createElement('style');
+    style.textContent = `
+      :host {
+        display: block;
+        background: #2d2d2d;
+        color: #ddddd6;
+        border-radius: 9px;
+     
+        font-family: system-ui, -apple-system, sans-serif;
+        box-sizing: border-box;
+        margin-bottom: 8px;
+        width: 100%;
+        max-width: 100%;
+        touch-action: none;
+      }
+      * { box-sizing: border-box; }
+      
+      .header {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        cursor: grab;
+        user-select: none;
+        background: #2d2d2d;
+        border-radius: 9px 9px 0 0;
+        transition: background 0.2s;
+        min-height: 40px;
+      }
+      .header:active { cursor: grabbing; }
+      .header:hover { background: #333333; }
+      
+      .title {
+        font-size: 13px;
+        font-weight: 600;
+        color: #ddddd6;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin: 0;
+        flex: 1;
+        pointer-events: none;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 26px;
+        height: 26px;
+        border: none;
+        border-radius: 4px;
+        background: transparent;
+        color: #ddddd6;
+        cursor: pointer;
+        padding: 0;
+        transition: background 0.15s ease;
+        flex-shrink: 0;
+      }
+      .btn:hover { background: rgba(255, 255, 255, 0.1); }
+      
+      .icon {
+        font-family: 'Material Symbols Outlined', sans-serif;
+        font-size: 18px;
+        line-height: 1;
+        user-select: none;
+      }
+      
+      .chevron { transition: transform 0.2s ease; }
+      .chevron.open { transform: rotate(180deg); }
+      
+      .content {
+        display: grid;
+        grid-template-rows: 0fr;
+        transition: grid-template-rows 0.25s ease, padding 0.25s ease, opacity 0.2s ease;
+        opacity: 0;
+        padding: 0 12px;
+        overflow: hidden;
+      }
+      
+      .content > .content-inner {
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .content.open { 
+        grid-template-rows: 1fr;
+        opacity: 1;
+        padding: 12px;
+      
+            overflow-y: scroll;
+      }
+      .content.open > .content-inner {
+       overflow-y: scroll;
+      }
+    `;
+    this.shadow.appendChild(style);
+  }
+
+  _buildDOM() {
+    this.header = document.createElement('div');
+    this.header.className = 'header';
+
+    this.titleEl = document.createElement('p');
+    this.titleEl.className = 'title';
+    this.titleEl.textContent = this.options.title || 'Contenedor';
+
+    this.resetBtn = document.createElement('button');
+    this.resetBtn.type = 'button';
+    this.resetBtn.className = 'btn';
+    this.resetBtn.innerHTML = '<span class="icon">restart_alt</span>';
+    if (!this.options.showReset) this.resetBtn.style.display = 'none';
+
+    this.expandBtn = document.createElement('button');
+    this.expandBtn.type = 'button';
+    this.expandBtn.className = 'btn';
+    this.chevron = document.createElement('span');
+    this.chevron.className = 'icon chevron';
+    this.chevron.textContent = 'expand_more';
+    this.expandBtn.appendChild(this.chevron);
+
+    this.closeBtn = document.createElement('button');
+    this.closeBtn.type = 'button';
+    this.closeBtn.className = 'btn';
+    this.closeBtn.innerHTML = '<span class="icon">close</span>';
+    if (!this.options.showClose) this.closeBtn.style.display = 'none';
+
+    this.header.appendChild(this.titleEl);
+    this.header.appendChild(this.resetBtn);
+    this.header.appendChild(this.expandBtn);
+    this.header.appendChild(this.closeBtn);
+
+    this.contentElement = document.createElement('div');
+    this.contentElement.className = 'content';
+
+    this.contentInner = document.createElement('div');
+    this.contentInner.className = 'content-inner';
+    this.contentElement.appendChild(this.contentInner);
+
+    this.shadow.appendChild(this.header);
+    this.shadow.appendChild(this.contentElement);
+
+    this.headerElement = this.header;
+  }
+
+  _bindEvents() {
+    this.expandBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.toggle();
+    });
+    this.resetBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (typeof this.options.onReset === 'function') this.options.onReset();
+    });
+    this.closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.close();
+    });
+  }
+
+  /**
+   * Motor de arrastre con detección de entorno, placeholder y acople magnético
+   */
+  _initDragAndSnap() {
+    if (this.options.isAppContainer) return;
+
+    let startX = 0, startY = 0;
+    let initialLeft = 0, initialTop = 0;
+    let isDragging = false;
+    let hasMoved = false;
+    let activeDropTarget = null;
+    let originalParent = null;
+    let originalNextSibling = null;
+    const threshold = 16;
+
+    // Placeholder global compartido
+    let placeholder = document.getElementById('gio-global-placeholder');
+    if (!placeholder) {
+      placeholder = document.createElement('div');
+      placeholder.id = 'gio-global-placeholder';
+      placeholder.style.cssText =
+        'border:2px dashed #5c9ce6;border-radius:6px;background:rgba(92,156,230,0.1);box-sizing:border-box;margin-bottom:8px;display:none;pointer-events:none;width:100%;';
+      document.body.appendChild(placeholder);
+    }
+
+    // Guías de acople magnético compartidas
+    let guideV = document.getElementById('gio-snap-v');
+    let guideH = document.getElementById('gio-snap-h');
+    if (!guideV) {
+      guideV = document.createElement('div');
+      guideV.id = 'gio-snap-v';
+      guideV.style.cssText =
+        'position:fixed;top:0;bottom:0;width:1px;background:#5c9ce6;box-shadow:0 0 6px #5c9ce6;z-index:999999;display:none;pointer-events:none;';
+      document.body.appendChild(guideV);
+    }
+    if (!guideH) {
+      guideH = document.createElement('div');
+      guideH.id = 'gio-snap-h';
+      guideH.style.cssText =
+        'position:fixed;left:0;right:0;height:1px;background:#5c9ce6;box-shadow:0 0 6px #5c9ce6;z-index:999999;display:none;pointer-events:none;';
+      document.body.appendChild(guideH);
+    }
+
+    const findDropTarget = (clientX, clientY) => {
+      this.element.style.pointerEvents = 'none';
+      const hits = document.elementsFromPoint(clientX, clientY);
+      this.element.style.pointerEvents = 'auto';
+
+      for (const el of hits) {
+        if (el === this.element || el === placeholder || this.element.contains(el)) continue;
+
+        // Detección de hermanos de ambas clases
+        if (
+          el.classList.contains('giovanni-contenedor-todo-host') ||
+          el.classList.contains('giovanni-container-host')
+        ) {
+          return { target: el, mode: 'sibling' };
+        }
+
+        // Detección de contenedores donde acoplarse
+        if (
+          el.id === 'app' ||
+          el.id === 'sidebar' ||
+          el.classList.contains('giovanni-contenedor-todo-app') ||
+          el.classList.contains('giovanni-contenedor-todo-container') ||
+          el.classList.contains('app-wrapper') ||
+          el.dataset.dropContainer !== undefined ||
+          ['MAIN', 'SECTION', 'ARTICLE', 'ASIDE'].includes(el.tagName)
+        ) {
+          const container = el.classList.contains('giovanni-contenedor-todo-app')
+            ? el.querySelector('.giovanni-contenedor-todo-container') || el
+            : el;
+          return { target: container, mode: 'container' };
+        }
+      }
+      return null;
+    };
+
+    const placeHolderAt = (dropInfo, clientY) => {
+      placeholder.style.height = `${this.element.offsetHeight || 42}px`;
+      placeholder.style.display = 'block';
+
+      if (dropInfo.mode === 'sibling') {
+        const r = dropInfo.target.getBoundingClientRect();
+        const parent = dropInfo.target.parentNode;
+        if (clientY < r.top + r.height / 2) {
+          parent.insertBefore(placeholder, dropInfo.target);
+        } else {
+          parent.insertBefore(placeholder, dropInfo.target.nextSibling);
+        }
+      } else {
+        const container = dropInfo.target;
+        const children = Array.from(container.children).filter(
+          (c) => c !== placeholder && c !== this.element
+        );
+        let inserted = false;
+        for (const child of children) {
+          const r = child.getBoundingClientRect();
+          if (clientY < r.top + r.height / 2) {
+            container.insertBefore(placeholder, child);
+            inserted = true;
+            break;
+          }
+        }
+        if (!inserted) {
+          container.appendChild(placeholder);
+        }
+      }
+    };
+
+    const onPointerMove = (e) => {
+      if (!isDragging) return;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+      const dx = clientX - startX;
+      const dy = clientY - startY;
+
+      if (!hasMoved && Math.hypot(dx, dy) > 5) {
+        hasMoved = true;
+        originalParent = this.element.parentNode;
+        originalNextSibling = this.element.nextSibling;
+
+        const rect = this.element.getBoundingClientRect();
+        placeholder.style.height = `${rect.height}px`;
+        placeholder.style.display = 'block';
+        if (originalParent) {
+          originalParent.insertBefore(placeholder, originalNextSibling);
+        }
+
+        document.body.appendChild(this.element);
+        this.element.style.position = 'fixed';
+        this.element.style.zIndex = '99999';
+        this.element.style.margin = '0';
+        this.element.style.width = 'min(380px, calc(100vw - 32px))';
+        this.element.style.boxShadow = '0 12px 28px rgba(0,0,0,0.6)';
+
+        const newRect = this.element.getBoundingClientRect();
+        let initX = rect.left;
+        if (initX + newRect.width > window.innerWidth) {
+          initX = Math.max(8, window.innerWidth - newRect.width - 8);
+        }
+
+        this.element.style.left = `${initX}px`;
+        this.element.style.top = `${rect.top}px`;
+        initialLeft = initX;
+        initialTop = rect.top;
+      }
+
+      if (!hasMoved) return;
+      if (e.cancelable) e.preventDefault();
+
+      let targetX = initialLeft + dx;
+      let targetY = initialTop + dy;
+
+      activeDropTarget = findDropTarget(clientX, clientY);
+
+      if (activeDropTarget) {
+        guideV.style.display = 'none';
+        guideH.style.display = 'none';
+        placeHolderAt(activeDropTarget, clientY);
+      } else {
+        if (placeholder.parentNode) {
+          placeholder.style.display = 'none';
+          placeholder.remove();
+        }
+
+        const rect = this.element.getBoundingClientRect();
+        const w = rect.width;
+        const h = rect.height;
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+
+        let snapX = null;
+        let snapY = null;
+
+        // Imantado contra bordes de la pantalla
+        if (Math.abs(targetX) < threshold) { targetX = 0; snapX = 0; }
+        if (Math.abs(targetY) < threshold) { targetY = 0; snapY = 0; }
+        if (Math.abs(targetX + w - vw) < threshold) { targetX = vw - w; snapX = vw; }
+        if (Math.abs(targetY + h - vh) < threshold) { targetY = vh - h; snapY = vh; }
+
+        // Detección e imantado contra otros paneles y elementos en la web
+        const candidates = Array.from(
+          document.querySelectorAll(
+            '.giovanni-contenedor-todo-host, .giovanni-container-host, .ui-panel, .ui-container, .ui-square-btn'
+          )
+        ).filter((el) => el !== this.element && el.offsetParent !== null);
+
+        for (const el of candidates) {
+          const r = el.getBoundingClientRect();
+
+          if (snapX === null) {
+            if (Math.abs(targetX - r.left) < threshold) { targetX = r.left; snapX = r.left; }
+            else if (Math.abs(targetX + w - r.right) < threshold) { targetX = r.right - w; snapX = r.right; }
+            else if (Math.abs(targetX - r.right) < threshold) { targetX = r.right; snapX = r.right; }
+            else if (Math.abs(targetX + w - r.left) < threshold) { targetX = r.left - w; snapX = r.left; }
+          }
+
+          if (snapY === null) {
+            if (Math.abs(targetY - r.top) < threshold) { targetY = r.top; snapY = r.top; }
+            else if (Math.abs(targetY + h - r.bottom) < threshold) { targetY = r.bottom - h; snapY = r.bottom; }
+            else if (Math.abs(targetY - r.bottom) < threshold) { targetY = r.bottom; snapY = r.bottom; }
+            else if (Math.abs(targetY + h - r.top) < threshold) { targetY = r.top - h; snapY = r.top; }
+          }
+        }
+
+        if (snapX !== null) {
+          guideV.style.left = `${snapX}px`;
+          guideV.style.display = 'block';
+        } else {
+          guideV.style.display = 'none';
+        }
+
+        if (snapY !== null) {
+          guideH.style.top = `${snapY}px`;
+          guideH.style.display = 'block';
+        } else {
+          guideH.style.display = 'none';
+        }
+      }
+
+      this.element.style.left = `${targetX}px`;
+      this.element.style.top = `${targetY}px`;
+    };
+
+    const onPointerUp = () => {
+      if (!isDragging) return;
+      isDragging = false;
+
+      guideV.style.display = 'none';
+      guideH.style.display = 'none';
+
+      window.removeEventListener('mousemove', onPointerMove);
+      window.removeEventListener('mouseup', onPointerUp);
+      window.removeEventListener('touchmove', onPointerMove);
+      window.removeEventListener('touchend', onPointerUp);
+
+      if (!hasMoved) return;
+
+      if (placeholder.parentNode) {
+        placeholder.parentNode.insertBefore(this.element, placeholder);
+        placeholder.style.display = 'none';
+        placeholder.remove();
+
+        this.element.style.position = '';
+        this.element.style.zIndex = '';
+        this.element.style.margin = '';
+        this.element.style.width = '100%';
+        this.element.style.maxWidth = '100%';
+        this.element.style.left = '';
+        this.element.style.top = '';
+        this.element.style.boxShadow = '';
+      } else {
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        const r = this.element.getBoundingClientRect();
+        if (r.right > vw) this.element.style.left = `${Math.max(8, vw - r.width - 8)}px`;
+        if (r.bottom > vh) this.element.style.top = `${Math.max(8, vh - r.height - 8)}px`;
+      }
+
+      activeDropTarget = null;
+    };
+
+    const onPointerDown = (e) => {
+      if (e.target.closest('.icon, .btn, button, input, select, .giovanni-select-host, .giovanni-datepicker-host')) return;
+      isDragging = true;
+      hasMoved = false;
+      startX = e.touches ? e.touches[0].clientX : e.clientX;
+      startY = e.touches ? e.touches[0].clientY : e.clientY;
+
+      window.addEventListener('mousemove', onPointerMove);
+      window.addEventListener('mouseup', onPointerUp);
+      window.addEventListener('touchmove', onPointerMove, { passive: false });
+      window.addEventListener('touchend', onPointerUp);
+    };
+
+    this.headerElement.addEventListener('mousedown', onPointerDown);
+    this.headerElement.addEventListener('touchstart', onPointerDown, { passive: true });
+  }
+
+  toggle() {
+    const isApp = this.options.isAppContainer;
+
+    if (isApp) {
+      const isOpen = this.contentElement.style.maxHeight === 'none';
+      if (isOpen) {
+        this.contentElement.style.overflow = 'hidden';
+        this.contentElement.style.maxHeight = this.contentInner.scrollHeight + 'px';
+        requestAnimationFrame(() => {
+          this.contentElement.style.maxHeight = '0px';
+          this.contentElement.style.opacity = '0';
+        });
+        this.chevron.classList.remove('open');
+        this.chevron.style.transform = 'rotate(0deg)';
+        if (typeof this.options.onToggle === 'function') this.options.onToggle(false);
+      } else {
+        this.contentElement.style.maxHeight = this.contentInner.scrollHeight + 'px';
+        this.contentElement.style.opacity = '1';
+        this.chevron.classList.add('open');
+        this.chevron.style.transform = 'rotate(180deg)';
+        setTimeout(() => {
+          if (this.contentElement.style.opacity === '1') {
+            this.contentElement.style.maxHeight = 'none';
+            this.contentElement.style.overflow = 'visible';
+          }
+        }, 260);
+        if (typeof this.options.onToggle === 'function') this.options.onToggle(true);
+      }
+      return;
+    }
+
+    const isOpen = this.contentElement.classList.contains('open');
+    if (isOpen) {
+      this.contentElement.classList.remove('open');
+      this.chevron.classList.remove('open');
+      if (typeof this.options.onToggle === 'function') this.options.onToggle(false);
+    } else {
+      this.contentElement.classList.add('open');
+      this.chevron.classList.add('open');
+      if (typeof this.options.onToggle === 'function') this.options.onToggle(true);
+    }
+  }
+
+  open() {
+    if (this.options.isAppContainer) {
+      this.contentElement.style.maxHeight = 'none';
+      this.contentElement.style.opacity = '1';
+      this.contentElement.style.overflow = 'visible';
+      this.chevron.classList.add('open');
+      this.chevron.style.transform = 'rotate(180deg)';
+      return;
+    }
+    if (this.contentElement.classList.contains('open')) return;
+    this.contentElement.classList.add('open');
+    this.chevron.classList.add('open');
+  }
+
+  close() {
+    if (this.options.isAppContainer) {
+      this.element.style.display = 'none';
+      if (typeof this.options.onClose === 'function') this.options.onClose(this);
+      return;
+    }
+    if (this.contentElement.classList.contains('open')) {
+      this.contentElement.classList.remove('open');
+      this.chevron.classList.remove('open');
+    }
+    this.element.style.display = 'none';
+    if (typeof this.options.onClose === 'function') this.options.onClose(this);
+  }
+
+  setTitle(text) {
+    if (this.titleEl) this.titleEl.textContent = text;
+  }
+
+  append(childElement) {
+    this.appendChild(childElement);
+  }
+
+  appendChild(el) {
+    this.children.push(el);
+    this.container.appendChild(el);
+  }
+
+  removeChild(el) {
+    const i = this.children.indexOf(el);
+    if (i !== -1) this.children.splice(i, 1);
+    this.container.removeChild(el);
+  }
+
+  destroy() {
+    this.element.remove();
+  }
+}
+ class GiovanniContainerSimple {
+  constructor(options = {}) {
+    const {
+      title = '',
+      isOpen = true,
+      showReset = false,
+      onReset = null,
+      maxHeight = 700,
+      width = '100%'
+    } = options;
+
     this.options = { title, isOpen, showReset, onReset };
+
+    this._maxHeight = this._formatDimension(maxHeight, '700px');
+    this._width = this._formatDimension(width, '100%');
 
     this.element = document.createElement('div');
     this.element.className = 'giovanni-container-host';
+    this.element.style.width = this._width;
+
     this.shadow = this.element.attachShadow({ mode: 'open' });
 
     this._injectStyles();
@@ -14,15 +760,63 @@ class GiovanniContainerSimple {
     if (this.options.isOpen) {
       this.contentElement.classList.add('open');
       this.chevron.classList.add('open');
-      this.contentElement.style.maxHeight = '2000px';
+      this._updateContentOverflow(true);
     }
   }
+
+  _formatDimension(val, fallback) {
+    if (val === undefined || val === null || val === '') return fallback;
+    if (typeof val === 'number') return `${val}px`;
+    if (typeof val === 'string') {
+      const trimmed = val.trim();
+      if (/^\d+(\.\d+)?$/.test(trimmed)) return `${trimmed}px`;
+      return trimmed;
+    }
+    return fallback;
+  }
+
+  _updateContentOverflow(isOpen) {
+    if (!isOpen) {
+      this.contentElement.style.overflow = 'hidden';
+      this.contentElement.style.maxHeight = '0';
+      return;
+    }
+
+    const numericLimit = parseInt(this._maxHeight, 10) || 700;
+    if (this.contentElement.scrollHeight > numericLimit) {
+      this.contentElement.style.maxHeight = this._maxHeight;
+      this.contentElement.style.overflowY = 'auto';
+      this.contentElement.style.overflowX = 'visible';
+    } else {
+      this.contentElement.style.maxHeight = 'none';
+      this.contentElement.style.overflow = 'visible';
+    }
+  }
+
+  setMaxHeight(val) {
+    this._maxHeight = this._formatDimension(val, '700px');
+    if (this.contentElement.classList.contains('open')) {
+      this._updateContentOverflow(true);
+    }
+  }
+
+  setWidth(val) {
+    this._width = this._formatDimension(val, '100%');
+    this.element.style.width = this._width;
+  }
+
+  get maxHeight() { return this._maxHeight; }
+  set maxHeight(val) { this.setMaxHeight(val); }
+
+  get width() { return this._width; }
+  set width(val) { this.setWidth(val); }
 
   _injectStyles() {
     const style = document.createElement('style');
     style.textContent = `
       :host {
-        display: block;
+        display: flex;
+        flex-direction: column;
         font-family: system-ui, -apple-system, sans-serif;
         color: #e0e0e0;
         font-size: 13px;
@@ -33,6 +827,8 @@ class GiovanniContainerSimple {
         width: 100%;
         max-width: 100%;
         touch-action: none;
+        overflow: visible;
+        flex-shrink: 0;
       }
 
       * { box-sizing: border-box; }
@@ -47,15 +843,11 @@ class GiovanniContainerSimple {
         border-radius: 6px;
         transition: background 0.2s;
         min-height: 40px;
+        flex-shrink: 0;
       }
 
-      .giovanni-container-header:active {
-        cursor: grabbing;
-      }
-
-      .giovanni-container-header:hover {
-        background: #333333;
-      }
+      .giovanni-container-header:active { cursor: grabbing; }
+      .giovanni-container-header:hover { background: #333333; }
 
       .giovanni-container-left {
         display: flex;
@@ -77,9 +869,7 @@ class GiovanniContainerSimple {
         cursor: pointer;
       }
 
-      .giovanni-chevron.open {
-        transform: rotate(0deg);
-      }
+      .giovanni-chevron.open { transform: rotate(0deg); }
 
       .giovanni-title {
         font-weight: 600;
@@ -124,9 +914,22 @@ class GiovanniContainerSimple {
       }
 
       .giovanni-container-content.open {
-        max-height: 2000px;
         opacity: 1;
         padding: 12px;
+      }
+
+      .giovanni-container-content::-webkit-scrollbar {
+        width: 6px;
+      }
+      .giovanni-container-content::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.15);
+      }
+      .giovanni-container-content::-webkit-scrollbar-thumb {
+        background: #555;
+        border-radius: 4px;
+      }
+      .giovanni-container-content::-webkit-scrollbar-thumb:hover {
+        background: #777;
       }
 
       ::slotted(*) {
@@ -191,12 +994,20 @@ class GiovanniContainerSimple {
       e.stopPropagation();
       this.toggle();
     });
+
+    const observer = new ResizeObserver(() => {
+      if (this.contentElement.classList.contains('open')) {
+        this._updateContentOverflow(true);
+      }
+    });
+    observer.observe(this.contentElement);
   }
 
   toggle() {
     const isOpen = this.contentElement.classList.contains('open');
 
     if (isOpen) {
+      this.contentElement.style.overflow = 'hidden';
       this.contentElement.style.maxHeight = this.contentElement.scrollHeight + 'px';
       requestAnimationFrame(() => {
         this.contentElement.classList.remove('open');
@@ -204,11 +1015,13 @@ class GiovanniContainerSimple {
       });
     } else {
       this.contentElement.classList.add('open');
-      this.contentElement.style.maxHeight = this.contentElement.scrollHeight + 'px';
+      const numericLimit = parseInt(this._maxHeight, 10) || 700;
+      const targetHeight = Math.min(this.contentElement.scrollHeight, numericLimit);
+      this.contentElement.style.maxHeight = targetHeight + 'px';
 
       setTimeout(() => {
         if (this.contentElement.classList.contains('open')) {
-          this.contentElement.style.maxHeight = '2000px';
+          this._updateContentOverflow(true);
         }
       }, 300);
     }
@@ -265,7 +1078,7 @@ class GiovanniContainerSimple {
           el.id === 'app' ||
           el.classList.contains('app-wrapper') ||
           el.dataset.dropContainer !== undefined ||
-          ['MAIN', 'SECTION', 'ARTICLE', 'ASIDE'].includes(el.tagName)
+          ['MAIN', 'SECTION', 'ARTICLE', 'ASIDE', 'NAV'].includes(el.tagName)
         ) {
           return { target: el, mode: 'container' };
         }
@@ -390,7 +1203,7 @@ class GiovanniContainerSimple {
           if (snapY === null) {
             if (Math.abs(targetY - r.top) < threshold) { targetY = r.top; snapY = r.top; }
             else if (Math.abs(targetY + h - r.bottom) < threshold) { targetY = r.bottom - h; snapY = r.bottom; }
-            else if (Math.abs(targetY - r.bottom) < threshold) { targetY = r.bottom; snapY = r.bottom; }
+            else if (Math.abs(targetY - r.bottom) < threshold) { targetY = r.bottom - h; snapY = r.bottom; }
             else if (Math.abs(targetY + h - r.top) < threshold) { targetY = r.top - h; snapY = r.top; }
           }
         }
@@ -436,7 +1249,7 @@ class GiovanniContainerSimple {
         this.element.style.position = '';
         this.element.style.zIndex = '';
         this.element.style.margin = '';
-        this.element.style.width = '100%';
+        this.element.style.width = this._width;
         this.element.style.maxWidth = '100%';
         this.element.style.left = '';
         this.element.style.top = '';
@@ -453,7 +1266,7 @@ class GiovanniContainerSimple {
     };
 
     const onPointerDown = (e) => {
-      if (e.target.closest('.giovanni-chevron, .giovanni-reset-btn, button, input, select')) return;
+      if (e.target.closest('.giovanni-chevron, .giovanni-reset-btn, button, input, select, textarea, [role="combobox"], [role="listbox"]')) return;
       isDragging = true;
       hasMoved = false;
       startX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -469,15 +1282,9 @@ class GiovanniContainerSimple {
     this.headerElement.addEventListener('touchstart', onPointerDown, { passive: true });
   }
 
-  append(childElement) {
-    this.appendChild(childElement);
-  }
-
-  appendChild(childElement) {
-    this.slot.appendChild(childElement);
-  }
+  append(childElement) { this.appendChild(childElement); }
+  appendChild(childElement) { this.slot.appendChild(childElement); }
 }
-
      class GiovanniSlider {
       constructor({ label, min = 0, max = 100, step = 1, value = 0, onInput, onChange }) {
         this.options = { label, min, max, step, value, onInput, onChange };
@@ -1226,199 +2033,231 @@ class GiovanniBoton {
   destruir() { this.el.remove(); }
 }
 
-      class GiovanniInputNumber {
-      constructor({ label, min = 0, max = 100, step = 1, value = 0, onChange }) {
-        this.options = { label, min, max, step, value, onChange };
-        
-        this.element = document.createElement('div');
-        this.element.className = 'giovanni-input-host';
-        this.shadow = this.element.attachShadow({ mode: 'open' });
-        
-        this._injectStyles();
-        this._buildDOM();
-        this._bindEvents();
-        this._updateValue(this.options.value, false);
+  class GiovanniInputNumber {
+  // MANTENEMOS LOS DEFAULTS ORIGINALES (min = 0, max = 100, step = 1)
+  constructor({ label, min = 0, max = 100, step = 1, value = 0, showValueInLabel = false, onChange }) {
+    this.options = { label, min, max, step, value, showValueInLabel, onChange };
+    
+    this.element = document.createElement('div');
+    this.element.className = 'giovanni-input-host';
+    this.shadow = this.element.attachShadow({ mode: 'open' });
+    
+    this._injectStyles();
+    this._buildDOM();
+    this._bindEvents();
+    this._updateValue(this.options.value, false);
+  }
+
+  _injectStyles() {
+    const style = document.createElement('style');
+    style.textContent = `
+      :host {
+        display: block;
+        font-family: system-ui, -apple-system, sans-serif;
+        color: #e0e0e0;
+        font-size: 13px;
+        box-sizing: border-box;
+        width: 100%;
+        padding: 8px 0;
       }
 
-      _injectStyles() {
-        const style = document.createElement('style');
-        style.textContent = `
-          :host {
-            display: block;
-            font-family: system-ui, -apple-system, sans-serif;
-            color: #e0e0e0;
-            font-size: 13px;
-            box-sizing: border-box;
-            width: 100%;
-            padding: 8px 0;
-          }
+      * { box-sizing: border-box; }
 
-          * { box-sizing: border-box; }
-
-          .giovanni-input-wrapper {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-          }
-
-          .giovanni-input-label {
-            font-weight: 500;
-            color: #b0b0b0;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-          }
-
-          .giovanni-number-control {
-            display: flex;
-            align-items: center;
-            background: #3D3D3D;
-            border: 1px solid transparent;
-            border-radius: 12px;
-            overflow: hidden;
-            transition: border-color 0.2s, background 0.2s;
-            flex-shrink: 0;
-          }
-
-          .giovanni-number-control:hover {
-            border-color: gray;
-          }
-
-          .giovanni-number-control:focus-within {
-            background: #464646;
-            border-color: gray;
-          }
-
-          .giovanni-btn-step {
-            background: transparent;
-            border: none;
-            color: #888;
-            font-size: 16px;
-            width: 28px;
-            height: 28px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            user-select: none;
-            outline: none;
-          }
-
-          .giovanni-btn-step:hover {
-            color: #fff;
-            background: rgba(0,0,0,0.2);
-          }
-
-          .giovanni-btn-step:active {
-            background: rgba(0,0,0,0.4);
-          }
-
-          .giovanni-number-input {
-            background: transparent;
-            border: none;
-            color: rgb(162, 162, 162);
-            font-size: 13px;
-            font-weight: 600;
-            width: 50px;
-            text-align: center;
-            outline: none;
-            padding: 0;
-            -moz-appearance: textfield;
-          }
-
-          .giovanni-number-input::-webkit-outer-spin-button,
-          .giovanni-number-input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-          }
-        `;
-        this.shadow.appendChild(style);
+      .giovanni-input-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
       }
 
-      _buildDOM() {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'giovanni-input-wrapper';
-
-        const lbl = document.createElement('span');
-        lbl.className = 'giovanni-input-label';
-        lbl.textContent = this.options.label;
-
-        const control = document.createElement('div');
-        control.className = 'giovanni-number-control';
-
-        this.btnMinus = document.createElement('button');
-        this.btnMinus.className = 'giovanni-btn-step';
-        this.btnMinus.innerHTML = '&minus;';
-
-        this.input = document.createElement('input');
-        this.input.type = 'number';
-        this.input.className = 'giovanni-number-input';
-        this.input.min = this.options.min;
-        this.input.max = this.options.max;
-        this.input.step = this.options.step;
-
-        this.btnPlus = document.createElement('button');
-        this.btnPlus.className = 'giovanni-btn-step';
-        this.btnPlus.innerHTML = '&plus;';
-
-        control.appendChild(this.btnMinus);
-        control.appendChild(this.input);
-        control.appendChild(this.btnPlus);
-
-        wrapper.appendChild(lbl);
-        wrapper.appendChild(control);
-
-        this.shadow.appendChild(wrapper);
+      .giovanni-input-label {
+        font-weight: 500;
+        color: #b0b0b0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
-      _bindEvents() {
-        this.input.addEventListener('change', (e) => {
-          let val = parseFloat(e.target.value);
-          if (isNaN(val)) val = this.options.value;
-          this._updateValue(val, true);
-        });
-
-        this.input.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter') this.input.blur();
-        });
-
-        this.btnMinus.addEventListener('click', () => {
-          const current = parseFloat(this.input.value) || 0;
-          const val = current - this.options.step;
-          this._updateValue(val, true);
-        });
-
-        this.btnPlus.addEventListener('click', () => {
-          const current = parseFloat(this.input.value) || 0;
-          const val = current + this.options.step;
-          this._updateValue(val, true);
-        });
+      /* Solo se aplica si showValueInLabel es true */
+      .giovanni-label-val {
+        color: #5c9ce6;
+        font-weight: 700;
+        font-family: monospace;
+        margin-left: 5px;
       }
 
-      _updateValue(val, triggerChange = false) {
-        if (val < this.options.min) val = this.options.min;
-        if (val > this.options.max) val = this.options.max;
-
-        this.options.value = val;
-        this.input.value = val;
-
-        if (triggerChange) {
-          if (this.options.onChange) this.options.onChange(val);
-        }
+      .giovanni-number-control {
+        display: flex;
+        align-items: center;
+        background: #3D3D3D;
+        border: 1px solid transparent;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: border-color 0.2s, background 0.2s;
+        flex-shrink: 0;
       }
 
-      setValue(val) {
-        this._updateValue(val, false);
+      .giovanni-number-control:hover {
+        border-color: gray;
       }
 
-      getValue() {
-        return this.options.value;
+      .giovanni-number-control:focus-within {
+        background: #464646;
+        border-color: gray;
+      }
+
+      .giovanni-btn-step {
+        background: transparent;
+        border: none;
+        color: #888;
+        font-size: 16px;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        user-select: none;
+        outline: none;
+      }
+
+      .giovanni-btn-step:hover {
+        color: #fff;
+        background: rgba(0,0,0,0.2);
+      }
+
+      .giovanni-btn-step:active {
+        background: rgba(0,0,0,0.4);
+      }
+
+      .giovanni-number-input {
+        background: transparent;
+        border: none;
+        color: rgb(162, 162, 162);
+        font-size: 13px;
+        font-weight: 600;
+        width: 55px;
+        text-align: center;
+        outline: none;
+        padding: 0;
+        -moz-appearance: textfield;
+      }
+
+      .giovanni-number-input::-webkit-outer-spin-button,
+      .giovanni-number-input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+    `;
+    this.shadow.appendChild(style);
+  }
+
+  _buildDOM() {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'giovanni-input-wrapper';
+
+    this.lbl = document.createElement('span');
+    this.lbl.className = 'giovanni-input-label';
+    this.lbl.textContent = this.options.label;
+
+    const control = document.createElement('div');
+    control.className = 'giovanni-number-control';
+
+    this.btnMinus = document.createElement('button');
+    this.btnMinus.type = 'button';
+    this.btnMinus.className = 'giovanni-btn-step';
+    this.btnMinus.innerHTML = '&minus;';
+
+    this.input = document.createElement('input');
+    this.input.type = 'number';
+    this.input.className = 'giovanni-number-input';
+    this.input.min = this.options.min;
+    this.input.max = this.options.max;
+    
+    // 'any' permite que el navegador no bloquee los decimales al teclear,
+    // mientras que los botones btnMinus y btnPlus siguen respetando this.options.step
+    this.input.step = 'any';
+
+    this.btnPlus = document.createElement('button');
+    this.btnPlus.type = 'button';
+    this.btnPlus.className = 'giovanni-btn-step';
+    this.btnPlus.innerHTML = '&plus;';
+
+    control.appendChild(this.btnMinus);
+    control.appendChild(this.input);
+    control.appendChild(this.btnPlus);
+
+    wrapper.appendChild(this.lbl);
+    wrapper.appendChild(control);
+
+    this.shadow.appendChild(wrapper);
+  }
+
+  _bindEvents() {
+    this.input.addEventListener('change', (e) => {
+      let val = parseFloat(e.target.value);
+      if (isNaN(val)) val = this.options.value;
+      this._updateValue(val, true);
+    });
+
+    this.input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') this.input.blur();
+    });
+
+    // Control de precisión limpia para floats al hacer click en los botones
+    const getDecimals = (num) => {
+      const s = num.toString();
+      return s.includes('.') ? s.split('.')[1].length : 0;
+    };
+    const precision = getDecimals(this.options.step);
+
+    this.btnMinus.addEventListener('click', () => {
+      const current = parseFloat(this.input.value) || 0;
+      const val = precision > 0 
+        ? parseFloat((current - this.options.step).toFixed(precision))
+        : (current - this.options.step);
+      this._updateValue(val, true);
+    });
+
+    this.btnPlus.addEventListener('click', () => {
+      const current = parseFloat(this.input.value) || 0;
+      const val = precision > 0 
+        ? parseFloat((current + this.options.step).toFixed(precision))
+        : (current + this.options.step);
+      this._updateValue(val, true);
+    });
+  }
+
+  _updateValue(val, triggerChange = false) {
+    if (val < this.options.min) val = this.options.min;
+    if (val > this.options.max) val = this.options.max;
+
+    this.options.value = val;
+    this.input.value = val;
+
+    // Solo si explícitamente se pidió ver el valor en el label
+    if (this.lbl) {
+      if (this.options.showValueInLabel) {
+        this.lbl.innerHTML = `${this.options.label} <span class="giovanni-label-val">(${val})</span>`;
+      } else {
+        this.lbl.textContent = this.options.label;
       }
     }
 
-    
+    if (triggerChange && this.options.onChange) {
+      this.options.onChange(val);
+    }
+  }
+
+  setValue(val) {
+    this._updateValue(parseFloat(val) || 0, false);
+  }
+
+  getValue() {
+    return this.options.value;
+  }
+}
     class GiovanniInputText {
   constructor({ label, value = "", onChange }) {
     this.options = { label, value, onChange };
@@ -1922,7 +2761,7 @@ class GiovanniTable {
 }
 
 
-class GiovanniLayerManager {
+class GiovanniLayerManagerno {
   constructor({ onActiveLayerChange = null } = {}) {
     this.layers = [];
     this.activeLayer = null;
@@ -2242,7 +3081,7 @@ class GiovanniLayerManager {
   }
 }
 
-class GiovanniSelect {
+ class GiovanniSelect {
   constructor({ label = '', options = [], value = null, placeholder = 'Seleccionar...', onChange = null } = {}) {
     this.options = { label, options, value, placeholder, onChange };
     this.selectedValue = value !== null ? value : (options[0]?.value ?? null);
@@ -2319,14 +3158,12 @@ class GiovanniSelect {
       }
 
       .giovanni-select-options {
-        position: absolute;
-        top: calc(100% + 6px);
-        left: 0; right: 0;
+        position: fixed;
         background: #1e1e1e;
         border: 1px solid #3a3a3a;
         border-radius: 6px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-        z-index: 100;
+        z-index: 10000;
         list-style: none;
         padding: 6px;
         margin: 0;
@@ -2427,6 +3264,7 @@ class GiovanniSelect {
       document.querySelectorAll('.giovanni-select-host').forEach(h => {
         if (h !== this.element) h.shadowRoot?.querySelector('.giovanni-select-container')?.classList.remove('open');
       });
+      if (!isOpen) this._positionOptions();
       this.container.classList.toggle('open', !isOpen);
     });
 
@@ -2434,6 +3272,30 @@ class GiovanniSelect {
       if (!e.composedPath().includes(this.element)) this._close();
     };
     document.addEventListener('click', this._outsideHandler);
+
+    this._scrollHandler = () => {
+      if (this.container.classList.contains('open')) this._positionOptions();
+    };
+    window.addEventListener('scroll', this._scrollHandler, true);
+    window.addEventListener('resize', this._scrollHandler);
+  }
+
+  _positionOptions() {
+    const rect = this.trigger.getBoundingClientRect();
+    const panelHeight = 240;
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+
+    this.optionsList.style.left = rect.left + 'px';
+    this.optionsList.style.width = rect.width + 'px';
+
+    if (spaceBelow < panelHeight && spaceAbove > spaceBelow) {
+      this.optionsList.style.top = 'auto';
+      this.optionsList.style.bottom = (window.innerHeight - rect.top + 6) + 'px';
+    } else {
+      this.optionsList.style.bottom = 'auto';
+      this.optionsList.style.top = (rect.bottom + 6) + 'px';
+    }
   }
 
   _close() { this.container.classList.remove('open'); }
@@ -2454,8 +3316,8 @@ class GiovanniSelect {
 
   getValue() { return this.selectedValue; }
 }
-  
-class GiovanniDatePicker {
+
+ class GiovanniDatePicker {
   constructor({ label = '', mode = 'single', value = null, onChange = null } = {}) {
     this.options = { label, mode, value, onChange };
 
@@ -2552,15 +3414,13 @@ class GiovanniDatePicker {
       }
 
       .giovanni-datepicker-calendar {
-        position: absolute;
-        top: calc(100% + 8px);
-        left: 0;
+        position: fixed;
         width: 280px;
         background: #1e1e1e;
         border: 1px solid #3a3a3a;
         border-radius: 8px;
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
-        z-index: 100;
+        z-index: 10000;
         padding: 14px;
         opacity: 0; visibility: hidden;
         transform: translateY(-8px);
@@ -2722,6 +3582,8 @@ class GiovanniDatePicker {
       document.querySelectorAll('.giovanni-datepicker-host').forEach(h => {
         if (h !== this.element) h.shadowRoot?.querySelector('.giovanni-datepicker-container')?.classList.remove('open');
       });
+      const isOpen = this.container.classList.contains('open');
+      if (!isOpen) this._positionCalendar();
       this.container.classList.toggle('open');
     });
 
@@ -2744,6 +3606,34 @@ class GiovanniDatePicker {
       }
     };
     document.addEventListener('click', this._outsideHandler);
+
+    this._scrollHandler = () => {
+      if (this.container.classList.contains('open')) this._positionCalendar();
+    };
+    window.addEventListener('scroll', this._scrollHandler, true);
+    window.addEventListener('resize', this._scrollHandler);
+  }
+
+  _positionCalendar() {
+    const rect = this.trigger.getBoundingClientRect();
+    const calWidth = 280;
+    const calHeight = 340;
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+
+    let left = rect.left;
+    if (left + calWidth > window.innerWidth - 8) {
+      left = Math.max(8, window.innerWidth - calWidth - 8);
+    }
+    this.calendar.style.left = left + 'px';
+
+    if (spaceBelow < calHeight && spaceAbove > spaceBelow) {
+      this.calendar.style.top = 'auto';
+      this.calendar.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
+    } else {
+      this.calendar.style.bottom = 'auto';
+      this.calendar.style.top = (rect.bottom + 8) + 'px';
+    }
   }
 
   _changeMonth(dir) {
@@ -2886,6 +3776,7 @@ class GiovanniDatePicker {
       : (this.startDate && this.endDate ? { start: this.startDate, end: this.endDate } : null);
   }
 }
+ 
   
 class GiovanniToggle {
   constructor({ label = '', checked = false, onChange = null } = {}) {
