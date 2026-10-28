@@ -1339,6 +1339,10 @@
                     display: none;
                     transform: scale(0);
                     transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    ackground: var(--textoledBrillo);
+                    -webkit-box-shadow: 0px 1px 57px 13px var(--textoledBrillo);
+                    box-shadow: 0px 1px 57px 13px var(--textoledBrillo);
+
                 }
                 .ui-radio-item:hover .ui-radio-circle {
                      background: var(--textoActvioBlue);
