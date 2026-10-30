@@ -1172,7 +1172,8 @@
                     justify-content: center;
                     transition: all var(--ui-transition-fast);
                     height: 45px;
-                    width: 30px%;
+                    width:120px;
+               
                     border-radius: 12px;
                  color: var(--texto);  
                 }
