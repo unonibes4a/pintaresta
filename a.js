@@ -1139,7 +1139,7 @@
                     margin: var(--ui-label-margin);
                     flex-shrink: 0;
                 }
-                    @media (min-width:400px) {
+                    @media (max-width:400px) {
   .ui-btn {
                     background: var(--ui-btn-bg);                  
                     border: 1px solid var(--ui-border);
@@ -1153,7 +1153,7 @@
                     justify-content: center;
                     transition: all var(--ui-transition-fast);
                     height: 45px;
-                    width: 100%;
+                    width: 300px;
                     border-radius: 12px;
                  color: var(--texto);  
                 }
@@ -1172,7 +1172,7 @@
                     justify-content: center;
                     transition: all var(--ui-transition-fast);
                     height: 45px;
-                    width:120px;
+                   
                
                     border-radius: 12px;
                  color: var(--texto);  
