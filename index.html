@@ -43,15 +43,29 @@ body {
   border-bottom: 1px solid var(--ui-border);
   box-shadow: 0 4px 20px rgba(0,0,0,0.5);
 }
-
-.header-content {
-/*   max-width: 1700px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap; */
-
+.cl-none{
+	display: none;
+}
+.clbt-input{
+	background-color: #353535;
+	border-radius: 9px;
+	color: #999898;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	font-size: 13px;
+	height: 47px;
+	cursor: pointer;
+	
+}
+.clbt-input:hover{
+	color: #ffffff;
+	size: 1.2;
+	transition: 0.5s color;
+	border: 4px solid #0f68dd32;
+}
+.header-content { 
   display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
@@ -760,8 +774,11 @@ class MinimalWebGPUViewer {
 		const sidebar = document.createElement('div');
 		sidebar.className = 'wg-sidebar';
 		sidebar.innerHTML = `
-			<h3>Modelos 3D</h3>
-			<input type="file" id="wg-file-input" class="ui-input" accept=".glb,.gltf,.obj,.fbx">
+			<h3>Modelos 3D</h3> 
+			<label id="idbtdivOpen" for="wg-file-input" class="clbt-input">
+				 Open File glb obj fbx
+			</label>
+			<input type="file" id="wg-file-input" class="ui-input cl-none" accept=".glb,.gltf,.obj,.fbx">
 			<input type="text" id="wg-url-input" class="ui-input" placeholder="Pegar URL del modelo...">
 			<button class="ui-btn" id="wg-btn-load-url">Cargar URL</button>
 			<button class="ui-btn ui-btn-danger" id="wg-btn-clear">Limpiar Escena</button>
