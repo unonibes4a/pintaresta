@@ -45,12 +45,21 @@ body {
 }
 
 .header-content {
-  max-width: 1700px;
+/*   max-width: 1700px;
   margin: 0 auto;
   display: flex;
   align-items: center;
   gap: 12px;
-  flex-wrap: wrap;
+  flex-wrap: wrap; */
+
+  display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	align-items: center;
+	align-content: center;
+  max-width: 1700px;
+	height: 70px;
 }
 
 .logo {
@@ -100,10 +109,30 @@ body {
 }
 
 .nav-buttons {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  flex-wrap: wrap;
+ display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: flex-start;
+	align-items: center;
+	align-content: center;
+ 
+}
+.nav-buttons > * {
+	min-width: 120px;
+	margin: 7px;
+	font-size: 12px;
+	display: flex;
+	text-align: center;
+	align-items: center;
+	justify-content: center;
+	color: #777777;
+	max-height: 40px;
+	border-radius: 8px;
+	border: 4px solid #333333aa;
+}
+.nav-buttons > *:hover {
+ 
+	color: #b3b3b3;
 }
 
 .lote-info {
