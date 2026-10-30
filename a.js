@@ -1139,10 +1139,9 @@
                     margin: var(--ui-label-margin);
                     flex-shrink: 0;
                 }
-
-                .ui-btn {
-                    background: var(--ui-btn-bg);
-                  
+                    @media (min-width:400px) {
+  .ui-btn {
+                    background: var(--ui-btn-bg);                  
                     border: 1px solid var(--ui-border);
                     padding: 0 14px;
                     border-radius: var(--ui-radius-sm);
@@ -1154,15 +1153,34 @@
                     justify-content: center;
                     transition: all var(--ui-transition-fast);
                     height: 45px;
-                    width: 80px;
+                    width: 100%;
                     border-radius: 12px;
                  color: var(--texto);  
                 }
-                     .ui-btn:hover{
-                      color: var(--ui-bg-segmented-active-h);
-                        
-                     }
-               
+}
+
+                .ui-btn {
+                    background: var(--ui-btn-bg);                  
+                    border: 1px solid var(--ui-border);
+                    padding: 0 14px;
+                    border-radius: var(--ui-radius-sm);
+                    font-size: var(--ui-font-size-btn);
+                    font-weight: var(--ui-font-weight-medium);
+                    cursor: pointer;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all var(--ui-transition-fast);
+                    height: 45px;
+                    width: 30px%;
+                    border-radius: 12px;
+                 color: var(--texto);  
+                }
+                .ui-btn:hover{
+                color: var(--ui-bg-segmented-active-h);
+
+                }
+
                 .ui-btn:active { transform: scale(0.98); }
                 .ui-btn:disabled { opacity: var(--ui-opacity-disabled); cursor: not-allowed; pointer-events: none; }
 
