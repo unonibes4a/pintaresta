@@ -1154,7 +1154,7 @@
                     justify-content: center;
                     transition: all var(--ui-transition-fast);
                     height: 45px;
-                    width: 40px;
+                    width: 80px;
                     border-radius: 12px;
                  color: var(--texto);  
                 }
@@ -1296,8 +1296,10 @@
                     border-color: var(--ui-text-muted);
                 }
                 .ui-checkbox.checked .ui-checkbox-box {
-                    background: var(--ui-accent);
-                    border-color: var(--ui-accent);
+                    background: var(--textoledBrillo);
+                  -webkit-box-shadow: 0px 1px 57px 13px var(--textoledBrillo);
+                  box-shadow: 0px 1px 57px 13px var(--textoledBrillo);
+              
                 }
                 .ui-checkbox-mark {
                     display: none;
@@ -1444,14 +1446,14 @@ box-shadow: 0px 1px 57px 13px var(--textoledBrillo);
                 .ui-chk2-custom {
                     width: 16px;
                     height: 16px;
-                    border: 1.5px solid var(--ui-border);
+                    border: 2px solid var(--texto)
                     border-radius: 4px;
                     display: grid;
                     place-items: center;
                     transition: all 0.2s;
                     position: relative;
                     flex-shrink: 0 !important;
-                    background: transparent;
+                    background: var(--backg2)
                 }
                 .ui-chk2-custom::after {
                     content: '';
@@ -1464,8 +1466,9 @@ box-shadow: 0px 1px 57px 13px var(--textoledBrillo);
                 }
                 .ui-chk2-input { position: absolute; opacity: 0; width: 0; height: 0; }
                 .ui-chk2-label.checked .ui-chk2-custom {
-                    border-color: var(--ui-accent);
-                    background-color: var(--ui-accent);
+                   /*  background: var(--textoledBrillo);
+                    -webkit-box-shadow: 0px 1px 57px 13px var(--textoledBrillo);
+                    box-shadow: 0px 1px 57px 13px var(--textoledBrillo);    */                 
                 }
                 .ui-chk2-label.checked .ui-chk2-custom::after {
                     transform: rotate(-45deg) scale(1);
@@ -3006,7 +3009,7 @@ box-shadow: 5px 5px 15px 5px #000000;
                     </div>
                     <div class="ui-header-tools">
                         <button class="ui-icon-btn btn-float" title="Alternar Flotante">⧉</button>
-                        <button class="ui-icon-btn btn-collapse">_</button>
+                        <button class="ui-icon-btn btn-collapse ">_gio</button>
                         <button class="ui-icon-btn btn-close">✕</button>
                     </div>
                 </div>
