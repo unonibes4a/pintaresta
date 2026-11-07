@@ -1163,18 +1163,18 @@
                 .ui-btn {
                     background: var(--ui-btn-bg);                  
                     border: 1px solid var(--ui-border);
-                    padding: 0 14px;
-                    border-radius: var(--ui-radius-sm);
-                    font-size: var(--ui-font-size-btn);
-                    font-weight: var(--ui-font-weight-medium);
-                    cursor: pointer;
-                    display: inline-flex;
-                    align-items: center;
+                    height: 40px;              
+                    border-radius: 10px;
+                    display: flex;
+                    flex-direction: row;
+                    flex-wrap: wrap;
                     justify-content: center;
-                    transition: all var(--ui-transition-fast);
-                    height: 45px;              
-                    border-radius: 12px;
-                 color: var(--texto);  
+                    align-items: center;
+                    align-content: center;
+                    color: var(--texto); 
+                    cursor: pointer;
+                    font-size:10.5px;// var(--ui-font-size-btn);
+
                 }
                 .ui-btn:hover{
                 color: var(--ui-bg-segmented-active-h);
