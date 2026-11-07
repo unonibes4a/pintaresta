@@ -1102,6 +1102,7 @@
                     flex: 1 1 auto;
                     min-height: 0;
                     box-sizing: border-box;
+                     max-height:700px;
                 }
 
                 .ui-panel-body > * {
