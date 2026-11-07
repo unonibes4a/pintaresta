@@ -988,7 +988,8 @@
                     flex-shrink: 0;
                     margin: var(--ui-panel-margin);
                     box-sizing: border-box;
-                    overflow: hidden;
+                    overflow: scroll;
+                    min-height: 450px;
                 }
                 .ui-panel.is-hidden { display: none !important; }
 
@@ -3723,125 +3724,184 @@ box-shadow: 5px 5px 15px 5px #000000;
         }
     }
 
-    class UISelect extends UIBaseComponent {
-        constructor({ options = [], value = '', onChange } = {}) {
-            super();
-            this.options = Array.isArray(options) ? options.map(o => {
-                if (typeof o === 'object' && o !== null) return o;
-                return { value: o, label: String(o) };
-            }) : [];
+   class UISelect extends UIBaseComponent {
+    constructor({ options = [], value = '', onChange } = {}) {
+        super();
+        this.options = Array.isArray(options) ? options.map(o => {
+            if (typeof o === 'object' && o !== null) return o;
+            return { value: o, label: String(o) };
+        }) : [];
 
-            this.value = value !== '' ? value : (this.options[0]?.value ?? '');
-            this.onChange = onChange;
-            this.isOpen = false;
-            this.disabled = false;
+        this.value = value !== '' ? value : (this.options[0]?.value ?? '');
+        this.onChange = onChange;
+        this.isOpen = false;
+        this.disabled = false;
 
-            this.element = document.createElement('div');
-            this.element.className = 'ui-select-wrap';
+        this.element = document.createElement('div');
+        this.element.className = 'ui-select-wrap';
 
-            this.element.innerHTML = `
-                <div class="ui-select-trigger header-dropdown">
-                    <div class="ui-select-icon-circle icon-circle"></div>
-                    <span class="ui-select-label-text title"></span>
-                    <svg class="ui-select-arrow-svg arrow-down" width="10" height="6" viewBox="0 0 10 6">
-                        <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
-                    </svg>
+        this.element.innerHTML = `
+            <div class="ui-select-trigger header-dropdown" tabindex="0">
+                <div class="ui-select-icon-circle icon-circle"></div>
+                <span class="ui-select-label-text title"></span>
+                <svg class="ui-select-arrow-svg arrow-down" width="10" height="6" viewBox="0 0 10 6">
+                    <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+                </svg>
+            </div>
+            <div class="dropdown-menu">
+                <div class="ui-select-search-wrap" style="padding: 6px; position: sticky; top: 0; background: inherit; z-index: 2;">
+                    <input type="text" class="ui-select-search-input" placeholder="Buscar..." style="width: 100%; height: 30px; box-sizing: border-box; padding: 0 8px; font-size: 13px; background-color: #333333; color: #ffffff; border: 1px solid #444444; border-radius: 4px; outline: none;">
                 </div>
-                <div class="dropdown-menu"></div>
-            `;
+                <!-- Contenedor con scroll automático -->
+                <div class="ui-select-items-wrap" style="overflow-y: auto;"></div>
+            </div>
+        `;
 
-            this.trigger = this.element.querySelector('.ui-select-trigger');
-            this.labelText = this.element.querySelector('.ui-select-label-text');
-            this.menu = this.element.querySelector('.dropdown-menu');
+        this.trigger = this.element.querySelector('.ui-select-trigger');
+        this.labelText = this.element.querySelector('.ui-select-label-text');
+        this.menu = this.element.querySelector('.dropdown-menu');
+        this.searchInput = this.element.querySelector('.ui-select-search-input');
+        this.itemsWrap = this.element.querySelector('.ui-select-items-wrap');
 
-            this.renderItems();
-            this.bindEvents();
-        }
-
-        renderItems() {
-            this.menu.innerHTML = '';
-            let currentLabel = '';
-
-            this.options.forEach(opt => {
-                const isSelected = String(opt.value) === String(this.value);
-                if (isSelected) currentLabel = opt.label;
-
-                const itemEl = document.createElement('div');
-                itemEl.className = `dropdown-item ${isSelected ? 'active' : ''}`;
-                itemEl.textContent = opt.label;
-
-                itemEl.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    this.setValue(opt.value);
-                    this.close();
-                    if (this.onChange) this.onChange(this.value, this);
-                });
-
-                this.menu.appendChild(itemEl);
-            });
-
-            this.labelText.textContent = currentLabel || (this.options[0]?.label ?? '');
-        }
-
-        toggle() {
-            if (this.disabled) return;
-            this.isOpen ? this.close() : this.open();
-        }
-
-        open() {
-            if (this.disabled || this.isOpen) return;
-            document.querySelectorAll('.ui-select-wrap.is-open').forEach(el => {
-                if (el !== this.element) el.classList.remove('is-open');
-            });
-            this.isOpen = true;
-            this.element.classList.add('is-open');
-        }
-
-        close() {
-            if (!this.isOpen) return;
-            this.isOpen = false;
-            this.element.classList.remove('is-open');
-        }
-
-        bindEvents() {
-            this.trigger.addEventListener('click', (e) => {
-                e.stopPropagation();
-                this.toggle();
-            });
-
-            this.onDocClick = (e) => {
-                if (!this.element.contains(e.target)) {
-                    this.close();
-                }
-            };
-            document.addEventListener('click', this.onDocClick);
-        }
-
-        getValue() { return this.value; }
-
-        setValue(v) {
-            this.value = v;
-            const items = this.menu.querySelectorAll('.dropdown-item');
-            this.options.forEach((opt, idx) => {
-                const isSelected = String(opt.value) === String(this.value);
-                if (items[idx]) items[idx].classList.toggle('active', isSelected);
-                if (isSelected) this.labelText.textContent = opt.label;
-            });
-            return this;
-        }
-
-        setDisabled(v) {
-            this.disabled = !!v;
-            this.element.classList.toggle('disabled', this.disabled);
-            if (this.disabled) this.close();
-            return this;
-        }
-
-        destroy() {
-            document.removeEventListener('click', this.onDocClick);
-            super.destroy();
-        }
+        this.renderItems();
+        this.bindEvents();
     }
+
+    renderItems(filterText = '') {
+        this.itemsWrap.innerHTML = '';
+        const search = filterText.toLowerCase().trim();
+
+        const filtered = this.options.filter(opt => 
+            String(opt.label).toLowerCase().includes(search)
+        );
+
+        // ALTURA DINÁMICA: Si hay 10 o más opciones, sube a 480px (o max 60% de la pantalla)
+        if (filtered.length >= 10) {
+            this.itemsWrap.style.maxHeight = 'min(480px, 60vh)';
+        } else {
+            this.itemsWrap.style.maxHeight = 'none';
+        }
+
+        if (filtered.length === 0) {
+            const noResults = document.createElement('div');
+            noResults.className = 'dropdown-item disabled';
+            noResults.style.opacity = '0.5';
+            noResults.style.cursor = 'default';
+            noResults.textContent = 'Sin resultados';
+            this.itemsWrap.appendChild(noResults);
+            return;
+        }
+
+        filtered.forEach(opt => {
+            const isSelected = String(opt.value) === String(this.value);
+
+            const itemEl = document.createElement('div');
+            itemEl.className = `dropdown-item ${isSelected ? 'active' : ''}`;
+            itemEl.textContent = opt.label;
+
+            itemEl.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.setValue(opt.value);
+                this.close();
+                if (this.onChange) this.onChange(this.value, this);
+            });
+
+            this.itemsWrap.appendChild(itemEl);
+        });
+
+        const currentOpt = this.options.find(o => String(o.value) === String(this.value));
+        this.labelText.textContent = currentOpt ? currentOpt.label : (this.options[0]?.label ?? '');
+    }
+
+    toggle() {
+        if (this.disabled) return;
+        this.isOpen ? this.close() : this.open();
+    }
+
+    open() {
+        if (this.disabled || this.isOpen) return;
+        document.querySelectorAll('.ui-select-wrap.is-open').forEach(el => {
+            if (el !== this.element) el.classList.remove('is-open');
+        });
+        
+        this.isOpen = true;
+        this.element.classList.add('is-open');
+
+        // Hace scroll automático hasta la opción seleccionada al abrir
+        setTimeout(() => {
+            this.searchInput.focus();
+            const active = this.itemsWrap.querySelector('.dropdown-item.active');
+            if (active) active.scrollIntoView({ block: 'nearest' });
+        }, 50);
+    }
+
+    close() {
+        if (!this.isOpen) return;
+        this.isOpen = false;
+        this.element.classList.remove('is-open');
+
+        this.searchInput.value = '';
+        this.renderItems();
+    }
+
+    bindEvents() {
+        this.trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.toggle();
+        });
+
+        this.searchInput.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        this.searchInput.addEventListener('input', (e) => {
+            this.renderItems(e.target.value);
+        });
+
+        this.searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const firstItem = this.itemsWrap.querySelector('.dropdown-item:not(.disabled)');
+                if (firstItem) firstItem.click();
+            } else if (e.key === 'Escape') {
+                this.close();
+            }
+        });
+
+        this.onDocClick = (e) => {
+            if (!this.element.contains(e.target)) {
+                this.close();
+            }
+        };
+        document.addEventListener('click', this.onDocClick);
+    }
+
+    getValue() { return this.value; }
+
+    setValue(v) {
+        this.value = v;
+        const currentOpt = this.options.find(o => String(o.value) === String(this.value));
+        if (currentOpt) this.labelText.textContent = currentOpt.label;
+
+        const items = this.itemsWrap.querySelectorAll('.dropdown-item');
+        items.forEach(el => {
+            el.classList.toggle('active', el.textContent === currentOpt?.label);
+        });
+        return this;
+    }
+
+    setDisabled(v) {
+        this.disabled = !!v;
+        this.element.classList.toggle('disabled', this.disabled);
+        if (this.disabled) this.close();
+        return this;
+    }
+
+    destroy() {
+        document.removeEventListener('click', this.onDocClick);
+        super.destroy();
+    }
+}
 
     class UISegmented extends UIBaseComponent {
         constructor({ items = [], activeIndex = 0, onChange } = {}) {
