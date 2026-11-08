@@ -1,5 +1,4 @@
-   
-     class GiovanniToggleAcordion {
+   class GiovanniToggleAcordion {
   static _injectCSS() {
     if (document.getElementById('gio-accordion-theme-styles')) return;
     const style = document.createElement('style');
@@ -7,7 +6,7 @@
     style.textContent = `
       .gio-acc-item {
         background: #2d2d2d;
-       border: 1px solid #ffffff18;  
+        border: 1px solid #ffffff18;  
         border-radius: 8px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.4);
         display: flex;
@@ -15,12 +14,10 @@
         width: 100%;
         box-sizing: border-box;
         margin-bottom: 12px;
-        transition: border-color 0.3, box-shadow 0.2s;
+        transition: border-color 0.3s, box-shadow 0.2s;
         overflow: visible;
         flex-shrink: 0;
-      }
-      .gio-acc-item:hover {
-          
+        min-width: 0;
       }
       .gio-acc-item.is-dragging {
         position: fixed !important;
@@ -157,17 +154,20 @@
       this.content.style.overflowY = 'auto';
     } else {
       this.content.style.maxHeight = `${scrollH + 30}px`;
-      this.content.style.overflow = 'visible'; // Permite flotar menús y tooltips
+      this.content.style.overflow = 'visible';
     }
   }
 
   adaptToParent(container, insertBefore = null) {
     if (!container || !(container instanceof HTMLElement)) container = document.body;
     this.element.classList.remove('is-dragging');
-    this.element.style.width = typeof this.widthPercent === 'number' ? `${this.widthPercent}%` : this.widthPercent;
+    const w = typeof this.widthPercent === 'number' ? `${this.widthPercent}%` : this.widthPercent;
+    this.element.style.width = w;
+    this.element.style.maxWidth = w;
     this.element.style.position = '';
     this.element.style.left = '';
     this.element.style.top = '';
+    this.element.style.pointerEvents = '';
 
     if (insertBefore && insertBefore.parentNode === container) {
       container.insertBefore(this.element, insertBefore);
@@ -193,18 +193,16 @@
   _initMagneticDrag() {
     let startX = 0, startY = 0, initLeft = 0, initTop = 0;
     let isDragging = false, hasMoved = false;
-    const threshold = 16; // Snap magnético en px
+    const threshold = 16;
 
-    // Placeholder reactivo neón azul
     let placeholder = document.getElementById('gio-snap-placeholder');
     if (!placeholder) {
       placeholder = document.createElement('div');
       placeholder.id = 'gio-snap-placeholder';
-      placeholder.style.cssText = 'border:2px dashed #4daafc; border-radius:8px; background:rgba(33, 96, 199, 0.15); margin-bottom:12px; display:none; pointer-events:none; width:100%; box-sizing:border-box; transition:height 0.15s;';
+      placeholder.style.cssText = 'border:2px dashed #4daafc; border-radius:8px; background:rgba(33, 96, 199, 0.15); margin-bottom:12px; display:none; pointer-events:none; width:100%; box-sizing:border-box; transition:height 0.15s; flex-shrink:0;';
       document.body.appendChild(placeholder);
     }
 
-    // Guías láser
     let guideV = document.getElementById('gio-snap-v') || (() => {
       const g = document.createElement('div'); g.id = 'gio-snap-v';
       g.style.cssText = 'position:fixed; top:0; bottom:0; width:1px; background:#4daafc; box-shadow:0 0 8px #4daafc; z-index:9999999; display:none; pointer-events:none;';
@@ -263,7 +261,6 @@
           dropTarget.appendChild(placeholder);
         }
       } else {
-        // Snap magnético a bordes
         const w = this.element.offsetWidth;
         const h = this.element.offsetHeight;
         let snapX = null, snapY = null;
@@ -307,7 +304,14 @@
       this.element.style.position = '';
       this.element.style.left = '';
       this.element.style.top = '';
-      this.element.style.width = typeof this.widthPercent === 'number' ? `${this.widthPercent}%` : this.widthPercent;
+      this.element.style.pointerEvents = '';
+      const w = typeof this.widthPercent === 'number' ? `${this.widthPercent}%` : this.widthPercent;
+      this.element.style.width = w;
+      this.element.style.maxWidth = w;
+
+      if (this.isOpen) {
+        this._updateHeight(true);
+      }
     };
 
     this.header.addEventListener('pointerdown', (e) => {
@@ -332,8 +336,7 @@
     return this;
   }
 }
-
- 
+     
 const GiovanniIconDB = {
   pencil: '<path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>',
   square: '<path d="M3 3h18v18H3V3zm2 2v14h14V5H5z"/>',
