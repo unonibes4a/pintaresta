@@ -1443,3 +1443,373 @@ class Giovanni {
         return this.element;
     }
 }
+
+
+/* 
+const GiovanniIconDB = {
+  pencil: '<path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>',
+  square: '<path d="M3 3h18v18H3V3zm2 2v14h14V5H5z"/>',
+  sphere: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>',
+  sliders: '<path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>',
+  chevronDown: '<path d="M7 10l5 5 5-5z"/>',
+  chevronLeft: '<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>',
+  chevronRight: '<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>',
+  reset: '<path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>',
+  drop: '<path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>',
+  home: '<path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>',
+  mail: '<path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>',
+  send: '<path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>',
+  check: '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>',
+  close: '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>',
+  filter: '<path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/>',
+  search: '<path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>'
+}; */
+
+Giovanni.getSVG = function(keyOrPath, size = 18) {
+    const pathData = GiovanniIconDB[keyOrPath] || keyOrPath;
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('width', size);
+    svg.setAttribute('height', size);
+    svg.setAttribute('fill', 'currentColor');
+    svg.style.pointerEvents = 'none';
+    svg.innerHTML = pathData.startsWith('<') ? pathData : `<path d="${pathData}"/>`;
+    return svg;
+};
+
+Giovanni.prototype.createIconButton = function({ icon = 'square', active = false, onClick = null, title = '' } = {}) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.title = title;
+    btn.style.cssText = `
+        width: 35px;
+        height: 35px;
+        min-width: 35px;
+        min-height: 35px;
+        border-radius: 10px;
+        background: var(--backg1);
+        border: 1px solid var(--borde);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--texto);
+        transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+        box-sizing: border-box;
+        padding: 0;
+        outline: none;
+        user-select: none;
+    `;
+
+    let currentIcon = icon;
+    let svgElement = Giovanni.getSVG(currentIcon, 18);
+    btn.appendChild(svgElement);
+
+    const setActiveStyle = (st) => {
+        if (st) {
+            btn.style.background = 'rgba(77, 170, 252, 0.15)';
+            btn.style.borderColor = 'var(--textoActvioBlue)';
+            btn.style.color = 'var(--textoActvioBlue)';
+            btn.style.boxShadow = '0 0 10px rgba(77, 170, 252, 0.3)';
+        } else {
+            btn.style.background = 'var(--backg1)';
+            btn.style.borderColor = 'var(--borde)';
+            btn.style.color = 'var(--texto)';
+            btn.style.boxShadow = 'none';
+        }
+    };
+    setActiveStyle(active);
+
+    btn.addEventListener('mouseenter', () => {
+        if (!btn.dataset.active) {
+            btn.style.borderColor = 'var(--textoActvioBlue)';
+            btn.style.color = 'var(--textoActivo)';
+            btn.style.background = '#363636';
+        }
+    });
+
+    btn.addEventListener('mouseleave', () => {
+        if (!btn.dataset.active) {
+            btn.style.borderColor = 'var(--borde)';
+            btn.style.color = 'var(--texto)';
+            btn.style.background = 'var(--backg1)';
+        }
+    });
+
+    btn.setIcon = (newIconKeyOrSvg) => {
+        currentIcon = newIconKeyOrSvg;
+        btn.innerHTML = '';
+        svgElement = Giovanni.getSVG(currentIcon, 18);
+        btn.appendChild(svgElement);
+        return btn;
+    };
+
+    btn.setActive = (state) => {
+        btn.dataset.active = state ? 'true' : '';
+        setActiveStyle(state);
+        return btn;
+    };
+
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (onClick) onClick(btn, currentIcon);
+    });
+
+    return btn;
+};
+
+Giovanni.prototype.createIconToolbar = function(buttons = []) {
+    const bar = document.createElement('div');
+    bar.style.cssText = "display: flex; align-items: center; gap: 8px; flex-wrap: wrap; width: 100%; box-sizing: border-box;";
+
+    buttons.forEach(cfg => {
+        const b = this.createIconButton(cfg);
+        bar.appendChild(b);
+    });
+
+    return this._wrapWithLabel('Herramientas Rápidas', bar);
+};
+
+Giovanni.prototype.createNodeTree = function({
+    label = 'Árbol de Escena / Capas',
+    data = [],
+    onSelect = null,
+    onReorder = null,
+    onIconChange = null,
+    onVisibilityChange = null
+} = {}) {
+    const treeRoot = document.createElement('div');
+    treeRoot.tabIndex = 0;
+    treeRoot.className = 'gio-custom-scroll';
+    treeRoot.style.cssText = `
+        max-height: 280px;
+        overflow-y: auto;
+        padding: 4px;
+        border-radius: var(--radius);
+        background: var(--backg3);
+        border: 1px solid var(--borde);
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        width: 100%;
+        box-sizing: border-box;
+        outline: none;
+        user-select: none;
+    `;
+
+    let nodes = JSON.parse(JSON.stringify(data));
+    let selectedNodeId = nodes[0]?.id || null;
+    let dragSourceId = null;
+
+    const findNode = (id, list = nodes) => {
+        for (const n of list) {
+            if (n.id === id) return { node: n, parentList: list };
+            if (n.children) {
+                const r = findNode(id, n.children);
+                if (r) return r;
+            }
+        }
+        return null;
+    };
+
+    const renderTree = () => {
+        treeRoot.innerHTML = '';
+
+        const buildBranch = (items, depth = 0) => {
+            items.forEach((item) => {
+                const isSelected = item.id === selectedNodeId;
+
+                const row = document.createElement('div');
+                row.draggable = true;
+                row.dataset.id = item.id;
+                row.style.cssText = `
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    padding: 4px 6px;
+                    padding-left: ${depth * 18 + 6}px;
+                    border-radius: 6px;
+                    background: ${isSelected ? 'rgba(77, 170, 252, 0.16)' : 'transparent'};
+                    border-left: 2px solid ${isSelected ? 'var(--textoActvioBlue)' : 'transparent'};
+                    cursor: pointer;
+                    transition: background 0.15s;
+                    box-sizing: border-box;
+                `;
+
+                row.addEventListener('mouseenter', () => {
+                    if (item.id !== selectedNodeId) row.style.background = 'var(--backg2)';
+                });
+                row.addEventListener('mouseleave', () => {
+                    if (item.id !== selectedNodeId) row.style.background = 'transparent';
+                });
+
+                const chevron = document.createElement('div');
+                chevron.style.cssText = `
+                    width: 16px;
+                    height: 16px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: ${item.open ? 'var(--textoActvioBlue)' : 'var(--textodisable)'};
+                    transform: rotate(${item.open ? '90deg' : '0deg'});
+                    transition: transform 0.2s, color 0.2s;
+                    flex-shrink: 0;
+                `;
+
+                if (item.children && item.children.length > 0) {
+                    chevron.appendChild(Giovanni.getSVG('chevronRight', 12));
+                    chevron.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        item.open = !item.open;
+                        renderTree();
+                    });
+                }
+                row.appendChild(chevron);
+
+                const iconBtn = this.createIconButton({
+                    icon: item.icon || 'square',
+                    onClick: (btn) => {
+                        const iconKeys = Object.keys(GiovanniIconDB);
+                        const nextIcon = iconKeys[(iconKeys.indexOf(item.icon) + 1) % iconKeys.length] || 'square';
+                        item.icon = nextIcon;
+                        btn.setIcon(nextIcon);
+                        if (onIconChange) onIconChange(item, nextIcon);
+                    }
+                });
+                row.appendChild(iconBtn);
+
+                const labelSpan = document.createElement('span');
+                labelSpan.textContent = item.name || item.id;
+                labelSpan.style.cssText = `
+                    font-size: 12px;
+                    color: ${isSelected ? 'var(--textoActivo)' : 'var(--texto)'};
+                    font-weight: ${isSelected ? '600' : '400'};
+                    flex: 1;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                `;
+                row.appendChild(labelSpan);
+
+                const visBtn = document.createElement('button');
+                visBtn.type = 'button';
+                visBtn.style.cssText = `
+                    width: 28px;
+                    height: 28px;
+                    min-width: 28px;
+                    min-height: 28px;
+                    border-radius: 6px;
+                    border: none;
+                    background: transparent;
+                    color: ${item.visible !== false ? 'var(--textoActvioBlue)' : 'var(--textodisable)'};
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                `;
+                visBtn.appendChild(Giovanni.getSVG(item.visible !== false ? 'check' : 'close', 14));
+
+                visBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    item.visible = item.visible === false ? true : false;
+                    if (onVisibilityChange) onVisibilityChange(item, item.visible);
+                    renderTree();
+                });
+                row.appendChild(visBtn);
+
+                row.addEventListener('click', () => {
+                    selectedNodeId = item.id;
+                    renderTree();  
+                    if (onSelect) onSelect(item);
+                });
+
+                row.addEventListener('dragstart', (e) => {
+                    e.stopPropagation();
+                    dragSourceId = item.id;
+                });
+
+                row.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const r = row.getBoundingClientRect();
+                    const isTop = e.clientY < r.top + r.height / 2;
+                    row.style.borderTop = isTop ? '2px solid var(--textoActvioBlue)' : 'none';
+                    row.style.borderBottom = !isTop ? '2px solid var(--textoActvioBlue)' : 'none';
+                });
+
+                row.addEventListener('dragleave', () => {
+                    row.style.borderTop = 'none';
+                    row.style.borderBottom = 'none';
+                });
+
+                row.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    row.style.borderTop = 'none';
+                    row.style.borderBottom = 'none';
+
+                    if (!dragSourceId || dragSourceId === item.id) return;
+
+                    const src = findNode(dragSourceId);
+                    const dst = findNode(item.id);
+
+                    if (src && dst) {
+                        const [moved] = src.parentList.splice(src.parentList.indexOf(src.node), 1);
+                        const r = row.getBoundingClientRect();
+                        const insertIndex = e.clientY < r.top + r.height / 2 
+                            ? dst.parentList.indexOf(dst.node) 
+                            : dst.parentList.indexOf(dst.node) + 1;
+
+                        dst.parentList.splice(insertIndex, 0, moved);
+                        selectedNodeId = moved.id;
+                        renderTree();
+                        if (onReorder) onReorder(nodes, moved, dst.node);
+                    }
+                    dragSourceId = null;
+                });
+
+                treeRoot.appendChild(row);
+
+                if (item.open && item.children && item.children.length > 0) {
+                    buildBranch(item.children, depth + 1);
+                }
+            });
+        };
+
+        buildBranch(nodes);
+    };
+
+    const moveNodeDirection = (dir) => {
+        if (!selectedNodeId) return;
+        const res = findNode(selectedNodeId);
+        if (!res) return;
+
+        const { node, parentList } = res;
+        const idx = parentList.indexOf(node);
+        const targetIdx = idx + dir;
+
+        if (targetIdx >= 0 && targetIdx < parentList.length) {
+            parentList.splice(idx, 1);
+            parentList.splice(targetIdx, 0, node);
+            renderTree();
+            if (onReorder) onReorder(nodes, node, parentList[targetIdx]);
+        }
+    };
+
+    treeRoot.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.key === 'ArrowUp') {
+            e.preventDefault();
+            moveNodeDirection(-1);
+        } else if (e.ctrlKey && e.key === 'ArrowDown') {
+            e.preventDefault();
+            moveNodeDirection(1);
+        }
+    });
+
+    renderTree();
+
+    const field = this._wrapWithLabel(label, treeRoot);
+    field.getTreeData = () => nodes;
+    field.setTreeData = (newData) => { nodes = newData; renderTree(); };
+    return field;
+};
