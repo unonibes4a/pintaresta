@@ -1,3 +1,20 @@
+   
+   function agregarClaseAElementos(nombreClase) {
+  const elementos = document.querySelectorAll('aside, main, div, footer');
+  
+  elementos.forEach(el => {
+    // Evita alterar elementos internos del acordeón o guías de drag
+    if (el.closest('.gio-acc-item') || el.id.startsWith('gio-snap-')) {
+      return;
+    }
+    el.classList.add(nombreClase);
+  });
+}
+
+          setTimeout(() => {
+     agregarClaseAElementos("app-workspace");
+        },2000); 
+   
    class GiovanniToggleAcordion {
   static _injectCSS() {
     if (document.getElementById('gio-accordion-theme-styles')) return;
