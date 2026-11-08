@@ -1,399 +1,339 @@
    
-    class GiovanniToggleAcordion {
-    static _injectCSS() {
-        if (document.getElementById('toggle-accordion-styles')) return;
-        const style = document.createElement('style');
-        style.id = 'toggle-accordion-styles';
-        style.textContent = `
+     class GiovanniToggleAcordion {
+  static _injectCSS() {
+    if (document.getElementById('gio-accordion-theme-styles')) return;
+    const style = document.createElement('style');
+    style.id = 'gio-accordion-theme-styles';
+    style.textContent = `
+      .gio-acc-item {
+        background: #2d2d2d;
+       border: 1px solid #ffffff18;  
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        box-sizing: border-box;
+        margin-bottom: 12px;
+        transition: border-color 0.3, box-shadow 0.2s;
+        overflow: visible;
+        flex-shrink: 0;
+      }
+      .gio-acc-item:hover {
+          
+      }
+      .gio-acc-item.is-dragging {
+        position: fixed !important;
+        opacity: 0.92;
+        z-index: 999999 !important;
+        box-shadow: 0 16px 36px rgba(0,0,0,0.8), 0 0 15px rgba(33, 96, 199, 0.4) !important;
+        pointer-events: none;
+        margin: 0 !important;
+        border-color: #4daafc !important;
+      }
 
-        .clinptunmerMove{
-            position: absolute;
-            left: -30px;
-            top: 40px;
+      .gio-acc-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 14px;
+        cursor: grab;
+        user-select: none;
+        background: #2d2d2d;
+        border-radius: 7px;
+        min-height: 40px;
+        transition: background 0.2s;
+      }
+      .gio-acc-header:hover { background: #333333; }
+      .gio-acc-header:active { cursor: grabbing; }
+
+      .gio-acc-title {
+        color: #e0e0e0;
+        font-size: 13px;
+        font-weight: 600;
+        pointer-events: none;
+      }
+
+      .gio-acc-chevron {
+        width: 15px;
+        height: 15px;
+        stroke: #a0a0a0;
+        stroke-width: 2.2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+        transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), stroke 0.2s;
+        pointer-events: none;
+      }
+      .gio-acc-item.open > .gio-acc-header .gio-acc-chevron {
+        transform: rotate(180deg);
+        stroke: #4daafc;
+      }
+
+      .gio-acc-content {
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        transition: max-height 0.26s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+        background: #1e1e1e;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+      }
+      .gio-acc-item.open > .gio-acc-content {
+        opacity: 1;
+      }
+
+      .gio-acc-body {
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        box-sizing: border-box;
+        width: 100%;
+        background: #2d2d2d;
+      }
+    `;
+    document.head.appendChild(style);
   }
-            .accordion-item {
-                background: #252525;
-                border: 1px solid #3a3a3a;
-                border-radius: 8px;
-                overflow: visible;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-                z-index: 10;
-                display: flex;
-                flex-direction: column;
-                box-sizing: border-box;
-                max-width: 100%;
-            }
 
-            .accordion-item.anclado {
-                position: relative !important;
-                left: auto !important;
-                top: auto !important;
-                margin-left: auto !important;
-                margin-right: auto !important;
-                margin-bottom: 10px;
-            }
+  constructor(title, parentElement = null, widthPercent = 100, maxHeight = 700) {
+    GiovanniToggleAcordion._injectCSS();
 
-            .accordion-item.is-dragging {
-                opacity: 0.85;
-                cursor: grabbing;
-                z-index: 10000;
-                position: fixed !important;
-                pointer-events: none;
-                margin: 0 !important;
-            }
+    this.isOpen = false;
+    this.maxHeight = maxHeight;
+    this.widthPercent = widthPercent;
 
-            .accordion-header {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 12px 16px;
-                cursor: pointer;
-                user-select: none;
-                background: #2d2d2d;
-                border-radius: 7px;
-                flex-shrink: 0;
-                transition: background 0.2s ease;
-            }
-            .accordion-header:hover { background: #333333; }
-            .accordion-header:active { cursor: grabbing; }
+    this.element = document.createElement('div');
+    this.element.className = 'gio-acc-item';
+    this.element._gioAcordion = this;
 
-            .accordion-title {
-                color: #e0e0e0;
-                font-size: 13px;
-                font-weight: 500;
-                pointer-events: none;
-            }
+    this.header = document.createElement('div');
+    this.header.className = 'gio-acc-header';
 
-            .accordion-chevron {
-                width: 15px;
-                height: 15px;
-                stroke: #a0a0a0;
-                stroke-width: 2;
-                stroke-linecap: round;
-                stroke-linejoin: round;
-                fill: none;
-                transition: transform 0.3s ease, stroke 0.2s ease;
-                pointer-events: none;
-            }
-            .accordion-item.open > .accordion-header > .accordion-chevron {
-                transform: rotate(180deg);
-                stroke: #2160c7;
-            }
+    this.titleSpan = document.createElement('span');
+    this.titleSpan.className = 'gio-acc-title';
+    this.titleSpan.textContent = title;
 
-            /* VISIBILIDAD DEL CONTENIDO */
-            .accordion-content {
-                display: none;
-                background: #1e1e1e;
-                border-bottom-left-radius: 8px;
-                border-bottom-right-radius: 8px;
-                max-height: 70vh;
-                overflow-y: auto;
-                overflow-x: hidden;
-            }
-            
-            /* CLASE QUE ABRE EL CONTENIDO */
-            .accordion-item.open > .accordion-content {
-                display: block !important;
-            }
+    this.chevron = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    this.chevron.setAttribute('viewBox', '0 0 24 24');
+    this.chevron.setAttribute('class', 'gio-acc-chevron');
+    this.chevron.innerHTML = '<polyline points="6 9 12 15 18 9"></polyline>';
 
-            .accordion-body {
-                padding: 12px;
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-                gap: 10px;
-            }
+    this.header.appendChild(this.titleSpan);
+    this.header.appendChild(this.chevron);
 
-            .accordion-body > .accordion-item {
-                grid-column: 1 / -1;
-                width: 100% !important;
-            }
+    this.content = document.createElement('div');
+    this.content.className = 'gio-acc-content';
 
-            /* TABLA RESPONSIVA */
-            .table-responsive-wrapper {
-                grid-column: 1 / -1;
-                width: 100%;
-                overflow-x: auto;
-                border: 1px solid #333;
-                border-radius: 6px;
-                background: #1a1a1a;
-            }
+    this.body = document.createElement('div');
+    this.body.className = 'gio-acc-body';
 
-            .custom-table {
-                width: 100%;
-                min-width: 650px;
-                border-collapse: collapse;
-                font-size: 12px;
-                text-align: left;
-            }
+    this.content.appendChild(this.body);
+    this.element.appendChild(this.header);
+    this.element.appendChild(this.content);
 
-            .custom-table thead th {
-                position: sticky;
-                top: 0;
-                background: #252525;
-                color: #bbb;
-                padding: 10px 12px;
-                font-weight: 600;
-                border-bottom: 2px solid #3a3a3a;
-                white-space: nowrap;
-                z-index: 2;
-            }
+    this._setupResizeObserver();
+    this._initMagneticDrag();
 
-            .custom-table tbody td {
-                padding: 9px 12px;
-                border-bottom: 1px solid #282828;
-                color: #ccc;
-                white-space: nowrap;
-            }
+    if (parentElement) this.adaptToParent(parentElement);
+  }
 
-            .custom-table tbody tr:hover { background: #222; }
+  _setupResizeObserver() {
+    this._ro = new ResizeObserver(() => {
+      if (this.isOpen) this._updateHeight(true);
+    });
+    this._ro.observe(this.body);
+  }
 
-            .badge {
-                padding: 3px 8px;
-                border-radius: 12px;
-                font-size: 11px;
-                font-weight: 500;
-            }
-            .badge-success { background: rgba(39, 174, 96, 0.2); color: #2ecc71; border: 1px solid rgba(39, 174, 96, 0.4); }
-            .badge-warning { background: rgba(243, 156, 18, 0.2); color: #f1c40f; border: 1px solid rgba(243, 156, 18, 0.4); }
-            .badge-danger  { background: rgba(231, 76, 60, 0.2);  color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.4); }
+  _updateHeight(open) {
+    if (!open) {
+      this.content.style.overflow = 'hidden';
+      this.content.style.maxHeight = '0px';
+      return;
+    }
+    const scrollH = this.body.scrollHeight;
+    if (scrollH > this.maxHeight) {
+      this.content.style.maxHeight = `${this.maxHeight}px`;
+      this.content.style.overflowY = 'auto';
+    } else {
+      this.content.style.maxHeight = `${scrollH + 30}px`;
+      this.content.style.overflow = 'visible'; // Permite flotar menús y tooltips
+    }
+  }
 
-            .table-responsive-wrapper::-webkit-scrollbar,
-            .accordion-content::-webkit-scrollbar {
-                width: 6px;
-                height: 6px;
-            }
-            .table-responsive-wrapper::-webkit-scrollbar-thumb,
-            .accordion-content::-webkit-scrollbar-thumb {
-                background: #444;
-                border-radius: 3px;
-            }
-        `;
-        document.head.appendChild(style);
+  adaptToParent(container, insertBefore = null) {
+    if (!container || !(container instanceof HTMLElement)) container = document.body;
+    this.element.classList.remove('is-dragging');
+    this.element.style.width = typeof this.widthPercent === 'number' ? `${this.widthPercent}%` : this.widthPercent;
+    this.element.style.position = '';
+    this.element.style.left = '';
+    this.element.style.top = '';
+
+    if (insertBefore && insertBefore.parentNode === container) {
+      container.insertBefore(this.element, insertBefore);
+    } else {
+      container.appendChild(this.element);
+    }
+  }
+
+  toggle() { this.isOpen ? this.close() : this.open(); }
+  open() {
+    this.isOpen = true;
+    this.element.classList.add('open');
+    this._updateHeight(true);
+    return this;
+  }
+  close() {
+    this.isOpen = false;
+    this.element.classList.remove('open');
+    this._updateHeight(false);
+    return this;
+  }
+
+  _initMagneticDrag() {
+    let startX = 0, startY = 0, initLeft = 0, initTop = 0;
+    let isDragging = false, hasMoved = false;
+    const threshold = 16; // Snap magnético en px
+
+    // Placeholder reactivo neón azul
+    let placeholder = document.getElementById('gio-snap-placeholder');
+    if (!placeholder) {
+      placeholder = document.createElement('div');
+      placeholder.id = 'gio-snap-placeholder';
+      placeholder.style.cssText = 'border:2px dashed #4daafc; border-radius:8px; background:rgba(33, 96, 199, 0.15); margin-bottom:12px; display:none; pointer-events:none; width:100%; box-sizing:border-box; transition:height 0.15s;';
+      document.body.appendChild(placeholder);
     }
 
-    constructor(text, parentElement = document.body, widthPercent = 90) {
-        GiovanniToggleAcordion._injectCSS();
+    // Guías láser
+    let guideV = document.getElementById('gio-snap-v') || (() => {
+      const g = document.createElement('div'); g.id = 'gio-snap-v';
+      g.style.cssText = 'position:fixed; top:0; bottom:0; width:1px; background:#4daafc; box-shadow:0 0 8px #4daafc; z-index:9999999; display:none; pointer-events:none;';
+      document.body.appendChild(g); return g;
+    })();
 
-        this.isOpen = false;
-        this.isDragging = false;
-        this.widthPercent = widthPercent;
+    let guideH = document.getElementById('gio-snap-h') || (() => {
+      const g = document.createElement('div'); g.id = 'gio-snap-h';
+      g.style.cssText = 'position:fixed; left:0; right:0; height:1px; background:#4daafc; box-shadow:0 0 8px #4daafc; z-index:9999999; display:none; pointer-events:none;';
+      document.body.appendChild(g); return g;
+    })();
 
-        this.element = document.createElement('div');
-        this.element.className = 'accordion-item anclado';
+    const onPointerMove = (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
 
-        this.header = document.createElement('div');
-        this.header.className = 'accordion-header';
-
-        this.titleSpan = document.createElement('span');
-        this.titleSpan.className = 'accordion-title';
-        this.titleSpan.textContent = text;
-
-        this.svgNS = 'http://www.w3.org/2000/svg';
-        this.svg = document.createElementNS(this.svgNS, 'svg');
-        this.svg.setAttribute('viewBox', '0 0 24 24');
-        this.svg.classList.add('accordion-chevron');
-
-        this.polyline = document.createElementNS(this.svgNS, 'polyline');
-        this.polyline.setAttribute('points', '6 9 12 15 18 9');
-        this.svg.appendChild(this.polyline);
-
-        this.header.appendChild(this.titleSpan);
-        this.header.appendChild(this.svg);
-
-        this.content = document.createElement('div');
-        this.content.className = 'accordion-content';
-
-        this.body = document.createElement('div');
-        this.body.className = 'accordion-body';
-
-        this.content.appendChild(this.body);
-        this.element.appendChild(this.header);
-        this.element.appendChild(this.content);
-
-        this._setupEvents();
-        this.adaptToParent(parentElement);
-    }
-
-    adaptToParent(container, insertBeforeElement = null) {
-        // Fallback defensivo si el contenedor es nulo o no es un nodo HTML válido
-        if (!container || !(container instanceof HTMLElement)) {
-            container = document.body;
+      if (!hasMoved && Math.hypot(dx, dy) > 6) {
+        hasMoved = true;
+        const rect = this.element.getBoundingClientRect();
+        placeholder.style.height = `${rect.height}px`;
+        placeholder.style.display = 'block';
+        if (this.element.parentNode) {
+          this.element.parentNode.insertBefore(placeholder, this.element.nextSibling);
         }
 
-        this.parentContainer = container;
-        this.element.classList.remove('is-dragging');
-        this.element.classList.add('anclado');
+        document.body.appendChild(this.element);
+        this.element.classList.add('is-dragging');
+        this.element.style.width = `${rect.width}px`;
+        initLeft = rect.left;
+        initTop = rect.top;
+      }
 
-        this.element.style.width = `${this.widthPercent}%`;
-        this.element.style.left = '';
-        this.element.style.top = '';
+      if (!hasMoved) return;
 
-        if (insertBeforeElement && insertBeforeElement.parentNode === container) {
-            container.insertBefore(this.element, insertBeforeElement);
+      let targetX = initLeft + dx;
+      let targetY = initTop + dy;
+
+      this.element.style.pointerEvents = 'none';
+      const hits = document.elementsFromPoint(e.clientX, e.clientY);
+      this.element.style.pointerEvents = 'auto';
+
+      const dropTarget = hits.find(el => el !== this.element && el !== placeholder && (
+        el.classList.contains('gio-acc-item') ||
+        el.classList.contains('app-workspace') ||
+        el.classList.contains('gio-acc-body')
+      ));
+
+      if (dropTarget) {
+        guideV.style.display = 'none';
+        guideH.style.display = 'none';
+        const r = dropTarget.getBoundingClientRect();
+        if (dropTarget.classList.contains('gio-acc-item')) {
+          dropTarget.parentNode?.insertBefore(placeholder, e.clientY < r.top + r.height / 2 ? dropTarget : dropTarget.nextSibling);
         } else {
-            container.appendChild(this.element);
+          dropTarget.appendChild(placeholder);
         }
+      } else {
+        // Snap magnético a bordes
+        const w = this.element.offsetWidth;
+        const h = this.element.offsetHeight;
+        let snapX = null, snapY = null;
+
+        if (Math.abs(targetX) < threshold) { targetX = 0; snapX = 0; }
+        if (Math.abs(targetY) < threshold) { targetY = 0; snapY = 0; }
+        if (Math.abs(targetX + w - window.innerWidth) < threshold) { targetX = window.innerWidth - w; snapX = window.innerWidth; }
+        if (Math.abs(targetY + h - window.innerHeight) < threshold) { targetY = window.innerHeight - h; snapY = window.innerHeight; }
+
+        guideV.style.display = snapX !== null ? 'block' : 'none';
+        if (snapX !== null) guideV.style.left = `${snapX}px`;
+        guideH.style.display = snapY !== null ? 'block' : 'none';
+        if (snapY !== null) guideH.style.top = `${snapY}px`;
+      }
+
+      this.element.style.left = `${targetX}px`;
+      this.element.style.top = `${targetY}px`;
+    };
+
+    const onPointerUp = () => {
+      if (!isDragging) return;
+      isDragging = false;
+      guideV.style.display = 'none';
+      guideH.style.display = 'none';
+
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', onPointerUp);
+
+      if (!hasMoved) {
+        this.toggle();
+        return;
+      }
+
+      if (placeholder.parentNode) {
+        placeholder.parentNode.insertBefore(this.element, placeholder);
+        placeholder.style.display = 'none';
+        placeholder.remove();
+      }
+
+      this.element.classList.remove('is-dragging');
+      this.element.style.position = '';
+      this.element.style.left = '';
+      this.element.style.top = '';
+      this.element.style.width = typeof this.widthPercent === 'number' ? `${this.widthPercent}%` : this.widthPercent;
+    };
+
+    this.header.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0 || e.target.closest('button, input')) return;
+      isDragging = true;
+      hasMoved = false;
+      startX = e.clientX;
+      startY = e.clientY;
+      window.addEventListener('pointermove', onPointerMove);
+      window.addEventListener('pointerup', onPointerUp);
+    });
+  }
+
+  append(child) { return this.addChild(child); }
+  addChild(child) {
+    if (!child) return this;
+    const node = child.element || (child instanceof HTMLElement ? child : null);
+    if (node) {
+      this.body.appendChild(node);
+      if (this.isOpen) this._updateHeight(true);
     }
-
-    toggle() {
-        this.isOpen = !this.isOpen;
-        this.element.classList.toggle('open', this.isOpen);
-    }
-
-    open() {
-        this.isOpen = true;
-        this.element.classList.add('open');
-        return this;
-    }
-
-    close() {
-        this.isOpen = false;
-        this.element.classList.remove('open');
-        return this;
-    }
-
-    /* CONTROL UNIFICADO DE CLICK Y DRAG DESACOPLADO */
-    _setupEvents() {
-        let startX = 0, startY = 0;
-        let moveDistance = 0;
-        let grabOffsetX = 0, grabOffsetY = 0;
-
-        this.header.addEventListener('pointerdown', (e) => {
-            if (e.button !== 0) return; // Solo clic izquierdo
-            
-            this.isDragging = true;
-            moveDistance = 0;
-            startX = e.clientX;
-            startY = e.clientY;
-
-            const rect = this.element.getBoundingClientRect();
-            grabOffsetX = e.clientX - rect.left;
-            grabOffsetY = e.clientY - rect.top;
-
-            this.header.setPointerCapture(e.pointerId);
-        });
-
-        this.header.addEventListener('pointermove', (e) => {
-            if (!this.isDragging) return;
-
-            const dx = e.clientX - startX;
-            const dy = e.clientY - startY;
-            moveDistance += Math.abs(dx) + Math.abs(dy);
-
-            // Inicia el desprendimiento visual si se mueve más de 6px
-            if (moveDistance > 6) {
-                const rect = this.element.getBoundingClientRect();
-                if (!this.element.classList.contains('is-dragging')) {
-                    this.element.style.width = `${rect.width}px`;
-                    this.element.classList.remove('anclado');
-                    this.element.classList.add('is-dragging');
-                }
-
-                this.element.style.left = `${e.clientX - grabOffsetX}px`;
-                this.element.style.top = `${e.clientY - grabOffsetY}px`;
-            }
-        });
-
-        this.header.addEventListener('pointerup', (e) => {
-            if (!this.isDragging) return;
-            this.isDragging = false;
-            
-            try {
-                this.header.releasePointerCapture(e.pointerId);
-            } catch (err) {}
-
-            // CASO 1: CLIC SIMPLE (Sin arrastre) -> Abre / Cierra
-            if (moveDistance <= 6) {
-                this.toggle();
-                return;
-            }
-
-            // CASO 2: ARRASTRE REAL -> DETECCIÓN UNIVERSAL DE CUALQUIER ELEMENTO
-            const elements = document.elementsFromPoint(e.clientX, e.clientY);
-            let target = null;
-            let insertBefore = null;
-
-            // Etiquetas no aptas para contener bloques directos
-            const voidTags = new Set(['INPUT', 'IMG', 'CANVAS', 'VIDEO', 'AUDIO', 'BR', 'HR', 'IFRAME']);
-            const ignoredTags = new Set(['HTML', 'HEAD', 'SCRIPT', 'STYLE', 'META', 'TITLE']);
-
-            for (let el of elements) {
-                // No soltar dentro de sí mismo
-                if (!el || el === this.element || this.element.contains(el)) continue;
-
-                // Si se suelta en un SVG interno, subir al elemento HTML padre
-                if (el instanceof SVGElement) {
-                    el = el.closest(':not(svg):not(path)');
-                    if (!el) continue;
-                }
-
-                const tagName = el.tagName ? el.tagName.toUpperCase() : '';
-                if (ignoredTags.has(tagName)) continue;
-
-                // Si se suelta sobre un elemento vacío (ej: input, img), insertar junto a él en su padre
-                if (voidTags.has(tagName)) {
-                    target = el.parentElement;
-                    insertBefore = el.nextSibling;
-                    break;
-                }
-
-                // Si se suelta sobre el header de otro acordeón, insertarlo antes como hermano
-                if (el.classList.contains('accordion-header')) {
-                    const item = el.closest('.accordion-item');
-                    if (item && item !== this.element) {
-                        target = item.parentElement;
-                        insertBefore = item;
-                        break;
-                    }
-                }
-
-                // Si cae en el cuerpo de otro acordeón, anidar adentro
-                const bodyZone = el.closest('.accordion-body');
-                if (bodyZone && !this.element.contains(bodyZone)) {
-                    target = bodyZone;
-                    break;
-                }
-
-                // CUALQUIER elemento del DOM es válido (div, section, article, p, span, label, main, li, body, etc.)
-                if (el.nodeType === Node.ELEMENT_NODE) {
-                    target = el;
-                    break;
-                }
-            }
-
-            // Si no detectó nada o cayó en la raíz html, asigna body
-            if (!target || target === document.documentElement) {
-                target = document.body;
-            }
-
-            this.adaptToParent(target, insertBefore);
-        });
-    }
-
-    addChild(child, fullWidth = false) {
-        if (!child) return this;
-        let node;
-
-        if (child instanceof HTMLElement) {
-            node = child;
-        } else if (child.element instanceof HTMLElement) {
-            child.adaptToParent(this.body);
-            return this;
-        } else if (typeof child === 'string') {
-            const temp = document.createElement('div');
-            temp.innerHTML = child;
-            node = temp.firstElementChild || temp;
-        }
-
-        if (fullWidth && node) {
-            node.style.gridColumn = '1 / -1';
-        }
-
-        this.body.appendChild(node);
-        return this;
-    }
+    return this;
+  }
 }
-// --- Iconos SVG ---
+
+ 
 const GiovanniIconDB = {
   pencil: '<path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>',
   square: '<path d="M3 3h18v18H3V3zm2 2v14h14V5H5z"/>',
@@ -435,1044 +375,882 @@ styleSheet.innerText = injectStyles;
 document.head.appendChild(styleSheet);
 
  
-
- 
- 
- 
 class Giovanni {
-    constructor() {
-        this.theme = {
-            backg0: '#262626',
-            backg1: '#2d2d2d',
-            backg2: '#333333',
-            backg3: '#242424',
-            borde: '#4d4d4dc0',
-            slidernofill: '#4a4a4a',
-            sliderfill: '#b9b9b9',
-            iconoTexto: '#878787',
-            texto: '#cccccc',
-            textoActivo: '#e3e3e3',
-            textodisable: '#60605f',
-            textoActvioBlue: '#2160c7',
-            textoledBrillo: '#2160c7'
-        };
+    static _cssInjected = false;
+    static _injectGlobalStyles() {
+        if (Giovanni._cssInjected) return;
+        Giovanni._cssInjected = true;
+        const style = document.createElement('style');
+        style.id = 'gio-core-engine-styles';
+        style.textContent = `
+            :root {
+                --backg0: #2d2d2d;
+                --backg1: #2d2d2d;
+                --backg2: #2d2d2d;
+                --backg3: #2d2d2d;
+                --backg: #303030;
+                --borde: #4d4d4d;
+                 
+                --slidernofill: #4a4a4a;
+                --sliderfill: #363636;
+     
+                --texto: #ccccccde;
+                --textoActivo: #e3e3e3;
+                --textodisable: #60605f;
+                --textoActvioBlue: #4daafc;
+                --textoledBrillo: #4daafc;
+                --danger: #f85149;
+                --radius: 6px;
+                --scrollbar-size: 5px;
+            }
 
-        this.styles = {
-            container: "display: flex; flex-direction: column; gap: 20px; background: #333333; padding: 3px; border-radius: 10px; width: 290px; font-family: sans-serif;",
-            btnBase: `height: 40px; border-radius: 10px; border: 1px solid ${this.theme.borde}; background: ${this.theme.backg0}; color: ${this.theme.texto}; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s; box-sizing: border-box; outline: none;`,
-            btnCircle: "width: 40px;",
-            btnLong: "width: 90px;",
-            labelBase: "font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #888; margin-bottom: 6px; font-weight: 600;"
-        };
-        this.element = document.createElement('div');
-        this.element.style.cssText = this.styles.container;
+            .gio-container *::-webkit-scrollbar,
+            .gio-custom-scroll::-webkit-scrollbar {
+                width: var(--scrollbar-size);
+                height: var(--scrollbar-size);
+            }
+            .gio-container *::-webkit-scrollbar-track,
+            .gio-custom-scroll::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            .gio-container *::-webkit-scrollbar-thumb,
+            .gio-custom-scroll::-webkit-scrollbar-thumb {
+                background: var(--borde);
+                border-radius: 10px;
+            }
+            .gio-container *::-webkit-scrollbar-thumb:hover,
+            .gio-custom-scroll::-webkit-scrollbar-thumb:hover {
+                background: var(--textoledBrillo);
+            }
+            .gio-container * {
+                scrollbar-width: thin;
+                scrollbar-color: var(--borde) transparent;
+            }
+
+            .gio-container {
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                color: var(--texto);
+            }
+
+            /* CAMPO ARRASTRABLE */
+            .gio-field {
+                width: 100%;
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                background: var(--backg1);
+                border: 1px solid var(--borde);
+                border-radius: var(--radius);
+                padding: 8px 10px;
+                transition: border-color 0.2s, box-shadow 0.2s;
+                position: relative;
+            }
+            .gio-field:hover {
+                border-color: #5c5c5c;
+            }
+
+            /* ESTADO ARRASTRÁNDOSE (IDÉNTICO A GIOVANNI TOGGLE ACORDION) */
+            .gio-field.is-dragging {
+                position: fixed !important;
+                opacity: 0.92;
+                z-index: 999999 !important;
+                box-shadow: 0 16px 36px rgba(0,0,0,0.8), 0 0 15px rgba(33, 96, 199, 0.4) !important;
+                pointer-events: none;
+                margin: 0 !important;
+                border-color: #4daafc !important;
+                background: var(--backg1) !important;
+            }
+
+            /* ASA DE ARRASTRE */
+            .gio-field-handle {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                cursor: grab;
+                user-select: none;
+                padding-bottom: 4px;
+                border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+                margin-bottom: 4px;
+            }
+            .gio-field-handle:hover {
+                border-bottom-color: var(--textoActvioBlue);
+            }
+            .gio-field-handle:active {
+                cursor: grabbing;
+            }
+
+            .gio-field-label {
+                font-size: 10px;
+                text-transform: uppercase;
+                letter-spacing: 0.8px;
+                color: var(--textodisable);
+                font-weight: 700;
+                pointer-events: none;
+            }
+
+            .gio-grip-icon {
+                width: 12px;
+                height: 12px;
+                fill: var(--textodisable);
+                pointer-events: none;
+                transition: fill 0.2s;
+            }
+            .gio-field-handle:hover .gio-grip-icon {
+                fill: var(--textoActvioBlue);
+            }
+
+            /* EMISIÓN LED EXACTA */
+            .gio-led-exacto {
+                background: var(--textoledBrillo) !important;
+                -webkit-box-shadow: 0px 1px 57px 13px var(--textoledBrillo) !important;
+                box-shadow: 0px 1px 57px 13px var(--textoledBrillo) !important;
+            }
+
+            @keyframes gioFadeIn {
+                from { opacity: 0; transform: translateY(-4px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        `;
+        (document.head || document.documentElement).appendChild(style);
     }
 
-    _getSVG(iconName, size = 16, color = this.theme.texto) {
-        const path = GiovanniIconDB[iconName] || GiovanniIconDB['square'];
-        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${color}" style="display:block; flex-shrink:0;">${path}</svg>`;
+    constructor() {
+        Giovanni._injectGlobalStyles();
+        this.element = document.createElement('div');
+        this.element.className = 'gio-container';
+    }
+
+    /* =========================================================================
+       SISTEMA DE ARRASTRE MAGNÉTICO (IDÉNTICO A GIOVANNI TOGGLE ACORDION)
+       ========================================================================= */
+    _initMagneticDrag(fieldElement, handleElement) {
+        let startX = 0, startY = 0, initLeft = 0, initTop = 0;
+        let isDragging = false, hasMoved = false;
+        const threshold = 16; // Snap a bordes en px
+
+        // Placeholder reactivo neón azul compartido
+        let placeholder = document.getElementById('gio-snap-placeholder');
+        if (!placeholder) {
+            placeholder = document.createElement('div');
+            placeholder.id = 'gio-snap-placeholder';
+            placeholder.style.cssText = 'border:2px dashed #4daafc; border-radius:8px; background:rgba(33, 96, 199, 0.15); margin-bottom:12px; display:none; pointer-events:none; width:100%; box-sizing:border-box; transition:height 0.15s;';
+            document.body.appendChild(placeholder);
+        }
+
+        // Guías láser compartidas
+        let guideV = document.getElementById('gio-snap-v') || (() => {
+            const g = document.createElement('div'); g.id = 'gio-snap-v';
+            g.style.cssText = 'position:fixed; top:0; bottom:0; width:1px; background:#4daafc; box-shadow:0 0 8px #4daafc; z-index:9999999; display:none; pointer-events:none;';
+            document.body.appendChild(g); return g;
+        })();
+
+        let guideH = document.getElementById('gio-snap-h') || (() => {
+            const g = document.createElement('div'); g.id = 'gio-snap-h';
+            g.style.cssText = 'position:fixed; left:0; right:0; height:1px; background:#4daafc; box-shadow:0 0 8px #4daafc; z-index:9999999; display:none; pointer-events:none;';
+            document.body.appendChild(g); return g;
+        })();
+
+        const onPointerMove = (e) => {
+            if (!isDragging) return;
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+
+            if (!hasMoved && Math.hypot(dx, dy) > 6) {
+                hasMoved = true;
+                const rect = fieldElement.getBoundingClientRect();
+                placeholder.style.height = `${rect.height}px`;
+                placeholder.style.display = 'block';
+
+                if (fieldElement.parentNode) {
+                    fieldElement.parentNode.insertBefore(placeholder, fieldElement.nextSibling);
+                }
+
+                document.body.appendChild(fieldElement);
+                fieldElement.classList.add('is-dragging');
+                fieldElement.style.width = `${rect.width}px`;
+                initLeft = rect.left;
+                initTop = rect.top;
+            }
+
+            if (!hasMoved) return;
+
+            let targetX = initLeft + dx;
+            let targetY = initTop + dy;
+
+            fieldElement.style.pointerEvents = 'none';
+            const hits = document.elementsFromPoint(e.clientX, e.clientY);
+            fieldElement.style.pointerEvents = 'auto';
+
+            // Detecta destinos: Acordeón, body del acordeón, otro campo, workspace o contenedor
+            const dropTarget = hits.find(el => el !== fieldElement && el !== placeholder && (
+                el.classList.contains('gio-acc-item') ||
+                el.classList.contains('gio-acc-body') ||
+                el.classList.contains('app-workspace') ||
+                el.classList.contains('gio-container') ||
+                el.classList.contains('gio-field')
+            ));
+
+            if (dropTarget) {
+                guideV.style.display = 'none';
+                guideH.style.display = 'none';
+                placeholder.style.display = 'block';
+
+                const r = dropTarget.getBoundingClientRect();
+                if (dropTarget.classList.contains('gio-field') || dropTarget.classList.contains('gio-acc-item')) {
+                    dropTarget.parentNode?.insertBefore(placeholder, e.clientY < r.top + r.height / 2 ? dropTarget : dropTarget.nextSibling);
+                } else if (dropTarget.classList.contains('gio-acc-body') || dropTarget.classList.contains('gio-container') || dropTarget.classList.contains('app-workspace')) {
+                    dropTarget.appendChild(placeholder);
+                }
+            } else {
+                // Snap magnético libre a bordes de pantalla
+                placeholder.style.display = 'none';
+                const w = fieldElement.offsetWidth;
+                const h = fieldElement.offsetHeight;
+                let snapX = null, snapY = null;
+
+                if (Math.abs(targetX) < threshold) { targetX = 0; snapX = 0; }
+                if (Math.abs(targetY) < threshold) { targetY = 0; snapY = 0; }
+                if (Math.abs(targetX + w - window.innerWidth) < threshold) { targetX = window.innerWidth - w; snapX = window.innerWidth; }
+                if (Math.abs(targetY + h - window.innerHeight) < threshold) { targetY = window.innerHeight - h; snapY = window.innerHeight; }
+
+                guideV.style.display = snapX !== null ? 'block' : 'none';
+                if (snapX !== null) guideV.style.left = `${snapX}px`;
+                guideH.style.display = snapY !== null ? 'block' : 'none';
+                if (snapY !== null) guideH.style.top = `${snapY}px`;
+            }
+
+            fieldElement.style.left = `${targetX}px`;
+            fieldElement.style.top = `${targetY}px`;
+        };
+
+        const onPointerUp = () => {
+            if (!isDragging) return;
+            isDragging = false;
+            guideV.style.display = 'none';
+            guideH.style.display = 'none';
+
+            window.removeEventListener('pointermove', onPointerMove);
+            window.removeEventListener('pointerup', onPointerUp);
+
+            if (!hasMoved) return;
+
+            if (placeholder.style.display !== 'none' && placeholder.parentNode) {
+                // Soltado dentro de un acordeón o contenedor
+                placeholder.parentNode.insertBefore(fieldElement, placeholder);
+                placeholder.style.display = 'none';
+                placeholder.remove();
+
+                fieldElement.classList.remove('is-dragging');
+                fieldElement.style.position = '';
+                fieldElement.style.left = '';
+                fieldElement.style.top = '';
+                fieldElement.style.width = '100%';
+            } else {
+                // Soltado en cualquier lugar libre de la página web
+                placeholder.style.display = 'none';
+                if (placeholder.parentNode) placeholder.remove();
+
+                fieldElement.classList.remove('is-dragging');
+                fieldElement.style.position = 'fixed';
+                fieldElement.style.zIndex = '999999';
+                fieldElement.style.margin = '0';
+            }
+        };
+
+        handleElement.addEventListener('pointerdown', (e) => {
+            if (e.button !== 0 || e.target.closest('button, input, select, textarea, .gio-led-exacto')) return;
+            isDragging = true;
+            hasMoved = false;
+            startX = e.clientX;
+            startY = e.clientY;
+            window.addEventListener('pointermove', onPointerMove);
+            window.addEventListener('pointerup', onPointerUp);
+        });
     }
 
     _wrapWithLabel(label, el) {
         const wrap = document.createElement('div');
-        wrap.style.cssText = "display: flex; flex-direction: column; gap: 2px; position: relative;";
-        if (label) {
-            const lbl = document.createElement('span');
-            lbl.textContent = label;
-            lbl.style.cssText = this.styles.labelBase;
-            wrap.appendChild(lbl);
-        }
+        wrap.className = 'gio-field';
+
+        const handle = document.createElement('div');
+        handle.className = 'gio-field-handle';
+
+        const lbl = document.createElement('span');
+        lbl.className = 'gio-field-label';
+        lbl.textContent = label || 'Control';
+
+        const grip = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        grip.setAttribute('viewBox', '0 0 24 24');
+        grip.setAttribute('class', 'gio-grip-icon');
+        grip.innerHTML = `
+            <circle cx="8" cy="6" r="1.8"/>
+            <circle cx="16" cy="6" r="1.8"/>
+            <circle cx="8" cy="12" r="1.8"/>
+            <circle cx="16" cy="12" r="1.8"/>
+            <circle cx="8" cy="18" r="1.8"/>
+            <circle cx="16" cy="18" r="1.8"/>
+        `;
+
+        handle.appendChild(lbl);
+        handle.appendChild(grip);
+
+        wrap.appendChild(handle);
         wrap.appendChild(el);
+
+        this._initMagneticDrag(wrap, handle);
+
         this.element.appendChild(wrap);
         return wrap;
     }
 
-    _createNumericInput(val, isFloat, onChange) {
-        const wrap = document.createElement('div');
-        wrap.style.cssText = `position: relative; display: flex; align-items: center; justify-content: space-between; height: 28px; width: 65px; border-radius: 6px; border: 1px solid ${this.theme.borde}; background: ${this.theme.backg3}; padding: 0 4px 0 8px; box-sizing: border-box; flex-shrink: 0;`;
+    /* =========================================================================
+       1. CHECKBOX CON EMISIÓN LED EXACTA (18x18px)
+       ========================================================================= */
+    createCheckbox(label = 'Habilitar Opción', checked = false, onChange = null) {
+        let isChecked = !!checked;
 
-        const input = document.createElement('input');
-        input.type = 'text'; input.value = val;
-        input.style.cssText = `background: transparent; border: none; color: ${this.theme.textoActivo}; outline: none; width: 100%; font-size: 12px; font-family: inherit; position: relative; z-index: 1;`;
-
-        const controls = document.createElement('div');
-        controls.style.cssText = "display: flex; flex-direction: column; gap: 1px; justify-content: center; position: relative; z-index: 1;";
-
-        const btnUp = document.createElement('div');
-        btnUp.innerHTML = `<svg width="8" height="5" viewBox="0 0 10 6" fill="none" stroke="${this.theme.texto}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 5 5 1 9 5"></polyline></svg>`;
-        btnUp.style.cssText = "cursor: pointer; display: flex; align-items: center; justify-content: center; height: 12px; width: 12px; border-radius: 2px; transition: background 0.1s;";
-
-        const btnDown = document.createElement('div');
-        btnDown.innerHTML = `<svg width="8" height="5" viewBox="0 0 10 6" fill="none" stroke="${this.theme.texto}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"></polyline></svg>`;
-        btnDown.style.cssText = "cursor: pointer; display: flex; align-items: center; justify-content: center; height: 12px; width: 12px; border-radius: 2px; transition: background 0.1s;";
-
-        btnUp.addEventListener('mouseenter', () => btnUp.style.background = this.theme.borde);
-        btnUp.addEventListener('mouseleave', () => btnUp.style.background = 'transparent');
-        btnDown.addEventListener('mouseenter', () => btnDown.style.background = this.theme.borde);
-        btnDown.addEventListener('mouseleave', () => btnDown.style.background = 'transparent');
-
-        const stepVal = isFloat ? 0.1 : 1;
-        const update = (direction) => {
-            let current = isFloat ? parseFloat(input.value) : parseInt(input.value, 10);
-            if (isNaN(current)) current = 0;
-            current += direction * stepVal;
-            if (isFloat) current = Math.round(current * 100) / 100;
-            input.value = current;
-            onChange(current);
-        };
-
-        btnUp.addEventListener('click', () => update(1));
-        btnDown.addEventListener('click', () => update(-1));
-
-        input.addEventListener('blur', () => {
-            let val = isFloat ? parseFloat(input.value) : parseInt(input.value, 10);
-            if (isNaN(val)) val = 0;
-            input.value = val;
-            onChange(val);
-        });
-
-        input.addEventListener('input', (e) => {
-            const parsed = isFloat ? parseFloat(e.target.value) : parseInt(e.target.value, 10);
-            if (!isNaN(parsed)) onChange(parsed);
-        });
-
-        controls.appendChild(btnUp);
-        controls.appendChild(btnDown);
-        wrap.appendChild(input);
-        wrap.appendChild(controls);
-        return wrap;
-    }
-
-    createSlider({ label = 'opacidad', min = 0, max = 100, step = 1, value = 30, onChange = null } = {}) {
         const container = document.createElement('div');
-        container.style.cssText = `background-color: ${this.theme.backg3}; border: none; border-radius: 6px; padding: 12px 16px; width: 100%; box-sizing: border-box; color: ${this.theme.texto}; user-select: none;`;
+        container.style.cssText = "display: flex; align-items: center; width: 100%; box-sizing: border-box;";
 
-        const row = document.createElement('div');
-        row.style.cssText = "display: flex; align-items: center; justify-content: space-between; gap: 12px; position: relative;";
+        const labelWrapper = document.createElement('label');
+        labelWrapper.style.cssText = "display: inline-flex; align-items: center; cursor: pointer; user-select: none; gap: 10px;";
 
-        const labelEl = document.createElement('span');
-        labelEl.textContent = label;
-        labelEl.style.cssText = `font-size: 12px; color: ${this.theme.texto}; width: 50px; flex-shrink: 0;`;
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'checkbox';
+        hiddenInput.checked = isChecked;
+        hiddenInput.style.display = 'none';
 
-        const sliderContainer = document.createElement('div');
-        sliderContainer.style.cssText = `position: relative; flex-grow: 1; height: 3px; background-color: ${this.theme.slidernofill}; border-radius: 2px; margin: 0 4px;`;
+        const box = document.createElement('span');
+        box.style.cssText = `
+            position: relative;
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            background: transparent;
+            border: 2px solid var(--textodisable);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-sizing: border-box;
+            transition: all 0.25s ease;
+        `;
 
-        const track = document.createElement('div');
-        track.style.cssText = `position: absolute; top: 0; left: 0; height: 100%; background-color: ${this.theme.sliderfill}; border-radius: 2px; pointer-events: none;`;
+        const svgIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svgIcon.setAttribute('viewBox', '0 0 20 20');
+        svgIcon.setAttribute('fill', '#ffffff');
+        svgIcon.style.cssText = `
+            width: 12px;
+            height: 12px;
+            transform: scale(0);
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: block;
+        `;
+        svgIcon.innerHTML = `<path clip-rule="evenodd" d="M16.707 5.293a1 1 0 00-1.414 0L8 12.586 4.707 9.293a1 1 0 10-1.414 1.414l4 4a1 1 0 001.414 0l8-8a1 1 0 000-1.414z" fill-rule="evenodd"></path>`;
+        box.appendChild(svgIcon);
 
-        const thumb = document.createElement('div');
-        thumb.style.cssText = `position: absolute; top: 50%; transform: translate(-50%, -50%); width: 14px; height: 14px; border: 2px solid ${this.theme.texto}; border-radius: 50%; pointer-events: none; box-sizing: border-box; box-shadow: 0 0 0 2px ${this.theme.backg0}; transition: transform 0.1s, border-color 0.1s;`;
+        const textSpan = document.createElement('span');
+        textSpan.textContent = label;
+        textSpan.style.cssText = "font-size: 13px; color: var(--texto); transition: color 0.2s ease;";
 
-        const inputRange = document.createElement('input');
-        inputRange.type = 'range'; inputRange.min = min; inputRange.max = max; inputRange.step = step; inputRange.value = value;
-        inputRange.style.cssText = "position: absolute; top: 50%; left: 0; transform: translateY(-50%); width: 100%; height: 24px; opacity: 0; cursor: pointer; margin: 0; z-index: 2;";
-
-        sliderContainer.appendChild(track);
-        sliderContainer.appendChild(thumb);
-        sliderContainer.appendChild(inputRange);
-
-        const inputNum = this._createNumericInput(value, step % 1 !== 0, (val) => {
-            inputRange.value = val;
-            updateUI(val);
-            if (onChange) onChange(val);
+        labelWrapper.addEventListener('mouseenter', () => {
+            if (!isChecked) {
+                box.style.borderColor = 'var(--textoActvioBlue)';
+                textSpan.style.color = 'var(--textoActivo)';
+            }
+        });
+        labelWrapper.addEventListener('mouseleave', () => {
+            if (!isChecked) {
+                box.style.borderColor = 'var(--textodisable)';
+                textSpan.style.color = 'var(--texto)';
+            }
         });
 
-        var labelNum = document.createElement('label');
-        labelNum.innerHTML = "123";
-
-        const toggleIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        toggleIcon.setAttribute("viewBox", "0 0 24 24");
-        toggleIcon.setAttribute("width", "20");
-        toggleIcon.setAttribute("height", "20");
-        toggleIcon.setAttribute("fill", `${this.theme.iconoTexto}`);
-        toggleIcon.innerHTML = '<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>';
-        toggleIcon.style.cssText = `cursor:pointer; flex-shrink:0; margin-left:4px; display:inline-block; vertical-align:middle; transform-origin:center; transition:transform 200ms cubic-bezier(0.4,0,0.2,1);`;
-
-        let isOpen = false;
-        toggleIcon.addEventListener('click', () => {
-            isOpen = !isOpen;
-            toggleIcon.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
-        });
-
-        const configPanel = document.createElement('div');
-        configPanel.style.cssText = "display: none; flex-direction: column; gap: 8px; margin-top: 12px; padding-top: 10px; border-top: 1px solid #333333;";
-
-        const createConfigRow = (lblText, inputEl) => {
-            const wrap = document.createElement('div');
-            wrap.style.cssText = "display: flex; justify-content: space-between; align-items: center; font-size: 11px;";
-            const l = document.createElement('span'); l.textContent = lblText; l.style.color = '#777777';
-            wrap.appendChild(l); wrap.appendChild(inputEl); return wrap;
+        const updateState = (state) => {
+            isChecked = state;
+            hiddenInput.checked = isChecked;
+            if (isChecked) {
+                box.style.borderColor = 'var(--textoledBrillo)';
+                box.classList.add('gio-led-exacto');
+                svgIcon.style.transform = 'scale(1)';
+                textSpan.style.color = 'var(--textoActivo)';
+            } else {
+                box.style.borderColor = 'var(--textodisable)';
+                box.style.background = 'transparent';
+                box.classList.remove('gio-led-exacto');
+                svgIcon.style.transform = 'scale(0)';
+                textSpan.style.color = 'var(--texto)';
+            }
         };
 
-        const minInput = this._createNumericInput(min, false, (val) => {
-            inputRange.min = val;
-            let cur = parseFloat(inputRange.value); if (cur < val) cur = val;
-            inputRange.value = cur; updateUI(cur);
+        updateState(isChecked);
+
+        labelWrapper.addEventListener('click', (e) => {
+            e.preventDefault();
+            updateState(!isChecked);
+            if (onChange) onChange(isChecked);
         });
 
-        const maxInput = this._createNumericInput(max, false, (val) => {
-            inputRange.max = val;
-            let cur = parseFloat(inputRange.value); if (cur > val) cur = val;
-            inputRange.value = cur; updateUI(cur);
-        });
+        labelWrapper.appendChild(hiddenInput);
+        labelWrapper.appendChild(box);
+        labelWrapper.appendChild(textSpan);
+        container.appendChild(labelWrapper);
 
-        const stepInput = this._createNumericInput(step, step % 1 !== 0, (val) => {
-            inputRange.step = val;
-        });
-
-        configPanel.appendChild(createConfigRow('Mín', minInput));
-        configPanel.appendChild(createConfigRow('Máx', maxInput));
-        configPanel.appendChild(createConfigRow('Step', stepInput));
-        configPanel.appendChild(createConfigRow('value', inputNum));
-
-        row.appendChild(labelEl);
-        row.appendChild(sliderContainer);
-        row.appendChild(toggleIcon);
-        row.appendChild(labelNum);
-
-        toggleIcon.style.position = 'relative';
-        toggleIcon.style.right = '-5px';
-        toggleIcon.style.top = '8px';
-        labelNum.style.zIndex = '3';
-        labelNum.style.position = 'absolute';
-        labelNum.style.right = '-12px';
-        labelNum.style.top = '-10px';
-        labelNum.style.zIndex = '3';
-        labelNum.style.fontSize = "12px";
-        labelNum.style.cursor = 'pointer';
-
-        container.appendChild(row);
-        container.appendChild(configPanel);
-
-        const updateUI = (val) => {
-            labelNum.innerHTML = val;
-            const pct = ((val - min) / (max - min)) * 100;
-            track.style.width = `${pct}%`; thumb.style.left = `${pct}%`;
-        };
-
-        inputRange.addEventListener('input', (e) => {
-            const val = parseFloat(e.target.value);
-            inputNum.querySelector('input').value = val;
-            updateUI(val);
-            if (onChange) onChange(val);
-        });
-
-        inputRange.addEventListener('mouseenter', () => { thumb.style.borderColor = '#fff'; thumb.style.transform = 'translate(-50%, -50%) scale(1.15)'; });
-        inputRange.addEventListener('mouseleave', () => { thumb.style.borderColor = this.theme.texto; thumb.style.transform = 'translate(-50%, -50%) scale(1)'; });
-
-        toggleIcon.addEventListener('click', () => {
-            const isHidden = configPanel.style.display === 'none';
-            configPanel.style.display = isHidden ? 'flex' : 'none';
-            toggleIcon.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
-        });
-
-        updateUI(value);
-        this._wrapWithLabel('Slider con Input', container);
-        return container;
+        return this._wrapWithLabel('Checkbox', container);
     }
 
-    createSliderUI({ label = 'opacidad', min = 0, max = 100, step = 1, value = 30, onChange = null } = {}) {
-        const body = document.createElement('div');
-        body.style.cssText = `background-color:${this.theme.backg0}; border:1px solid ${this.theme.borde}; border-radius:6px; padding:12px 16px; width:100%; box-sizing:border-box; color:${this.theme.texto}; user-select:none; font-family:inherit;`;
+    /* =========================================================================
+       2. RADIO BUTTONS CON EMISIÓN LED EXACTA (18x18px)
+       ========================================================================= */
+    createRadio(options = [], name = 'gio_radio', selectedValue = null, onChange = null) {
+        let currentVal = selectedValue !== null ? selectedValue : options[0];
 
-        const row = document.createElement('div');
-        row.style.cssText = "display:flex; align-items:center; justify-content:space-between; gap:12px;";
+        const container = document.createElement('div');
+        container.style.cssText = "display: flex; flex-direction: column; gap: 8px; width: 100%; box-sizing: border-box;";
 
-        const labelEl = document.createElement('span');
-        labelEl.textContent = label;
-        labelEl.style.cssText = `font-size:13px; color:${this.theme.iconoTexto}; width:60px; flex-shrink:0;`;
+        const radioElements = [];
 
-        const sliderContainer = document.createElement('div');
-        sliderContainer.style.cssText = `position:relative; flex-grow:1; height:2px; background-color:${this.theme.slidernofill}; border-radius:2px; margin:0 8px;`;
+        options.forEach(opt => {
+            const labelText = typeof opt === 'object' ? opt.label : opt;
+            const val = typeof opt === 'object' ? opt.value : opt;
 
-        const track = document.createElement('div');
-        track.style.cssText = `position:absolute; top:0; left:0; height:100%; background-color:${this.theme.sliderfill}; border-radius:2px; pointer-events:none;`;
+            const item = document.createElement('div');
+            item.style.cssText = "display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; width: fit-content;";
 
-        const thumb = document.createElement('div');
-        thumb.style.cssText = `position:absolute; top:50%; transform:translate(-50%,-50%); width:14px; height:14px; background-color:${this.theme.backg0}; border:2px solid ${this.theme.sliderfill}; border-radius:50%; pointer-events:none; box-sizing:border-box; box-shadow:0 0 0 2px ${this.theme.backg0}; transition:transform .1s, border-color .1s;`;
+            const circle = document.createElement('div');
+            circle.style.cssText = `
+                width: 18px;
+                height: 18px;
+                border-radius: 50%;
+                background: transparent;
+                border: 2px solid var(--textodisable);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                transition: border-color 0.2s;
+            `;
 
-        const input = document.createElement('input');
-        input.type = 'range'; input.min = min; input.max = max; input.step = step; input.value = value;
-        input.style.cssText = `position:absolute; top:50%; left:0; transform:translateY(-50%); width:100%; height:24px; opacity:0; cursor:pointer; margin:0; z-index:2;`;
+            const dot = document.createElement('div');
+            dot.style.cssText = `
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                transform: scale(0);
+                transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            `;
+            circle.appendChild(dot);
 
-        sliderContainer.append(track, thumb, input);
+            const txt = document.createElement('span');
+            txt.textContent = labelText;
+            txt.style.cssText = "font-size: 13px; color: var(--texto);";
 
-        const valueEl = document.createElement('span');
-        valueEl.textContent = value;
-        valueEl.style.cssText = `font-size:13px; color:${this.theme.iconoTexto}; width:30px; text-align:right; flex-shrink:0;`;
+            item.appendChild(circle);
+            item.appendChild(txt);
+            container.appendChild(item);
 
-        const toggleIcon = document.createElement('div');
-        toggleIcon.style.cssText = `width:0; height:0; border-left:4px solid transparent; border-right:4px solid transparent; border-top:5px solid ${this.theme.iconoTexto}; cursor:pointer; flex-shrink:0; transition:transform .2s; padding:4px;`;
+            radioElements.push({ val, circle, dot, txt });
 
-        const configPanel = document.createElement('div');
-        configPanel.style.cssText = `display:none; flex-direction:column; gap:8px; margin-top:12px; padding-top:10px; border-top:1px solid ${this.theme.borde};`;
+            item.addEventListener('click', () => {
+                currentVal = val;
+                refreshUI();
+                if (onChange) onChange(currentVal);
+            });
+        });
 
-        const makeRow = (txt, inputEl) => {
-            const w = document.createElement('div');
-            w.style.cssText = "display:flex; justify-content:space-between; align-items:center; font-size:12px;";
-            const l = document.createElement('span');
-            l.textContent = txt;
-            l.style.color = this.theme.textodisable;
-            inputEl.style.cssText = `background-color:${this.theme.backg2}; border:1px solid ${this.theme.borde}; color:${this.theme.textoActivo}; padding:4px 8px; border-radius:4px; width:60px; font-size:12px; outline:none;`;
-            w.append(l, inputEl);
-            return w;
+        const refreshUI = () => {
+            radioElements.forEach(r => {
+                const isActive = r.val === currentVal;
+                if (isActive) {
+                    r.circle.style.borderColor = "var(--textoActvioBlue)";
+                    r.dot.style.transform = "scale(1)";
+                    r.dot.classList.add('gio-led-exacto');
+                    r.txt.style.color = "var(--textoActivo)";
+                } else {
+                    r.circle.style.borderColor = "var(--textodisable)";
+                    r.dot.style.transform = "scale(0)";
+                    r.dot.classList.remove('gio-led-exacto');
+                    r.txt.style.color = "var(--texto)";
+                }
+            });
         };
 
-        const minInput = document.createElement('input'); minInput.type = 'number'; minInput.value = min;
-        const maxInput = document.createElement('input'); maxInput.type = 'number'; maxInput.value = max;
-        const stepInput = document.createElement('input'); stepInput.type = 'number'; stepInput.value = step;
+        refreshUI();
+        return this._wrapWithLabel('Selección Exclusiva', container);
+    }
 
-        configPanel.append(
-            makeRow('Mín', minInput),
-            makeRow('Máx', maxInput),
-            makeRow('Step', stepInput)
-        );
+    /* =========================================================================
+       3. TOGGLE SWITCH CON EMISIÓN LED EXACTA
+       ========================================================================= */
+    createToggle(label = 'Interruptor', checked = false, onChange = null) {
+        let isChecked = !!checked;
 
-        row.append(labelEl, sliderContainer, valueEl, toggleIcon);
-        body.append(row, configPanel);
+        const wrap = document.createElement('div');
+        wrap.style.cssText = "display: flex; align-items: center; justify-content: space-between; gap: 10px; cursor: pointer; user-select: none; width: 100%; box-sizing: border-box;";
 
-        const updateUI = (val) => {
-            valueEl.textContent = val;
-            const lo = parseFloat(input.min);
-            const hi = parseFloat(input.max);
-            const pct = ((val - lo) / (hi - lo)) * 100;
-            track.style.width = `${pct}%`;
+        const lbl = document.createElement('span');
+        lbl.textContent = label;
+        lbl.style.cssText = "font-size: 13px; color: var(--texto); flex: 1;";
+
+        const switchBg = document.createElement('div');
+        switchBg.style.cssText = "width: 36px; height: 20px; border-radius: 20px; background: var(--backg0); border: 1px solid var(--borde); position: relative; flex-shrink: 0; transition: all 0.25s ease;";
+
+        const thumb = document.createElement('div');
+        thumb.style.cssText = `
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--textodisable);
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        `;
+        switchBg.appendChild(thumb);
+
+        const updateState = (state) => {
+            if (state) {
+                thumb.style.transform = "translateX(16px)";
+                thumb.classList.add('gio-led-exacto');
+                switchBg.style.borderColor = "var(--textoActvioBlue)";
+                lbl.style.color = "var(--textoActivo)";
+            } else {
+                thumb.style.transform = "translateX(0px)";
+                thumb.classList.remove('gio-led-exacto');
+                thumb.style.background = "var(--textodisable)";
+                switchBg.style.borderColor = "var(--borde)";
+                lbl.style.color = "var(--texto)";
+            }
+        };
+
+        updateState(isChecked);
+
+        wrap.addEventListener('click', () => {
+            isChecked = !isChecked;
+            updateState(isChecked);
+            if (onChange) onChange(isChecked);
+        });
+
+        wrap.appendChild(lbl);
+        wrap.appendChild(switchBg);
+
+        return this._wrapWithLabel('Estado', wrap);
+    }
+
+    /* =========================================================================
+       4. SLIDER CON CAJÓN DESPLEGABLE
+       ========================================================================= */
+    createSlider({ label = 'Control Deslizante', min = 0, max = 100, step = 1, value = 50, onChange = null } = {}) {
+        let curMin = Number(min);
+        let curMax = Number(max);
+        let curStep = Number(step);
+        let curVal = Math.max(curMin, Math.min(curMax, Number(value)));
+
+        const card = document.createElement('div');
+        card.style.cssText = "display: flex; flex-direction: column; gap: 8px; box-sizing: border-box; width: 100%; user-select: none;";
+
+        const header = document.createElement('div');
+        header.style.cssText = "display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%;";
+
+        const title = document.createElement('span');
+        title.textContent = label;
+        title.style.cssText = "font-size: 12px; font-weight: 500; color: var(--texto); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;";
+
+        const rightTools = document.createElement('div');
+        rightTools.style.cssText = "display: flex; align-items: center; gap: 6px; flex-shrink: 0;";
+
+        const badge = document.createElement('span');
+        badge.textContent = curVal;
+        badge.style.cssText = "font-size: 11px; font-family: monospace; color: var(--textoActivo); background: var(--backg3); padding: 2px 8px; border-radius: 4px; border: 1px solid var(--borde);";
+
+        const btnCajon = document.createElement('button');
+        btnCajon.innerHTML = `<svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="1 1 5 5 9 1"></polyline></svg>`;
+        btnCajon.style.cssText = "width: 22px; height: 22px; border: 1px solid transparent; background: transparent; color: var(--textodisable); cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 4px; transition: all 0.2s;";
+
+        rightTools.appendChild(badge);
+        rightTools.appendChild(btnCajon);
+        header.appendChild(title);
+        header.appendChild(rightTools);
+
+        const trackWrap = document.createElement('div');
+        trackWrap.style.cssText = "width: 100%; height: 18px; display: flex; align-items: center; cursor: pointer; position: relative;";
+
+        const trackBar = document.createElement('div');
+        trackBar.style.cssText = "width: 100%; height: 4px; background: var(--slidernofill); border-radius: 2px; position: relative; pointer-events: none;";
+
+        const fillBar = document.createElement('div');
+        fillBar.style.cssText = "position: absolute; left: 0; top: 0; height: 100%; background: var(--sliderfill); border-radius: 2px; width: 0%; pointer-events: none;";
+
+        const thumb = document.createElement('div');
+        thumb.style.cssText = "position: absolute; top: 50%; transform: translate(-50%, -50%); width: 13px; height: 13px; border-radius: 50%; background: var(--backg); border: 2.5px solid #ffffff86; box-shadow: 0 1px 4px rgba(0,0,0,0.6); pointer-events: none; transition: transform 0.1s;";
+
+        trackBar.appendChild(fillBar);
+        trackBar.appendChild(thumb);
+        trackWrap.appendChild(trackBar);
+
+        const cajon = document.createElement('div');
+        cajon.style.cssText = "display: none; grid-template-columns: repeat(4, 1fr); gap: 6px; padding-top: 8px; border-top: 1px solid var(--borde); width: 100%; box-sizing: border-box; animation: gioFadeIn 0.2s ease-out;";
+
+        const createCajonInput = (name, initialVal, onValChange) => {
+            const col = document.createElement('div');
+            col.style.cssText = "display: flex; flex-direction: column; gap: 2px;";
+            const tag = document.createElement('span');
+            tag.textContent = name;
+            tag.style.cssText = "font-size: 10px; color: var(--textodisable); text-transform: uppercase;";
+
+            const inp = document.createElement('input');
+            inp.type = 'number';
+            inp.value = initialVal;
+            inp.style.cssText = "width: 100%; height: 24px; text-align: center; background: var(--backg3); border: 1px solid var(--borde); color: #fff; font-size: 11px; border-radius: 4px; outline: none;";
+            inp.addEventListener('change', () => onValChange(parseFloat(inp.value)));
+
+            col.appendChild(tag);
+            col.appendChild(inp);
+            return { col, inp };
+        };
+
+        const updateVisuals = (val) => {
+            curVal = Number(val);
+            badge.textContent = curVal;
+            const pct = curMax > curMin ? Math.min(100, Math.max(0, ((curVal - curMin) / (curMax - curMin)) * 100)) : 0;
+            fillBar.style.width = `${pct}%`;
             thumb.style.left = `${pct}%`;
         };
 
-        input.addEventListener('input', (e) => {
-            const v = parseFloat(e.target.value);
-            updateUI(v);
-            if (onChange) onChange(v);
-        });
+        const handleDrag = (e) => {
+            const cx = e.touches ? e.touches[0].clientX : e.clientX;
+            const r = trackBar.getBoundingClientRect();
+            let ratio = (cx - r.left) / r.width;
+            ratio = Math.max(0, Math.min(1, ratio));
 
-        input.addEventListener('mouseenter', () => {
-            thumb.style.borderColor = this.theme.textoActivo;
-            thumb.style.transform = 'translate(-50%,-50%) scale(1.15)';
-        });
-        input.addEventListener('mouseleave', () => {
-            thumb.style.borderColor = this.theme.sliderfill;
-            thumb.style.transform = 'translate(-50%,-50%) scale(1)';
-        });
+            let raw = curMin + ratio * (curMax - curMin);
+            const steps = Math.round((raw - curMin) / curStep);
+            let calculated = Number((curMin + steps * curStep).toFixed(2));
+            calculated = Math.max(curMin, Math.min(curMax, calculated));
 
-        toggleIcon.addEventListener('click', () => {
-            const hidden = configPanel.style.display === 'none';
-            configPanel.style.display = hidden ? 'flex' : 'none';
-            toggleIcon.style.transform = hidden ? 'rotate(180deg)' : 'rotate(0deg)';
-        });
-
-        const updateConfig = () => {
-            input.min = parseFloat(minInput.value) || 0;
-            input.max = parseFloat(maxInput.value) || 100;
-            input.step = parseFloat(stepInput.value) || 1;
-            let cur = parseFloat(input.value);
-            if (cur < input.min) cur = input.min;
-            if (cur > input.max) cur = input.max;
-            input.value = cur;
-            updateUI(cur);
-        };
-        minInput.addEventListener('change', updateConfig);
-        maxInput.addEventListener('change', updateConfig);
-        stepInput.addEventListener('change', updateConfig);
-
-        updateUI(value);
-        return body;
-    }
-
-    createCheckbox(label, checked, onChange) {
-        const wrap = document.createElement('label');
-        wrap.style.cssText = "display: flex; align-items: center; gap: 10px; cursor: pointer; height: 40px;";
-
-        const input = document.createElement('input');
-        input.type = 'checkbox'; input.checked = checked;
-        input.style.cssText = "display: none;";
-
-        const customBox = document.createElement('div');
-
-        const updateStyle = (isChecked) => {
-            if (isChecked) {
-                customBox.style.background = this.theme.textoledBrillo;
-                customBox.style.boxShadow = `0px 1px 57px 13px ${this.theme.textoledBrillo}`;
-                customBox.style.borderColor = this.theme.textoledBrillo;
-                customBox.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-            } else {
-                customBox.style.background = 'transparent';
-                customBox.style.boxShadow = 'none';
-                customBox.style.borderColor = this.theme.borde;
-                customBox.innerHTML = '';
-            }
+            updateVisuals(calculated);
+            inpExact.inp.value = calculated;
+            if (onChange) onChange(calculated);
         };
 
-        customBox.style.cssText = `width: 18px; height: 18px; border-radius: 4px; border: 1px solid ${this.theme.borde}; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; box-sizing: border-box;`;
-        updateStyle(checked);
-
-        const text = document.createElement('span');
-        text.textContent = label;
-        text.style.cssText = `font-size: 14px; user-select: none; color: ${this.theme.texto};`;
-
-        input.addEventListener('change', (e) => {
-            const isChecked = e.target.checked;
-            updateStyle(isChecked);
-            if (onChange) onChange(isChecked);
-        });
-
-        wrap.appendChild(input);
-        wrap.appendChild(customBox);
-        if (label) wrap.appendChild(text);
-        if (label) this.element.appendChild(wrap);
-        return wrap;
-    }
-
-    createToggle(label, checked, onChange) {
-        const wrap = document.createElement('div');
-        wrap.style.cssText = "display: flex; align-items: center; justify-content: space-between; height: 40px;";
-        const text = document.createElement('span');
-        text.textContent = label; text.style.cssText = `font-size: 14px; color: ${this.theme.texto};`;
-        const toggleBg = document.createElement('div');
-
-        const W = 22, H = 12, CIRCLE = 9, LEFT_ON = 11, LEFT_OFF = 1.5;
-
-        const updateStyle = (isChecked) => {
-            if (isChecked) {
-                toggleBg.style.background = this.theme.textoledBrillo;
-                toggleBg.style.boxShadow = `0px 1px 57px 13px ${this.theme.textoledBrillo}`;
-                toggleBg.style.borderColor = this.theme.textoledBrillo;
-                toggleCircle.style.left = LEFT_ON + 'px';
-            } else {
-                toggleBg.style.background = this.theme.backg2;
-                toggleBg.style.boxShadow = 'none';
-                toggleBg.style.borderColor = this.theme.borde;
-                toggleCircle.style.left = LEFT_OFF + 'px';
-            }
+        const stopDrag = () => {
+            thumb.style.transform = "translate(-50%, -50%) scale(1)";
+            window.removeEventListener('mousemove', handleDrag);
+            window.removeEventListener('mouseup', stopDrag);
+            window.removeEventListener('touchmove', handleDrag);
+            window.removeEventListener('touchend', stopDrag);
         };
 
-        toggleBg.style.cssText = `width: ${W}px; height: ${H}px; border-radius: ${H/2}px; background: ${this.theme.backg2}; position: relative; cursor: pointer; transition: 0.3s; border: 1px solid ${this.theme.borde}; box-sizing: border-box; flex-shrink: 0;`;
+        const startDrag = (e) => {
+            e.stopPropagation();
+            if (e.cancelable) e.preventDefault();
+            thumb.style.transform = "translate(-50%, -50%) scale(1.2)";
+            handleDrag(e);
+            window.addEventListener('mousemove', handleDrag);
+            window.addEventListener('mouseup', stopDrag);
+            window.addEventListener('touchmove', handleDrag, { passive: false });
+            window.addEventListener('touchend', stopDrag);
+        };
 
-        const toggleCircle = document.createElement('div');
-        toggleCircle.style.cssText = `width: ${CIRCLE}px; height: ${CIRCLE}px; border-radius: 50%; background: #fff; position: absolute; top: 50%; transform: translateY(-50%); left: ${checked ? LEFT_ON : LEFT_OFF}px; transition: 0.3s;`;
-        toggleBg.appendChild(toggleCircle);
+        trackWrap.addEventListener('mousedown', startDrag);
+        trackWrap.addEventListener('touchstart', startDrag, { passive: false });
 
-        let isChecked = checked;
-        updateStyle(isChecked);
-
-        toggleBg.addEventListener('click', () => {
-            isChecked = !isChecked;
-            updateStyle(isChecked);
-            if (onChange) onChange(isChecked);
-        });
-        wrap.appendChild(text); wrap.appendChild(toggleBg);
-        this.element.appendChild(wrap);
-        return wrap;
-    }
-
-    createRadio(options, name, selectedValue, onChange) {
-        const wrap = document.createElement('div');
-        wrap.style.cssText = "display: flex; flex-direction: column; gap: 8px;";
-
-        options.forEach(opt => {
-            const label = document.createElement('label');
-            label.style.cssText = "display: flex; align-items: center; gap: 10px; cursor: pointer; height: 40px;";
-
-            const input = document.createElement('input');
-            input.type = 'radio'; input.name = name; input.value = opt;
-            input.checked = opt === selectedValue;
-            input.style.cssText = "display: none;";
-
-            const customBox = document.createElement('div');
-            const innerDot = document.createElement('div');
-
-            const updateStyle = (isChecked) => {
-                if (isChecked) {
-                    customBox.style.background = this.theme.textoledBrillo;
-                    customBox.style.boxShadow = `0px 1px 57px 13px ${this.theme.textoledBrillo}`;
-                    customBox.style.borderColor = this.theme.textoledBrillo;
-                    innerDot.style.transform = 'scale(1)';
-                    innerDot.style.background = '#fff';
-                } else {
-                    customBox.style.background = 'transparent';
-                    customBox.style.boxShadow = 'none';
-                    customBox.style.borderColor = this.theme.borde;
-                    innerDot.style.transform = 'scale(0)';
-                }
-            };
-
-            customBox.style.cssText = `width: 18px; height: 18px; border-radius: 50%; border: 1px solid ${this.theme.borde}; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; box-sizing: border-box; flex-shrink: 0;`;
-            innerDot.style.cssText = `width: 8px; height: 8px; border-radius: 50%; transition: transform 0.2s ease; transform: scale(0);`;
-
-            updateStyle(input.checked);
-            customBox.appendChild(innerDot);
-
-            const text = document.createElement('span');
-            text.textContent = opt;
-            text.style.cssText = `font-size: 14px; color: ${this.theme.texto}; user-select: none;`;
-
-            input.addEventListener('change', (e) => {
-                if (e.target.checked) {
-                    const allInputs = wrap.querySelectorAll('input[type="radio"]');
-                    allInputs.forEach(inp => {
-                        const parent = inp.nextElementSibling;
-                        if (inp === e.target) {
-                            parent.style.background = this.theme.textoledBrillo;
-                            parent.style.boxShadow = `0px 1px 57px 13px ${this.theme.textoledBrillo}`;
-                            parent.style.borderColor = this.theme.textoledBrillo;
-                            parent.firstElementChild.style.transform = 'scale(1)';
-                            parent.firstElementChild.style.background = '#fff';
-                        } else {
-                            parent.style.background = 'transparent';
-                            parent.style.boxShadow = 'none';
-                            parent.style.borderColor = this.theme.borde;
-                            parent.firstElementChild.style.transform = 'scale(0)';
-                        }
-                    });
-                    if (onChange) onChange(opt);
-                }
-            });
-
-            label.appendChild(input);
-            label.appendChild(customBox);
-            label.appendChild(text);
-            wrap.appendChild(label);
-        });
-
-        this._wrapWithLabel('Radio Buttons', wrap);
-        return wrap;
-    }
-
-    createDate(val, onChange) {
-        const input = document.createElement('input');
-        input.type = 'date'; input.value = val;
-        input.style.cssText = `height: 40px; border-radius: 10px; border: 1px solid ${this.theme.borde}; background: ${this.theme.backg0}; color: ${this.theme.texto}; padding: 0 12px; box-sizing: border-box; outline: none; font-family: inherit; width: 100%; font-size: 14px; transition: border-color 0.2s; color-scheme: dark;`;
-        input.addEventListener('change', (e) => onChange(e.target.value));
-        this.element.appendChild(input);
-        return input;
-    }
-
-    createColor(val, onChange) {
-        const wrap = document.createElement('div');
-        wrap.style.cssText = "display: flex; align-items: center; gap: 10px; height: 40px;";
-        const input = document.createElement('input');
-        input.type = 'color'; input.value = val;
-        input.style.cssText = `width: 40px; height: 40px; padding: 0; border: 1px solid ${this.theme.borde}; border-radius: 10px; cursor: pointer; background: transparent; box-sizing: border-box;`;
-        const text = document.createElement('span');
-        text.textContent = val.toUpperCase(); text.style.cssText = `font-size: 14px; color: ${this.theme.texto};`;
-        input.addEventListener('input', (e) => { text.textContent = e.target.value.toUpperCase(); onChange(e.target.value); });
-        wrap.appendChild(input); wrap.appendChild(text);
-        this._wrapWithLabel('Color', wrap);
-        return wrap;
-    }
-
-    createButton(label, type, onClick) {
-        const btn = document.createElement('button');
-        btn.textContent = label;
-        btn.style.cssText = this.styles.btnBase + (type === 'circle' ? this.styles.btnCircle : this.styles.btnLong);
-        btn.addEventListener('mouseenter', () => { btn.style.background = this.theme.backg2; btn.style.borderColor = this.theme.texto; });
-        btn.addEventListener('mouseleave', () => { btn.style.background = this.theme.backg0; btn.style.borderColor = this.theme.borde; });
-        btn.addEventListener('click', onClick);
-        return btn;
-    }
-
-    createButtonRow(buttons) {
-        const row = document.createElement('div');
-        row.style.cssText = "display: flex; gap: 10px; align-items: center;";
-        buttons.forEach(btn => row.appendChild(btn));
-        this._wrapWithLabel('Botones', row);
-        return row;
-    }
-
-    createSelectSearch(options, selected, onChange) {
-        const wrap = document.createElement('div');
-        wrap.style.cssText = "position: relative; width: 100%;";
-        const display = document.createElement('div');
-        display.style.cssText = `height: 40px; border-radius: 10px; border: 1px solid ${this.theme.borde}; background: ${this.theme.backg0}; color: ${this.theme.texto}; padding: 0 12px; box-sizing: border-box; outline: none; display: flex; align-items: center; justify-content: space-between; cursor: pointer; font-size: 14px;`;
-        display.textContent = selected;
-        const arrow = document.createElement('div');
-        arrow.style.cssText = "width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 5px solid #888; transition: transform 0.2s; flex-shrink: 0;";
-        display.appendChild(arrow);
-        const dropdown = document.createElement('div');
-        dropdown.style.cssText = `position: absolute; top: 45px; left: 0; width: 100%; background: ${this.theme.backg1}; border: 1px solid ${this.theme.borde}; border-radius: 10px; display: none; flex-direction: column; overflow: hidden; z-index: 10; box-sizing: border-box;`;
-        const searchWrap = document.createElement('div');
-        searchWrap.style.cssText = `padding: 8px; border-bottom: 1px solid ${this.theme.borde};`;
-        const searchInput = document.createElement('input');
-        searchInput.type = 'text'; searchInput.placeholder = 'Buscar...';
-        searchInput.style.cssText = `height: 32px; border-radius: 8px; border: 1px solid ${this.theme.borde}; background: ${this.theme.backg3}; color: ${this.theme.texto}; padding: 0 8px; font-size: 13px; outline: none; width: 100%; box-sizing: border-box;`;
-        searchInput.addEventListener('click', (e) => e.stopPropagation());
-        searchWrap.appendChild(searchInput);
-        const listContainer = document.createElement('div');
-        listContainer.style.cssText = "max-height: 150px; overflow-y: auto; display: flex; flex-direction: column;";
         let isOpen = false;
-        const renderOptions = (filterText = '') => {
-            listContainer.innerHTML = '';
-            const filtered = options.filter(opt => opt.toLowerCase().includes(filterText.toLowerCase()));
-            if (filtered.length === 0) {
-                const empty = document.createElement('div');
-                empty.textContent = 'No hay resultados';
-                empty.style.cssText = `padding: 10px 12px; font-size: 14px; color: ${this.theme.textodisable}; text-align: center;`;
-                listContainer.appendChild(empty); return;
-            }
-            filtered.forEach(opt => {
-                const item = document.createElement('div');
-                item.textContent = opt;
-                item.style.cssText = `padding: 10px 12px; cursor: pointer; font-size: 14px; color: ${this.theme.texto}; transition: background 0.1s; box-sizing: border-box;`;
-                item.addEventListener('mouseenter', () => item.style.background = this.theme.backg2);
-                item.addEventListener('mouseleave', () => item.style.background = 'transparent');
-                item.addEventListener('click', () => {
-                    display.firstChild.textContent = opt;
-                    dropdown.style.display = 'none'; isOpen = false;
-                    arrow.style.transform = 'rotate(0deg)'; searchInput.value = ''; onChange(opt);
-                });
-                listContainer.appendChild(item);
-            });
-        };
-        searchInput.addEventListener('input', (e) => renderOptions(e.target.value));
-        display.addEventListener('click', (e) => {
-            e.stopPropagation(); isOpen = !isOpen;
-            dropdown.style.display = isOpen ? 'flex' : 'none';
-            arrow.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
-            if (isOpen) { searchInput.value = ''; renderOptions(); setTimeout(() => searchInput.focus(), 50); }
+        btnCajon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            isOpen = !isOpen;
+            cajon.style.display = isOpen ? 'grid' : 'none';
+            btnCajon.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+            btnCajon.style.color = isOpen ? 'var(--textoledBrillo)' : 'var(--textodisable)';
         });
-        document.addEventListener('click', () => {
-            if (isOpen) { dropdown.style.display = 'none'; isOpen = false; arrow.style.transform = 'rotate(0deg)'; }
+
+        const inpMin = createCajonInput('Mín', curMin, (v) => { if (!isNaN(v)) { curMin = v; updateVisuals(curVal); } });
+        const inpMax = createCajonInput('Máx', curMax, (v) => { if (!isNaN(v)) { curMax = v; updateVisuals(curVal); } });
+        const inpStep = createCajonInput('Paso', curStep, (v) => { if (!isNaN(v) && v > 0) curStep = v; });
+        const inpExact = createCajonInput('Val', curVal, (v) => {
+            if (!isNaN(v)) {
+                updateVisuals(Math.max(curMin, Math.min(curMax, v)));
+                if (onChange) onChange(curVal);
+            }
         });
-        dropdown.appendChild(searchWrap); dropdown.appendChild(listContainer);
-        wrap.appendChild(display); wrap.appendChild(dropdown);
-        renderOptions();
-        this._wrapWithLabel('Selector con Búsqueda', wrap);
-        return wrap;
+
+        cajon.appendChild(inpMin.col);
+        cajon.appendChild(inpMax.col);
+        cajon.appendChild(inpStep.col);
+        cajon.appendChild(inpExact.col);
+
+        card.appendChild(header);
+        card.appendChild(trackWrap);
+        card.appendChild(cajon);
+
+        updateVisuals(curVal);
+        return this._wrapWithLabel('Ajuste Numérico', card);
     }
 
-    createInputText(placeholder, val, onChange) {
+    /* =========================================================================
+       5. SELECTOR CON BUSCADOR
+       ========================================================================= */
+    createSelectSearch(options = [], selected = null, onChange = null) {
+        const normalized = options.map(o => typeof o === 'object' ? o : { value: o, label: String(o) });
+        let currentVal = selected !== null ? selected : (normalized[0]?.value ?? '');
+
         const wrap = document.createElement('div');
-        wrap.style.cssText = `position: relative; display: flex; align-items: center; height: 40px; border-radius: 10px; border: 1px solid ${this.theme.borde}; background: ${this.theme.backg0}; box-sizing: border-box; transition: background 0.2s, border-color 0.2s; overflow: hidden;`;
-        const glow = document.createElement('div');
-        glow.style.cssText = `position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: ${this.theme.textoActvioBlue}; transform: scaleX(0); transform-origin: left; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);`;
-        const input = document.createElement('input');
-        input.type = 'text'; input.placeholder = placeholder; input.value = val;
-        input.style.cssText = `background: transparent; border: none; color: ${this.theme.texto}; outline: none; width: 100%; height: 100%; padding: 0 12px; font-size: 14px; font-family: inherit; position: relative; z-index: 1; transition: color 0.2s;`;
-        input.addEventListener('mouseenter', () => { if (document.activeElement !== input) wrap.style.background = this.theme.backg1; });
-        input.addEventListener('mouseleave', () => { if (document.activeElement !== input) wrap.style.background = this.theme.backg0; });
-        input.addEventListener('focus', () => { wrap.style.borderColor = this.theme.borde; wrap.style.background = this.theme.backg3; glow.style.transform = 'scaleX(1)'; input.style.color = this.theme.textoActivo; });
-        input.addEventListener('blur', () => { wrap.style.background = this.theme.backg0; glow.style.transform = 'scaleX(0)'; input.style.color = this.theme.texto; });
-        input.addEventListener('input', (e) => onChange(e.target.value));
-        wrap.appendChild(glow); wrap.appendChild(input);
-        this._wrapWithLabel('Input Texto', wrap);
-        return wrap;
-    }
+        wrap.style.cssText = "position: relative; width: 100%; box-sizing: border-box; user-select: none;";
 
-    createInputNumber(val, isFloat, onChange) {
-        const wrap = document.createElement('div');
-        wrap.style.cssText = `position: relative; display: flex; align-items: center; justify-content: space-between; height: 40px; border-radius: 10px; border: 1px solid ${this.theme.borde}; background: ${this.theme.backg0}; padding: 0 8px 0 12px; box-sizing: border-box; transition: background 0.2s, border-color 0.2s; overflow: hidden;`;
-        const glow = document.createElement('div');
-        glow.style.cssText = `position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: ${this.theme.textoActvioBlue}; transform: scaleX(0); transform-origin: left; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);`;
-        const input = document.createElement('input');
-        input.type = 'text'; input.value = val;
-        input.style.cssText = `background: transparent; border: none; color: ${this.theme.texto}; outline: none; width: 100%; font-size: 14px; font-family: inherit; position: relative; z-index: 1; transition: color 0.2s;`;
-        const controls = document.createElement('div');
-        controls.style.cssText = "display: flex; flex-direction: column; gap: 2px; justify-content: center; position: relative; z-index: 1;";
-        const btnUp = document.createElement('div');
-        btnUp.innerHTML = `<svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="${this.theme.texto}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 5 5 1 9 5"></polyline></svg>`;
-        btnUp.style.cssText = "cursor: pointer; display: flex; align-items: center; justify-content: center; height: 14px; width: 14px; border-radius: 3px; transition: background 0.1s;";
-        const btnDown = document.createElement('div');
-        btnDown.innerHTML = `<svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="${this.theme.texto}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"></polyline></svg>`;
-        btnDown.style.cssText = "cursor: pointer; display: flex; align-items: center; justify-content: center; height: 14px; width: 14px; border-radius: 3px; transition: background 0.1s;";
-        btnUp.addEventListener('mouseenter', () => btnUp.style.background = this.theme.backg2);
-        btnUp.addEventListener('mouseleave', () => btnUp.style.background = 'transparent');
-        btnDown.addEventListener('mouseenter', () => btnDown.style.background = this.theme.backg2);
-        btnDown.addEventListener('mouseleave', () => btnDown.style.background = 'transparent');
-        const stepVal = isFloat ? 0.1 : 1;
-        const update = (direction) => {
-            let current = isFloat ? parseFloat(input.value) : parseInt(input.value, 10);
-            if (isNaN(current)) current = 0;
-            current += direction * stepVal;
-            if (isFloat) current = Math.round(current * 100) / 100;
-            input.value = current;
-            onChange(current);
-        };
-        btnUp.addEventListener('click', () => update(1));
-        btnDown.addEventListener('click', () => update(-1));
-        input.addEventListener('mouseenter', () => { if (document.activeElement !== input) wrap.style.background = this.theme.backg1; });
-        input.addEventListener('mouseleave', () => { if (document.activeElement !== input) wrap.style.background = this.theme.backg0; });
-        input.addEventListener('focus', () => { wrap.style.borderColor = this.theme.borde; wrap.style.background = this.theme.backg3; glow.style.transform = 'scaleX(1)'; input.style.color = this.theme.textoActivo; });
-        input.addEventListener('blur', () => { wrap.style.background = this.theme.backg0; glow.style.transform = 'scaleX(0)'; input.style.color = this.theme.texto; });
-        input.addEventListener('input', (e) => { const parsed = isFloat ? parseFloat(e.target.value) : parseInt(e.target.value, 10); onChange(isNaN(parsed) ? 0 : parsed); });
-        controls.appendChild(btnUp); controls.appendChild(btnDown);
-        wrap.appendChild(glow); wrap.appendChild(input); wrap.appendChild(controls);
-        this._wrapWithLabel(isFloat ? 'Input Float' : 'Input Entero', wrap);
-        return wrap;
-    }
+        const trigger = document.createElement('div');
+        trigger.tabIndex = 0;
+        trigger.style.cssText = "width: 100%; height: 34px; background: var(--backg0); border: 1px solid var(--borde); border-radius: var(--radius); padding: 0 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-sizing: border-box; transition: all 0.2s;";
 
-    createTextarea(placeholder, val, rows, onChange) {
-        const wrap = document.createElement('div');
-        wrap.style.cssText = `position: relative; display: flex; flex-direction: column; background: ${this.theme.backg0}; border: 1px solid ${this.theme.borde}; border-radius: 10px; overflow: hidden; transition: background 0.2s, border-color 0.2s;`;
-        const glow = document.createElement('div');
-        glow.style.cssText = `position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: ${this.theme.textoActvioBlue}; transform: scaleX(0); transform-origin: left; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 2;`;
-        const textarea = document.createElement('textarea');
-        textarea.placeholder = placeholder; textarea.value = val; textarea.rows = rows;
-        textarea.style.cssText = `background: transparent; border: none; color: ${this.theme.texto}; outline: none; resize: none; padding: 12px; font-size: 14px; font-family: inherit; width: 100%; box-sizing: border-box; min-height: 80px; position: relative; z-index: 1; transition: color 0.2s;`;
-        const bottomBar = document.createElement('div');
-        bottomBar.style.cssText = `display: flex; justify-content: flex-end; align-items: center; padding: 4px 8px; border-top: 1px solid ${this.theme.borde}; background: ${this.theme.backg3}; position: relative; z-index: 1;`;
-        const charCount = document.createElement('span');
-        charCount.textContent = val.length + ' / 500';
-        charCount.style.cssText = `font-size: 11px; color: ${this.theme.textodisable};`;
-        bottomBar.appendChild(charCount);
-        textarea.addEventListener('mouseenter', () => { if (document.activeElement !== textarea) wrap.style.background = this.theme.backg1; });
-        textarea.addEventListener('mouseleave', () => { if (document.activeElement !== textarea) wrap.style.background = this.theme.backg0; });
-        textarea.addEventListener('focus', () => { wrap.style.borderColor = this.theme.borde; wrap.style.background = this.theme.backg3; glow.style.transform = 'scaleX(1)'; textarea.style.color = this.theme.textoActivo; });
-        textarea.addEventListener('blur', () => { wrap.style.background = this.theme.backg0; glow.style.transform = 'scaleX(0)'; textarea.style.color = this.theme.texto; });
-        textarea.addEventListener('input', (e) => { let content = e.target.value; if (content.length > 500) content = content.substring(0, 500); textarea.value = content; charCount.textContent = content.length + ' / 500'; onChange(content); });
-        wrap.appendChild(glow); wrap.appendChild(textarea); wrap.appendChild(bottomBar);
-        this._wrapWithLabel('Textarea', wrap);
-        return wrap;
-    }
+        const labelText = document.createElement('span');
+        labelText.style.cssText = "font-size: 13px; color: var(--textoActivo); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;";
 
-    createLayerManager(initialLayers, onChange) {
-        const container = document.createElement('div');
-        container.style.cssText = `background-color: ${this.theme.backg0}; border: 1px solid ${this.theme.borde}; border-radius: 10px; padding: 12px; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px;`;
+        const arrow = document.createElement('div');
+        arrow.innerHTML = `<svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="1 1 5 5 9 1"></polyline></svg>`;
+        arrow.style.cssText = "transition: transform 0.2s; display: flex; align-items: center; color: var(--textodisable);";
 
-        const listContainer = document.createElement('div');
-        listContainer.style.cssText = "display: flex; flex-direction: column; gap: 6px; width: 100%;";
+        trigger.appendChild(labelText);
+        trigger.appendChild(arrow);
 
-        let layers = [...initialLayers];
-
-        const updateLayout = () => {
-            const width = container.clientWidth;
-            if (width <= 300) {
-                listContainer.style.flexDirection = 'column';
-                listContainer.style.flexWrap = 'nowrap';
-            } else {
-                listContainer.style.flexDirection = 'row';
-                listContainer.style.flexWrap = 'wrap';
-            }
-        };
-
-        const renderLayers = () => {
-            listContainer.innerHTML = '';
-            layers.forEach((layer, index) => {
-                const item = document.createElement('div');
-                item.draggable = true;
-                item.dataset.id = layer.id;
-                item.dataset.index = index;
-                item.style.cssText = `display: flex; align-items: center; justify-content: space-between; height: 40px; background: ${this.theme.backg1}; border: 1px solid ${this.theme.borde}; border-radius: 8px; padding: 0 8px; box-sizing: border-box; color: ${this.theme.texto}; font-size: 13px; cursor: grab; transition: opacity 0.2s, background 0.2s; flex: 1; min-width: 100px; max-width: 100%;`;
-
-                const leftWrap = document.createElement('div');
-                leftWrap.style.cssText = "display: flex; align-items: center; gap: 8px; pointer-events: none;";
-
-                const dragHandle = document.createElement('div');
-                dragHandle.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="${this.theme.texto}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="19" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="19" r="1"></circle></svg>`;
-
-                const checkboxEl = this.createCheckbox('', layer.visible !== false, (checked) => {
-                    layer.visible = checked;
-                    if (onChange) onChange(layers.map(l => l.id), layers);
-                });
-
-                const checkboxInput = checkboxEl.querySelector('input');
-                checkboxInput.checked = layer.visible !== false;
-                const event = new Event('change');
-                checkboxInput.dispatchEvent(event);
-
-                const checkboxBox = checkboxEl.querySelector('div');
-                checkboxBox.style.width = '16px';
-                checkboxBox.style.height = '16px';
-                checkboxEl.style.pointerEvents = 'auto';
-                checkboxEl.style.height = 'auto';
-
-                const icon = document.createElement('div');
-                icon.textContent = layer.type === 'text' ? 'T' : layer.type === 'image' ? '🖼️' : '⬛';
-                icon.style.cssText = `width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; background: ${this.theme.backg3}; border-radius: 4px; font-size: 10px; color: ${this.theme.textodisable};`;
-
-                const text = document.createElement('span');
-                text.textContent = layer.name;
-                text.style.cssText = "white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;";
-
-                leftWrap.appendChild(dragHandle);
-                leftWrap.appendChild(checkboxEl);
-                leftWrap.appendChild(icon);
-                leftWrap.appendChild(text);
-
-                const actionBtn = document.createElement('button');
-                actionBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${this.theme.texto}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
-                actionBtn.style.cssText = `width: 24px; height: 24px; border-radius: 4px; border: 1px solid ${this.theme.borde}; background: ${this.theme.backg2}; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; flex-shrink: 0; transition: background 0.2s;`;
-                actionBtn.addEventListener('mouseenter', () => actionBtn.style.background = this.theme.borde);
-                actionBtn.addEventListener('mouseleave', () => actionBtn.style.background = this.theme.backg2);
-                actionBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    layers = layers.filter(l => l.id !== layer.id);
-                    renderLayers();
-                    updateLayout();
-                    if (onChange) onChange(layers.map(l => l.id), layers);
-                });
-
-                item.appendChild(leftWrap);
-                item.appendChild(actionBtn);
-
-                item.addEventListener('dragstart', (e) => {
-                    e.dataTransfer.setData('text/plain', index);
-                    setTimeout(() => item.style.opacity = '0.4', 0);
-                });
-                item.addEventListener('dragend', () => { item.style.opacity = '1'; });
-                item.addEventListener('dragover', (e) => { e.preventDefault(); item.style.borderColor = this.theme.textoActvioBlue; });
-                item.addEventListener('dragleave', () => { item.style.borderColor = this.theme.borde; });
-                item.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    item.style.borderColor = this.theme.borde;
-                    const fromIndex = parseInt(e.dataTransfer.getData('text/plain'), 10);
-                    if (fromIndex !== index) {
-                        const movedItem = layers.splice(fromIndex, 1)[0];
-                        layers.splice(index, 0, movedItem);
-                        renderLayers();
-                        updateLayout();
-                        if (onChange) onChange(layers.map(l => l.id), layers);
-                    }
-                });
-
-                listContainer.appendChild(item);
-            });
-        };
-
-        renderLayers();
-        container.appendChild(listContainer);
-
-        window.addEventListener('resize', updateLayout);
-        setTimeout(updateLayout, 0);
-
-        this._wrapWithLabel('Capas (Arrastrables)', container);
-        return container;
-    }
-
-    createTreeView(data, onChange) {
-        const treeContainer = document.createElement('div');
-        treeContainer.style.cssText = `background: ${this.theme.backg0}; border: 1px solid ${this.theme.borde}; border-radius: 8px; padding: 6px; display: flex; flex-direction: column; gap: 2px; box-sizing: border-box; user-select: none; max-height: 350px; overflow-y: auto;`;
-
-        let treeData = JSON.parse(JSON.stringify(data));
-        let draggedId = null;
-
-        const findAndRemove = (nodes, id) => {
-            for (let i = 0; i < nodes.length; i++) {
-                if (nodes[i].id === id) return nodes.splice(i, 1)[0];
-                if (nodes[i].children && nodes[i].children.length) {
-                    const found = findAndRemove(nodes[i].children, id);
-                    if (found) return found;
-                }
-            }
-            return null;
-        };
-
-        const isDescendant = (parent, childId) => {
-            if (!parent.children) return false;
-            for (let c of parent.children) {
-                if (c.id === childId) return true;
-                if (isDescendant(c, childId)) return true;
-            }
-            return false;
-        };
-
-        const insertNode = (nodes, targetId, nodeToInsert, position) => {
-            for (let i = 0; i < nodes.length; i++) {
-                if (nodes[i].id === targetId) {
-                    if (position === 'inside') {
-                        nodes[i].children = nodes[i].children || [];
-                        nodes[i].children.push(nodeToInsert);
-                        nodes[i].expanded = true;
-                    } else if (position === 'before') {
-                        nodes.splice(i, 0, nodeToInsert);
-                    } else if (position === 'after') {
-                        nodes.splice(i + 1, 0, nodeToInsert);
-                    }
-                    return true;
-                }
-                if (nodes[i].children && nodes[i].children.length) {
-                    if (insertNode(nodes[i].children, targetId, nodeToInsert, position)) return true;
-                }
-            }
-            return false;
-        };
-
-        const renderTree = () => {
-            treeContainer.innerHTML = '';
-
-            const buildNodes = (nodes, depth = 0) => {
-                if (!Array.isArray(nodes)) return [];
-
-                return nodes.map(node => {
-                    const rowWrap = document.createElement('div');
-                    rowWrap.style.cssText = "display: flex; flex-direction: column; width: 100%; position: relative;";
-
-                    const row = document.createElement('div');
-                    row.draggable = true;
-                    row.dataset.id = node.id;
-                    row.style.cssText = `display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 6px 0 ${4 + depth * 14}px; border-radius: 6px; cursor: pointer; color: ${this.theme.texto}; font-size: 13px; border: 1px solid transparent; transition: background 0.15s, border-color 0.15s; box-sizing: border-box;`;
-
-                    const chevron = document.createElement('div');
-                    const hasChildren = node.children && node.children.length > 0;
-                    chevron.style.cssText = `width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s; ${hasChildren ? '' : 'visibility: hidden;'}`;
-                    chevron.innerHTML = this._getSVG('chevronDown', 12, this.theme.textodisable);
-                    chevron.style.transform = node.expanded ? 'rotate(0deg)' : 'rotate(-90deg)';
-
-                    chevron.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        node.expanded = !node.expanded;
-                        renderTree();
-                    });
-
-                    const check = document.createElement('div');
-                    const isChecked = node.checked !== false;
-                    check.style.cssText = `width: 14px; height: 14px; border-radius: 3px; border: 1px solid ${isChecked ? this.theme.textoledBrillo : this.theme.borde}; background: ${isChecked ? this.theme.textoledBrillo : 'transparent'}; box-shadow: ${isChecked ? `0 0 8px ${this.theme.textoledBrillo}` : 'none'}; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;`;
-                    if (isChecked) check.innerHTML = this._getSVG('check', 10, '#fff');
-
-                    check.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        node.checked = !isChecked;
-                        renderTree();
-                        if (onChange) onChange(treeData);
-                    });
-
-                    const iconEl = document.createElement('div');
-                    iconEl.innerHTML = this._getSVG(node.icon || 'square', 14, this.theme.textoActivo);
-
-                    const label = document.createElement('span');
-                    label.textContent = node.text;
-                    label.style.cssText = "white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-grow: 1;";
-
-                    row.appendChild(chevron);
-                    row.appendChild(check);
-                    row.appendChild(iconEl);
-                    row.appendChild(label);
-
-                    row.addEventListener('mouseenter', () => { if (draggedId !== node.id) row.style.background = this.theme.backg1; });
-                    row.addEventListener('mouseleave', () => { if (draggedId !== node.id) row.style.background = 'transparent'; });
-
-                    row.addEventListener('dragstart', (e) => {
-                        draggedId = node.id;
-                        e.dataTransfer.setData('text/plain', node.id);
-                        setTimeout(() => row.style.opacity = '0.35', 0);
-                    });
-                    row.addEventListener('dragend', () => {
-                        draggedId = null;
-                        row.style.opacity = '1';
-                        renderTree();
-                    });
-
-                    row.addEventListener('dragover', (e) => {
-                        e.preventDefault();
-                        if (draggedId === node.id) return;
-                        const rect = row.getBoundingClientRect();
-                        const relY = e.clientY - rect.top;
-                        row.style.borderTop = '1px solid transparent';
-                        row.style.borderBottom = '1px solid transparent';
-                        row.style.borderColor = 'transparent';
-                        row.style.background = 'transparent';
-                        if (relY < rect.height * 0.25) {
-                            row.style.borderTop = `2px solid ${this.theme.textoActvioBlue}`;
-                        } else if (relY > rect.height * 0.75) {
-                            row.style.borderBottom = `2px solid ${this.theme.textoActvioBlue}`;
-                        } else {
-                            row.style.background = this.theme.backg2;
-                            row.style.borderColor = this.theme.textoActvioBlue;
-                        }
-                    });
-
-                    row.addEventListener('dragleave', () => {
-                        row.style.borderTop = '1px solid transparent';
-                        row.style.borderBottom = '1px solid transparent';
-                        row.style.borderColor = 'transparent';
-                        row.style.background = 'transparent';
-                    });
-
-                    row.addEventListener('drop', (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        if (!draggedId || draggedId === node.id) return;
-                        const rect = row.getBoundingClientRect();
-                        const relY = e.clientY - rect.top;
-                        let position = 'inside';
-                        if (relY < rect.height * 0.25) position = 'before';
-                        else if (relY > rect.height * 0.75) position = 'after';
-
-                        const draggedNode = findAndRemove(treeData, draggedId);
-                        if (!draggedNode) return;
-                        if (isDescendant(draggedNode, node.id)) {
-                            insertNode(treeData, draggedId, draggedNode, 'after');
-                            renderTree();
-                            return;
-                        }
-                        insertNode(treeData, node.id, draggedNode, position);
-                        renderTree();
-                        if (onChange) onChange(treeData);
-                    });
-
-                    rowWrap.appendChild(row);
-
-                    if (node.children && node.children.length && node.expanded) {
-                        const childContainer = document.createElement('div');
-                        childContainer.style.cssText = `display: flex; flex-direction: column; border-left: 1px dashed ${this.theme.borde}; margin-left: ${10 + depth * 14}px;`;
-                        const childElements = buildNodes(node.children, depth + 1);
-                        childElements.forEach(c => childContainer.appendChild(c));
-                        rowWrap.appendChild(childContainer);
-                    }
-
-                    return rowWrap;
-                });
-            };
-
-            const rootElements = buildNodes(treeData);
-            rootElements.forEach(el => treeContainer.appendChild(el));
-        };
-
-        renderTree();
-        this._wrapWithLabel('Árbol de Nodos (Drag & Drop)', treeContainer);
-        return treeContainer;
-    }
-
-    createTable({ columns = [], data = [], endpoint = null, pageSize = 5, onRowDelete = null, onRowClick = null } = {}) {
-        const tableCard = document.createElement('div');
-        tableCard.style.cssText = `display: flex; flex-direction: column; gap: 8px; width: 100%; background: ${this.theme.backg3}; border: 1px solid ${this.theme.borde}; border-radius: 8px; padding: 10px; box-sizing: border-box; color: ${this.theme.texto}; font-size: 13px;`;
-
-        let internalCols = [...columns];
-        let tableData = [...data];
-        let filteredData = [...data];
-        let currentPage = 1;
-        let searchQuery = '';
-        let draggedColIdx = null;
-
-        const toolbar = document.createElement('div');
-        toolbar.style.cssText = "display: flex; gap: 6px; align-items: center; width: 100%;";
-
-        const searchWrap = document.createElement('div');
-        searchWrap.style.cssText = `position: relative; display: flex; align-items: center; flex: 1; height: 30px; border-radius: 6px; border: 1px solid ${this.theme.borde}; background: ${this.theme.backg0}; box-sizing: border-box; overflow: hidden;`;
-
-        const searchGlow = document.createElement('div');
-        searchGlow.style.cssText = `position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: ${this.theme.textoActvioBlue}; transform: scaleX(0); transform-origin: left; transition: transform 0.25s;`;
+        const menu = document.createElement('div');
+        menu.style.cssText = "position: absolute; top: calc(100% + 5px); left: 0; width: 100%; background: var(--backg1); border: 1px solid var(--borde); border-radius: var(--radius); box-shadow: 0 10px 28px rgba(0,0,0,0.7); z-index: 1000; display: none; flex-direction: column; padding: 6px; box-sizing: border-box; animation: gioFadeIn 0.15s ease-out;";
 
         const searchInput = document.createElement('input');
         searchInput.type = 'text';
         searchInput.placeholder = 'Buscar...';
-        searchInput.style.cssText = `background: transparent; border: none; color: ${this.theme.textoActivo}; outline: none; width: 100%; padding: 0 8px; font-size: 12px; font-family: inherit; z-index: 1;`;
+        searchInput.style.cssText = "width: 100%; height: 28px; background: var(--backg3); border: 1px solid var(--borde); border-radius: 4px; padding: 0 8px; color: #fff; font-size: 12px; outline: none; box-sizing: border-box; margin-bottom: 4px;";
 
-        searchInput.addEventListener('focus', () => { searchWrap.style.background = this.theme.backg3; searchGlow.style.transform = 'scaleX(1)'; });
-        searchInput.addEventListener('blur', () => { searchWrap.style.background = this.theme.backg0; searchGlow.style.transform = 'scaleX(0)'; });
-        searchInput.addEventListener('input', (e) => {
-            searchQuery = e.target.value.toLowerCase();
-            currentPage = 1;
-            applyFilter();
+        const itemsWrap = document.createElement('div');
+        itemsWrap.className = 'gio-custom-scroll';
+        itemsWrap.style.cssText = "overflow-y: auto; display: flex; flex-direction: column; gap: 2px;";
+
+        menu.appendChild(searchInput);
+        menu.appendChild(itemsWrap);
+        wrap.appendChild(trigger);
+        wrap.appendChild(menu);
+
+        let isOpen = false;
+
+        const renderList = (filter = '') => {
+            itemsWrap.innerHTML = '';
+            const search = filter.toLowerCase().trim();
+            const filtered = normalized.filter(o => o.label.toLowerCase().includes(search));
+
+            if (filtered.length >= 8) itemsWrap.style.maxHeight = '240px';
+            else itemsWrap.style.maxHeight = 'none';
+
+            if (filtered.length === 0) {
+                const empty = document.createElement('div');
+                empty.textContent = 'Sin resultados';
+                empty.style.cssText = "padding: 8px; font-size: 12px; color: var(--textodisable); text-align: center;";
+                itemsWrap.appendChild(empty);
+                return;
+            }
+
+            filtered.forEach(opt => {
+                const isSelected = opt.value === currentVal;
+                const row = document.createElement('div');
+                row.style.cssText = `padding: 7px 10px; font-size: 12px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; color: ${isSelected ? 'var(--textoledBrillo)' : 'var(--texto)'}; background: ${isSelected ? 'rgba(77, 170, 252, 0.15)' : 'transparent'}; font-weight: ${isSelected ? '600' : '400'};`;
+
+                row.textContent = opt.label;
+                if (isSelected) {
+                    const check = document.createElement('span');
+                    check.innerHTML = '✓';
+                    check.style.fontSize = '12px';
+                    row.appendChild(check);
+                }
+
+                row.addEventListener('mouseenter', () => { if (!isSelected) row.style.background = 'var(--backg2)'; });
+                row.addEventListener('mouseleave', () => { if (!isSelected) row.style.background = 'transparent'; });
+
+                row.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    currentVal = opt.value;
+                    labelText.textContent = opt.label;
+                    closeDropdown();
+                    if (onChange) onChange(currentVal);
+                });
+
+                itemsWrap.appendChild(row);
+            });
+        };
+
+        const openDropdown = () => {
+            isOpen = true;
+            menu.style.display = 'flex';
+            trigger.style.borderColor = 'var(--textoActvioBlue)';
+            arrow.style.transform = 'rotate(180deg)';
+            renderList();
+            setTimeout(() => searchInput.focus(), 50);
+        };
+
+        const closeDropdown = () => {
+            isOpen = false;
+            menu.style.display = 'none';
+            trigger.style.borderColor = 'var(--borde)';
+            arrow.style.transform = 'rotate(0deg)';
+            searchInput.value = '';
+        };
+
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            isOpen ? closeDropdown() : openDropdown();
         });
 
-        searchWrap.appendChild(searchGlow);
-        searchWrap.appendChild(searchInput);
+        searchInput.addEventListener('click', (e) => e.stopPropagation());
+        searchInput.addEventListener('input', (e) => renderList(e.target.value));
+
+        document.addEventListener('click', (e) => {
+            if (!wrap.contains(e.target)) closeDropdown();
+        });
+
+        const initItem = normalized.find(o => o.value === currentVal);
+        labelText.textContent = initItem ? initItem.label : (normalized[0]?.label ?? '');
+
+        return this._wrapWithLabel('Selector Desplegable', wrap);
+    }
+
+    /* =========================================================================
+       6. TABLA DINÁMICA CON REORDENAMIENTO INTERNO Y DRAG EXTERNO
+       ========================================================================= */
+    createTable({ label = 'Tabla de Datos', columns = [], data = [], endpoint = null, pageSize = 5, onRowDelete = null, onRowClick = null } = {}) {
+        const container = document.createElement('div');
+        container.style.cssText = "display: flex; flex-direction: column; gap: 6px; width: 100%; box-sizing: border-box; overflow: hidden;";
+
+        let cols = [...columns];
+        let originalData = [...data];
+        let displayData = [...data];
+        let currentPage = 1;
+        let query = '';
+        let dragColIdx = null;
+
+        const toolbar = document.createElement('div');
+        toolbar.style.cssText = "display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 8px; background: var(--backg2); border-bottom: 1px solid var(--borde); border-radius: 4px 4px 0 0;";
+
+        const search = document.createElement('input');
+        search.type = 'text';
+        search.placeholder = 'Buscar en tabla...';
+        search.style.cssText = "flex: 1; height: 26px; border-radius: 4px; border: 1px solid var(--borde); background: var(--backg3); color: #fff; padding: 0 8px; font-size: 11px; outline: none;";
 
         const btnRefresh = document.createElement('button');
-        btnRefresh.innerHTML = this._getSVG('reset', 14, this.theme.texto);
-        btnRefresh.style.cssText = `width: 30px; height: 30px; border-radius: 6px; border: 1px solid ${this.theme.borde}; background: ${this.theme.backg0}; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; outline: none;`;
-        btnRefresh.addEventListener('mouseenter', () => btnRefresh.style.background = this.theme.backg2);
-        btnRefresh.addEventListener('mouseleave', () => btnRefresh.style.background = this.theme.backg0);
-        btnRefresh.addEventListener('click', () => { if (endpoint) fetchData(); else render(); });
+        btnRefresh.innerHTML = '↻';
+        btnRefresh.style.cssText = "width: 26px; height: 26px; border-radius: 4px; border: 1px solid var(--borde); background: var(--backg0); color: var(--texto); cursor: pointer; display: flex; align-items: center; justify-content: center;";
 
-        toolbar.appendChild(searchWrap);
+        toolbar.appendChild(search);
         toolbar.appendChild(btnRefresh);
 
         const scrollBox = document.createElement('div');
+        scrollBox.className = 'gio-custom-scroll';
         scrollBox.style.cssText = "width: 100%; overflow-x: auto;";
 
         const table = document.createElement('table');
-        table.style.cssText = "width: 100%; border-collapse: collapse; font-size: 11px; text-align: left;";
+        table.style.cssText = "width: 100%; border-collapse: collapse; text-align: left; font-size: 12px;";
 
         const thead = document.createElement('thead');
         const theadTr = document.createElement('tr');
@@ -1484,113 +1262,98 @@ class Giovanni {
         scrollBox.appendChild(table);
 
         const footer = document.createElement('div');
-        footer.style.cssText = `display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: ${this.theme.textodisable}; padding-top: 4px;`;
+        footer.style.cssText = "display: flex; align-items: center; justify-content: space-between; padding: 6px 8px; background: var(--backg2); border-top: 1px solid var(--borde); font-size: 11px; color: var(--textodisable); border-radius: 0 0 4px 4px;";
 
-        const infoSpan = document.createElement('span');
-        const pagination = document.createElement('div');
-        pagination.style.cssText = "display: flex; align-items: center; gap: 4px;";
+        const info = document.createElement('span');
+        const pager = document.createElement('div');
+        pager.style.cssText = "display: flex; align-items: center; gap: 4px;";
 
-        const pageLabel = document.createElement('span');
-        pageLabel.style.cssText = `font-weight: 600; color: ${this.theme.textoActivo};`;
+        const btnPrev = document.createElement('button');
+        btnPrev.textContent = '◀';
+        btnPrev.style.cssText = "background: transparent; border: 1px solid var(--borde); color: #fff; border-radius: 4px; padding: 2px 6px; cursor: pointer;";
 
-        const createPageBtn = (iconName, onClick) => {
-            const btn = document.createElement('button');
-            btn.innerHTML = this._getSVG(iconName, 12, this.theme.texto);
-            btn.style.cssText = `width: 22px; height: 22px; border-radius: 4px; border: 1px solid ${this.theme.borde}; background: ${this.theme.backg0}; cursor: pointer; display: flex; align-items: center; justify-content: center; outline: none;`;
-            btn.addEventListener('click', onClick);
-            return btn;
-        };
+        const pageText = document.createElement('span');
+        pageText.style.cssText = "color: #fff; font-family: monospace; padding: 0 4px;";
 
-        const btnPrev = createPageBtn('chevronLeft', () => { if (currentPage > 1) { currentPage--; render(); } });
-        const btnNext = createPageBtn('chevronRight', () => {
-            const totalPages = Math.ceil(filteredData.length / pageSize) || 1;
-            if (currentPage < totalPages) { currentPage++; render(); }
-        });
+        const btnNext = document.createElement('button');
+        btnNext.textContent = '▶';
+        btnNext.style.cssText = "background: transparent; border: 1px solid var(--borde); color: #fff; border-radius: 4px; padding: 2px 6px; cursor: pointer;";
 
-        pagination.appendChild(btnPrev);
-        pagination.appendChild(pageLabel);
-        pagination.appendChild(btnNext);
-        footer.appendChild(infoSpan);
-        footer.appendChild(pagination);
+        pager.appendChild(btnPrev);
+        pager.appendChild(pageText);
+        pager.appendChild(btnNext);
+        footer.appendChild(info);
+        footer.appendChild(pager);
 
         const applyFilter = () => {
-            if (!searchQuery) filteredData = [...tableData];
+            if (!query) displayData = [...originalData];
             else {
-                filteredData = tableData.filter(row => {
-                    return internalCols.some(col => String(row[col.key] !== undefined ? row[col.key] : '').toLowerCase().includes(searchQuery));
-                });
+                displayData = originalData.filter(row =>
+                    cols.some(col => String(row[col.key] !== undefined ? row[col.key] : '').toLowerCase().includes(query))
+                );
             }
-            render();
-        };
-
-        const fetchData = async () => {
-            try {
-                const res = await fetch(endpoint);
-                const json = await res.json();
-                tableData = Array.isArray(json) ? json : (json.data || []);
-                applyFilter();
-            } catch (err) {
-                console.error(err);
-            }
+            renderTable();
         };
 
         const renderHeaders = () => {
             theadTr.innerHTML = '';
-            internalCols.forEach((col, idx) => {
+            cols.forEach((col, idx) => {
                 const th = document.createElement('th');
                 th.textContent = col.label || col.key;
                 th.draggable = true;
-                th.style.cssText = `background: ${this.theme.backg0}; color: ${this.theme.textoActivo}; padding: 6px 8px; border-bottom: 1px solid ${this.theme.borde}; cursor: grab; font-weight: 600; white-space: nowrap;`;
+                th.style.cssText = "background: var(--backg0); color: var(--texto); padding: 7px 10px; border-bottom: 1px solid var(--borde); font-weight: 600; white-space: nowrap; cursor: grab;";
 
-                th.addEventListener('dragstart', (e) => { draggedColIdx = idx; e.dataTransfer.effectAllowed = 'move'; });
-                th.addEventListener('dragover', (e) => { e.preventDefault(); th.style.borderLeft = `2px solid ${this.theme.textoActvioBlue}`; });
-                th.addEventListener('dragleave', () => { th.style.borderLeft = 'none'; });
+                th.addEventListener('dragstart', (e) => { e.stopPropagation(); dragColIdx = idx; });
+                th.addEventListener('dragover', (e) => e.preventDefault());
                 th.addEventListener('drop', (e) => {
                     e.preventDefault();
-                    th.style.borderLeft = 'none';
-                    if (draggedColIdx !== null && draggedColIdx !== idx) {
-                        const dragged = internalCols.splice(draggedColIdx, 1)[0];
-                        internalCols.splice(idx, 0, dragged);
-                        render();
+                    e.stopPropagation();
+                    if (dragColIdx !== null && dragColIdx !== idx) {
+                        const moved = cols.splice(dragColIdx, 1)[0];
+                        cols.splice(idx, 0, moved);
+                        renderTable();
                     }
-                    draggedColIdx = null;
+                    dragColIdx = null;
                 });
+
                 theadTr.appendChild(th);
             });
 
-            const thAction = document.createElement('th');
-            thAction.textContent = 'Acción';
-            thAction.style.cssText = `background: ${this.theme.backg0}; color: ${this.theme.textoActivo}; padding: 6px 8px; border-bottom: 1px solid ${this.theme.borde}; text-align: center; width: 40px;`;
-            theadTr.appendChild(thAction);
+            const thDel = document.createElement('th');
+            thDel.textContent = '✕';
+            thDel.style.cssText = "background: var(--backg0); width: 28px; text-align: center; border-bottom: 1px solid var(--borde); color: var(--textodisable);";
+            theadTr.appendChild(thDel);
         };
 
-        const render = () => {
+        const renderTable = () => {
             renderHeaders();
             tbody.innerHTML = '';
 
+            const totalPages = Math.ceil(displayData.length / pageSize) || 1;
+            currentPage = Math.min(currentPage, totalPages);
             const start = (currentPage - 1) * pageSize;
-            const end = start + pageSize;
-            const pageData = filteredData.slice(start, end);
-            const totalPages = Math.ceil(filteredData.length / pageSize) || 1;
+            const slice = displayData.slice(start, start + pageSize);
 
-            infoSpan.textContent = `${filteredData.length} reg.`;
-            pageLabel.textContent = `${currentPage}/${totalPages}`;
+            info.textContent = `${displayData.length} filas`;
+            pageText.textContent = `${currentPage}/${totalPages}`;
+            btnPrev.disabled = currentPage <= 1;
+            btnNext.disabled = currentPage >= totalPages;
 
-            if (pageData.length === 0) {
+            if (slice.length === 0) {
                 const tr = document.createElement('tr');
                 const td = document.createElement('td');
-                td.colSpan = internalCols.length + 1;
+                td.colSpan = cols.length + 1;
                 td.textContent = 'Sin datos';
-                td.style.cssText = `text-align: center; padding: 12px; color: ${this.theme.textodisable};`;
+                td.style.cssText = "text-align: center; padding: 12px; color: var(--textodisable);";
                 tr.appendChild(td);
                 tbody.appendChild(tr);
                 return;
             }
 
-            pageData.forEach((row, rIdx) => {
+            slice.forEach((row, rIdx) => {
                 const tr = document.createElement('tr');
-                tr.style.cssText = `border-bottom: 1px solid ${this.theme.borde};`;
-                tr.addEventListener('mouseenter', () => tr.style.background = this.theme.backg1);
+                tr.style.cssText = "border-bottom: 1px solid var(--borde); transition: background 0.15s;";
+                tr.addEventListener('mouseenter', () => tr.style.background = 'var(--backg2)');
                 tr.addEventListener('mouseleave', () => tr.style.background = 'transparent');
 
                 if (onRowClick) {
@@ -1600,51 +1363,60 @@ class Giovanni {
                     });
                 }
 
-                internalCols.forEach(col => {
+                cols.forEach(col => {
                     const td = document.createElement('td');
-                    td.style.cssText = `padding: 6px 8px; color: ${this.theme.texto}; vertical-align: middle;`;
-
-                    if (col.type === 'toggle') {
-                        const tog = this.createToggle('', !!row[col.key], (checked) => row[col.key] = checked);
-                        td.appendChild(tog);
-                    } else {
-                        td.textContent = row[col.key] !== undefined ? row[col.key] : '';
-                    }
-
+                    td.style.cssText = "padding: 7px 10px; color: var(--texto); white-space: nowrap;";
+                    td.textContent = row[col.key] !== undefined ? row[col.key] : '';
                     tr.appendChild(td);
                 });
 
-                const tdActions = document.createElement('td');
-                tdActions.style.cssText = "padding: 6px 8px; text-align: center; vertical-align: middle;";
-
+                const tdAction = document.createElement('td');
+                tdAction.style.cssText = "text-align: center; padding: 4px;";
                 const btnDel = document.createElement('button');
-                btnDel.innerHTML = this._getSVG('close', 12, this.theme.texto);
-                btnDel.style.cssText = `width: 22px; height: 22px; border-radius: 4px; border: 1px solid ${this.theme.borde}; background: ${this.theme.backg0}; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; outline: none;`;
-                btnDel.addEventListener('mouseenter', () => btnDel.style.background = '#8a2323');
-                btnDel.addEventListener('mouseleave', () => btnDel.style.background = this.theme.backg0);
+                btnDel.innerHTML = '✕';
+                btnDel.style.cssText = "background: transparent; border: 1px solid var(--borde); color: var(--danger); border-radius: 4px; width: 22px; height: 22px; cursor: pointer;";
+
                 btnDel.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    const origIdx = tableData.indexOf(row);
-                    if (origIdx !== -1) tableData.splice(origIdx, 1);
-                    if (onRowDelete) onRowDelete(row, origIdx);
+                    const idx = originalData.indexOf(row);
+                    if (idx !== -1) originalData.splice(idx, 1);
+                    if (onRowDelete) onRowDelete(row, idx);
                     applyFilter();
                 });
 
-                tdActions.appendChild(btnDel);
-                tr.appendChild(tdActions);
+                tdAction.appendChild(btnDel);
+                tr.appendChild(tdAction);
                 tbody.appendChild(tr);
             });
         };
 
-        tableCard.appendChild(toolbar);
-        tableCard.appendChild(scrollBox);
-        tableCard.appendChild(footer);
+        search.addEventListener('input', (e) => {
+            query = e.target.value.toLowerCase();
+            currentPage = 1;
+            applyFilter();
+        });
 
-        if (endpoint) fetchData();
-        else render();
+        btnPrev.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderTable(); } });
+        btnNext.addEventListener('click', () => {
+            const total = Math.ceil(displayData.length / pageSize) || 1;
+            if (currentPage < total) { currentPage++; renderTable(); }
+        });
 
-        this._wrapWithLabel('Tabla Dinámica', tableCard);
-        return tableCard;
+        btnRefresh.addEventListener('click', () => {
+            if (endpoint) {
+                fetch(endpoint).then(r => r.json()).then(j => {
+                    originalData = Array.isArray(j) ? j : (j.data || []);
+                    applyFilter();
+                });
+            } else renderTable();
+        });
+
+        container.appendChild(toolbar);
+        container.appendChild(scrollBox);
+        container.appendChild(footer);
+
+        applyFilter();
+        return this._wrapWithLabel(label, container);
     }
 
     getElement() {
