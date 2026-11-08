@@ -730,9 +730,79 @@ class Giovanni {
         return wrap;
     }
 
-    /* =========================================================================
-       1. CHECKBOX CON EMISIÓN LED EXACTA (18x18px)
-       ========================================================================= */
+    createButtonSimple = function({ 
+    text = 'TinkerAtlas', 
+    onClick = null, 
+    fullWidth = false, 
+    label = null 
+} = {}) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = text;
+    btn.style.cssText = `
+        background: #2d2d2d;
+        color: var(--texto);
+        border: 3px solid #2d2d2d0c;
+        border-radius: var(--radius);
+        padding: 8px 16px;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        outline: none;
+        user-select: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: ${fullWidth ? '100%' : 'fit-content'};
+        box-sizing: border-box;
+        transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    `;
+
+    // Efecto Hover (Azul Neón + Glow)
+    btn.addEventListener('mouseenter', () => {
+        btn.style.color = 'var(--textoActvioBlue)';
+    
+    
+ 
+    });
+
+    btn.addEventListener('mouseleave', () => {
+        btn.style.color = 'var(--texto)';
+   
+        btn.style.background = '#383737';
+        btn.style.boxShadow = 'none';
+    });
+
+    // Efecto Click (Pulsación)
+    btn.addEventListener('mousedown', () => {
+        btn.style.transform = 'scale(0.97)';
+    });
+    btn.addEventListener('mouseup', () => {
+        btn.style.transform = 'scale(1)';
+    });
+
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (onClick) onClick(btn, e);
+    });
+
+  
+    btn.setText = (nuevoTexto) => {
+        btn.textContent = nuevoTexto;
+        return btn;
+    };
+
+ 
+    if (label) {
+        return this._wrapWithLabel(label, btn);
+    }
+
+    return btn;
+};
+
+    
     createCheckbox(label = 'Habilitar Opción', checked = false, onChange = null) {
         let isChecked = !!checked;
 
@@ -1445,25 +1515,7 @@ class Giovanni {
 }
 
 
-/* 
-const GiovanniIconDB = {
-  pencil: '<path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>',
-  square: '<path d="M3 3h18v18H3V3zm2 2v14h14V5H5z"/>',
-  sphere: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>',
-  sliders: '<path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>',
-  chevronDown: '<path d="M7 10l5 5 5-5z"/>',
-  chevronLeft: '<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>',
-  chevronRight: '<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>',
-  reset: '<path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>',
-  drop: '<path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>',
-  home: '<path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>',
-  mail: '<path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>',
-  send: '<path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>',
-  check: '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>',
-  close: '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>',
-  filter: '<path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/>',
-  search: '<path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>'
-}; */
+ 
 
 Giovanni.getSVG = function(keyOrPath, size = 18) {
     const pathData = GiovanniIconDB[keyOrPath] || keyOrPath;
@@ -1813,3 +1865,7 @@ Giovanni.prototype.createNodeTree = function({
     field.setTreeData = (newData) => { nodes = newData; renderTree(); };
     return field;
 };
+
+
+ 
+  
