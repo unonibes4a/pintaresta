@@ -1,3 +1,101 @@
+ 
+      const GiovanniIconDB = {
+  // --- CAD & Herramientas ---
+  pencil:     '<path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>',
+  square:     '<path d="M3 3h18v18H3V3zm2 2v14h14V5H5z"/>',
+  sphere:     '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>',
+  sliders:    '<path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>',
+  reset:      '<path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>',
+  drop:       '<path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>',
+  filter:     '<path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/>',
+  search:     '<path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>',
+  layers:     '<path d="M11.99 18.54l-7.37-5.73L3 14.07l9 7 9-7-1.63-1.27-7.38 5.74zM12 16l7.36-5.73L21 9l-9-7-9 7 1.63 1.27L12 16z"/>',
+  cube:       '<path d="M21 16.5c0 .38-.21.71-.53.88l-7.9 4.44c-.16.12-.36.18-.57.18-.21 0-.41-.06-.57-.18l-7.9-4.44A.991.991 0 0 1 3 16.5v-9c0-.38.21-.71.53-.88l7.9-4.44c.16-.12.36-.18.57-.18.21 0 .41.06.57.18l7.9 4.44c.32.17.53.5.53.88v9zM12 4.15L6.04 7.5 12 10.85l5.96-3.35L12 4.15zM5 15.91l6 3.38v-6.71L5 9.19v6.72zm14 0v-6.72l-6 3.38v6.72l6-3.38z"/>',
+  ruler:      '<path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-2 10H5V8h14v8zM7 10h2v4H7v-4zm4 0h2v4h-2v-4zm4 0h2v4h-2v-4z"/>',
+
+  // --- UI Universal & Navegación ---
+  home:         '<path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>',
+  menu:         '<path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/>',
+  menuOpen:     '<path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/>',
+  back:         '<path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>',
+  forward:      '<path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>',
+  up:           '<path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/>',
+  down:         '<path d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"/>',
+  chevronDown:  '<path d="M7 10l5 5 5-5z"/>',
+  chevronLeft:  '<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>',
+  chevronRight: '<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>',
+  expandMore:   '<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>',
+  expandLess:   '<path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"/>',
+
+  // --- Acciones & Edición ---
+  check:  '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>',
+  close:  '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>',
+  delete: '<path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>',
+  trash:  '<path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>',
+  edit:   '<path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>',
+  copy:   '<path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>',
+  save:   '<path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/>',
+  print:  '<path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/>',
+  undo:   '<path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/>',
+  redo:   '<path d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 16h9V7l-3.6 3.6z"/>',
+
+  // --- Formularios & Contacto ---
+  mail:     '<path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>',
+  email:    '<path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>',
+  phone:    '<path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>',
+  password: '<path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>',
+  lock:     '<path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>',
+  unlock:   '<path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/>',
+  user:     '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>',
+  users:    '<path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>',
+  send:     '<path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>',
+  attach:   '<path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"/>',
+
+  // --- Extras / Media ---
+  settings: '<path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>',
+  image:    '<path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>',
+  file:     '<path d="M6 2c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6H6zm7 7V3.5L18.5 9H13z"/>',
+  folder:   '<path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>',
+      // --- Edición de Video ---
+    play: '<path d="M8 5v14l11-7z"/>',
+    pause: '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>',
+    stop: '<path d="M6 6h12v12H6z"/>',
+    record: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6z"/>',
+    skipNext: '<path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>',
+    skipPrev: '<path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>',
+    fastForward: '<path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/>',
+    rewind: '<path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z"/>',
+    fullscreen: '<path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>',
+    fullscreenExit: '<path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>',
+    volumeUp: '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>',
+    volumeDown: '<path d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z"/>',
+    volumeMute: '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>',
+    videoCamera: '<path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>',
+    scissors: '<path d="M9.64 7.64c.23-.5.36-1.05.36-1.64 0-2.21-1.79-4-4-4S2 3.79 2 6s1.79 4 4 4c.59 0 1.14-.13 1.64-.36L10 12l-2.36 2.36C7.14 14.13 6.59 14 6 14c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4c0-.59-.13-1.14-.36-1.64L12 14l7 7h3v-1L9.64 7.64zM6 8c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm0 12c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm6-7.5c-.28 0-.5-.22-.5-.5s.22-.5.5-.5.5.22.5.5-.22.5-.5.5zM19 3l-6 6 2 2 7-7V3z"/>',
+
+    // --- Audio y Música ---
+    musicNote: '<path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>',
+    mic: '<path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/>',
+    micOff: '<path d="M19 11h-1.7c0 .74-.16 1.43-.43 2.05l1.23 1.23c.56-.98.9-2.09.9-3.28zm-4.02.17c0-.06.02-.11.02-.17V5c0-1.66-1.34-3-3-3S9 3.34 9 5v.18l5.98 5.99zM4.27 3L3 4.27l6.01 6.01V11c0 1.66 1.33 3 2.99 3 .22 0 .44-.03.65-.08l1.66 1.66c-.71.33-1.5.52-2.31.52-2.76 0-5.3-2.1-5.3-5.1H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c.91-.13 1.77-.45 2.54-.9L19.73 21 21 19.73 4.27 3z"/>',
+    headphones: '<path d="M12 3a9 9 0 0 0-9 9v7c0 1.1.9 2 2 2h4v-8H5v-1c0-3.87 3.13-7 7-7s7 3.13 7 7v1h-4v8h4c1.1 0 2-.9 2-2v-7a9 9 0 0 0-9-9z"/>',
+    equalizer: '<path d="M10 20h4V4h-4v16zm-6 0h4v-8H4v8zM16 9v11h4V9h-4z"/>',
+    playlist: '<path d="M4 10h12v2H4zm0-4h12v2H4zm0 8h8v2H4zm10 0v6l5-3z"/>',
+    radio: '<path d="M3.24 6.15C2.51 6.43 2 7.17 2 8v12c0 1.1.89 2 2 2h16c1.11 0 2-.9 2-2V8c0-1.11-.89-2-2-2H8.3l8.26-3.34L15.88 1 3.24 6.15zM7 20c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm13-8h-2v-2h-2v2H4V8h16v4z"/>',
+
+    // --- Editar Brochas y Pintura ---
+    brush: '<path d="M7 14c-1.66 0-3 1.34-3 3 0 1.31-1.16 2-2 2 .92 1.22 2.49 2 4 2 2.21 0 4-1.79 4-4 0-1.66-1.34-3-3-3zm13.71-9.37l-1.34-1.34a.996.996 0 0 0-1.41 0L9 12.25 11.75 15l8.96-8.96a.996.996 0 0 0 0-1.41z"/>',
+    formatPaint: '<path d="M18 4V3c0-.55-.45-1-1-1H5c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V6h1v4H9v11c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-9h8V4h-3z"/>',
+    colorLens: '<path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>',
+    palette: '<path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>',
+    fill: '<path d="M16.56 8.94L7.62 0 6.21 1.41l2.38 2.38-5.15 5.15c-.59.59-.59 1.54 0 2.12l5.5 5.5c.29.29.68.44 1.06.44s.77-.15 1.06-.44l5.5-5.5c.59-.58.59-1.53 0-2.12zM5.21 10L10 5.21 14.79 10H5.21zM19 11.5s-2 2.17-2 3.5c0 1.1.9 2 2 2s2-.9 2-2c0-1.33-2-3.5-2-3.5z"/>',
+    crop: '<path d="M17 15h2V7c0-1.1-.9-2-2-2H9v2h8v8zM7 17V1H5v4H1v2h4v10c0 1.1.9 2 2 2h10v4h2v-4h4v-2H7z"/>',
+    formatColorFill: '<path d="M16.56 8.94L7.62 0 6.21 1.41l2.38 2.38-5.15 5.15c-.59.59-.59 1.54 0 2.12l5.5 5.5c.29.29.68.44 1.06.44s.77-.15 1.06-.44l5.5-5.5c.59-.58.59-1.53 0-2.12zM5.21 10L10 5.21 14.79 10H5.21zM19 11.5s-2 2.17-2 3.5c0 1.1.9 2 2 2s2-.9 2-2c0-1.33-2-3.5-2-3.5z"/>',
+    eraser: '<path d="M16.24 3.56l4.95 4.94c.78.79.78 2.05 0 2.84L12 20.53a4.008 4.008 0 0 1-5.66 0L2.81 17c-.78-.79-.78-2.05 0-2.84l10.6-10.6c.79-.78 2.05-.78 2.83 0M4.22 15.58l3.54 3.53c.78.79 2.04.79 2.83 0l3.53-3.53-4.95-4.95-4.95 4.95z"/>'
+
+  
+};
+
+
    
    function agregarClaseAElementos(nombreClase) {
   const elementos = document.querySelectorAll('aside, main, div, footer');
@@ -375,25 +473,6 @@ box-shadow: -6px 2px 50px 9px var(--shadow);
     return this;
   }
 }
-     
-const GiovanniIconDB = {
-  pencil: '<path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>',
-  square: '<path d="M3 3h18v18H3V3zm2 2v14h14V5H5z"/>',
-  sphere: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>',
-  sliders: '<path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>',
-  chevronDown: '<path d="M7 10l5 5 5-5z"/>',
-  chevronLeft: '<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>',
-  chevronRight: '<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>',
-  reset: '<path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>',
-  drop: '<path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>',
-  home: '<path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>',
-  mail: '<path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>',
-  send: '<path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>',
-  check: '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>',
-  close: '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>',
-  filter: '<path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/>',
-  search: '<path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>'
-};
 
 const injectStyles = `
   /*   ::-webkit-scrollbar {
@@ -1081,6 +1160,249 @@ createToolbar({
     getButton: (bid) => created.find(b => b.id === bid)
   };
 }
+    createUniversalMenu({
+        position = 'left',
+        buttons = [],
+        id = `gio-menu-${Math.random().toString(36).slice(2, 8)}`,
+        collapsible = true,
+        defaultCollapsed = false,
+        burgerTooltip = 'Mostrar / ocultar menú',
+        buttonSize = 44,
+        iconSize = 22,
+        radius = 10,
+        gap = 8,
+        padding = 8,
+        defaultOnClick = null
+    } = {}) {
+
+        
+        const STYLE_ID = 'gio-universal-menu-styles';
+        if (!document.getElementById(STYLE_ID)) {
+            const style = document.createElement('style');
+            style.id = STYLE_ID;
+            style.textContent = `
+                .gio-menu {
+                    position: fixed;
+                    z-index: 9999;
+                    display: flex;
+                    gap: var(--gio-gap, 8px);
+                    padding: var(--gio-padding, 8px);
+                    background: var(--backg1, #2d2d2d);
+                    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+                    transition: transform .28s ease, opacity .28s ease;
+                    max-width: calc(100vw - 24px);
+                    max-height: calc(100vh - 24px);
+                    box-sizing: border-box;
+                }
+                .gio-menu.gio-left   { left: 0;  top: 50%; transform: translateY(-50%); flex-direction: column; border-radius: 0 var(--radius, 6px) var(--radius, 6px) 0; }
+                .gio-menu.gio-right  { right: 0; top: 50%; transform: translateY(-50%); flex-direction: column; border-radius: var(--radius, 6px) 0 0 var(--radius, 6px); }
+                .gio-menu.gio-top    { top: 0;    left: 50%; transform: translateX(-50%); flex-direction: row;    border-radius: 0 0 var(--radius, 6px) var(--radius, 6px); }
+                .gio-menu.gio-bottom { bottom: 0; left: 50%; transform: translateX(-50%); flex-direction: row;    border-radius: var(--radius, 6px) var(--radius, 6px) 0 0; }
+
+                .gio-menu-list {
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--gio-gap, 8px);
+                    max-height: calc(100vh - 100px);
+                    overflow-y: auto;
+                    overflow-x: hidden;
+                    scrollbar-gutter: stable;
+                }
+                .gio-menu.gio-top .gio-menu-list,
+                .gio-menu.gio-bottom .gio-menu-list {
+                    flex-direction: row;
+                    max-height: none;
+                    max-width: calc(100vw - 100px);
+                    overflow-y: hidden;
+                    overflow-x: auto;
+                }
+
+                .gio-btn {
+                    position: relative;
+                    width: var(--gio-btn-size, 44px);
+                    height: var(--gio-btn-size, 44px);
+                    min-width: var(--gio-btn-size, 44px);
+                    border: none;
+                    border-radius: var(--gio-btn-radius, 10px);
+                    background: var(--backg0, #333);
+                    color: var(--texto, #8c8e8f);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    transition: background .18s, color .18s, transform .12s, opacity .2s;
+                    padding: 0;
+                    flex-shrink: 0;
+                }
+                .gio-btn:hover  { background: var(--backg3, #3d3d3d); color: var(--textoActvioBlue, #4daafc); }
+                .gio-btn:active { transform: scale(.94); }
+                .gio-btn.gio-active { color: var(--textoActvioBlue, #4daafc); background: var(--textoledBrillo, #383f48); }
+                .gio-btn svg { width: var(--gio-icon-size, 22px); height: var(--gio-icon-size, 22px); fill: currentColor; pointer-events: none; }
+                .gio-btn.gio-burger { color: var(--textoActvioBlue, #4daafc); }
+
+                .gio-menu.gio-collapsed .gio-menu-list {
+                    display: none;
+                }
+                .gio-menu.gio-collapsed.gio-left   { transform: translateY(-50%) translateX(-2px); }
+                .gio-menu.gio-collapsed.gio-right  { transform: translateY(-50%) translateX(2px); }
+                .gio-menu.gio-collapsed.gio-top    { transform: translateX(-50%) translateY(-2px); }
+                .gio-menu.gio-collapsed.gio-bottom { transform: translateX(-50%) translateY(2px); }
+                .gio-menu.gio-collapsed { padding: calc(var(--gio-padding, 8px) * 0.75); gap: 0; }
+
+                .gio-tooltip {
+                    position: fixed;
+                    padding: 6px 10px;
+                    background: var(--backg0, #1a1a1a);
+                    color: var(--textoActivo, #e7e7e7);
+                    font-size: 12px;
+                    font-family: system-ui, sans-serif;
+                    white-space: nowrap;
+                    border-radius: 6px;
+                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+                    pointer-events: none;
+                    opacity: 0;
+                    transform: translateY(-50%) scale(.9);
+                    transition: opacity .15s, transform .15s;
+                    z-index: 10000;
+                    border: 1px solid var(--borde, #444);
+                }
+                .gio-tooltip.gio-visible { opacity: 1; transform: translateY(-50%) scale(1); }
+            `;
+            document.head.appendChild(style);
+        }
+
+  
+        const menuEl = document.createElement('div');
+        menuEl.id = id;
+        menuEl.className = `gio-menu gio-${position}`;
+        menuEl.style.setProperty('--gio-btn-size',   `${buttonSize}px`);
+        menuEl.style.setProperty('--gio-icon-size',  `${iconSize}px`);
+        menuEl.style.setProperty('--gio-btn-radius', `${radius}px`);
+        menuEl.style.setProperty('--gio-gap',        `${gap}px`);
+        menuEl.style.setProperty('--gio-padding',    `${padding}px`);
+
+        const listEl = document.createElement('div');
+        listEl.className = 'gio-menu-list gio-custom-scroll';
+
+        let collapsed = false;
+        let burgerRef = null;
+        const createdButtons = [];
+
+        const createButton = ({ icon, tooltip = '', bId = null, active = false, onClick = null, separator = false }) => {
+            if (separator) {
+                const sep = document.createElement('div');
+                sep.style.cssText = position === 'left' || position === 'right' 
+                    ? 'height:1px; width:100%; background:var(--borde, #4d4d4d); margin:4px 0; flex-shrink:0;' 
+                    : 'width:1px; height:100%; background:var(--borde, #4d4d4d); margin:0 4px; flex-shrink:0;';
+                listEl.appendChild(sep);
+                return { el: sep, isSeparator: true };
+            }
+
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'gio-btn' + (active ? ' gio-active' : '');
+            if (bId) btn.dataset.id = bId;
+            btn.dataset.tooltip = tooltip;
+
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('viewBox', '0 0 24 24');
+            svg.innerHTML = GiovanniIconDB[icon] || GiovanniIconDB.square;
+            btn.appendChild(svg);
+
+            let ttPos = 'right';
+            if (position === 'right') ttPos = 'left';
+            else if (position === 'top') ttPos = 'bottom';
+            else if (position === 'bottom') ttPos = 'top';
+
+            btn.addEventListener('mouseenter', () => Giovanni._showGlobalTooltip(btn, btn.dataset.tooltip, ttPos));
+            btn.addEventListener('mouseleave', () => Giovanni._hideGlobalTooltip());
+            btn.addEventListener('focus',      () => Giovanni._showGlobalTooltip(btn, btn.dataset.tooltip, ttPos));
+            btn.addEventListener('blur',       () => Giovanni._hideGlobalTooltip());
+
+            btn.addEventListener('click', (e) => {
+                if (typeof onClick === 'function') onClick(btn, e);
+                else if (typeof defaultOnClick === 'function') defaultOnClick(btn, e);
+            });
+
+            const ref = {
+                el: btn,
+                id: bId,
+                setActive: (v = true) => btn.classList.toggle('gio-active', v),
+                setTooltip: (t) => { btn.dataset.tooltip = t; },
+                setIcon: (key) => { svg.innerHTML = GiovanniIconDB[key] || GiovanniIconDB.square; },
+                remove: () => {
+                    btn.remove();
+                    const i = createdButtons.indexOf(ref);
+                    if (i > -1) createdButtons.splice(i, 1);
+                }
+            };
+            createdButtons.push(ref);
+            listEl.appendChild(btn);
+            return ref;
+        };
+
+        const collapse = () => {
+            if (!collapsible || collapsed) return;
+            collapsed = true;
+            menuEl.classList.add('gio-collapsed');
+            burgerRef?.setIcon('menu');
+            Giovanni._hideGlobalTooltip();
+        };
+        
+        const expand = () => {
+            if (!collapsible || !collapsed) return;
+            collapsed = false;
+            menuEl.classList.remove('gio-collapsed');
+            burgerRef?.setIcon('menuOpen');
+        };
+        
+        const toggle = () => collapsed ? expand() : collapse();
+
+        if (collapsible) {
+            burgerRef = createButton({
+                icon: 'menu',
+                tooltip: burgerTooltip,
+                bId: '__burger__',
+                onClick: () => toggle()
+            });
+            burgerRef.el.classList.add('gio-burger');
+            menuEl.appendChild(burgerRef.el);
+        }
+
+        buttons.forEach(b => createButton(b));
+
+        menuEl.appendChild(listEl);
+        document.body.appendChild(menuEl);
+
+        if (defaultCollapsed) collapse();
+
+       
+        return {
+            el: menuEl,
+            listEl,
+            id,
+            buttons: createdButtons,
+            createButton,
+            toggle,
+            collapse,
+            expand,
+            isCollapsed: () => collapsed,
+            setSizes: (s = {}) => {
+                if (s.buttonSize) menuEl.style.setProperty('--gio-btn-size',   `${s.buttonSize}px`);
+                if (s.iconSize)   menuEl.style.setProperty('--gio-icon-size',  `${s.iconSize}px`);
+                if (s.radius)     menuEl.style.setProperty('--gio-btn-radius', `${s.radius}px`);
+                if (s.gap != null)menuEl.style.setProperty('--gio-gap',        `${s.gap}px`);
+                if (s.padding != null)menuEl.style.setProperty('--gio-padding',`${s.padding}px`);
+            },
+            show: () => { menuEl.style.display = ''; },
+            hide: () => { menuEl.style.display = 'none'; },
+            destroy: () => {
+                menuEl.remove();
+                createdButtons.length = 0;
+            },
+            getButton: (bId) => createdButtons.find(b => b.id === bId)
+        };
+    }
 createRibbonGroup({
   container = null,
   label = 'Grupo',
@@ -2589,7 +2911,6 @@ createUnversalSideMenu({
         return this.element;
     }
 }
-
 
  
 
