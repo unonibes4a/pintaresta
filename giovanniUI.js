@@ -3,7 +3,7 @@
   const elementos = document.querySelectorAll('aside, main, div, footer');
   
   elementos.forEach(el => {
-    // Evita alterar elementos internos del acordeón o guías de drag
+ 
     if (el.closest('.gio-acc-item') || el.id.startsWith('gio-snap-')) {
       return;
     }
@@ -396,7 +396,7 @@ const GiovanniIconDB = {
 };
 
 const injectStyles = `
-    ::-webkit-scrollbar {
+  /*   ::-webkit-scrollbar {
         width: 6px;
         height: 6px;
     }
@@ -409,7 +409,22 @@ const injectStyles = `
     }
     ::-webkit-scrollbar-thumb:hover {
         background: #666;
-    }
+    } */
+
+        *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;  
+}
+*::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.15);
+}
+*::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
+}
+*::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
 `;
 const styleSheet = document.createElement('style');
 styleSheet.type = 'text/css';
