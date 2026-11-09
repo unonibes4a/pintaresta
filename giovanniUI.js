@@ -462,6 +462,94 @@ class Giovanni {
                 --scrollbar-size: 5px;
             }
 
+            .gio-menu {
+    position: fixed;
+    z-index: 9999;
+    display: flex;
+    flex-direction: row;
+    gap: var(--gio-gap, 8px);
+    padding: var(--gio-padding, 8px);
+    background: var(--backg1);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+    transition: transform .28s ease, opacity .28s ease;
+    max-width: calc(100vw - 24px);
+    max-height: calc(100vh - 24px);
+    box-sizing: border-box;
+}
+.gio-menu.gio-left   { left: 0;  top: 50%; transform: translateY(-50%); flex-direction: column; border-radius: 0 var(--radius) var(--radius) 0; }
+.gio-menu.gio-right  { right: 0; top: 50%; transform: translateY(-50%); flex-direction: column; border-radius: var(--radius) 0 0 var(--radius); }
+.gio-menu.gio-top    { top: 0;    left: 50%; transform: translateX(-50%); border-radius: 0 0 var(--radius) var(--radius); }
+.gio-menu.gio-bottom { bottom: 0; left: 50%; transform: translateX(-50%); border-radius: var(--radius) var(--radius) 0 0; }
+
+.gio-menu-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gio-gap, 8px);
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-gutter: stable;
+}
+.gio-menu.gio-top .gio-menu-list,
+.gio-menu.gio-bottom .gio-menu-list {
+    flex-direction: row;
+    max-height: none;
+    max-width: calc(100vw - 100px);
+    overflow-y: hidden;
+    overflow-x: auto;
+}
+
+.gio-btn {
+    position: relative;
+    width: var(--gio-btn-size, 44px);
+    height: var(--gio-btn-size, 44px);
+    min-width: var(--gio-btn-size, 44px);
+    border: none;
+    border-radius: var(--gio-btn-radius, 10px);
+    background: var(--backg0);
+    color: var(--texto);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background .18s, color .18s, transform .12s, opacity .2s;
+    padding: 0;
+    flex-shrink: 0;
+}
+.gio-btn:hover  { background: var(--backg3); color: var(--textoActvioBlue); }
+.gio-btn:active { transform: scale(.94); }
+.gio-btn.gio-active { color: var(--textoActvioBlue); background: var(--textoledBrillo); }
+.gio-btn svg { width: var(--gio-icon-size, 22px); height: var(--gio-icon-size, 22px); fill: currentColor; pointer-events: none; }
+.gio-btn.gio-burger { color: var(--textoActvioBlue); }
+
+.gio-menu.gio-collapsed .gio-menu-list {
+    display: none;
+}
+.gio-menu.gio-collapsed.gio-left   { transform: translateY(-50%) translateX(-2px); }
+.gio-menu.gio-collapsed.gio-right  { transform: translateY(-50%) translateX(2px); }
+.gio-menu.gio-collapsed.gio-top    { transform: translateX(-50%) translateY(-2px); }
+.gio-menu.gio-collapsed.gio-bottom { transform: translateX(-50%) translateY(2px); }
+.gio-menu.gio-collapsed { padding: calc(var(--gio-padding, 8px) * 0.75); gap: 0; }
+
+.gio-tooltip {
+    position: fixed;
+    padding: 6px 10px;
+    background: var(--backg0);
+    color: var(--textoActivo);
+    font-size: 12px;
+    font-family: system-ui, sans-serif;
+    white-space: nowrap;
+    border-radius: 6px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(-50%) scale(.9);
+    transition: opacity .15s, transform .15s;
+    z-index: 10000;
+    border: 1px solid var(--borde);
+}
+.gio-tooltip.gio-visible { opacity: 1; transform: translateY(-50%) scale(1); }
+
             .gio-container *::-webkit-scrollbar,
             .gio-custom-scroll::-webkit-scrollbar {
                 width: var(--scrollbar-size);
@@ -585,15 +673,13 @@ class Giovanni {
         this.element.className = 'gio-container';
     }
 
-    /* =========================================================================
-       SISTEMA DE ARRASTRE MAGNÉTICO (IDÉNTICO A GIOVANNI TOGGLE ACORDION)
-       ========================================================================= */
+ 
     _initMagneticDrag(fieldElement, handleElement) {
         let startX = 0, startY = 0, initLeft = 0, initTop = 0;
         let isDragging = false, hasMoved = false;
-        const threshold = 16; // Snap a bordes en px
+        const threshold = 16;  
 
-        // Placeholder reactivo neón azul compartido
+ 
         let placeholder = document.getElementById('gio-snap-placeholder');
         if (!placeholder) {
             placeholder = document.createElement('div');
@@ -602,7 +688,7 @@ class Giovanni {
             document.body.appendChild(placeholder);
         }
 
-        // Guías láser compartidas
+   
         let guideV = document.getElementById('gio-snap-v') || (() => {
             const g = document.createElement('div'); g.id = 'gio-snap-v';
             g.style.cssText = 'position:fixed; top:0; bottom:0; width:1px; background:#4daafc; box-shadow:0 0 8px #4daafc; z-index:9999999; display:none; pointer-events:none;';
@@ -646,7 +732,7 @@ class Giovanni {
             const hits = document.elementsFromPoint(e.clientX, e.clientY);
             fieldElement.style.pointerEvents = 'auto';
 
-            // Detecta destinos: Acordeón, body del acordeón, otro campo, workspace o contenedor
+           
             const dropTarget = hits.find(el => el !== fieldElement && el !== placeholder && (
                 el.classList.contains('gio-acc-item') ||
                 el.classList.contains('gio-acc-body') ||
@@ -667,7 +753,7 @@ class Giovanni {
                     dropTarget.appendChild(placeholder);
                 }
             } else {
-                // Snap magnético libre a bordes de pantalla
+            
                 placeholder.style.display = 'none';
                 const w = fieldElement.offsetWidth;
                 const h = fieldElement.offsetHeight;
@@ -700,7 +786,7 @@ class Giovanni {
             if (!hasMoved) return;
 
             if (placeholder.style.display !== 'none' && placeholder.parentNode) {
-                // Soltado dentro de un acordeón o contenedor
+           
                 placeholder.parentNode.insertBefore(fieldElement, placeholder);
                 placeholder.style.display = 'none';
                 placeholder.remove();
@@ -711,7 +797,7 @@ class Giovanni {
                 fieldElement.style.top = '';
                 fieldElement.style.width = '100%';
             } else {
-                // Soltado en cualquier lugar libre de la página web
+           
                 placeholder.style.display = 'none';
                 if (placeholder.parentNode) placeholder.remove();
 
@@ -767,6 +853,175 @@ class Giovanni {
         this.element.appendChild(wrap);
         return wrap;
     }
+    createSideMenu({
+  position = 'left',
+  buttons = [],
+  id = `gio-menu-${Math.random().toString(36).slice(2, 8)}`,
+  collapsible = true,
+  defaultCollapsed = false,
+  burgerTooltip = 'Mostrar / ocultar menú',
+  buttonSize = 44,
+  iconSize = 22,
+  radius = 10,
+  gap = 8,
+  padding = 8,
+  defaultOnClick = null
+} = {}) {
+
+  const menuEl = document.createElement('div');
+  menuEl.id = id;
+  menuEl.className = `gio-menu gio-${position}`;
+  menuEl.style.setProperty('--gio-btn-size',   `${buttonSize}px`);
+  menuEl.style.setProperty('--gio-icon-size',  `${iconSize}px`);
+  menuEl.style.setProperty('--gio-btn-radius', `${radius}px`);
+  menuEl.style.setProperty('--gio-gap',        `${gap}px`);
+  menuEl.style.setProperty('--gio-padding',    `${padding}px`);
+
+  const listEl = document.createElement('div');
+  listEl.className = 'gio-menu-list gio-custom-scroll';
+
+  const tooltipEl = document.createElement('div');
+  tooltipEl.className = 'gio-tooltip';
+
+  let collapsed = false;
+  let burgerRef = null;
+  const createdButtons = [];
+
+  const createButton = ({ icon, tooltip = '', bId = null, active = false, onClick = null }) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'gio-btn' + (active ? ' gio-active' : '');
+    if (bId) btn.dataset.id = bId;
+    btn.dataset.tooltip = tooltip;
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.innerHTML = GiovanniIconDB[icon] || GiovanniIconDB.square;
+    btn.appendChild(svg);
+
+    btn.addEventListener('mouseenter', () => showTooltip(btn, btn.dataset.tooltip));
+    btn.addEventListener('mouseleave', hideTooltip);
+    btn.addEventListener('focus',      () => showTooltip(btn, btn.dataset.tooltip));
+    btn.addEventListener('blur',       hideTooltip);
+
+    btn.addEventListener('click', (e) => {
+      if (typeof onClick === 'function') onClick(btn, e);
+      else if (typeof defaultOnClick === 'function') defaultOnClick(btn, e);
+    });
+
+    const ref = {
+      el: btn,
+      id: bId,
+      setActive: (v = true) => btn.classList.toggle('gio-active', v),
+      setTooltip: (t) => { btn.dataset.tooltip = t; },
+      setIcon: (key) => { svg.innerHTML = GiovanniIconDB[key] || GiovanniIconDB.square; },
+      remove: () => {
+        btn.remove();
+        const i = createdButtons.indexOf(ref);
+        if (i > -1) createdButtons.splice(i, 1);
+      }
+    };
+    createdButtons.push(ref);
+    return ref;
+  };
+
+  const showTooltip = (target, text) => {
+    if (!text) return;
+    tooltipEl.textContent = text;
+    tooltipEl.classList.add('gio-visible');
+
+    requestAnimationFrame(() => {
+      const r = target.getBoundingClientRect();
+      const tw = tooltipEl.offsetWidth;
+      const th = tooltipEl.offsetHeight;
+      const g = 10;
+      let top, left, origin = 'center center';
+
+      switch (position) {
+        case 'left':   left = r.right + g; top = r.top + r.height / 2; origin = 'left center'; break;
+        case 'right':  left = r.left - tw - g; top = r.top + r.height / 2; origin = 'right center'; break;
+        case 'top':    left = r.left + r.width / 2 - tw / 2; top = r.bottom + g + th / 2; break;
+        case 'bottom':
+        default:       left = r.left + r.width / 2 - tw / 2; top = r.top - g - th / 2; break;
+      }
+
+      const m = 6;
+      if (left < m) left = m;
+      if (left + tw > window.innerWidth - m) left = window.innerWidth - tw - m;
+      if (top - th / 2 < m) top = th / 2 + m;
+      if (top + th / 2 > window.innerHeight - m) top = window.innerHeight - th / 2 - m;
+
+      tooltipEl.style.left = `${left}px`;
+      tooltipEl.style.top  = `${top}px`;
+      tooltipEl.style.transformOrigin = origin;
+    });
+  };
+  const hideTooltip = () => tooltipEl.classList.remove('gio-visible');
+
+  const collapse = () => {
+    if (!collapsible || collapsed) return;
+    collapsed = true;
+    menuEl.classList.add('gio-collapsed');
+    burgerRef?.setIcon('menu');
+    hideTooltip();
+  };
+  const expand = () => {
+    if (!collapsible || !collapsed) return;
+    collapsed = false;
+    menuEl.classList.remove('gio-collapsed');
+    burgerRef?.setIcon('menuOpen');
+  };
+  const toggle = () => collapsed ? expand() : collapse();
+
+  if (collapsible) {
+    burgerRef = createButton({
+      icon: 'menu',
+      tooltip: burgerTooltip,
+      bId: '__burger__',
+      onClick: () => toggle()
+    });
+    burgerRef.el.classList.add('gio-burger');
+    menuEl.appendChild(burgerRef.el);
+  }
+
+  buttons.forEach(b => {
+    const ref = createButton(b);
+    listEl.appendChild(ref.el);
+  });
+
+  menuEl.appendChild(listEl);
+  document.body.appendChild(menuEl);
+  document.body.appendChild(tooltipEl);
+
+  if (defaultCollapsed) collapse();
+
+  return {
+    el: menuEl,
+    listEl,
+    id,
+    buttons: createdButtons,
+    createButton,
+    toggle,
+    collapse,
+    expand,
+    isCollapsed: () => collapsed,
+    setSizes: (s = {}) => {
+      if (s.buttonSize) menuEl.style.setProperty('--gio-btn-size',   `${s.buttonSize}px`);
+      if (s.iconSize)   menuEl.style.setProperty('--gio-icon-size',  `${s.iconSize}px`);
+      if (s.radius)     menuEl.style.setProperty('--gio-btn-radius', `${s.radius}px`);
+      if (s.gap != null)menuEl.style.setProperty('--gio-gap',        `${s.gap}px`);
+      if (s.padding != null)menuEl.style.setProperty('--gio-padding',`${s.padding}px`);
+    },
+    show: () => { menuEl.style.display = ''; },
+    hide: () => { menuEl.style.display = 'none'; },
+    destroy: () => {
+      tooltipEl.remove();
+      menuEl.remove();
+      createdButtons.length = 0;
+    },
+    getButton: (bId) => createdButtons.find(b => b.id === bId)
+  };
+}
 
     createButtonSimple = function({ 
     text = 'TinkerAtlas', 
