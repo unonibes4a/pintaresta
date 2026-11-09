@@ -95,6 +95,889 @@
   
 };
 
+class GiovanniColorPicker {
+    constructor(options = {}) {
+        this.id = options.id || 'vcp_' + Math.random().toString(36).substring(2, 9);
+        this.title = options.title || 'Selector HSV / RGB';
+        this.onChange = options.onChange || (() => {});
+        this.onEyedropper = options.onEyedropper || (() => {});
+
+       
+        this.isTriangle = options.isTriangle ?? false;
+
+        this.hueWidth = options.hueWidth || 34;
+        this.canvasHeight = options.canvasHeight || 190;
+        this.isEyedropperActive = false;
+
+ 
+        const init = options.initialColor || { r: 0.4, g: 1.0, b: 0.4, a: 1.0 };
+        this.r = init.r > 1 ? init.r / 255 : (init.r ?? 1.0);
+        this.g = init.g > 1 ? init.g / 255 : (init.g ?? 1.0);
+        this.b = init.b > 1 ? init.b / 255 : (init.b ?? 0.0);
+        this.a = init.a ?? 1.0;
+
+        const hsv = this.rgbToHsv(this.r, this.g, this.b);
+        this.h = hsv.h;
+        this.s = hsv.s;
+        this.v = hsv.v;
+
+        this.hex = this.rgbToHex(this.r, this.g, this.b);
+
+        this.injectStyles();
+        this.buildDOM();
+        this.initCanvasEvents();
+
+        this.panel = { element: this.container, title: this.title };
+        this.element = this.container;
+
+        this.updateModeVisibility();
+        this.updateUI();
+    }
+
+    mount(target) {
+        const dest = target?.element || target;
+        if (dest && dest.appendChild) {
+            dest.appendChild(this.container);
+        }
+        return this;
+    }
+
+    injectStyles() {
+        if (document.getElementById('vanilla-color-picker-core-css')) return;
+
+        const style = document.createElement('style');
+        style.id = 'vanilla-color-picker-core-css';
+        style.textContent = `
+            .vcp-root {
+                background: #19191c;
+                border: 1px solid #2d2d33;
+                border-radius: 6px;
+                padding: 10px;
+                color: #8c8c8c;
+                font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+                font-size: 11px;
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                user-select: none;
+                width: 100%;
+                max-width: 320px;
+            }
+            .vcp-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 6px;
+            }
+            .vcp-title {
+                font-weight: 700;
+                color: #7a7a85;
+                font-size: 10px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                flex: 1;
+            }
+            .vcp-header-actions {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+            .vcp-btn-tool {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #292929;
+                color: #8c8c8c;
+                border: 1px solid #383838;
+                border-radius: 4px;
+                padding: 3px 6px;
+                font-family: inherit;
+                font-size: 10px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+            .vcp-btn-tool:hover {
+                background: #333333;
+                color: #ffffff;
+                border-color: #555555;
+            }
+            .vcp-btn-tool.active {
+                background: #0c4a6e !important;
+                color: #38bdf8 !important;
+                border-color: #38bdf8 !important;
+                box-shadow: 0 0 6px rgba(56, 189, 248, 0.4);
+            }
+            .vcp-canvas-area {
+                display: flex;
+                gap: 8px;
+                margin-top: 2px;
+            }
+            .vcp-sv-canvas {
+                flex: 1 1 0;
+                min-width: 0;
+                border-radius: 4px;
+                cursor: crosshair;
+                border: 1px solid #333;
+                display: block;
+            }
+            .vcp-hue-canvas {
+                border-radius: 4px;
+                cursor: pointer;
+                border: 1px solid #333;
+                display: block;
+                flex-shrink: 0;
+            }
+            .vcp-triangle-canvas {
+                width: 100%;
+                border-radius: 4px;
+                border: 1px solid #333;
+                cursor: crosshair;
+                display: block;
+                background: #141416;
+            }
+            .vcp-preview-wrapper {
+                width: 40px;
+                height: 20px;
+                border-radius: 4px;
+                border: 1px solid #3e3e46;
+                position: relative;
+                overflow: hidden;
+                cursor: pointer;
+                background-image: 
+                    linear-gradient(45deg, #252529 25%, transparent 25%), 
+                    linear-gradient(-45deg, #252529 25%, transparent 25%), 
+                    linear-gradient(45deg, transparent 75%, #252529 75%), 
+                    linear-gradient(-45deg, transparent 75%, #252529 75%);
+                background-size: 8px 8px;
+                background-position: 0 0, 0 4px, 4px -4px, -4px 0px;
+            }
+            .vcp-preview-color {
+                width: 100%;
+                height: 100%;
+            }
+            .vcp-row {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+            .vcp-input {
+                background: #292929 !important;
+                color: #676767 !important;
+                border: 1px solid #383838;
+                border-radius: 4px;
+                padding: 4px 6px;
+                font-family: inherit;
+                font-size: 11px;
+                outline: none;
+                box-sizing: border-box;
+                transition: border-color 0.2s, color 0.2s;
+            }
+            .vcp-input:focus {
+                border-color: #555555;
+                color: #b5b5b5 !important;
+            }
+            .vcp-grid-rgba {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 6px;
+            }
+            .vcp-grid-cell {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+            }
+            .vcp-grid-cell .vcp-label {
+                width: 12px;
+                color: #676767;
+                font-size: 10px;
+                font-weight: bold;
+            }
+            .vcp-grid-cell input[type="number"] {
+                width: 100%;
+                -moz-appearance: textfield;
+            }
+            .vcp-grid-cell input[type="number"]::-webkit-outer-spin-button,
+            .vcp-grid-cell input[type="number"]::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+            .vcp-stats-box {
+                background: #1e1e22;
+                border: 1px dashed #34343d;
+                border-radius: 4px;
+                padding: 6px 8px;
+                display: flex;
+                justify-content: space-between;
+                font-size: 10px;
+                color: #676767;
+            }
+            .vcp-stats-val { color: #a0a0aa; font-weight: bold; }
+            .vcp-stats-ratio { color: #4daafc; font-weight: bold; }
+        `;
+        document.head.appendChild(style);
+    }
+
+    buildDOM() {
+        this.container = document.createElement('div');
+        this.container.id = this.id;
+        this.container.className = 'vcp-root';
+
+        // 1. Cabecera
+        const header = document.createElement('div');
+        header.className = 'vcp-header';
+
+        const title = document.createElement('span');
+        title.className = 'vcp-title';
+        title.textContent = this.title;
+        header.appendChild(title);
+
+        const actions = document.createElement('div');
+        actions.className = 'vcp-header-actions';
+
+        this.btnToggleMode = document.createElement('button');
+        this.btnToggleMode.type = 'button';
+        this.btnToggleMode.className = 'vcp-btn-tool';
+        this.btnToggleMode.title = 'Cambiar forma (Rectangular / Triangular)';
+        this.btnToggleMode.textContent = this.isTriangle ? '▤ REC' : '◬ TRI';
+        this.btnToggleMode.onclick = () => this.setMode(!this.isTriangle);
+        actions.appendChild(this.btnToggleMode);
+
+        this.btnEyedropper = document.createElement('button');
+        this.btnEyedropper.type = 'button';
+        this.btnEyedropper.className = 'vcp-btn-tool';
+        this.btnEyedropper.title = 'Cuentagotas (Eyedropper)';
+        this.btnEyedropper.innerHTML = `
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+                <path d="M20.71 5.63l-2.34-2.34a1 1 0 0 0-1.41 0l-3.12 3.12-1.93-1.91-1.41 1.42 1.42 1.42L3 16.25V21h4.75l8.92-8.92 1.42 1.42 1.41-1.41-1.92-1.92 3.13-3.13a1 1 0 0 0 0-1.41zM6.92 19L5 17.08l8.06-8.06 1.92 1.92L6.92 19z"/>
+            </svg>
+            <span style="margin-left:3px;">EYE</span>
+        `;
+        this.btnEyedropper.onclick = () => {
+            this.isEyedropperActive = !this.isEyedropperActive;
+            this.btnEyedropper.classList.toggle('active', this.isEyedropperActive);
+            this.onEyedropper(this.isEyedropperActive);
+        };
+        actions.appendChild(this.btnEyedropper);
+
+        this.previewWrapper = document.createElement('div');
+        this.previewWrapper.className = 'vcp-preview-wrapper';
+        this.previewColor = document.createElement('div');
+        this.previewColor.className = 'vcp-preview-color';
+        this.previewColor.style.background = this.getRGBAString();
+        this.previewWrapper.appendChild(this.previewColor);
+        actions.appendChild(this.previewWrapper);
+
+        header.appendChild(actions);
+        this.container.appendChild(header);
+
+        // 2.A: Área Rectangular
+        this.rectArea = document.createElement('div');
+        this.rectArea.className = 'vcp-canvas-area';
+        this.rectArea.style.height = this.canvasHeight + 'px';
+
+        this.svCanvas = document.createElement('canvas');
+        this.svCanvas.className = 'vcp-sv-canvas';
+        this.svCanvas.width = 240;
+        this.svCanvas.height = this.canvasHeight;
+        this.svCanvas.style.flex = '1 1 0';
+        this.svCanvas.style.minWidth = '0';
+        this.svCtx = this.svCanvas.getContext('2d');
+
+        this.hueCanvas = document.createElement('canvas');
+        this.hueCanvas.className = 'vcp-hue-canvas';
+        this.hueCanvas.width = this.hueWidth;
+        this.hueCanvas.height = this.canvasHeight;
+        this.hueCanvas.style.width = this.hueWidth + 'px';
+        this.hueCanvas.style.minWidth = this.hueWidth + 'px';
+        this.hueCanvas.style.maxWidth = this.hueWidth + 'px';
+        this.hueCanvas.style.flex = '0 0 ' + this.hueWidth + 'px';
+        this.hueCtx = this.hueCanvas.getContext('2d');
+
+        this.rectArea.appendChild(this.svCanvas);
+        this.rectArea.appendChild(this.hueCanvas);
+        this.container.appendChild(this.rectArea);
+
+        // 2.B: Área Triangular
+        this.triangleArea = document.createElement('div');
+        this.triangleArea.style.width = '100%';
+        this.triangleArea.style.height = this.canvasHeight + 'px';
+
+        this.triangleCanvas = document.createElement('canvas');
+        this.triangleCanvas.className = 'vcp-triangle-canvas';
+        this.triangleCanvas.width = 280;
+        this.triangleCanvas.height = this.canvasHeight;
+        this.triangleCtx = this.triangleCanvas.getContext('2d');
+
+        this.triangleArea.appendChild(this.triangleCanvas);
+        this.container.appendChild(this.triangleArea);
+
+        // 3. Fila HEX y OBJETO RGBA
+        const hexRow = document.createElement('div');
+        hexRow.className = 'vcp-row';
+
+        this.inputHex = document.createElement('input');
+        this.inputHex.type = 'text';
+        this.inputHex.className = 'vcp-input';
+        this.inputHex.style.width = '75px';
+        this.inputHex.maxLength = 7;
+        this.inputHex.value = this.hex.toUpperCase();
+
+        this.inputRgbaObj = document.createElement('input');
+        this.inputRgbaObj.type = 'text';
+        this.inputRgbaObj.className = 'vcp-input';
+        this.inputRgbaObj.style.flex = '1';
+        this.inputRgbaObj.style.minWidth = '0';
+        this.inputRgbaObj.value = this.getRGBAObjectString();
+
+        hexRow.appendChild(this.inputHex);
+        hexRow.appendChild(this.inputRgbaObj);
+        this.container.appendChild(hexRow);
+
+        // 4. Inputs numéricos R, G, B, A (SIN RESTRICCIÓN DE ESCRITURA)
+        const rgbaGrid = document.createElement('div');
+        rgbaGrid.className = 'vcp-grid-rgba';
+
+        this.inputs = {};
+        ['r', 'g', 'b', 'a'].forEach(ch => {
+            const cell = document.createElement('div');
+            cell.className = 'vcp-grid-cell';
+
+            const lbl = document.createElement('span');
+            lbl.className = 'vcp-label';
+            lbl.textContent = ch.toUpperCase();
+
+            const num = document.createElement('input');
+            num.type = 'number';
+            num.className = 'vcp-input';
+            num.step = 'any'; // <-- PERMITE CUALQUIER VALOR O DECIMAL LIBREMENTE
+            num.value = this[ch].toFixed(3);
+
+            cell.appendChild(lbl);
+            cell.appendChild(num);
+            rgbaGrid.appendChild(cell);
+            this.inputs[ch] = num;
+
+            // Manejador que no interrumpe mientras escribes
+            num.addEventListener('input', () => {
+                const raw = num.value.trim();
+                // Si el usuario acaba de teclear "0." o está borrando, no forzar nada
+                if (raw === '' || raw === '.' || raw === '-.' || raw.endsWith('.')) return;
+
+                let val = parseFloat(raw);
+                if (isNaN(val)) return;
+
+                // Si escribe formato 0-255 (ej: 128 o 255), lo normaliza automáticamente
+                if (val > 1 && ch !== 'a') {
+                    val = val / 255;
+                }
+                val = Math.max(0, Math.min(1, val));
+                this[ch] = val;
+
+                if (ch !== 'a') {
+                    const hsv = this.rgbToHsv(this.r, this.g, this.b);
+                    this.h = hsv.h;
+                    this.s = hsv.s;
+                    this.v = hsv.v;
+                    this.hex = this.rgbToHex(this.r, this.g, this.b);
+                }
+
+                // Actualiza canvas y otros inputs SIN sobreescribir este que estás tecleando
+                this.updateUI(ch);
+                this.emit();
+            });
+
+            // Al salir del input, redondea de forma limpia a 3 decimales
+            num.addEventListener('blur', () => {
+                num.value = parseFloat(this[ch].toFixed(3));
+            });
+        });
+
+        this.container.appendChild(rgbaGrid);
+
+        // 5. Estadísticas
+        this.statsBox = document.createElement('div');
+        this.statsBox.className = 'vcp-stats-box';
+        this.lblMin = document.createElement('div');
+        this.lblMax = document.createElement('div');
+        this.lblRatio = document.createElement('div');
+        this.statsBox.appendChild(this.lblMin);
+        this.statsBox.appendChild(this.lblMax);
+        this.statsBox.appendChild(this.lblRatio);
+        this.container.appendChild(this.statsBox);
+
+        // Eventos de inputs de texto
+        this.inputHex.addEventListener('change', (e) => {
+            let val = e.target.value.trim();
+            if (!val.startsWith('#')) val = '#' + val;
+            if (/^#[0-9A-F]{6}$/i.test(val)) {
+                this.setHex(val);
+            } else {
+                this.inputHex.value = this.hex.toUpperCase();
+            }
+        });
+
+        this.inputRgbaObj.addEventListener('change', (e) => {
+            const str = e.target.value;
+            const rMatch = str.match(/r\s*:\s*([\d.]+)/i);
+            const gMatch = str.match(/g\s*:\s*([\d.]+)/i);
+            const bMatch = str.match(/b\s*:\s*([\d.]+)/i);
+            const aMatch = str.match(/a\s*:\s*([\d.]+)/i);
+
+            if (rMatch && gMatch && bMatch) {
+                this.setRGBA({
+                    r: parseFloat(rMatch[1]),
+                    g: parseFloat(gMatch[1]),
+                    b: parseFloat(bMatch[1]),
+                    a: aMatch ? parseFloat(aMatch[1]) : this.a
+                });
+            } else {
+                this.inputRgbaObj.value = this.getRGBAObjectString();
+            }
+        });
+    }
+
+    setMode(isTriangle) {
+        this.isTriangle = !!isTriangle;
+        this.btnToggleMode.textContent = this.isTriangle ? '▤ REC' : '◬ TRI';
+        this.updateModeVisibility();
+        this.updateUI();
+    }
+
+    updateModeVisibility() {
+        if (this.isTriangle) {
+            this.rectArea.style.display = 'none';
+            this.triangleArea.style.display = 'block';
+        } else {
+            this.rectArea.style.display = 'flex';
+            this.triangleArea.style.display = 'none';
+        }
+    }
+
+    setEyedropperActive(active) {
+        this.isEyedropperActive = !!active;
+        if (this.btnEyedropper) {
+            this.btnEyedropper.classList.toggle('active', this.isEyedropperActive);
+        }
+    }
+
+    drawTriangleCanvas() {
+        const w = this.triangleCanvas.width;
+        const h = this.triangleCanvas.height;
+        const ctx = this.triangleCtx;
+        ctx.clearRect(0, 0, w, h);
+
+        const cx = w / 2;
+        const cy = h / 2;
+        const outerR = Math.min(cx, cy) - 6;
+        const innerR = outerR - 16;
+
+        ctx.save();
+        const conic = ctx.createConicGradient(0, cx, cy);
+        conic.addColorStop(0.00, '#ff0000');
+        conic.addColorStop(0.17, '#ffff00');
+        conic.addColorStop(0.33, '#00ff00');
+        conic.addColorStop(0.50, '#00ffff');
+        conic.addColorStop(0.67, '#0000ff');
+        conic.addColorStop(0.83, '#ff00ff');
+        conic.addColorStop(1.00, '#ff0000');
+
+        ctx.beginPath();
+        ctx.arc(cx, cy, outerR, 0, Math.PI * 2);
+        ctx.arc(cx, cy, innerR, 0, Math.PI * 2, true);
+        ctx.fillStyle = conic;
+        ctx.fill();
+        ctx.restore();
+
+        const radHue = (this.h * Math.PI) / 180;
+        const hx1 = cx + innerR * Math.cos(radHue);
+        const hy1 = cy + innerR * Math.sin(radHue);
+        const hx2 = cx + outerR * Math.cos(radHue);
+        const hy2 = cy + outerR * Math.sin(radHue);
+
+        ctx.beginPath();
+        ctx.moveTo(hx1, hy1);
+        ctx.lineTo(hx2, hy2);
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        const rTri = innerR - 5;
+        const ptBlack = { x: cx, y: cy - rTri };
+        const ptWhite = { x: cx - rTri * Math.cos(Math.PI / 6), y: cy + rTri * Math.sin(Math.PI / 6) };
+        const ptColor = { x: cx + rTri * Math.cos(Math.PI / 6), y: cy + rTri * Math.sin(Math.PI / 6) };
+
+        this.triPoints = { ptBlack, ptWhite, ptColor, rTri, cx, cy };
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(ptBlack.x, ptBlack.y);
+        ctx.lineTo(ptWhite.x, ptWhite.y);
+        ctx.lineTo(ptColor.x, ptColor.y);
+        ctx.closePath();
+        ctx.clip();
+
+        const pureRGB = this.hsvToRgb(this.h, 1, 1);
+        const pureHex = this.rgbToHex(pureRGB.r, pureRGB.g, pureRGB.b);
+        const gradBase = ctx.createLinearGradient(ptWhite.x, ptWhite.y, ptColor.x, ptColor.y);
+        gradBase.addColorStop(0, '#ffffff');
+        gradBase.addColorStop(1, pureHex);
+        ctx.fillStyle = gradBase;
+        ctx.fillRect(0, 0, w, h);
+
+        const gradBlack = ctx.createLinearGradient(ptBlack.x, ptBlack.y, ptBlack.x, ptWhite.y);
+        gradBlack.addColorStop(0, '#000000');
+        gradBlack.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = gradBlack;
+        ctx.fillRect(0, 0, w, h);
+        ctx.restore();
+
+        ctx.beginPath();
+        ctx.moveTo(ptBlack.x, ptBlack.y);
+        ctx.lineTo(ptWhite.x, ptWhite.y);
+        ctx.lineTo(ptColor.x, ptColor.y);
+        ctx.closePath();
+        ctx.strokeStyle = '#383838';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        const targetY = ptBlack.y + this.v * (ptWhite.y - ptBlack.y);
+        const halfWidthAtY = this.v * (rTri * Math.cos(Math.PI / 6));
+        const leftX = cx - halfWidthAtY;
+        const rightX = cx + halfWidthAtY;
+        const targetX = leftX + this.s * (rightX - leftX);
+
+        ctx.beginPath();
+        ctx.arc(targetX, targetY, 5, 0, Math.PI * 2);
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(targetX, targetY, 4, 0, Math.PI * 2);
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+    }
+
+    drawSVCanvas() {
+        const w = this.svCanvas.width;
+        const h = this.svCanvas.height;
+        const ctx = this.svCtx;
+
+        const pureColor = this.hsvToRgb(this.h, 1, 1);
+        const hexHue = this.rgbToHex(pureColor.r, pureColor.g, pureColor.b);
+
+        ctx.fillStyle = hexHue;
+        ctx.fillRect(0, 0, w, h);
+
+        const gradWhite = ctx.createLinearGradient(0, 0, w, 0);
+        gradWhite.addColorStop(0, '#ffffff');
+        gradWhite.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = gradWhite;
+        ctx.fillRect(0, 0, w, h);
+
+        const gradBlack = ctx.createLinearGradient(0, 0, 0, h);
+        gradBlack.addColorStop(0, 'rgba(0,0,0,0)');
+        gradBlack.addColorStop(1, '#000000');
+        ctx.fillStyle = gradBlack;
+        ctx.fillRect(0, 0, w, h);
+
+        const cx = this.s * w;
+        const cy = (1 - this.v) * h;
+
+        ctx.beginPath();
+        ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+    }
+
+    drawHueCanvas() {
+        const w = this.hueCanvas.width;
+        const h = this.hueCanvas.height;
+        const ctx = this.hueCtx;
+
+        const grad = ctx.createLinearGradient(0, 0, 0, h);
+        grad.addColorStop(0.00, '#ff0000');
+        grad.addColorStop(0.17, '#ff00ff');
+        grad.addColorStop(0.33, '#0000ff');
+        grad.addColorStop(0.50, '#00ffff');
+        grad.addColorStop(0.67, '#00ff00');
+        grad.addColorStop(0.83, '#ffff00');
+        grad.addColorStop(1.00, '#ff0000');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
+
+        const barY = ((360 - this.h) / 360) * h;
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, barY - 2, w, 4);
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(0, barY - 2, w, 4);
+    }
+
+    initCanvasEvents() {
+        let isDraggingSV = false;
+        const handleSV = (e) => {
+            const rect = this.svCanvas.getBoundingClientRect();
+            const x = Math.max(0, Math.min(rect.width, e.clientX - rect.left));
+            const y = Math.max(0, Math.min(rect.height, e.clientY - rect.top));
+
+            this.s = x / rect.width;
+            this.v = 1 - (y / rect.height);
+
+            const rgb = this.hsvToRgb(this.h, this.s, this.v);
+            this.r = rgb.r;
+            this.g = rgb.g;
+            this.b = rgb.b;
+            this.hex = this.rgbToHex(this.r, this.g, this.b);
+
+            this.updateUI();
+            this.emit();
+        };
+
+        this.svCanvas.addEventListener('pointerdown', (e) => {
+            isDraggingSV = true;
+            this.svCanvas.setPointerCapture(e.pointerId);
+            handleSV(e);
+        });
+        this.svCanvas.addEventListener('pointermove', (e) => { if (isDraggingSV) handleSV(e); });
+        this.svCanvas.addEventListener('pointerup', () => { isDraggingSV = false; });
+
+        let isDraggingHue = false;
+        const handleHue = (e) => {
+            const rect = this.hueCanvas.getBoundingClientRect();
+            const y = Math.max(0, Math.min(rect.height, e.clientY - rect.top));
+
+            this.h = (1 - (y / rect.height)) * 360;
+            if (this.h >= 360) this.h = 0;
+
+            const rgb = this.hsvToRgb(this.h, this.s, this.v);
+            this.r = rgb.r;
+            this.g = rgb.g;
+            this.b = rgb.b;
+            this.hex = this.rgbToHex(this.r, this.g, this.b);
+
+            this.updateUI();
+            this.emit();
+        };
+
+        this.hueCanvas.addEventListener('pointerdown', (e) => {
+            isDraggingHue = true;
+            this.hueCanvas.setPointerCapture(e.pointerId);
+            handleHue(e);
+        });
+        this.hueCanvas.addEventListener('pointermove', (e) => { if (isDraggingHue) handleHue(e); });
+        this.hueCanvas.addEventListener('pointerup', () => { isDraggingHue = false; });
+
+        let triMode = null;
+        const handleTriangleCanvas = (e) => {
+            const rect = this.triangleCanvas.getBoundingClientRect();
+            const scaleX = this.triangleCanvas.width / rect.width;
+            const scaleY = this.triangleCanvas.height / rect.height;
+            const x = (e.clientX - rect.left) * scaleX;
+            const y = (e.clientY - rect.top) * scaleY;
+
+            const cx = this.triangleCanvas.width / 2;
+            const cy = this.triangleCanvas.height / 2;
+            const outerR = Math.min(cx, cy) - 6;
+            const innerR = outerR - 16;
+            const dist = Math.hypot(x - cx, y - cy);
+
+            if (triMode === 'ring' || (!triMode && dist >= innerR - 6)) {
+                triMode = 'ring';
+                let deg = (Math.atan2(y - cy, x - cx) * 180) / Math.PI;
+                if (deg < 0) deg += 360;
+                this.h = deg;
+            } else {
+                triMode = 'triangle';
+                const { ptBlack, ptWhite, rTri } = this.triPoints;
+                const clampedY = Math.max(ptBlack.y, Math.min(ptWhite.y, y));
+                this.v = (clampedY - ptBlack.y) / (ptWhite.y - ptBlack.y);
+
+                if (this.v <= 0.001) {
+                    this.s = 0;
+                    this.v = 0;
+                } else {
+                    const halfW = this.v * (rTri * Math.cos(Math.PI / 6));
+                    const lx = cx - halfW;
+                    const rx = cx + halfW;
+                    const clampedX = Math.max(lx, Math.min(rx, x));
+                    this.s = halfW > 0 ? (clampedX - lx) / (2 * halfW) : 0;
+                }
+            }
+
+            const rgb = this.hsvToRgb(this.h, this.s, this.v);
+            this.r = rgb.r;
+            this.g = rgb.g;
+            this.b = rgb.b;
+            this.hex = this.rgbToHex(this.r, this.g, this.b);
+
+            this.updateUI();
+            this.emit();
+        };
+
+        this.triangleCanvas.addEventListener('pointerdown', (e) => {
+            triMode = null;
+            this.triangleCanvas.setPointerCapture(e.pointerId);
+            handleTriangleCanvas(e);
+        });
+        this.triangleCanvas.addEventListener('pointermove', (e) => {
+            if (e.buttons === 1) handleTriangleCanvas(e);
+        });
+        this.triangleCanvas.addEventListener('pointerup', () => { triMode = null; });
+    }
+
+    getRGBAObjectString() {
+        const fmt = (n) => parseFloat(n.toFixed(3));
+        return `rgba={r:${fmt(this.r)},g:${fmt(this.g)},b:${fmt(this.b)},a:${fmt(this.a)}}`;
+    }
+
+    getRGBAString() {
+        return `rgba(${Math.round(this.r * 255)}, ${Math.round(this.g * 255)}, ${Math.round(this.b * 255)}, ${this.a})`;
+    }
+
+    updateStats() {
+        let min = Math.min(this.r, this.g, this.b);
+        let max = Math.max(this.r, this.g, this.b);
+        let ratio = max > 0 ? (min / max) : 0;
+
+        this.lblMin.innerHTML = `Mín: <span class="vcp-stats-val">${min.toFixed(2)}</span>`;
+        this.lblMax.innerHTML = `Máx: <span class="vcp-stats-val">${max.toFixed(2)}</span>`;
+        this.lblRatio.innerHTML = `Mín/Máx: <span class="vcp-stats-ratio">${ratio.toFixed(3)}</span>`;
+    }
+
+    /**
+     * Actualiza la interfaz. Si se le pasa `skipChannel`, no toca ese input
+     * para no interrumpir lo que el usuario está escribiendo.
+     */
+    updateUI(skipChannel = null) {
+        this.previewColor.style.background = this.getRGBAString();
+
+        ['r', 'g', 'b', 'a'].forEach(ch => {
+            // No sobreescribir el campo que el usuario tiene enfocado/activo
+            if (ch !== skipChannel && document.activeElement !== this.inputs[ch]) {
+                this.inputs[ch].value = parseFloat(this[ch].toFixed(3));
+            }
+        });
+
+        if (document.activeElement !== this.inputHex) {
+            this.inputHex.value = this.hex.toUpperCase();
+        }
+
+        if (document.activeElement !== this.inputRgbaObj) {
+            this.inputRgbaObj.value = this.getRGBAObjectString();
+        }
+
+        if (this.isTriangle) {
+            this.drawTriangleCanvas();
+        } else {
+            this.drawSVCanvas();
+            this.drawHueCanvas();
+        }
+        this.updateStats();
+    }
+
+    setHex(hexStr) {
+        if (!hexStr) return;
+        let hex = hexStr.trim();
+        if (!hex.startsWith('#')) hex = '#' + hex;
+
+        const rgb = this.hexToRgb(hex);
+        this.r = rgb.r / 255;
+        this.g = rgb.g / 255;
+        this.b = rgb.b / 255;
+        this.hex = hex.toLowerCase();
+
+        const hsv = this.rgbToHsv(this.r, this.g, this.b);
+        this.h = hsv.h;
+        this.s = hsv.s;
+        this.v = hsv.v;
+
+        this.updateUI();
+        this.emit();
+    }
+
+    setRGBA(rgba) {
+        if (!rgba) return;
+        this.r = rgba.r !== undefined ? (rgba.r > 1 ? rgba.r / 255 : rgba.r) : this.r;
+        this.g = rgba.g !== undefined ? (rgba.g > 1 ? rgba.g / 255 : rgba.g) : this.g;
+        this.b = rgba.b !== undefined ? (rgba.b > 1 ? rgba.b / 255 : rgba.b) : this.b;
+        this.a = rgba.a !== undefined ? rgba.a : this.a;
+
+        this.hex = this.rgbToHex(this.r, this.g, this.b);
+        const hsv = this.rgbToHsv(this.r, this.g, this.b);
+        this.h = hsv.h;
+        this.s = hsv.s;
+        this.v = hsv.v;
+
+        this.updateUI();
+        this.emit();
+    }
+
+    emit() {
+        const rgbaNormalized = {
+            r: parseFloat(this.r.toFixed(3)),
+            g: parseFloat(this.g.toFixed(3)),
+            b: parseFloat(this.b.toFixed(3)),
+            a: parseFloat(this.a.toFixed(3))
+        };
+        const rgba255 = {
+            r: Math.round(this.r * 255),
+            g: Math.round(this.g * 255),
+            b: Math.round(this.b * 255),
+            a: this.a
+        };
+        this.onChange(rgbaNormalized, rgba255, this.hex, this.a);
+    }
+
+    hsvToRgb(h, s, v) {
+        let f = (n, k = (n + h / 60) % 6) => v - v * s * Math.max(Math.min(k, 4 - k, 1), 0);
+        return { r: f(5), g: f(3), b: f(1) };
+    }
+
+    rgbToHsv(r, g, b) {
+        let max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+        let h = 0, s = max === 0 ? 0 : d / max, v = max;
+        if (max !== min) {
+            switch (max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h *= 60;
+        }
+        return { h, s, v };
+    }
+
+    rgbToHex(r, g, b) {
+        const toHex = (n) => Math.max(0, Math.min(255, Math.round(n * 255))).toString(16).padStart(2, '0');
+        return '#' + toHex(r) + toHex(g) + toHex(b);
+    }
+
+    hexToRgb(hex) {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : { r: 255, g: 255, b: 255 };
+    }
+}
+
+
+
 
    
    function agregarClaseAElementos(nombreClase) {
@@ -3265,4 +4148,3 @@ Giovanni.prototype.createNodeTree = function({
 
 
  
-  
