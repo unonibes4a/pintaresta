@@ -853,7 +853,634 @@ class Giovanni {
         this.element.appendChild(wrap);
         return wrap;
     }
+    static _tooltipRegistry = { el: null };
+
+static _ensureTooltipEl() {
+  if (!Giovanni._tooltipRegistry.el) {
+    const t = document.createElement('div');
+    t.className = 'gio-tooltip';
+    document.body.appendChild(t);
+    Giovanni._tooltipRegistry.el = t;
+  }
+  return Giovanni._tooltipRegistry.el;
+}
+
+static _showGlobalTooltip(target, text, position) {
+  if (!text) return;
+  const tt = Giovanni._ensureTooltipEl();
+  tt.textContent = text;
+  tt.classList.add('gio-visible');
+
+  requestAnimationFrame(() => {
+    const r = target.getBoundingClientRect();
+    const tw = tt.offsetWidth;
+    const th = tt.offsetHeight;
+    const g = 10;
+    let top, left, origin = 'center center';
+
+    switch (position) {
+      case 'left':   left = r.right + g; top = r.top + r.height / 2; origin = 'left center'; break;
+      case 'right':  left = r.left - tw - g; top = r.top + r.height / 2; origin = 'right center'; break;
+      case 'top':    left = r.left + r.width / 2 - tw / 2; top = r.bottom + g + th / 2; break;
+      case 'bottom':
+      default:       left = r.left + r.width / 2 - tw / 2; top = r.top - g - th / 2; break;
+    }
+
+    const m = 6;
+    if (left < m) left = m;
+    if (left + tw > window.innerWidth - m) left = window.innerWidth - tw - m;
+    if (top - th / 2 < m) top = th / 2 + m;
+    if (top + th / 2 > window.innerHeight - m) top = window.innerHeight - th / 2 - m;
+
+    tt.style.left = `${left}px`;
+    tt.style.top  = `${top}px`;
+    tt.style.transformOrigin = origin;
+  });
+}
+
+static _hideGlobalTooltip() {
+  Giovanni._tooltipRegistry.el?.classList.remove('gio-visible');
+}
+createBottomMenu({
+  buttons = [],
+  id = `gio-bottom-${Math.random().toString(36).slice(2, 8)}`,
+  offset = 20,
+  gap = 8,
+  padding = 6,
+  buttonSize = 36,
+  iconSize = 18,
+  radius = 10,
+  bg = 'var(--backg1)',
+  border = 'var(--borde)',
+  defaultOnClick = null
+} = {}) {
+
+  const wrap = document.createElement('div');
+  wrap.id = id;
+  wrap.style.cssText = `
+    position: fixed; bottom: ${offset}px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; gap: ${gap}px;
+    padding: ${padding}px;
+    background: ${bg};
+    border: 1px solid ${border};
+    border-radius: ${radius}px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+    z-index: 9999;
+    max-width: calc(100vw - ${offset * 2}px);
+    box-sizing: border-box;
+    align-items: center;
+  `;
+
+  const listEl = document.createElement('div');
+  listEl.className = 'gio-custom-scroll';
+  listEl.style.cssText = `display:flex; gap:${gap}px; overflow-x:auto; overflow-y:hidden; max-width:100%; align-items:center;`;
+
+  const created = [];
+
+  const makeBtn = ({ icon, tooltip = '', bId = null, active = false, separator = false, onClick = null }) => {
+    if (separator) {
+      const sep = document.createElement('div');
+      sep.style.cssText = 'width:1px; height:20px; background:var(--borde); flex-shrink:0;';
+      listEl.appendChild(sep);
+      return { el: sep, isSeparator: true, remove: () => sep.remove() };
+    }
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'gio-btn' + (active ? ' gio-active' : '');
+    btn.dataset.tooltip = tooltip;
+    if (bId) btn.dataset.id = bId;
+    btn.style.width = `${buttonSize}px`;
+    btn.style.height = `${buttonSize}px`;
+    btn.style.minWidth = `${buttonSize}px`;
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.style.width = `${iconSize}px`;
+    svg.style.height = `${iconSize}px`;
+    svg.innerHTML = GiovanniIconDB[icon] || GiovanniIconDB.square;
+    btn.appendChild(svg);
+
+    btn.addEventListener('mouseenter', () => Giovanni._showGlobalTooltip(btn, btn.dataset.tooltip, 'bottom'));
+    btn.addEventListener('mouseleave', () => Giovanni._hideGlobalTooltip());
+    btn.addEventListener('focus', () => Giovanni._showGlobalTooltip(btn, btn.dataset.tooltip, 'bottom'));
+    btn.addEventListener('blur', () => Giovanni._hideGlobalTooltip());
+    btn.addEventListener('click', (e) => {
+      if (typeof onClick === 'function') onClick(btn, e);
+      else if (typeof defaultOnClick === 'function') defaultOnClick(btn, e);
+    });
+
+    const ref = {
+      el: btn, id: bId,
+      setActive: (v = true) => btn.classList.toggle('gio-active', v),
+      setTooltip: (t) => { btn.dataset.tooltip = t; },
+      setIcon: (k) => { svg.innerHTML = GiovanniIconDB[k] || GiovanniIconDB.square; },
+      remove: () => { btn.remove(); const i = created.indexOf(ref); if (i > -1) created.splice(i, 1); }
+    };
+    created.push(ref);
+    listEl.appendChild(btn);
+    return ref;
+  };
+
+  buttons.forEach(b => makeBtn(b));
+  wrap.appendChild(listEl);
+  document.body.appendChild(wrap);
+
+  return {
+    el: wrap, listEl, id, buttons: created,
+    createButton: makeBtn,
+    show: () => wrap.style.display = '',
+    hide: () => wrap.style.display = 'none',
+    destroy: () => { wrap.remove(); created.length = 0; },
+    getButton: (bid) => created.find(b => b.id === bid)
+  };
+}
+createToolbar({
+  buttons = [],
+  container = null,
+  orientation = 'horizontal',
+  gap = 8,
+  padding = 6,
+  bg = 'var(--backg1)',
+  border = '1px solid var(--borde)',
+  radius = 10,
+  buttonSize = 36,
+  iconSize = 18,
+  defaultOnClick = null,
+  tooltipPosition = null
+} = {}) {
+
+  const wrap = document.createElement('div');
+  wrap.style.cssText = `
+    display:inline-flex;
+    flex-direction:${orientation === 'vertical' ? 'column' : 'row'};
+    align-items:center;
+    gap:${gap}px; padding:${padding}px;
+    background:${bg}; border:${border}; border-radius:${radius}px;
+    box-sizing:border-box;
+  `;
+
+  const created = [];
+  const ttPos = tooltipPosition || (orientation === 'vertical' ? 'right' : 'bottom');
+
+  const makeBtn = ({ icon, tooltip = '', bId = null, active = false, separator = false, onClick = null }) => {
+    if (separator) {
+      const sep = document.createElement('div');
+      sep.style.cssText = orientation === 'vertical'
+        ? 'height:1px; width:20px; background:var(--borde); flex-shrink:0; margin:2px 0;'
+        : 'width:1px; height:20px; background:var(--borde); flex-shrink:0; margin:0 2px;';
+      wrap.appendChild(sep);
+      return { el: sep, isSeparator: true, remove: () => sep.remove() };
+    }
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'gio-btn' + (active ? ' gio-active' : '');
+    btn.dataset.tooltip = tooltip;
+    if (bId) btn.dataset.id = bId;
+    btn.style.width = `${buttonSize}px`;
+    btn.style.height = `${buttonSize}px`;
+    btn.style.minWidth = `${buttonSize}px`;
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.style.width = `${iconSize}px`;
+    svg.style.height = `${iconSize}px`;
+    svg.innerHTML = GiovanniIconDB[icon] || GiovanniIconDB.square;
+    btn.appendChild(svg);
+
+    btn.addEventListener('mouseenter', () => Giovanni._showGlobalTooltip(btn, btn.dataset.tooltip, ttPos));
+    btn.addEventListener('mouseleave', () => Giovanni._hideGlobalTooltip());
+    btn.addEventListener('focus', () => Giovanni._showGlobalTooltip(btn, btn.dataset.tooltip, ttPos));
+    btn.addEventListener('blur', () => Giovanni._hideGlobalTooltip());
+    btn.addEventListener('click', (e) => {
+      if (typeof onClick === 'function') onClick(btn, e);
+      else if (typeof defaultOnClick === 'function') defaultOnClick(btn, e);
+    });
+
+    const ref = {
+      el: btn, id: bId,
+      setActive: (v = true) => btn.classList.toggle('gio-active', v),
+      setTooltip: (t) => { btn.dataset.tooltip = t; },
+      setIcon: (k) => { svg.innerHTML = GiovanniIconDB[k] || GiovanniIconDB.square; },
+      remove: () => { btn.remove(); const i = created.indexOf(ref); if (i > -1) created.splice(i, 1); }
+    };
+    created.push(ref);
+    wrap.appendChild(btn);
+    return ref;
+  };
+
+  buttons.forEach(b => makeBtn(b));
+  if (container) container.appendChild(wrap);
+
+  return {
+    el: wrap, buttons: created,
+    createButton: makeBtn,
+    destroy: () => { wrap.remove(); created.length = 0; },
+    getButton: (bid) => created.find(b => b.id === bid)
+  };
+}
+createRibbonGroup({
+  container = null,
+  label = 'Grupo',
+  buttons = [],
+  buttonSize = 44,
+  iconSize = 20,
+  defaultOnClick = null
+} = {}) {
+
+  const group = document.createElement('div');
+  group.className = 'gio-ribbon-group';
+  group.style.cssText = `
+    display:flex; flex-direction:column; align-items:center;
+    border-right:1px solid var(--borde);
+    padding-right:15px; height:100%; justify-content:space-between;
+  `;
+
+  const row = document.createElement('div');
+  row.style.cssText = `display:flex; gap:5px; flex-wrap:wrap; justify-content:center; align-items:center; flex:1;`;
+
+  const title = document.createElement('span');
+  title.textContent = label;
+  title.style.cssText = `font-size:10px; color:var(--texto); text-transform:uppercase; letter-spacing:.5px; margin-top:2px;`;
+
+  const created = [];
+
+  const makeBtn = ({ icon, text = '', tooltip = '', bId = null, active = false, onClick = null }) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'gio-btn' + (active ? ' gio-active' : '');
+    btn.dataset.tooltip = tooltip || text;
+    if (bId) btn.dataset.id = bId;
+    btn.style.cssText = `
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      background:transparent; border:1px solid transparent; color:var(--textoActivo);
+      cursor:pointer; padding:4px 8px; border-radius:6px;
+      transition:all .18s; min-width:${buttonSize}px;
+    `;
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.style.cssText = `width:${iconSize}px; height:${iconSize}px; margin-bottom:2px; fill:currentColor;`;
+    svg.innerHTML = GiovanniIconDB[icon] || GiovanniIconDB.square;
+    btn.appendChild(svg);
+
+    if (text) {
+      const span = document.createElement('span');
+      span.textContent = text;
+      span.style.cssText = `font-size:10px; text-align:center; line-height:1.1;`;
+      btn.appendChild(span);
+    }
+
+    btn.addEventListener('mouseenter', () => {
+      btn.style.background = 'var(--backg3)';
+      btn.style.borderColor = 'var(--borde)';
+      Giovanni._showGlobalTooltip(btn, btn.dataset.tooltip, 'bottom');
+    });
+    btn.addEventListener('mouseleave', () => {
+      if (!btn.classList.contains('gio-active')) {
+        btn.style.background = 'transparent';
+        btn.style.borderColor = 'transparent';
+      }
+      Giovanni._hideGlobalTooltip();
+    });
+    btn.addEventListener('click', (e) => {
+      if (typeof onClick === 'function') onClick(btn, e);
+      else if (typeof defaultOnClick === 'function') defaultOnClick(btn, e);
+    });
+
+    const ref = {
+      el: btn, id: bId,
+      setActive: (v = true) => {
+        btn.classList.toggle('gio-active', v);
+        btn.style.background = v ? 'rgba(77,170,252,0.15)' : 'transparent';
+        btn.style.borderColor = v ? 'var(--textoActvioBlue)' : 'transparent';
+        btn.style.color = v ? 'var(--textoActvioBlue)' : 'var(--textoActivo)';
+      },
+      setTooltip: (t) => { btn.dataset.tooltip = t; },
+      setIcon: (k) => { svg.innerHTML = GiovanniIconDB[k] || GiovanniIconDB.square; },
+      remove: () => { btn.remove(); const i = created.indexOf(ref); if (i > -1) created.splice(i, 1); }
+    };
+    created.push(ref);
+    row.appendChild(btn);
+    return ref;
+  };
+
+  buttons.forEach(b => makeBtn(b));
+  group.appendChild(row);
+  group.appendChild(title);
+  if (container) container.appendChild(group);
+
+  return {
+    el: group, row, label, buttons: created,
+    createButton: makeBtn,
+    destroy: () => { group.remove(); created.length = 0; },
+    getButton: (bid) => created.find(b => b.id === bid)
+  };
+}
+
+createTopMenu({
+  buttons = [],
+  id = `gio-top-${Math.random().toString(36).slice(2, 8)}`,
+  offset = 12,
+  gap = 8,
+  padding = 8,
+  buttonSize = 40,
+  iconSize = 20,
+  radius = 10,
+  bg = 'var(--backg1)',
+  border = 'var(--borde)',
+  defaultOnClick = null
+} = {}) {
+
+  const wrap = document.createElement('div');
+  wrap.id = id;
+  wrap.style.cssText = `
+    position: fixed; top: ${offset}px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; gap: ${gap}px;
+    padding: ${padding}px;
+    background: ${bg};
+    border: 1px solid ${border};
+    border-radius: ${radius}px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+    z-index: 9999;
+    max-width: calc(100vw - ${offset * 2}px);
+    box-sizing: border-box;
+  `;
+
+  const listEl = document.createElement('div');
+  listEl.className = 'gio-custom-scroll';
+  listEl.style.cssText = `display:flex; gap:${gap}px; overflow-x:auto; overflow-y:hidden; max-width:100%;`;
+
+  const created = [];
+
+  const makeBtn = ({ icon, tooltip = '', bId = null, active = false, onClick = null }) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'gio-btn' + (active ? ' gio-active' : '');
+    btn.dataset.tooltip = tooltip;
+    if (bId) btn.dataset.id = bId;
+    btn.style.width = `${buttonSize}px`;
+    btn.style.height = `${buttonSize}px`;
+    btn.style.minWidth = `${buttonSize}px`;
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.style.width = `${iconSize}px`;
+    svg.style.height = `${iconSize}px`;
+    svg.innerHTML = GiovanniIconDB[icon] || GiovanniIconDB.square;
+    btn.appendChild(svg);
+
+    btn.addEventListener('mouseenter', () => Giovanni._showGlobalTooltip(btn, btn.dataset.tooltip, 'top'));
+    btn.addEventListener('mouseleave', () => Giovanni._hideGlobalTooltip());
+    btn.addEventListener('focus', () => Giovanni._showGlobalTooltip(btn, btn.dataset.tooltip, 'top'));
+    btn.addEventListener('blur', () => Giovanni._hideGlobalTooltip());
+    btn.addEventListener('click', (e) => {
+      if (typeof onClick === 'function') onClick(btn, e);
+      else if (typeof defaultOnClick === 'function') defaultOnClick(btn, e);
+    });
+
+    const ref = {
+      el: btn, id: bId,
+      setActive: (v = true) => btn.classList.toggle('gio-active', v),
+      setTooltip: (t) => { btn.dataset.tooltip = t; },
+      setIcon: (k) => { svg.innerHTML = GiovanniIconDB[k] || GiovanniIconDB.square; },
+      remove: () => { btn.remove(); const i = created.indexOf(ref); if (i > -1) created.splice(i, 1); }
+    };
+    created.push(ref);
+    listEl.appendChild(btn);
+    return ref;
+  };
+
+  buttons.forEach(b => makeBtn(b));
+  wrap.appendChild(listEl);
+  document.body.appendChild(wrap);
+
+  return {
+    el: wrap, listEl, id, buttons: created,
+    createButton: makeBtn,
+    show: () => wrap.style.display = '',
+    hide: () => wrap.style.display = 'none',
+    destroy: () => { wrap.remove(); created.length = 0; },
+    getButton: (bid) => created.find(b => b.id === bid)
+  };
+}
+
     createSideMenu({
+  position = 'left',
+  buttons = [],
+  id = `gio-menu-${Math.random().toString(36).slice(2, 8)}`,
+  collapsible = true,
+  defaultCollapsed = false,
+  burgerTooltip = 'Mostrar / ocultar menú',
+  buttonSize = 44,
+  iconSize = 22,
+  radius = 10,
+  gap = 8,
+  padding = 8,
+  defaultOnClick = null
+} = {}) {
+
+  const menuEl = document.createElement('div');
+  menuEl.id = id;
+  menuEl.className = `gio-menu gio-${position}`;
+  menuEl.style.setProperty('--gio-btn-size',   `${buttonSize}px`);
+  menuEl.style.setProperty('--gio-icon-size',  `${iconSize}px`);
+  menuEl.style.setProperty('--gio-btn-radius', `${radius}px`);
+  menuEl.style.setProperty('--gio-gap',        `${gap}px`);
+  menuEl.style.setProperty('--gio-padding',    `${padding}px`);
+
+  const listEl = document.createElement('div');
+  listEl.className = 'gio-menu-list gio-custom-scroll';
+
+  const tooltipEl = document.createElement('div');
+  tooltipEl.className = 'gio-tooltip';
+
+  let collapsed = false;
+  let burgerRef = null;
+  const createdButtons = [];
+
+  const createButton = ({ icon, tooltip = '', bId = null, active = false, onClick = null }) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'gio-btn' + (active ? ' gio-active' : '');
+    if (bId) btn.dataset.id = bId;
+    btn.dataset.tooltip = tooltip;
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.innerHTML = GiovanniIconDB[icon] || GiovanniIconDB.square;
+    btn.appendChild(svg);
+
+    btn.addEventListener('mouseenter', () => showTooltip(btn, btn.dataset.tooltip));
+    btn.addEventListener('mouseleave', hideTooltip);
+    btn.addEventListener('focus',      () => showTooltip(btn, btn.dataset.tooltip));
+    btn.addEventListener('blur',       hideTooltip);
+
+    btn.addEventListener('click', (e) => {
+      if (typeof onClick === 'function') onClick(btn, e);
+      else if (typeof defaultOnClick === 'function') defaultOnClick(btn, e);
+    });
+
+    const ref = {
+      el: btn,
+      id: bId,
+      setActive: (v = true) => btn.classList.toggle('gio-active', v),
+      setTooltip: (t) => { btn.dataset.tooltip = t; },
+      setIcon: (key) => { svg.innerHTML = GiovanniIconDB[key] || GiovanniIconDB.square; },
+      remove: () => {
+        btn.remove();
+        const i = createdButtons.indexOf(ref);
+        if (i > -1) createdButtons.splice(i, 1);
+      }
+    };
+    createdButtons.push(ref);
+    return ref;
+  };
+
+ const showTooltip = (target, text) => Giovanni._showGlobalTooltip(target, text, position);
+const hideTooltip = () => Giovanni._hideGlobalTooltip();
+ 
+
+  const collapse = () => {
+    if (!collapsible || collapsed) return;
+    collapsed = true;
+    menuEl.classList.add('gio-collapsed');
+    burgerRef?.setIcon('menu');
+    hideTooltip();
+  };
+  const expand = () => {
+    if (!collapsible || !collapsed) return;
+    collapsed = false;
+    menuEl.classList.remove('gio-collapsed');
+    burgerRef?.setIcon('menuOpen');
+  };
+  const toggle = () => collapsed ? expand() : collapse();
+
+  if (collapsible) {
+    burgerRef = createButton({
+      icon: 'menu',
+      tooltip: burgerTooltip,
+      bId: '__burger__',
+      onClick: () => toggle()
+    });
+    burgerRef.el.classList.add('gio-burger');
+    menuEl.appendChild(burgerRef.el);
+  }
+
+  buttons.forEach(b => {
+    const ref = createButton(b);
+    listEl.appendChild(ref.el);
+  });
+
+  menuEl.appendChild(listEl);
+  document.body.appendChild(menuEl);
+  document.body.appendChild(tooltipEl);
+
+  if (defaultCollapsed) collapse();
+
+  return {
+    el: menuEl,
+    listEl,
+    id,
+    buttons: createdButtons,
+    createButton,
+    toggle,
+    collapse,
+    expand,
+    isCollapsed: () => collapsed,
+    setSizes: (s = {}) => {
+      if (s.buttonSize) menuEl.style.setProperty('--gio-btn-size',   `${s.buttonSize}px`);
+      if (s.iconSize)   menuEl.style.setProperty('--gio-icon-size',  `${s.iconSize}px`);
+      if (s.radius)     menuEl.style.setProperty('--gio-btn-radius', `${s.radius}px`);
+      if (s.gap != null)menuEl.style.setProperty('--gio-gap',        `${s.gap}px`);
+      if (s.padding != null)menuEl.style.setProperty('--gio-padding',`${s.padding}px`);
+    },
+    show: () => { menuEl.style.display = ''; },
+    hide: () => { menuEl.style.display = 'none'; },
+    destroy: () => {
+      tooltipEl.remove();
+      menuEl.remove();
+      createdButtons.length = 0;
+    },
+    getButton: (bId) => createdButtons.find(b => b.id === bId)
+  };
+}
+
+    createButtonSimple = function({ 
+    text = 'TinkerAtlas', 
+    onClick = null, 
+    fullWidth = false, 
+    label = null 
+} = {}) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = text;
+    btn.style.cssText = `
+        background: #2d2d2d;
+        color: var(--texto);
+        border: 3px solid #2d2d2d0c;
+        border-radius: var(--radius);
+        padding: 8px 16px;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        outline: none;
+        user-select: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: ${fullWidth ? '100%' : 'fit-content'};
+        box-sizing: border-box;
+        transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    `;
+
+    // Efecto Hover (Azul Neón + Glow)
+    btn.addEventListener('mouseenter', () => {
+        btn.style.color = 'var(--textoActvioBlue)';
+    
+    
+ 
+    });
+
+    btn.addEventListener('mouseleave', () => {
+        btn.style.color = 'var(--texto)';
+   
+        btn.style.background = '#383737';
+        btn.style.boxShadow = 'none';
+    });
+
+    // Efecto Click (Pulsación)
+    btn.addEventListener('mousedown', () => {
+        btn.style.transform = 'scale(0.97)';
+    });
+    btn.addEventListener('mouseup', () => {
+        btn.style.transform = 'scale(1)';
+    });
+
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (onClick) onClick(btn, e);
+    });
+
+  
+    btn.setText = (nuevoTexto) => {
+        btn.textContent = nuevoTexto;
+        return btn;
+    };
+
+ 
+    if (label) {
+        return this._wrapWithLabel(label, btn);
+    }
+
+    return btn;
+};
+createUnversalSideMenu({
   position = 'left',
   buttons = [],
   id = `gio-menu-${Math.random().toString(36).slice(2, 8)}`,
@@ -1022,78 +1649,6 @@ class Giovanni {
     getButton: (bId) => createdButtons.find(b => b.id === bId)
   };
 }
-
-    createButtonSimple = function({ 
-    text = 'TinkerAtlas', 
-    onClick = null, 
-    fullWidth = false, 
-    label = null 
-} = {}) {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.textContent = text;
-    btn.style.cssText = `
-        background: #2d2d2d;
-        color: var(--texto);
-        border: 3px solid #2d2d2d0c;
-        border-radius: var(--radius);
-        padding: 8px 16px;
-        font-family: inherit;
-        font-size: 13px;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-        cursor: pointer;
-        outline: none;
-        user-select: none;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: ${fullWidth ? '100%' : 'fit-content'};
-        box-sizing: border-box;
-        transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-    `;
-
-    // Efecto Hover (Azul Neón + Glow)
-    btn.addEventListener('mouseenter', () => {
-        btn.style.color = 'var(--textoActvioBlue)';
-    
-    
- 
-    });
-
-    btn.addEventListener('mouseleave', () => {
-        btn.style.color = 'var(--texto)';
-   
-        btn.style.background = '#383737';
-        btn.style.boxShadow = 'none';
-    });
-
-    // Efecto Click (Pulsación)
-    btn.addEventListener('mousedown', () => {
-        btn.style.transform = 'scale(0.97)';
-    });
-    btn.addEventListener('mouseup', () => {
-        btn.style.transform = 'scale(1)';
-    });
-
-    btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (onClick) onClick(btn, e);
-    });
-
-  
-    btn.setText = (nuevoTexto) => {
-        btn.textContent = nuevoTexto;
-        return btn;
-    };
-
- 
-    if (label) {
-        return this._wrapWithLabel(label, btn);
-    }
-
-    return btn;
-};
 
     
     createCheckbox(label = 'Habilitar Opción', checked = false, onChange = null) {
