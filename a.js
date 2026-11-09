@@ -3027,8 +3027,8 @@ box-shadow: 5px 5px 15px 5px #000000;
                         <span class="ui-panel-title">${this.title}</span>
                     </div>
                     <div class="ui-header-tools">
-                        <button class="ui-icon-btn btn-float" title="Alternar Flotante">⧉</button>
-                        <button class="ui-icon-btn btn-collapse ">_</button>
+                   <button class="ui-icon-btn btn-float"  style="display: none;"  title="Alternar Flotante">⧉</button> 
+                        <button class="ui-icon-btn btn-collapse ">-</button>
                         <button class="ui-icon-btn btn-close">✕</button>
                     </div>
                 </div>
