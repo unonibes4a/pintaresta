@@ -1,5 +1,13 @@
  
       const GiovanniIconDB = {
+ 
+  camera: '<path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>',
+  move: '<path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"/>',
+  rotate: '<path d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"/>',
+   scale: '<path d="M12 5V2L8 6l4 4V7c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zM6 12c0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3c-3.31 0-6-2.69-6-6z"/>',
+   grid: '<path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8 20H4v-4h4v4zm0-6H4v-4h4v4zm0-6H4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4z"/>',
+  cylinder: '<path d="M12 2C8.13 2 5 3.34 5 5v14c0 1.66 3.13 3 7 3s7-1.34 7-3V5c0-1.66-3.13-3-7-3zm0 2c3.31 0 5 1.01 5 1s-1.69 1-5 1-5-1.01-5-1 1.69-1 5-1zm0 16c-3.31 0-5-1.01-5-1v-2.09c1.4.66 3.13 1.09 5 1.09s3.6-.43 5-1.09V19c0 .01-1.69 1-5 1zm0-4c-3.31 0-5-1.01-5-1v-2.09c1.4.66 3.13 1.09 5 1.09s3.6-.43 5-1.09V15c0 .01-1.69 1-5 1zm0-4c-3.31 0-5-1.01-5-1V8.91c1.4.66 3.13 1.09 5 1.09s3.6-.43 5-1.09V11c0 .01-1.69 1-5 1z"/>',
+ 
   // --- CAD & Herramientas ---
   pencil:     '<path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>',
   square:     '<path d="M3 3h18v18H3V3zm2 2v14h14V5H5z"/>',
@@ -2806,7 +2814,7 @@ createToolbar({
     };
 }
 
-createRibbonGroup({
+  createRibbonGroup({
   container = null,
   label = 'Grupo',
   buttons = [],
@@ -2815,78 +2823,183 @@ createRibbonGroup({
   defaultOnClick = null
 } = {}) {
 
+  const STYLE_ID = 'gio-ribbon-group-styles';
+  if (!document.getElementById(STYLE_ID)) {
+    const style = document.createElement('style');
+    style.id = STYLE_ID;
+    style.textContent = `
+      .gio-ribbon-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border-right: 1px solid var(--borde, #444);
+        padding-right: 15px;
+        height: 100%;
+        justify-content: space-between;
+        box-sizing: border-box;
+      }
+
+      .gio-ribbon-row {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        flex: 1;
+      }
+
+      .gio-ribbon-title {
+        font-size: 10px;
+        color: var(--texto, #8c8e8f);
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        margin-top: 2px;
+        text-align: center;
+        user-select: none;
+        pointer-events: none;
+      }
+
+      .gio-ribbon-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: 1px solid transparent;
+        color: var(--textoActivo, #e7e7e7);
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 6px;
+        transition: all .18s;
+        box-sizing: border-box;
+        font-family: inherit;
+      }
+      .gio-ribbon-btn:hover {
+        background: var(--backg3, #3d3d3d);
+        border-color: var(--borde, #444);
+      }
+      .gio-ribbon-btn:active {
+        transform: scale(.94);
+      }
+      .gio-ribbon-btn.gio-active {
+        background: rgba(77, 170, 252, 0.15);
+        border-color: var(--textoActvioBlue, #4daafc);
+        color: var(--textoActvioBlue, #4daafc);
+      }
+      .gio-ribbon-btn svg {
+        width: var(--gio-icon-size, 20px);
+        height: var(--gio-icon-size, 20px);
+        margin-bottom: 2px;
+        fill: currentColor;
+        pointer-events: none;
+      }
+      .gio-ribbon-btn .gio-ribbon-btn-text {
+        font-size: 10px;
+        text-align: center;
+        line-height: 1.1;
+        pointer-events: none;
+      }
+
+      .gio-tooltip {
+        position: fixed;
+        padding: 6px 10px;
+        background: var(--backg0, #1a1a1a);
+        color: var(--textoActivo, #e7e7e7);
+        font-size: 12px;
+        font-family: system-ui, sans-serif;
+        white-space: nowrap;
+        border-radius: 6px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity .15s ease;
+        z-index: 10000;
+        border: 1px solid var(--borde, #444);
+      }
+      .gio-tooltip.gio-visible { opacity: 1; }
+    `;
+    document.head.appendChild(style);
+  }
+
   const group = document.createElement('div');
   group.className = 'gio-ribbon-group';
-  group.style.cssText = `
-    display:flex; flex-direction:column; align-items:center;
-    border-right:1px solid var(--borde);
-    padding-right:15px; height:100%; justify-content:space-between;
-  `;
 
   const row = document.createElement('div');
-  row.style.cssText = `display:flex; gap:5px; flex-wrap:wrap; justify-content:center; align-items:center; flex:1;`;
+  row.className = 'gio-ribbon-row';
 
   const title = document.createElement('span');
+  title.className = 'gio-ribbon-title';
   title.textContent = label;
-  title.style.cssText = `font-size:10px; color:var(--texto); text-transform:uppercase; letter-spacing:.5px; margin-top:2px;`;
 
   const created = [];
 
   const makeBtn = ({ icon, text = '', tooltip = '', bId = null, active = false, onClick = null }) => {
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'gio-btn' + (active ? ' gio-active' : '');
+    btn.className = 'gio-ribbon-btn' + (active ? ' gio-active' : '');
     btn.dataset.tooltip = tooltip || text;
     if (bId) btn.dataset.id = bId;
-    btn.style.cssText = `
-      display:flex; flex-direction:column; align-items:center; justify-content:center;
-      background:transparent; border:1px solid transparent; color:var(--textoActivo);
-      cursor:pointer; padding:4px 8px; border-radius:6px;
-      transition:all .18s; min-width:${buttonSize}px;
-    `;
+    btn.style.minWidth = `${buttonSize}px`;
+    btn.style.setProperty('--gio-icon-size', `${iconSize}px`);
 
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('viewBox', '0 0 24 24');
-    svg.style.cssText = `width:${iconSize}px; height:${iconSize}px; margin-bottom:2px; fill:currentColor;`;
-    svg.innerHTML = GiovanniIconDB[icon] || GiovanniIconDB.square;
+    svg.innerHTML = (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB[icon])
+      || (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB.square)
+      || '';
     btn.appendChild(svg);
 
     if (text) {
       const span = document.createElement('span');
+      span.className = 'gio-ribbon-btn-text';
       span.textContent = text;
-      span.style.cssText = `font-size:10px; text-align:center; line-height:1.1;`;
       btn.appendChild(span);
     }
 
-    btn.addEventListener('mouseenter', () => {
-      btn.style.background = 'var(--backg3)';
-      btn.style.borderColor = 'var(--borde)';
-      Giovanni._showGlobalTooltip(btn, btn.dataset.tooltip, 'bottom');
-    });
-    btn.addEventListener('mouseleave', () => {
-      if (!btn.classList.contains('gio-active')) {
-        btn.style.background = 'transparent';
-        btn.style.borderColor = 'transparent';
+    const showTip = () => {
+      if (typeof Giovanni !== 'undefined' && typeof Giovanni._showGlobalTooltip === 'function') {
+        Giovanni._showGlobalTooltip(btn, btn.dataset.tooltip, 'bottom');
       }
-      Giovanni._hideGlobalTooltip();
-    });
+    };
+    const hideTip = () => {
+      if (typeof Giovanni !== 'undefined' && typeof Giovanni._hideGlobalTooltip === 'function') {
+        Giovanni._hideGlobalTooltip();
+      }
+    };
+
+    btn.addEventListener('mouseenter', showTip);
+    btn.addEventListener('mouseleave', hideTip);
+    btn.addEventListener('focus', showTip);
+    btn.addEventListener('blur', hideTip);
+
+    const ref = {
+      el: btn,
+      id: bId,
+      isSeparator: false,
+      setActive: (v = true) => btn.classList.toggle('gio-active', v),
+      setTooltip: (t) => { btn.dataset.tooltip = t; },
+      setIcon: (k) => {
+        svg.innerHTML = (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB[k])
+          || (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB.square)
+          || '';
+      },
+      remove: () => {
+        btn.remove();
+        const i = created.indexOf(ref);
+        if (i > -1) created.splice(i, 1);
+      }
+    };
+
     btn.addEventListener('click', (e) => {
+      created.forEach(r => {
+        if (r !== ref && !r.isSeparator) r.setActive(false);
+      });
+      ref.setActive(true);
+
       if (typeof onClick === 'function') onClick(btn, e);
       else if (typeof defaultOnClick === 'function') defaultOnClick(btn, e);
     });
 
-    const ref = {
-      el: btn, id: bId,
-      setActive: (v = true) => {
-        btn.classList.toggle('gio-active', v);
-        btn.style.background = v ? 'rgba(77,170,252,0.15)' : 'transparent';
-        btn.style.borderColor = v ? 'var(--textoActvioBlue)' : 'transparent';
-        btn.style.color = v ? 'var(--textoActvioBlue)' : 'var(--textoActivo)';
-      },
-      setTooltip: (t) => { btn.dataset.tooltip = t; },
-      setIcon: (k) => { svg.innerHTML = GiovanniIconDB[k] || GiovanniIconDB.square; },
-      remove: () => { btn.remove(); const i = created.indexOf(ref); if (i > -1) created.splice(i, 1); }
-    };
     created.push(ref);
     row.appendChild(btn);
     return ref;
@@ -2898,14 +3011,16 @@ createRibbonGroup({
   if (container) container.appendChild(group);
 
   return {
-    el: group, row, label, buttons: created,
+    el: group,
+    row,
+    label,
+    buttons: created,
     createButton: makeBtn,
     destroy: () => { group.remove(); created.length = 0; },
     getButton: (bid) => created.find(b => b.id === bid)
   };
 }
-
-createTopMenu({
+   createTopMenu({
   buttons = [],
   id = `gio-top-${Math.random().toString(36).slice(2, 8)}`,
   offset = 12,
@@ -2918,6 +3033,59 @@ createTopMenu({
   border = 'var(--borde)',
   defaultOnClick = null
 } = {}) {
+
+  const STYLE_ID = 'gio-top-menu-styles';
+  if (!document.getElementById(STYLE_ID)) {
+    const style = document.createElement('style');
+    style.id = STYLE_ID;
+    style.textContent = `
+      .gio-btn {
+        position: relative;
+        width: var(--gio-btn-size, 44px);
+        height: var(--gio-btn-size, 44px);
+        min-width: var(--gio-btn-size, 44px);
+        border: none;
+        border-radius: var(--gio-btn-radius, 10px);
+        background: var(--backg0, #333);
+        color: var(--texto, #8c8e8f);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background .18s, color .18s, transform .12s, opacity .2s;
+        padding: 0;
+        flex-shrink: 0;
+      }
+      .gio-btn:hover  { background: var(--backg3, #3d3d3d); color: var(--textoActvioBlue, #4daafc); }
+      .gio-btn:active { transform: scale(.94); }
+      .gio-btn.gio-active { color: var(--textoActvioBlue, #4daafc); background: var(--textoledBrillo, #383f48); }
+      .gio-btn svg { width: var(--gio-icon-size, 22px); height: var(--gio-icon-size, 22px); fill: currentColor; pointer-events: none; }
+
+      .gio-tooltip {
+        position: fixed;
+        padding: 6px 10px;
+        background: var(--backg0, #1a1a1a);
+        color: var(--textoActivo, #e7e7e7);
+        font-size: 12px;
+        font-family: system-ui, sans-serif;
+        white-space: nowrap;
+        border-radius: 6px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity .15s ease;
+        z-index: 10000;
+        border: 1px solid var(--borde, #444);
+      }
+      .gio-tooltip.gio-visible { opacity: 1; }
+
+      .gio-custom-scroll::-webkit-scrollbar { width: 5px; height: 5px; }
+      .gio-custom-scroll::-webkit-scrollbar-track { background: transparent; }
+      .gio-custom-scroll::-webkit-scrollbar-thumb { background: var(--borde, #4d4d4d); border-radius: 4px; }
+      .gio-custom-scroll::-webkit-scrollbar-thumb:hover { background: var(--textoledBrillo, #383f48); }
+    `;
+    document.head.appendChild(style);
+  }
 
   const wrap = document.createElement('div');
   wrap.id = id;
@@ -2950,30 +3118,62 @@ createTopMenu({
     btn.style.width = `${buttonSize}px`;
     btn.style.height = `${buttonSize}px`;
     btn.style.minWidth = `${buttonSize}px`;
+    btn.style.setProperty('--gio-btn-size', `${buttonSize}px`);
+    btn.style.setProperty('--gio-icon-size', `${iconSize}px`);
 
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('viewBox', '0 0 24 24');
     svg.style.width = `${iconSize}px`;
     svg.style.height = `${iconSize}px`;
-    svg.innerHTML = GiovanniIconDB[icon] || GiovanniIconDB.square;
+    svg.innerHTML = (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB[icon])
+      || (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB.square)
+      || '';
     btn.appendChild(svg);
 
-    btn.addEventListener('mouseenter', () => Giovanni._showGlobalTooltip(btn, btn.dataset.tooltip, 'top'));
-    btn.addEventListener('mouseleave', () => Giovanni._hideGlobalTooltip());
-    btn.addEventListener('focus', () => Giovanni._showGlobalTooltip(btn, btn.dataset.tooltip, 'top'));
-    btn.addEventListener('blur', () => Giovanni._hideGlobalTooltip());
+    const showTip = () => {
+      if (typeof Giovanni !== 'undefined' && typeof Giovanni._showGlobalTooltip === 'function') {
+        Giovanni._showGlobalTooltip(btn, btn.dataset.tooltip, 'top');
+      }
+    };
+    const hideTip = () => {
+      if (typeof Giovanni !== 'undefined' && typeof Giovanni._hideGlobalTooltip === 'function') {
+        Giovanni._hideGlobalTooltip();
+      }
+    };
+
+    btn.addEventListener('mouseenter', showTip);
+    btn.addEventListener('mouseleave', hideTip);
+    btn.addEventListener('focus', showTip);
+    btn.addEventListener('blur', hideTip);
+
+    const ref = {
+      el: btn,
+      id: bId,
+      isSeparator: false,
+      setActive: (v = true) => btn.classList.toggle('gio-active', v),
+      setTooltip: (t) => { btn.dataset.tooltip = t; },
+      setIcon: (k) => {
+        svg.innerHTML = (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB[k])
+          || (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB.square)
+          || '';
+      },
+      remove: () => {
+        btn.remove();
+        const i = created.indexOf(ref);
+        if (i > -1) created.splice(i, 1);
+      }
+    };
+
     btn.addEventListener('click', (e) => {
+      created.forEach(r => {
+        if (r !== ref && !r.isSeparator) r.setActive(false);
+      });
+      ref.setActive(true);
+
       if (typeof onClick === 'function') onClick(btn, e);
       else if (typeof defaultOnClick === 'function') defaultOnClick(btn, e);
     });
 
-    const ref = {
-      el: btn, id: bId,
-      setActive: (v = true) => btn.classList.toggle('gio-active', v),
-      setTooltip: (t) => { btn.dataset.tooltip = t; },
-      setIcon: (k) => { svg.innerHTML = GiovanniIconDB[k] || GiovanniIconDB.square; },
-      remove: () => { btn.remove(); const i = created.indexOf(ref); if (i > -1) created.splice(i, 1); }
-    };
     created.push(ref);
     listEl.appendChild(btn);
     return ref;
@@ -2984,10 +3184,13 @@ createTopMenu({
   document.body.appendChild(wrap);
 
   return {
-    el: wrap, listEl, id, buttons: created,
+    el: wrap,
+    listEl,
+    id,
+    buttons: created,
     createButton: makeBtn,
-    show: () => wrap.style.display = '',
-    hide: () => wrap.style.display = 'none',
+    show: () => { wrap.style.display = ''; },
+    hide: () => { wrap.style.display = 'none'; },
     destroy: () => { wrap.remove(); created.length = 0; },
     getButton: (bid) => created.find(b => b.id === bid)
   };
@@ -3740,9 +3943,9 @@ createBrowserPanel({
     collapse: (id) => { expanded.delete(id); render(); }
   };
 }
+ 
 
-
-createUnversalSideMenu({
+       createUnversalSideMenu({
   position = 'left',
   buttons = [],
   id = `gio-menu-${Math.random().toString(36).slice(2, 8)}`,
@@ -3756,6 +3959,103 @@ createUnversalSideMenu({
   padding = 8,
   defaultOnClick = null
 } = {}) {
+
+  const STYLE_ID = 'gio-universal-side-menu-styles';
+  if (!document.getElementById(STYLE_ID)) {
+    const style = document.createElement('style');
+    style.id = STYLE_ID;
+    style.textContent = `
+      .gio-menu {
+        position: fixed;
+        z-index: 9999;
+        display: flex;
+        gap: var(--gio-gap, 8px);
+        padding: var(--gio-padding, 8px);
+        background: var(--backg1, #2d2d2d);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+        transition: transform .28s ease, opacity .28s ease;
+        max-width: calc(100vw - 24px);
+        max-height: calc(100vh - 24px);
+        box-sizing: border-box;
+      }
+      .gio-menu.gio-left   { left: 0;  top: 50%; transform: translateY(-50%); flex-direction: column; border-radius: 0 var(--radius, 6px) var(--radius, 6px) 0; }
+      .gio-menu.gio-right  { right: 0; top: 50%; transform: translateY(-50%); flex-direction: column; border-radius: var(--radius, 6px) 0 0 var(--radius, 6px); }
+      .gio-menu.gio-top    { top: 0;    left: 50%; transform: translateX(-50%); flex-direction: row;    border-radius: 0 0 var(--radius, 6px) var(--radius, 6px); }
+      .gio-menu.gio-bottom { bottom: 0; left: 50%; transform: translateX(-50%); flex-direction: row;    border-radius: var(--radius, 6px) var(--radius, 6px) 0 0; }
+
+      .gio-menu-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--gio-gap, 8px);
+        max-height: calc(100vh - 100px);
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-gutter: stable;
+      }
+      .gio-menu.gio-top .gio-menu-list,
+      .gio-menu.gio-bottom .gio-menu-list {
+        flex-direction: row;
+        max-height: none;
+        max-width: calc(100vw - 100px);
+        overflow-y: hidden;
+        overflow-x: auto;
+      }
+
+      .gio-btn {
+        position: relative;
+        width: var(--gio-btn-size, 44px);
+        height: var(--gio-btn-size, 44px);
+        min-width: var(--gio-btn-size, 44px);
+        border: none;
+        border-radius: var(--gio-btn-radius, 10px);
+        background: var(--backg0, #333);
+        color: var(--texto, #8c8e8f);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background .18s, color .18s, transform .12s, opacity .2s;
+        padding: 0;
+        flex-shrink: 0;
+      }
+      .gio-btn:hover  { background: var(--backg3, #3d3d3d); color: var(--textoActvioBlue, #4daafc); }
+      .gio-btn:active { transform: scale(.94); }
+      .gio-btn.gio-active { color: var(--textoActvioBlue, #4daafc); background: var(--textoledBrillo, #383f48); }
+      .gio-btn svg { width: var(--gio-icon-size, 22px); height: var(--gio-icon-size, 22px); fill: currentColor; pointer-events: none; }
+      .gio-btn.gio-burger { color: var(--textoActvioBlue, #4daafc); }
+
+      .gio-menu.gio-collapsed .gio-menu-list { display: none; }
+      .gio-menu.gio-collapsed.gio-left   { transform: translateY(-50%) translateX(-2px); }
+      .gio-menu.gio-collapsed.gio-right  { transform: translateY(-50%) translateX(2px); }
+      .gio-menu.gio-collapsed.gio-top    { transform: translateX(-50%) translateY(-2px); }
+      .gio-menu.gio-collapsed.gio-bottom { transform: translateX(-50%) translateY(2px); }
+      .gio-menu.gio-collapsed { padding: calc(var(--gio-padding, 8px) * 0.75); gap: 0; }
+
+      .gio-tooltip {
+        position: fixed;
+        padding: 6px 10px;
+        background: var(--backg0, #1a1a1a);
+        color: var(--textoActivo, #e7e7e7);
+        font-size: 12px;
+        font-family: system-ui, sans-serif;
+        white-space: nowrap;
+        border-radius: 6px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity .15s ease;
+        z-index: 10000;
+        border: 1px solid var(--borde, #444);
+      }
+      .gio-tooltip.gio-visible { opacity: 1; }
+
+      .gio-custom-scroll::-webkit-scrollbar { width: 5px; height: 5px; }
+      .gio-custom-scroll::-webkit-scrollbar-track { background: transparent; }
+      .gio-custom-scroll::-webkit-scrollbar-thumb { background: var(--borde, #4d4d4d); border-radius: 4px; }
+      .gio-custom-scroll::-webkit-scrollbar-thumb:hover { background: var(--textoledBrillo, #383f48); }
+    `;
+    document.head.appendChild(style);
+  }
 
   const menuEl = document.createElement('div');
   menuEl.id = id;
@@ -3775,44 +4075,6 @@ createUnversalSideMenu({
   let collapsed = false;
   let burgerRef = null;
   const createdButtons = [];
-
-  const createButton = ({ icon, tooltip = '', bId = null, active = false, onClick = null }) => {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'gio-btn' + (active ? ' gio-active' : '');
-    if (bId) btn.dataset.id = bId;
-    btn.dataset.tooltip = tooltip;
-
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('viewBox', '0 0 24 24');
-    svg.innerHTML = GiovanniIconDB[icon] || GiovanniIconDB.square;
-    btn.appendChild(svg);
-
-    btn.addEventListener('mouseenter', () => showTooltip(btn, btn.dataset.tooltip));
-    btn.addEventListener('mouseleave', hideTooltip);
-    btn.addEventListener('focus',      () => showTooltip(btn, btn.dataset.tooltip));
-    btn.addEventListener('blur',       hideTooltip);
-
-    btn.addEventListener('click', (e) => {
-      if (typeof onClick === 'function') onClick(btn, e);
-      else if (typeof defaultOnClick === 'function') defaultOnClick(btn, e);
-    });
-
-    const ref = {
-      el: btn,
-      id: bId,
-      setActive: (v = true) => btn.classList.toggle('gio-active', v),
-      setTooltip: (t) => { btn.dataset.tooltip = t; },
-      setIcon: (key) => { svg.innerHTML = GiovanniIconDB[key] || GiovanniIconDB.square; },
-      remove: () => {
-        btn.remove();
-        const i = createdButtons.indexOf(ref);
-        if (i > -1) createdButtons.splice(i, 1);
-      }
-    };
-    createdButtons.push(ref);
-    return ref;
-  };
 
   const showTooltip = (target, text) => {
     if (!text) return;
@@ -3845,7 +4107,61 @@ createUnversalSideMenu({
       tooltipEl.style.transformOrigin = origin;
     });
   };
+
   const hideTooltip = () => tooltipEl.classList.remove('gio-visible');
+
+  const createButton = ({ icon, tooltip = '', bId = null, active = false, onClick = null }) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'gio-btn' + (active ? ' gio-active' : '');
+    if (bId) btn.dataset.id = bId;
+    btn.dataset.tooltip = tooltip;
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.innerHTML = (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB[icon])
+      || (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB.square)
+      || '';
+    btn.appendChild(svg);
+
+    btn.addEventListener('mouseenter', () => showTooltip(btn, btn.dataset.tooltip));
+    btn.addEventListener('mouseleave', hideTooltip);
+    btn.addEventListener('focus',      () => showTooltip(btn, btn.dataset.tooltip));
+    btn.addEventListener('blur',       hideTooltip);
+
+    const ref = {
+      el: btn,
+      id: bId,
+      isBurger: bId === '__burger__',
+      setActive: (v = true) => btn.classList.toggle('gio-active', v),
+      setTooltip: (t) => { btn.dataset.tooltip = t; },
+      setIcon: (key) => {
+        svg.innerHTML = (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB[key])
+          || (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB.square)
+          || '';
+      },
+      remove: () => {
+        btn.remove();
+        const i = createdButtons.indexOf(ref);
+        if (i > -1) createdButtons.splice(i, 1);
+      }
+    };
+
+    btn.addEventListener('click', (e) => {
+      if (!ref.isBurger) {
+        createdButtons.forEach(r => {
+          if (r !== ref && !r.isBurger) r.setActive(false);
+        });
+        ref.setActive(true);
+      }
+
+      if (typeof onClick === 'function') onClick(btn, e);
+      else if (typeof defaultOnClick === 'function') defaultOnClick(btn, e);
+    });
+
+    createdButtons.push(ref);
+    return ref;
+  };
 
   const collapse = () => {
     if (!collapsible || collapsed) return;
@@ -3854,12 +4170,14 @@ createUnversalSideMenu({
     burgerRef?.setIcon('menu');
     hideTooltip();
   };
+
   const expand = () => {
     if (!collapsible || !collapsed) return;
     collapsed = false;
     menuEl.classList.remove('gio-collapsed');
     burgerRef?.setIcon('menuOpen');
   };
+
   const toggle = () => collapsed ? expand() : collapse();
 
   if (collapsible) {
@@ -3911,8 +4229,6 @@ createUnversalSideMenu({
     getButton: (bId) => createdButtons.find(b => b.id === bId)
   };
 }
-
-    
     createCheckbox(label = 'Habilitar Opción', checked = false, onChange = null) {
         let isChecked = !!checked;
 
