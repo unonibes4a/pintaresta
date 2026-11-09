@@ -1671,9 +1671,7 @@ class GiovanniColorPicker {
      agregarClaseAElementos("app-workspace");
         },2000); 
    
-   
-
-const injectStyles = `
+   const injectStyles = `
   /*   ::-webkit-scrollbar {
         width: 6px;
         height: 6px;
@@ -1690,18 +1688,18 @@ const injectStyles = `
     } */
 
         *::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;  
+    width: 6px !important;
+    height: 6px !important;
 }
 *::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.15);
+    background: rgba(0, 0, 0, 0.15) !important;
 }
 *::-webkit-scrollbar-thumb {
-    background: #555;
-    border-radius: 4px;
+    background: #555 !important;
+    border-radius: 4px !important;
 }
 *::-webkit-scrollbar-thumb:hover {
-    background: #777;
+    background: #777 !important;
 }
 `;
 const styleSheet = document.createElement('style');
