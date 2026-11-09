@@ -1480,6 +1480,234 @@ const hideTooltip = () => Giovanni._hideGlobalTooltip();
 
     return btn;
 };
+createBrowserPanel({
+  label = 'Browser',
+  data = [],
+  width = 260,
+  onSelect = null,
+  onVisibilityToggle = null,
+  onContextMenu = null
+} = {}) {
+
+ 
+  const STYLE_ID = 'gio-browser-styles';
+  if (!document.getElementById(STYLE_ID)) {
+    const style = document.createElement('style');
+    style.id = STYLE_ID;
+    style.textContent = `
+      .gio-browser {
+        background: #11161d;
+        border-right: 1px solid #333333c4333;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        font-family: 'Segoe UI', Roboto, sans-serif;
+        font-size: 12px;
+        color: #b9c1cc;
+        user-select: none;
+      }
+      .gio-browser-head {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 8px 12px;
+        border-bottom: 1px solid #333333;
+        font-size: 12px; font-weight: 600; color: #e6ebf1;
+         background: #333333;
+      }
+      .gio-browser-head span.small { font-size: 11px; color: #8c93a0; font-weight: 400; }
+      .gio-browser-tree {
+        flex: 1;
+        overflow-y: auto;
+        padding: 6px 4px;
+        display: flex; flex-direction: column; gap: 1px;
+        background: #1e1e1e;
+      }
+      .gio-browser-row {
+        display: flex; align-items: center; gap: 6px;
+        padding: 4px 6px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.12s;
+        border-left: 2px solid transparent;
+      }
+      .gio-browser-row:hover { background: #1e1e1e; }
+      .gio-browser-row.selected { background: #1e2a3a; border-left-color: #4daafc; }
+      .gio-browser-chevron {
+        width: 12px; height: 12px; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+        color: #6c7685;
+        transition: transform 0.15s;
+      }
+      .gio-browser-chevron.open { transform: rotate(90deg); color: #4daafc; }
+      .gio-browser-icon {
+        width: 14px; height: 14px; flex-shrink: 0;
+        fill: currentColor;
+        color: #8aa0b8;
+      }
+      .gio-browser-name {
+        flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        font-size: 12px;
+      }
+      .gio-browser-name.editing { color: #4daafc; font-weight: 600; }
+      .gio-browser-eye {
+        width: 16px; height: 16px;
+        background: transparent; border: none; padding: 0;
+        color: #6c7685; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        opacity: 0.8;
+      }
+      .gio-browser-eye:hover { color: #4daafc; }
+      .gio-browser-eye.off { color: #3a4250; }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // ---------- Estructura ----------
+  const root = document.createElement('div');
+  root.className = 'gio-browser';
+  root.style.width = typeof width === 'number' ? `${width}px` : width;
+
+  const head = document.createElement('div');
+  head.className = 'gio-browser-head';
+  head.innerHTML = `<span>${label}</span><span class="small">0 bodies</span>`;
+
+  const tree = document.createElement('div');
+  tree.className = 'gio-browser-tree gio-custom-scroll';
+
+  root.appendChild(head);
+  root.appendChild(tree);
+
+  let state = JSON.parse(JSON.stringify(data));
+  let selectedId = null;
+  const expanded = new Set();
+
+  // Expande automáticamente los que vienen con open:true
+  const seedExpand = (nodes) => {
+    nodes.forEach(n => {
+      if (n.open) expanded.add(n.id);
+      if (n.children) seedExpand(n.children);
+    });
+  };
+  seedExpand(state);
+
+  // ---------- Render ----------
+  const render = () => {
+    tree.innerHTML = '';
+
+    const build = (items, depth = 0) => {
+      items.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'gio-browser-row' + (item.id === selectedId ? ' selected' : '');
+        row.style.paddingLeft = `${6 + depth * 14}px`;
+
+        const hasChildren = item.children && item.children.length > 0;
+        const isOpen = expanded.has(item.id);
+
+        // Chevron
+        const chev = document.createElement('div');
+        chev.className = 'gio-browser-chevron' + (isOpen ? ' open' : '');
+        if (hasChildren) {
+          chev.appendChild(Giovanni.getSVG('chevronRight', 10));
+          chev.addEventListener('click', (e) => {
+            e.stopPropagation();
+            isOpen ? expanded.delete(item.id) : expanded.add(item.id);
+            render();
+          });
+        }
+        row.appendChild(chev);
+
+        // Icono
+        const iconSpan = document.createElement('span');
+        iconSpan.className = 'gio-browser-icon';
+        iconSpan.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14">${GiovanniIconDB[item.icon] || GiovanniIconDB.square}</svg>`;
+        row.appendChild(iconSpan);
+
+        // Nombre
+        const name = document.createElement('span');
+        name.className = 'gio-browser-name' + (item.editing ? ' editing' : '');
+        name.textContent = item.name || item.id;
+        row.appendChild(name);
+
+        // Ojo de visibilidad
+        const eye = document.createElement('button');
+        eye.className = 'gio-browser-eye' + (item.visible === false ? ' off' : '');
+        eye.title = item.visible === false ? 'Mostrar' : 'Ocultar';
+        eye.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+          ${item.visible === false
+            ? '<path d="M12 6a9.77 9.77 0 0 1 8.82 5.5A9.77 9.77 0 0 1 12 17a9.77 9.77 0 0 1-8.82-5.5A9.77 9.77 0 0 1 12 6m0-2C7 4 2.73 7.11 1 12c1.73 4.89 6 8 11 8s9.27-3.11 11-8c-1.73-4.89-6-8-11-8z"/>'
+            : '<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5C21.27 7.61 17 4.5 12 4.5zm0 12a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9z"/>'}
+        </svg>`;
+        eye.addEventListener('click', (e) => {
+          e.stopPropagation();
+          item.visible = item.visible === false ? true : false;
+          if (onVisibilityToggle) onVisibilityToggle(item, item.visible);
+          render();
+        });
+        row.appendChild(eye);
+
+        // Click fila
+        row.addEventListener('click', () => {
+          selectedId = item.id;
+          render();
+          if (onSelect) onSelect(item);
+        });
+
+        // Doble click → editar inline
+        row.addEventListener('dblclick', () => {
+          startEditInline(name, item);
+        });
+
+        // Context menu
+        row.addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+          if (onContextMenu) onContextMenu(e, item);
+        });
+
+        tree.appendChild(row);
+
+        if (hasChildren && isOpen) build(item.children, depth + 1);
+      });
+    };
+
+    build(state);
+  };
+
+  // Edición inline del nombre
+  const startEditInline = (nameEl, item) => {
+    const input = document.createElement('input');
+    input.value = item.name;
+    input.style.cssText = `
+      flex:1; background:#0c1118; border:1px solid #4daafc;
+      color:#e6ebf1; font-size:12px; padding:1px 4px;
+      border-radius:3px; outline:none;
+    `;
+    nameEl.replaceWith(input);
+    input.focus(); input.select();
+
+    const commit = () => {
+      const v = input.value.trim();
+      if (v) item.name = v;
+      render();
+    };
+    input.addEventListener('blur', commit);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') input.blur();
+      if (e.key === 'Escape') { input.value = item.name; input.blur(); }
+    });
+  };
+
+  render();
+
+ 
+  return {
+    el: root,
+    treeEl: tree,
+    getData: () => state,
+    setData: (d) => { state = JSON.parse(JSON.stringify(d)); render(); },
+    select: (id) => { selectedId = id; render(); },
+    expand: (id) => { expanded.add(id); render(); },
+    collapse: (id) => { expanded.delete(id); render(); }
+  };
+}
 createUnversalSideMenu({
   position = 'left',
   buttons = [],
