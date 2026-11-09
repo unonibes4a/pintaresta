@@ -21,26 +21,43 @@
     const style = document.createElement('style');
     style.id = 'gio-accordion-theme-styles';
     style.textContent = `
+
+   
+
+     :root {
+        --bg: #2d2d2d;
+        --backghead: #484848;  
+        --textoA: #4daafc;       
+        --textoAlfa: #4daafc98;     
+        --textotenue: #8c8e8f;
+        --shadow: #00000093;  
+            }
+      
+
+
       .gio-acc-item {
-        background: #2d2d2d;
-        border: 1px solid #ffffff18;  
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        position: relative;
+        background: var(--bg);
+        border: 2px solid #292929;  
+        border-radius: 10px; 
         display: flex;
         flex-direction: column;
-        width: 100%;
+        width: 70%;
         box-sizing: border-box;
         margin-bottom: 12px;
         transition: border-color 0.3s, box-shadow 0.2s;
         overflow: visible;
         flex-shrink: 0;
-        min-width: 0;
+        min-width: 300;
+-webkit-box-shadow: -6px 2px 50px 9px var(--shadow); 
+box-shadow: -6px 2px 50px 9px var(--shadow);
+    
       }
       .gio-acc-item.is-dragging {
         position: fixed !important;
         opacity: 0.92;
         z-index: 999999 !important;
-        box-shadow: 0 16px 36px rgba(0,0,0,0.8), 0 0 15px rgba(33, 96, 199, 0.4) !important;
+        box-shadow: 0 16px 36px var(--shadow), 0 0 15px rgba(33, 96, 199, 0.04) !important;
         pointer-events: none;
         margin: 0 !important;
         border-color: #4daafc !important;
@@ -53,20 +70,22 @@
         padding: 10px 14px;
         cursor: grab;
         user-select: none;
-        background: #2d2d2d;
-        border-radius: 7px;
+        background: var(--backghead);
+        border-radius: 10px;
         min-height: 40px;
         transition: background 0.2s;
+        height: 57px;
       }
-      .gio-acc-header:hover { background: #333333; }
+   .gio-acc-header:hover {  volor:var(--textoA) }  
       .gio-acc-header:active { cursor: grabbing; }
 
       .gio-acc-title {
-        color: #e0e0e0;
+        color: var(--textotenue);
         font-size: 13px;
         font-weight: 600;
         pointer-events: none;
       }
+        
 
       .gio-acc-chevron {
         width: 15px;
@@ -81,7 +100,10 @@
       }
       .gio-acc-item.open > .gio-acc-header .gio-acc-chevron {
         transform: rotate(180deg);
-        stroke: #4daafc;
+        stroke: var(--textoA);
+        stroke-width: 3px;
+    filter: drop-shadow(0 0 12px var(--textoA));
+   
       }
 
       .gio-acc-content {
@@ -413,12 +435,13 @@ class Giovanni {
                  
                 --slidernofill: #4a4a4a;
                 --sliderfill: #363636;
+                --texto: #8c8e8f;
      
-                --texto: #ccccccde;
-                --textoActivo: #e3e3e3;
+         
+                --textoActivo: #e3e3e3bb;
                 --textodisable: #60605f;
                 --textoActvioBlue: #4daafc;
-                --textoledBrillo: #4daafc;
+                --textoledBrillo: #2f3b46;
                 --danger: #f85149;
                 --radius: 6px;
                 --scrollbar-size: 5px;
@@ -510,7 +533,7 @@ class Giovanni {
                 font-size: 10px;
                 text-transform: uppercase;
                 letter-spacing: 0.8px;
-                color: var(--textodisable);
+                color: var(--textoAlfa);
                 font-weight: 700;
                 pointer-events: none;
             }
