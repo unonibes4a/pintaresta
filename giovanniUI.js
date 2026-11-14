@@ -985,636 +985,781 @@ class GiovanniColorPicker {
 }
 
  class GiovanniToggleAcordion {
-      static _injectCSS() {
-        if (document.getElementById('gio-accordion-theme-styles')) return;
-        const style = document.createElement('style');
-        style.id = 'gio-accordion-theme-styles';
-        style.textContent = `
-          :root {
-            --bg: #2d2d2d;
-            --backghead: #2f2f2f;  
-            --textoA: #4daafc;       
-            --textoAlfa: #4daafc;     
-            --textotenue: #8c8e8f;
-            --shadow: #00000093;  
-            --textotenue2: #a4a7a8;
-          }
-
-          .gio-acc-item {
-            position: relative;
-            background: var(--bg);
-            border: 2px solid #2d2d2d;  
-            border-radius: 13px; 
-            display: flex;
-            flex-direction: column;
-            box-sizing: border-box;
-            margin-bottom: 12px;
-            transition: border-color 0.3s, box-shadow 0.2s;
-            overflow: hidden;
-            min-width: 300px !important;
-            flex-shrink: 1 !important;
-            box-shadow: -6px 2px 50px 9px var(--shadow);
-           max-width: 77vw; 
-           width:100%;
-                  border: 20px solid #333333;
-          }
-
-          .gio-acc-item.gio-is-floating {
-            position: fixed !important;
-            z-index: 99999 !important;
-            margin: 0 !important;
-          }
-
-          .gio-acc-item.is-dragging {
-            position: fixed !important;
-            opacity: 0.92;
-            z-index: 999999 !important;
-            box-shadow: 0 16px 36px var(--shadow), 0 0 15px rgba(33, 96, 199, 0.04) !important;
-            pointer-events: none;
-            margin: 0 !important;
-            border-color: var(--textoAlfa);!important;
-          }
-
-          .gio-acc-item.is-animating-reset {
-            z-index: 999999 !important;
-            pointer-events: none !important;
-          }
-
-          .gio-acc-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 14px;
-            cursor: grab;
-            user-select: none;
-            background: var(--backghead);
-            border-radius: 8px 8px 0 0;
-            min-height: 44px;
-            height: 45px;
-            transition: background 0.2s;
-            box-sizing: border-box;
-            width: 100%;
-          }
-          .gio-acc-header:active { cursor: grabbing; }
-
-          .gio-acc-title {
-            color: var(--textotenue2);
-            font-size: 13px;
-            font-weight: 600;
-            pointer-events: none;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            flex: 1;
-            padding-right: 10px;
-          }
-
-          .gio-acc-header-tools {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex-shrink: 0;
-          }
-
-          .gio-acc-btn-reset, .gio-acc-btn-toggle {
-            background: transparent;
-            border: none;
-            padding: 4px;
-            cursor: pointer;
-            color: var(--textotenue);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 4px;
-            transition: color 0.2s, background 0.2s, transform 0.25s ease;
-          }
-          .gio-acc-btn-reset:hover {
-            color: var(--textoA);
-            background: rgba(255, 255, 255, 0.08);
-            transform: rotate(-90deg);
-          }
-          .gio-acc-btn-reset svg {
-            width: 16px;
-            height: 16px;
-            fill: currentColor;
-            pointer-events: none;
-          }
-          .gio-acc-btn-toggle:hover {
-            color: var(--textoA);
-            background: rgba(255, 255, 255, 0.08);
-          }
-
-          .gio-acc-chevron {
-            width: 16px;
-            height: 16px;
-            stroke: currentColor;
-            stroke-width: 2.2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            fill: none;
-            transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
-            pointer-events: none;
-          }
-          .gio-acc-item.open .gio-acc-chevron {
-            transform: rotate(180deg);
-            stroke: var(--textoA);
-          }
-
-          .gio-acc-content {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            transition: max-height 0.26s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
-            background: #1e1e1e;
-            border-bottom-left-radius: 8px;
-            border-bottom-right-radius: 8px;
-            width: 100%;
-            box-sizing: border-box;
-          }
-          .gio-acc-item.open > .gio-acc-content { opacity: 1; }
-
-          .gio-acc-body {
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            box-sizing: border-box;
-            width: 100%;
-            background: #2d2d2d;
-          }
-
-          .gio-drag-zone-active {
-            border-color: #4daafc !important;
-            background: rgba(77, 170, 252, 0.12) !important;
-          }
-        `;
-        document.head.appendChild(style);
+  static _injectCSS() {
+    if (document.getElementById('gio-accordion-theme-styles')) return;
+    const style = document.createElement('style');
+    style.id = 'gio-accordion-theme-styles';
+    style.textContent = `
+      :root {
+        --bg: #2d2d2d;
+        --backghead: #2f2f2f;
+        --textoA: #4daafc;
+        --textoAlfa: #4daafc;
+        --textotenue: #8c8e8f;
+        --shadow: #00000093;
+        --textotenue2: #a4a7a8;
       }
 
-      constructor(title, parentElement = null, widthPercent = null, maxHeight = 700, resetDuration =1.7) {
-        GiovanniToggleAcordion._injectCSS();
-
-        this.isOpen = true;
-        this.maxHeight = maxHeight;
-        this.resetDuration = resetDuration;
-        this.fitPadding = 16;
-        this._isResetting = false;
-        this._roParent = null;
-
-        this.element = document.createElement('div');
-        this.element.className = 'gio-acc-item open';
-        this.element._gioAcordion = this;
-
-        this.header = document.createElement('div');
-        this.header.className = 'gio-acc-header';
-
-        this.titleSpan = document.createElement('span');
-        this.titleSpan.className = 'gio-acc-title';
-        this.titleSpan.textContent = title;
-
-        const tools = document.createElement('div');
-        tools.className = 'gio-acc-header-tools';
-
-        this.btnReset = document.createElement('button');
-        this.btnReset.type = 'button';
-        this.btnReset.className = 'gio-acc-btn-reset';
-        this.btnReset.title = 'Restaurar';
-        this.btnReset.innerHTML = `
-          <svg viewBox="0 0 24 24">
-            <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
-          </svg>
-        `;
-        this.btnReset.addEventListener('click', (e) => {
-          e.stopPropagation();
-          this.resetPosition();
-        });
-
-        this.btnToggle = document.createElement('button');
-        this.btnToggle.type = 'button';
-        this.btnToggle.className = 'gio-acc-btn-toggle';
-        this.btnToggle.title = 'Alternar';
-
-        this.chevron = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        this.chevron.setAttribute('viewBox', '0 0 24 24');
-        this.chevron.setAttribute('class', 'gio-acc-chevron');
-        this.chevron.innerHTML = '<polyline points="6 9 12 15 18 9"></polyline>';
-        this.btnToggle.appendChild(this.chevron);
-
-        this.btnToggle.addEventListener('click', (e) => {
-          e.stopPropagation();
-          this.toggle();
-        });
-
-        tools.appendChild(this.btnReset);
-        tools.appendChild(this.btnToggle);
-
-        this.header.appendChild(this.titleSpan);
-        this.header.appendChild(tools);
-
-        this.content = document.createElement('div');
-        this.content.className = 'gio-acc-content';
-
-        this.body = document.createElement('div');
-        this.body.className = 'gio-acc-body';
-
-        this.content.appendChild(this.body);
-        this.element.appendChild(this.header);
-        this.element.appendChild(this.content);
-
-        this._setupResizeObserver();
-        this._initMagneticDrag();
-
-        if (parentElement) {
-          this.adaptToParent(parentElement);
-          this._saveInitialPosition(parentElement);
-        } else {
-          setTimeout(() => {
-            if (this.element.parentNode) {
-              this._saveInitialPosition(this.element.parentNode);
-              this._applyFit(this.element.parentNode);
-            }
-          }, 0);
-        }
-
-        setTimeout(() => this._updateHeight(this.isOpen), 50);
+      .gio-acc-item {
+        position: relative;
+        background: var(--bg);
+        border: 20px solid #333333;
+        border-radius: 13px;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        margin-bottom: 12px;
+        transition: border-color 0.3s, box-shadow 0.2s;
+        overflow: hidden;
+        min-width: min(300px, 100%);
+        flex-shrink: 0;
+        box-shadow: -6px 2px 50px 9px var(--shadow);
+        max-width: 77vw;
+        width: 100%;
       }
 
-      _saveInitialPosition(parent) {
-        this._originParent = parent;
-        this._originNextSibling = this.element.nextSibling;
+      .gio-acc-item.gio-is-floating {
+        position: fixed !important;
+        z-index: 99999 !important;
+        margin: 0 !important;
       }
 
-      _applyFit(parent) {
-        if (this._roParent) {
-          this._roParent.disconnect();
-          this._roParent = null;
-        }
-        if (!parent || parent === document.body) {
-          this.element.style.width = '';
-          this.element.style.maxWidth = '';
-          this.element.style.boxSizing = '';
-          return;
-        }
-        const ro = new ResizeObserver(() => this._fitToParent(parent));
-        ro.observe(parent);
-        this._roParent = ro;
-        this._fitToParent(parent);
+      .gio-acc-item.is-dragging {
+        position: fixed !important;
+        opacity: 0.94;
+        z-index: 999999 !important;
+        box-shadow: 0 22px 48px rgba(0, 0, 0, 0.55), 0 0 18px rgba(77, 170, 252, 0.16) !important;
+        pointer-events: none;
+        margin: 0 !important;
+        border-color: var(--textoAlfa) !important;
+        transform: scale(0.985);
+        transition: box-shadow 0.18s, border-color 0.18s, transform 0.15s !important;
       }
 
-      _fitToParent(parent) {
-        if (!parent || parent === document.body) {
-          this.element.style.width = '';
-          this.element.style.maxWidth = '';
-          this.element.style.boxSizing = '';
-          return;
-        }
-        const cs = getComputedStyle(parent);
-        const padL = parseFloat(cs.paddingLeft) || 0;
-        const padR = parseFloat(cs.paddingRight) || 0;
-        const borderL = parseFloat(cs.borderLeftWidth) || 0;
-        const borderR = parseFloat(cs.borderRightWidth) || 0;
-        
-        const inner = parent.clientWidth - padL - padR;
-        const maxOuter = parent.clientWidth - borderL - borderR;
-
-        let w = Math.min(inner, maxOuter) - this.fitPadding;
-        if (w < 120) w = Math.max(120, Math.min(inner, maxOuter));
-
-        this.element.style.boxSizing = 'border-box';
-        this.element.style.width = `${Math.floor(w)}px`;
-        this.element.style.maxWidth = '100%';
+      .gio-acc-item.is-animating-reset {
+        z-index: 999999 !important;
+        pointer-events: none !important;
       }
 
-      resetPosition() {
-        if (!this._originParent || this._isResetting) return;
+      .gio-acc-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 14px;
+        cursor: grab;
+        user-select: none;
+        background: var(--backghead);
+        border-radius: 8px 8px 0 0;
+        min-height: 44px;
+        height: 45px;
+        flex-shrink: 0;
+        transition: background 0.2s;
+        box-sizing: border-box;
+        width: 100%;
+      }
+      .gio-acc-header:active { cursor: grabbing; }
 
-        this._isResetting = true;
-        const firstRect = this.element.getBoundingClientRect();
-
-        this.element.classList.remove('is-dragging', 'gio-is-floating');
-        this.element.style.position = '';
-        this.element.style.left = '';
-        this.element.style.top = '';
-        this.element.style.pointerEvents = '';
-
-        if (this._originNextSibling && this._originNextSibling.parentNode === this._originParent) {
-          this._originParent.insertBefore(this.element, this._originNextSibling);
-        } else {
-          this._originParent.appendChild(this.element);
-        }
-
-        this._applyFit(this._originParent);
-
-        if (this.isOpen) {
-          this._updateHeight(true);
-        }
-
-        const lastRect = this.element.getBoundingClientRect();
-        const deltaX = firstRect.left - lastRect.left;
-        const deltaY = firstRect.top - lastRect.top;
-
-        if (Math.abs(deltaX) < 1 && Math.abs(deltaY) < 1) {
-          this._isResetting = false;
-          return;
-        }
-
-        this.element.classList.add('is-animating-reset');
-        this.element.style.transformOrigin = 'top left';
-        this.element.style.transition = 'none';
-        this.element.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
-
-        requestAnimationFrame(() => {
-          this.element.style.transition = `transform ${this.resetDuration}s cubic-bezier(0.16, 1, 0.3, 1)`;
-          this.element.style.transform = 'translate(0px, 0px)';
-
-          const onEnd = () => {
-            this.element.classList.remove('is-animating-reset');
-            this.element.style.transition = '';
-            this.element.style.transform = '';
-            this.element.style.transformOrigin = '';
-            this._isResetting = false;
-            this.element.removeEventListener('transitionend', onEnd);
-          };
-
-          this.element.addEventListener('transitionend', onEnd);
-        });
+      .gio-acc-title {
+        color: var(--textotenue2);
+        font-size: 13px;
+        font-weight: 600;
+        pointer-events: none;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        flex: 1;
+        padding-right: 10px;
       }
 
-      _setupResizeObserver() {
-        this._ro = new ResizeObserver(() => {
-          if (this.isOpen) this._updateHeight(true);
-        });
-        this._ro.observe(this.body);
+      .gio-acc-header-tools {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
       }
 
-      _updateHeight(open) {
-        if (!open) {
-          this.content.style.overflow = 'hidden';
-          this.content.style.maxHeight = '0px';
-          return;
+      .gio-acc-btn-reset, .gio-acc-btn-toggle {
+        background: transparent;
+        border: none;
+        padding: 4px;
+        cursor: pointer;
+        color: var(--textotenue);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        transition: color 0.2s, background 0.2s, transform 0.25s ease;
+      }
+      .gio-acc-btn-reset:hover {
+        color: var(--textoA);
+        background: rgba(255, 255, 255, 0.08);
+        transform: rotate(-90deg);
+      }
+      .gio-acc-btn-reset svg {
+        width: 16px;
+        height: 16px;
+        fill: currentColor;
+        pointer-events: none;
+      }
+      .gio-acc-btn-toggle:hover {
+        color: var(--textoA);
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .gio-acc-chevron {
+        width: 16px;
+        height: 16px;
+        stroke: currentColor;
+        stroke-width: 2.2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+        transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+        pointer-events: none;
+      }
+      .gio-acc-item.open .gio-acc-chevron {
+        transform: rotate(180deg);
+        stroke: var(--textoA);
+      }
+
+      .gio-acc-content {
+        flex: 0 1 auto;
+        min-height: 0;
+        max-height: 0;
+        opacity: 0;
+        overflow-x: hidden;
+        overflow-y: hidden;
+        transition: max-height 0.26s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+        background: #1e1e1e;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        width: 100%;
+        box-sizing: border-box;
+        scrollbar-width: thin;
+        scrollbar-color: var(--textotenue) #1e1e1e;
+      }
+      .gio-acc-content::-webkit-scrollbar {
+        width: 6px;
+      }
+      .gio-acc-content::-webkit-scrollbar-track {
+        background: #1e1e1e;
+        border-radius: 4px;
+      }
+      .gio-acc-content::-webkit-scrollbar-thumb {
+        background: var(--textotenue);
+        border-radius: 4px;
+      }
+      .gio-acc-content::-webkit-scrollbar-thumb:hover {
+        background: var(--textoA);
+      }
+      .gio-acc-item.open > .gio-acc-content { opacity: 1; }
+
+      .gio-acc-body {
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        box-sizing: border-box;
+        width: 100%;
+        min-width: 0;
+        background: #2d2d2d;
+        color-scheme: dark;
+      }
+
+      .gio-acc-body > * {
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+        flex-shrink: 0;
+      }
+
+      .gio-acc-body > input[type="checkbox"],
+      .gio-acc-body > input[type="radio"] {
+        align-self: flex-start;
+        width: auto;
+      }
+
+      .gio-acc-body input,
+      .gio-acc-body select,
+      .gio-acc-body textarea,
+      .gio-acc-body button {
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+
+      .gio-drag-zone-active {
+        outline: 2px dashed rgba(77, 170, 252, 0.75) !important;
+        outline-offset: -2px !important;
+        background: rgba(77, 170, 252, 0.08) !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  constructor(title, parentElement = null, widthPercent = null, maxHeight = 700, resetDuration = 1.7) {
+    GiovanniToggleAcordion._injectCSS();
+
+    this.isOpen = true;
+    this.widthPercent = widthPercent;
+    this.maxHeight = maxHeight;
+    this.resetDuration = resetDuration;
+    this.fitPadding = 16;
+    this._isResetting = false;
+    this._roParent = null;
+
+    this.element = document.createElement('div');
+    this.element.className = 'gio-acc-item open';
+    this.element._gioAcordion = this;
+
+    this.header = document.createElement('div');
+    this.header.className = 'gio-acc-header';
+
+    this.titleSpan = document.createElement('span');
+    this.titleSpan.className = 'gio-acc-title';
+    this.titleSpan.textContent = title;
+
+    const tools = document.createElement('div');
+    tools.className = 'gio-acc-header-tools';
+
+    this.btnReset = document.createElement('button');
+    this.btnReset.type = 'button';
+    this.btnReset.className = 'gio-acc-btn-reset';
+    this.btnReset.title = 'Restaurar';
+    this.btnReset.innerHTML = `
+      <svg viewBox="0 0 24 24">
+        <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+      </svg>
+    `;
+    this.btnReset.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.resetPosition();
+    });
+
+    this.btnToggle = document.createElement('button');
+    this.btnToggle.type = 'button';
+    this.btnToggle.className = 'gio-acc-btn-toggle';
+    this.btnToggle.title = 'Alternar';
+
+    this.chevron = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    this.chevron.setAttribute('viewBox', '0 0 24 24');
+    this.chevron.setAttribute('class', 'gio-acc-chevron');
+    this.chevron.innerHTML = '<polyline points="6 9 12 15 18 9"></polyline>';
+    this.btnToggle.appendChild(this.chevron);
+
+    this.btnToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.toggle();
+    });
+
+    tools.appendChild(this.btnReset);
+    tools.appendChild(this.btnToggle);
+
+    this.header.appendChild(this.titleSpan);
+    this.header.appendChild(tools);
+
+    this.content = document.createElement('div');
+    this.content.className = 'gio-acc-content';
+
+    this.body = document.createElement('div');
+    this.body.className = 'gio-acc-body';
+
+    this.content.appendChild(this.body);
+    this.element.appendChild(this.header);
+    this.element.appendChild(this.content);
+
+    this._setupResizeObserver();
+    this._initMagneticDrag();
+
+    if (parentElement) {
+      this.adaptToParent(parentElement);
+      this._saveInitialPosition(parentElement);
+    } else {
+      setTimeout(() => {
+        if (this.element.parentNode) {
+          this._saveInitialPosition(this.element.parentNode);
+          this._applyFit(this.element.parentNode);
         }
-        const scrollH = this.body.scrollHeight;
-        if (scrollH > this.maxHeight) {
-          this.content.style.maxHeight = `${this.maxHeight}px`;
-          this.content.style.overflowY = 'auto';
-        } else {
-          this.content.style.maxHeight = `${scrollH + 30}px`;
-          this.content.style.overflow = 'visible';
-        }
-      }
-
-      adaptToParent(container, insertBefore = null) {
-        if (!container || !(container instanceof HTMLElement)) container = document.body;
-        this.element.classList.remove('is-dragging', 'gio-is-floating');
-
-        this.element.style.position = '';
-        this.element.style.left = '';
-        this.element.style.top = '';
-        this.element.style.pointerEvents = '';
-
-        if (insertBefore && insertBefore.parentNode === container) {
-          container.insertBefore(this.element, insertBefore);
-        } else {
-          container.appendChild(this.element);
-        }
-
-        this._applyFit(container);
-
-        if (!this._originParent) {
-          this._saveInitialPosition(container);
-        }
-      }
-
-      toggle() { this.isOpen ? this.close() : this.open(); }
-      open() {
-        this.isOpen = true;
-        this.element.classList.add('open');
-        this._updateHeight(true);
-        return this;
-      }
-      close() {
-        this.isOpen = false;
-        this.element.classList.remove('open');
-        this._updateHeight(false);
-        return this;
-      }
-
-      _initMagneticDrag() {
-        let startX = 0, startY = 0, initLeft = 0, initTop = 0;
-        let isDragging = false, hasMoved = false;
-        let lastDropTarget = null;
-        const snapDistance = 18;
-
-        let placeholder = document.getElementById('gio-snap-placeholder');
-        if (!placeholder) {
-          placeholder = document.createElement('div');
-          placeholder.id = 'gio-snap-placeholder';
-          placeholder.style.cssText = 'border:2px dashed #4daafc; border-radius:8px; background:rgba(33, 96, 199, 0.15); margin-bottom:12px; display:none; pointer-events:none; width:100%; box-sizing:border-box; transition:all 0.15s; flex-shrink:0;';
-          document.body.appendChild(placeholder);
-        }
-
-        let guideV = document.getElementById('gio-snap-v') || (() => {
-          const g = document.createElement('div'); g.id = 'gio-snap-v';
-          g.style.cssText = 'position:fixed; top:0; bottom:0; width:1px; background:#4daafc; box-shadow:0 0 8px #4daafc; z-index:9999999; display:none; pointer-events:none;';
-          document.body.appendChild(g); return g;
-        })();
-
-        let guideH = document.getElementById('gio-snap-h') || (() => {
-          const g = document.createElement('div'); g.id = 'gio-snap-h';
-          g.style.cssText = 'position:fixed; left:0; right:0; height:1px; background:#4daafc; box-shadow:0 0 8px #4daafc; z-index:9999999; display:none; pointer-events:none;';
-          document.body.appendChild(g); return g;
-        })();
-
-        const onPointerMove = (e) => {
-          if (!isDragging) return;
-          const dx = e.clientX - startX;
-          const dy = e.clientY - startY;
-
-          if (!hasMoved && Math.hypot(dx, dy) > 6) {
-            hasMoved = true;
-            const rect = this.element.getBoundingClientRect();
-
-            placeholder.style.height = `${rect.height}px`;
-            placeholder.style.width = `${rect.width}px`;
-            placeholder.style.display = 'block';
-
-            if (this.element.parentNode) {
-              this.element.parentNode.insertBefore(placeholder, this.element.nextSibling);
-            }
-
-            document.body.appendChild(this.element);
-            this.element.classList.add('is-dragging');
-            this.element.style.width = `${rect.width}px`;
-            initLeft = rect.left;
-            initTop = rect.top;
-          }
-
-          if (!hasMoved) return;
-
-          let targetX = initLeft + dx;
-          let targetY = initTop + dy;
-
-          this.element.style.pointerEvents = 'none';
-          const hits = document.elementsFromPoint(e.clientX, e.clientY);
-          this.element.style.pointerEvents = 'auto';
-
-          const dropTarget = hits.find(el => el !== this.element && el !== placeholder && (
-            el.classList.contains('gio-acc-item') ||
-            el.classList.contains('app-workspace') ||
-            el.classList.contains('gio-acc-body') ||
-            el.classList.contains('otro-menu') ||
-            el.id === 'zona-drop' ||
-            el.tagName === 'ASIDE'
-          ));
-
-          const screenW = window.innerWidth;
-          const halfScreenW = screenW * 0.5;
-
-          if (dropTarget !== lastDropTarget) {
-            if (lastDropTarget) lastDropTarget.classList.remove('gio-drag-zone-active');
-            if (dropTarget && dropTarget !== document.body) {
-              dropTarget.classList.add('gio-drag-zone-active');
-              const zr = dropTarget.getBoundingClientRect();
-              const cs = getComputedStyle(dropTarget);
-              const avail = zr.width - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0) - this.fitPadding;
-              const targetW = Math.max(120, avail);
-              placeholder.style.width = `${targetW}px`;
-              this.element.style.width = `${targetW}px`;
-            } else {
-              let floatW = Math.max(280, Math.min(halfScreenW, 460));
-              if (targetX > halfScreenW) {
-                floatW = Math.min(floatW, Math.max(260, screenW - targetX - 20));
-              }
-              placeholder.style.width = `${floatW}px`;
-              this.element.style.width = `${floatW}px`;
-            }
-            lastDropTarget = dropTarget;
-          }
-
-          const curW = this.element.offsetWidth;
-          const curH = this.element.offsetHeight;
-
-          targetX = Math.max(10, Math.min(screenW - curW - 10, targetX));
-          targetY = Math.max(10, Math.min(window.innerHeight - curH - 10, targetY));
-
-          if (dropTarget) {
-            guideV.style.display = 'none';
-            guideH.style.display = 'none';
-            const r = dropTarget.getBoundingClientRect();
-            if (dropTarget.classList.contains('gio-acc-item')) {
-              dropTarget.parentNode?.insertBefore(placeholder, e.clientY < r.top + r.height / 2 ? dropTarget : dropTarget.nextSibling);
-            } else {
-              dropTarget.appendChild(placeholder);
-            }
-          } else {
-            let snapX = null, snapY = null;
-            if (targetX < snapDistance) snapX = 10;
-            if (targetY < snapDistance) snapY = 10;
-            if (screenW - (targetX + curW) < snapDistance) snapX = screenW - 10;
-            if (window.innerHeight - (targetY + curH) < snapDistance) snapY = window.innerHeight - 10;
-
-            guideV.style.display = snapX !== null ? 'block' : 'none';
-            if (snapX !== null) guideV.style.left = `${snapX}px`;
-            guideH.style.display = snapY !== null ? 'block' : 'none';
-            if (snapY !== null) guideH.style.top = `${snapY}px`;
-          }
-
-          this.element.style.left = `${targetX}px`;
-          this.element.style.top = `${targetY}px`;
-        };
-
-        const onPointerUp = (e) => {
-          if (!isDragging) return;
-          isDragging = false;
-          guideV.style.display = 'none';
-          guideH.style.display = 'none';
-
-          window.removeEventListener('pointermove', onPointerMove);
-          window.removeEventListener('pointerup', onPointerUp);
-
-          if (lastDropTarget) {
-            lastDropTarget.classList.remove('gio-drag-zone-active');
-            lastDropTarget = null;
-          }
-
-          if (!hasMoved) return;
-
-          this.element.style.pointerEvents = 'none';
-          const hits = document.elementsFromPoint(e.clientX, e.clientY);
-          this.element.style.pointerEvents = '';
-
-          const dropTarget = hits.find(el => el !== this.element && el !== placeholder && (
-            el.classList.contains('gio-acc-item') ||
-            el.classList.contains('app-workspace') ||
-            el.classList.contains('gio-acc-body') ||
-            el.classList.contains('otro-menu') ||
-            el.id === 'zona-drop' ||
-            el.tagName === 'ASIDE'
-          ));
-
-          if (placeholder.parentNode) {
-            placeholder.parentNode.insertBefore(this.element, placeholder);
-            placeholder.style.display = 'none';
-            placeholder.remove();
-
-            this.element.classList.remove('is-dragging', 'gio-is-floating');
-            this.element.style.position = '';
-            this.element.style.left = '';
-            this.element.style.top = '';
-
-            this._applyFit(this.element.parentNode);
-          } else if (dropTarget) {
-            dropTarget.appendChild(this.element);
-            this.element.classList.remove('is-dragging', 'gio-is-floating');
-            this.element.style.position = '';
-            this.element.style.left = '';
-            this.element.style.top = '';
-            this._applyFit(dropTarget);
-          } else {
-            this.element.classList.remove('is-dragging');
-            this.element.classList.add('gio-is-floating');
-
-            const curLeft = parseFloat(this.element.style.left) || 0;
-            const screenW = window.innerWidth;
-            const halfScreenW = screenW * 0.5;
-
-            let floatW = Math.max(280, Math.min(halfScreenW, 460));
-            if (curLeft > halfScreenW) {
-              floatW = Math.min(floatW, Math.max(260, screenW - curLeft - 20));
-            }
-
-            this.element.style.width = `${floatW}px`;
-            this.element.style.maxWidth = `${floatW}px`;
-          }
-
-          if (this.isOpen) {
-            this._updateHeight(true);
-          }
-        };
-
-        this.header.addEventListener('pointerdown', (e) => {
-          if (e.button !== 0 || e.target.closest('button, input, svg') || this._isResetting) return;
-          isDragging = true;
-          hasMoved = false;
-          startX = e.clientX;
-          startY = e.clientY;
-          window.addEventListener('pointermove', onPointerMove);
-          window.addEventListener('pointerup', onPointerUp);
-        });
-      }
-
-      append(child) { return this.addChild(child); }
-      addChild(child) {
-        if (!child) return this;
-        const node = child.element || (child instanceof Node ? child : null);
-        if (node) {
-          this.body.appendChild(node);
-          if (this.isOpen) this._updateHeight(true);
-        }
-        return this;
-      }
+      }, 0);
     }
 
+    setTimeout(() => this._updateHeight(this.isOpen), 50);
+  }
+
+  _registerDropZone(parent) {
+    if (parent && parent !== document.body && parent !== document.documentElement) {
+      parent.setAttribute('data-gio-dropzone', '1');
+    }
+  }
+
+  _saveInitialPosition(parent) {
+    this._registerDropZone(parent);
+    this._originParent = parent;
+    this._originNextSibling = this.element.nextSibling;
+  }
+
+  _applyFit(parent) {
+    if (this._roParent) {
+      this._roParent.disconnect();
+      this._roParent = null;
+    }
+    if (!parent || parent === document.body) {
+      this.element.style.width = '';
+      this.element.style.maxWidth = '';
+      this.element.style.boxSizing = '';
+      return;
+    }
+    this._registerDropZone(parent);
+    const ro = new ResizeObserver(() => this._fitToParent(parent));
+    ro.observe(parent);
+    this._roParent = ro;
+    this._fitToParent(parent);
+  }
+
+  _fitToParent(parent) {
+    if (!parent || parent === document.body) {
+      this.element.style.width = '';
+      this.element.style.maxWidth = '';
+      this.element.style.boxSizing = '';
+      return;
+    }
+    const cs = getComputedStyle(parent);
+    const padL = parseFloat(cs.paddingLeft) || 0;
+    const padR = parseFloat(cs.paddingRight) || 0;
+    const borderL = parseFloat(cs.borderLeftWidth) || 0;
+    const borderR = parseFloat(cs.borderRightWidth) || 0;
+
+    const inner = parent.clientWidth - padL - padR;
+    const maxOuter = parent.clientWidth - borderL - borderR;
+    const avail = Math.min(inner, maxOuter) - this.fitPadding;
+
+    let w = (typeof this.widthPercent === 'number' && this.widthPercent > 0 && this.widthPercent <= 100)
+      ? avail * (this.widthPercent / 100)
+      : avail;
+
+    if (w < 120) w = Math.max(120, Math.min(inner, maxOuter));
+
+    this.element.style.boxSizing = 'border-box';
+    this.element.style.width = `${Math.floor(w)}px`;
+    this.element.style.maxWidth = '100%';
+  }
+
+  _animateFromRect(firstRect, durationSec = 0.28) {
+    const lastRect = this.element.getBoundingClientRect();
+    const deltaX = firstRect.left - lastRect.left;
+    const deltaY = firstRect.top - lastRect.top;
+
+    if (Math.abs(deltaX) < 1 && Math.abs(deltaY) < 1) {
+      this._isResetting = false;
+      return;
+    }
+
+    this.element.classList.add('is-animating-reset');
+    this.element.style.transformOrigin = 'top left';
+    this.element.style.transition = 'none';
+    this.element.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+
+    requestAnimationFrame(() => {
+      this.element.style.transition = `transform ${durationSec}s cubic-bezier(0.22, 1, 0.36, 1)`;
+      this.element.style.transform = 'translate(0px, 0px)';
+
+      const onEnd = () => {
+        this.element.classList.remove('is-animating-reset');
+        this.element.style.transition = '';
+        this.element.style.transform = '';
+        this.element.style.transformOrigin = '';
+        this._isResetting = false;
+        this.element.removeEventListener('transitionend', onEnd);
+      };
+
+      this.element.addEventListener('transitionend', onEnd);
+    });
+  }
+
+  resetPosition() {
+    if (!this._originParent || this._isResetting) return;
+
+    this._isResetting = true;
+    const firstRect = this.element.getBoundingClientRect();
+
+    this.element.classList.remove('is-dragging', 'gio-is-floating');
+    this.element.style.position = '';
+    this.element.style.left = '';
+    this.element.style.top = '';
+    this.element.style.maxWidth = '';
+    this.element.style.pointerEvents = '';
+
+    if (this._originNextSibling && this._originNextSibling.parentNode === this._originParent) {
+      this._originParent.insertBefore(this.element, this._originNextSibling);
+    } else {
+      this._originParent.appendChild(this.element);
+    }
+
+    this._applyFit(this._originParent);
+
+    if (this.isOpen) {
+      this._updateHeight(true);
+    }
+
+    this._animateFromRect(firstRect, this.resetDuration);
+  }
+
+  _setupResizeObserver() {
+    this._ro = new ResizeObserver(() => {
+      if (this.isOpen) this._updateHeight(true);
+    });
+    this._ro.observe(this.body);
+
+    this._mo = new MutationObserver(() => {
+      if (this.isOpen) this._updateHeight(true);
+    });
+    this._mo.observe(this.body, { childList: true, subtree: true });
+
+    window.addEventListener('resize', () => {
+      if (this.isOpen) this._updateHeight(true);
+    });
+  }
+
+  _getEffectiveMaxHeight() {
+    let limit = Number(this.maxHeight) > 0 ? Number(this.maxHeight) : 700;
+    if (this.element.classList.contains('gio-is-floating') || this.element.classList.contains('is-dragging')) {
+      const headerH = this.header ? this.header.offsetHeight : 45;
+      const cs = getComputedStyle(this.element);
+      const borderV = (parseFloat(cs.borderTopWidth) || 0) + (parseFloat(cs.borderBottomWidth) || 0);
+      const viewportAvail = window.innerHeight - headerH - borderV - 24;
+      if (viewportAvail > 120) {
+        limit = Math.min(limit, viewportAvail);
+      }
+    }
+    return limit;
+  }
+
+  _updateHeight(open) {
+    if (!open) {
+      this.content.style.overflowX = 'hidden';
+      this.content.style.overflowY = 'hidden';
+      this.content.style.maxHeight = '0px';
+      return;
+    }
+    const limit = this._getEffectiveMaxHeight();
+    const scrollH = this.body.scrollHeight;
+    if (scrollH > limit) {
+      this.content.style.maxHeight = `${limit}px`;
+      this.content.style.overflowX = 'hidden';
+      this.content.style.overflowY = 'auto';
+    } else {
+      this.content.style.maxHeight = `${scrollH}px`;
+      this.content.style.overflowX = 'hidden';
+      this.content.style.overflowY = 'hidden';
+    }
+  }
+
+  setMaxHeight(maxHeight) {
+    this.maxHeight = maxHeight;
+    if (this.isOpen) this._updateHeight(true);
+    return this;
+  }
+
+  adaptToParent(container, insertBefore = null) {
+    if (!container || !(container instanceof HTMLElement)) container = document.body;
+    this.element.classList.remove('is-dragging', 'gio-is-floating');
+
+    this.element.style.position = '';
+    this.element.style.left = '';
+    this.element.style.top = '';
+    this.element.style.maxWidth = '';
+    this.element.style.pointerEvents = '';
+
+    if (insertBefore && insertBefore.parentNode === container) {
+      container.insertBefore(this.element, insertBefore);
+    } else {
+      container.appendChild(this.element);
+    }
+
+    this._applyFit(container);
+
+    if (!this._originParent) {
+      this._saveInitialPosition(container);
+    }
+  }
+
+  toggle() { this.isOpen ? this.close() : this.open(); }
+  open() {
+    this.isOpen = true;
+    this.element.classList.add('open');
+    this._updateHeight(true);
+    return this;
+  }
+  close() {
+    this.isOpen = false;
+    this.element.classList.remove('open');
+    this._updateHeight(false);
+    return this;
+  }
+
+  _isDropTarget(el) {
+    if (!el || el === document.body || el === document.documentElement) return false;
+    if (el === this.element || this.element.contains(el)) return false;
+    return (
+      el.hasAttribute('data-gio-dropzone') ||
+      el.classList.contains('gio-drop-zone') ||
+      el.classList.contains('gio-acc-item') ||
+      el.classList.contains('app-workspace') ||
+      el.classList.contains('gio-acc-body') ||
+      el.classList.contains('otro-menu') ||
+      el.id === 'zona-drop' ||
+      el.tagName === 'ASIDE'
+    );
+  }
+
+  _initMagneticDrag() {
+    let startX = 0, startY = 0;
+    let grabOffsetX = 0, grabOffsetY = 0;
+    let isDragging = false, hasMoved = false;
+    let lastHighlightZone = null;
+    const snapDistance = 18;
+
+    let placeholder = document.getElementById('gio-snap-placeholder');
+    if (!placeholder) {
+      placeholder = document.createElement('div');
+      placeholder.id = 'gio-snap-placeholder';
+      placeholder.style.cssText = 'border:2px dashed #4daafc; border-radius:10px; background:rgba(77, 170, 252, 0.14); box-shadow:inset 0 0 12px rgba(77, 170, 252, 0.18); margin-bottom:12px; display:none; pointer-events:none; width:100%; height:52px; box-sizing:border-box; flex-shrink:0;';
+      document.body.appendChild(placeholder);
+    }
+
+    let guideV = document.getElementById('gio-snap-v') || (() => {
+      const g = document.createElement('div'); g.id = 'gio-snap-v';
+      g.style.cssText = 'position:fixed; top:0; bottom:0; width:1px; background:#4daafc; box-shadow:0 0 8px #4daafc; z-index:9999999; display:none; pointer-events:none;';
+      document.body.appendChild(g); return g;
+    })();
+
+    let guideH = document.getElementById('gio-snap-h') || (() => {
+      const g = document.createElement('div'); g.id = 'gio-snap-h';
+      g.style.cssText = 'position:fixed; left:0; right:0; height:1px; background:#4daafc; box-shadow:0 0 8px #4daafc; z-index:9999999; display:none; pointer-events:none;';
+      document.body.appendChild(g); return g;
+    })();
+
+    const resolveDropContext = (clientX, clientY) => {
+      this.element.style.pointerEvents = 'none';
+      const hits = document.elementsFromPoint(clientX, clientY);
+      this.element.style.pointerEvents = 'auto';
+
+      const hit = hits.find(el => el !== placeholder && this._isDropTarget(el));
+      if (!hit) return { container: null, hoveredItem: null };
+
+      if (hit.classList.contains('gio-acc-item')) {
+        const parent = hit.parentNode;
+        if (!parent || parent === document.body) {
+          return { container: null, hoveredItem: null };
+        }
+        return { container: parent, hoveredItem: hit };
+      }
+
+      return { container: hit, hoveredItem: null };
+    };
+
+    const placePlaceholderInContainer = (container, clientY) => {
+      const siblings = Array.from(container.children).filter(
+        ch => ch !== this.element && ch !== placeholder && ch.classList.contains('gio-acc-item')
+      );
+      let insertBeforeNode = null;
+      for (const sib of siblings) {
+        const r = sib.getBoundingClientRect();
+        if (clientY < r.top + r.height / 2) {
+          insertBeforeNode = sib;
+          break;
+        }
+      }
+      if (placeholder.parentNode !== container || placeholder.nextSibling !== insertBeforeNode) {
+        container.insertBefore(placeholder, insertBeforeNode);
+      }
+    };
+
+    const clearZoneHighlight = () => {
+      if (lastHighlightZone) {
+        lastHighlightZone.classList.remove('gio-drag-zone-active');
+        lastHighlightZone = null;
+      }
+    };
+
+    const onPointerMove = (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+
+      if (!hasMoved && Math.hypot(dx, dy) > 6) {
+        hasMoved = true;
+        const rect = this.element.getBoundingClientRect();
+        const dragW = Math.min(rect.width, Math.max(300, window.innerWidth * 0.45));
+        const ratioX = rect.width > 0 ? (startX - rect.left) / rect.width : 0.5;
+        grabOffsetX = ratioX * dragW;
+        grabOffsetY = startY - rect.top;
+
+        placeholder.style.display = 'block';
+        placeholder.style.width = '100%';
+        placeholder.style.height = `${Math.min(Math.max(rect.height * 0.25, 48), 72)}px`;
+
+        if (this.element.parentNode && this.element.parentNode !== document.body) {
+          this.element.parentNode.insertBefore(placeholder, this.element.nextSibling);
+        }
+
+        document.body.appendChild(this.element);
+        this.element.classList.add('is-dragging');
+        this.element.style.width = `${Math.round(dragW)}px`;
+        this.element.style.maxWidth = `${Math.round(dragW)}px`;
+        if (this.isOpen) this._updateHeight(true);
+      }
+
+      if (!hasMoved) return;
+
+      const curW = this.element.offsetWidth;
+      const curH = this.element.offsetHeight;
+      const screenW = window.innerWidth;
+      const screenH = window.innerHeight;
+
+      let targetX = Math.max(10, Math.min(screenW - curW - 10, e.clientX - grabOffsetX));
+      let targetY = Math.max(10, Math.min(screenH - curH - 10, e.clientY - grabOffsetY));
+
+      const { container } = resolveDropContext(e.clientX, e.clientY);
+
+      if (container !== lastHighlightZone) {
+        clearZoneHighlight();
+        if (container) {
+          container.classList.add('gio-drag-zone-active');
+          lastHighlightZone = container;
+        }
+      }
+
+      if (container) {
+        guideV.style.display = 'none';
+        guideH.style.display = 'none';
+        placeholder.style.display = 'block';
+        placePlaceholderInContainer(container, e.clientY);
+      } else {
+        placeholder.style.display = 'none';
+        if (placeholder.parentNode) placeholder.remove();
+
+        let snapX = null, snapY = null;
+        if (targetX < snapDistance) snapX = 10;
+        if (targetY < snapDistance) snapY = 10;
+        if (screenW - (targetX + curW) < snapDistance) snapX = screenW - 10;
+        if (screenH - (targetY + curH) < snapDistance) snapY = screenH - 10;
+
+        guideV.style.display = snapX !== null ? 'block' : 'none';
+        if (snapX !== null) guideV.style.left = `${snapX}px`;
+        guideH.style.display = snapY !== null ? 'block' : 'none';
+        if (snapY !== null) guideH.style.top = `${snapY}px`;
+      }
+
+      this.element.style.left = `${targetX}px`;
+      this.element.style.top = `${targetY}px`;
+    };
+
+    const onPointerUp = (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      guideV.style.display = 'none';
+      guideH.style.display = 'none';
+      clearZoneHighlight();
+
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', onPointerUp);
+
+      if (!hasMoved) return;
+
+      const firstRect = this.element.getBoundingClientRect();
+      const { container } = resolveDropContext(e.clientX, e.clientY);
+
+      if (container) {
+        placePlaceholderInContainer(container, e.clientY);
+        placeholder.parentNode.insertBefore(this.element, placeholder);
+        placeholder.style.display = 'none';
+        placeholder.remove();
+
+        this.element.classList.remove('is-dragging', 'gio-is-floating');
+        this.element.style.position = '';
+        this.element.style.left = '';
+        this.element.style.top = '';
+        this.element.style.maxWidth = '';
+        this.element.style.pointerEvents = '';
+
+        this._applyFit(container);
+        if (this.isOpen) this._updateHeight(true);
+        this._animateFromRect(firstRect, 0.28);
+      } else {
+        placeholder.style.display = 'none';
+        if (placeholder.parentNode) placeholder.remove();
+
+        this.element.classList.remove('is-dragging');
+        this.element.classList.add('gio-is-floating');
+        this.element.style.pointerEvents = '';
+
+        const curLeft = parseFloat(this.element.style.left) || 0;
+        const screenW = window.innerWidth;
+        const halfScreenW = screenW * 0.5;
+
+        let floatW = Math.max(280, Math.min(halfScreenW, 460));
+        if (curLeft > halfScreenW) {
+          floatW = Math.min(floatW, Math.max(260, screenW - curLeft - 20));
+        }
+
+        this.element.style.width = `${floatW}px`;
+        this.element.style.maxWidth = `${floatW}px`;
+        if (this.isOpen) this._updateHeight(true);
+      }
+    };
+
+    this.header.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0 || e.target.closest('button, input, select, textarea, label, svg') || this._isResetting) return;
+      isDragging = true;
+      hasMoved = false;
+      startX = e.clientX;
+      startY = e.clientY;
+      window.addEventListener('pointermove', onPointerMove);
+      window.addEventListener('pointerup', onPointerUp);
+    });
+  }
+
+  append(child, index = null) { return this.addChild(child, index); }
+
+  addChild(child, index = null) {
+    if (!child) return this;
+    if (Array.isArray(child)) {
+      child.forEach(item => this.addChild(item));
+      return this;
+    }
+    const node = child.element || (child instanceof Node ? child : null);
+    if (node) {
+      if (typeof index === 'number' && index >= 0 && index < this.body.children.length) {
+        this.body.insertBefore(node, this.body.children[index]);
+      } else {
+        this.body.appendChild(node);
+      }
+      if (this.isOpen) this._updateHeight(true);
+    }
+    return this;
+  }
+
+  removeChild(child) {
+    const node = child?.element || (child instanceof Node ? child : null);
+    if (node && node.parentNode === this.body) {
+      this.body.removeChild(node);
+      if (this.isOpen) this._updateHeight(true);
+    }
+    return this;
+  }
+
+  clear() {
+    this.body.innerHTML = '';
+    if (this.isOpen) this._updateHeight(true);
+    return this;
+  }
+
+  getChildren() {
+    return Array.from(this.body.children);
+  }
+}
     class GiovanniWrapperAcordion extends GiovanniToggleAcordion {
       constructor(target, options = {}) {
         const el = typeof target === 'string' ? document.querySelector(target) : target;
