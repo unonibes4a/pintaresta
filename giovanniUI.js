@@ -994,7 +994,7 @@ class GiovanniColorPicker {
         --bg: #2d2d2d;
         --backghead: #2f2f2f;
         --textoA: #4daafc;
-        --textoAlfa: #4daafc;
+        --textoAlfa: #959ba0;
         --textotenue: #8c8e8f;
         --shadow: #00000093;
         --textotenue2: #a4a7a8;
@@ -4372,240 +4372,439 @@ createBrowserPanel({
     getButton: (bId) => createdButtons.find(b => b.id === bId)
   };
 }
-    createCheckbox(label = 'Habilitar Opción', checked = false, onChange = null) {
-        let isChecked = !!checked;
-
-        const container = document.createElement('div');
-        container.style.cssText = "display: flex; align-items: center; width: 100%; box-sizing: border-box;";
-
-        const labelWrapper = document.createElement('label');
-        labelWrapper.style.cssText = "display: inline-flex; align-items: center; cursor: pointer; user-select: none; gap: 10px;";
-
-        const hiddenInput = document.createElement('input');
-        hiddenInput.type = 'checkbox';
-        hiddenInput.checked = isChecked;
-        hiddenInput.style.display = 'none';
-
-        const box = document.createElement('span');
-        box.style.cssText = `
-            position: relative;
-            width: 18px;
-            height: 18px;
-            border-radius: 4px;
-            background: transparent;
-            border: 2px solid var(--textodisable);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            box-sizing: border-box;
-            transition: all 0.25s ease;
-        `;
-
-        const svgIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svgIcon.setAttribute('viewBox', '0 0 20 20');
-        svgIcon.setAttribute('fill', '#ffffff');
-        svgIcon.style.cssText = `
-            width: 12px;
-            height: 12px;
-            transform: scale(0);
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: block;
-        `;
-        svgIcon.innerHTML = `<path clip-rule="evenodd" d="M16.707 5.293a1 1 0 00-1.414 0L8 12.586 4.707 9.293a1 1 0 10-1.414 1.414l4 4a1 1 0 001.414 0l8-8a1 1 0 000-1.414z" fill-rule="evenodd"></path>`;
-        box.appendChild(svgIcon);
-
-        const textSpan = document.createElement('span');
-        textSpan.textContent = label;
-        textSpan.style.cssText = "font-size: 13px; color: var(--texto); transition: color 0.2s ease;";
-
-        labelWrapper.addEventListener('mouseenter', () => {
-            if (!isChecked) {
-                box.style.borderColor = 'var(--textoActvioBlue)';
-                textSpan.style.color = 'var(--textoActivo)';
+    
+ 
+ createCheckbox({ label = '', checked = false, onChange } = {}) {
+    const styleId = 'giopre-checkbox-standalone-styles';
+    if (!document.getElementById(styleId)) {
+        const style = document.createElement('style');
+        style.id = styleId;
+        style.textContent = `
+            .giopre-checkbox {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                cursor: pointer;
+                margin: var(--giopre-margin, 4px);
+                touch-action: manipulation;
+                flex-shrink: 0 !important;
+                min-height: 24px;
+                user-select: none;
+                font-family: var(--giopre-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+                box-sizing: border-box;
             }
-        });
-        labelWrapper.addEventListener('mouseleave', () => {
-            if (!isChecked) {
-                box.style.borderColor = 'var(--textodisable)';
-                textSpan.style.color = 'var(--texto)';
+            .giopre-checkbox.disabled {
+                opacity: var(--giopre-opacity-disabled, 0.35);
+                cursor: not-allowed;
+                pointer-events: none;
             }
-        });
-
-        const updateState = (state) => {
-            isChecked = state;
-            hiddenInput.checked = isChecked;
-            if (isChecked) {
-                box.style.borderColor = 'var(--textoledBrillo)';
-                box.classList.add('gio-led-exacto');
-                svgIcon.style.transform = 'scale(1)';
-                textSpan.style.color = 'var(--textoActivo)';
-            } else {
-                box.style.borderColor = 'var(--textodisable)';
-                box.style.background = 'transparent';
-                box.classList.remove('gio-led-exacto');
-                svgIcon.style.transform = 'scale(0)';
-                textSpan.style.color = 'var(--texto)';
-            }
-        };
-
-        updateState(isChecked);
-
-        labelWrapper.addEventListener('click', (e) => {
-            e.preventDefault();
-            updateState(!isChecked);
-            if (onChange) onChange(isChecked);
-        });
-
-        labelWrapper.appendChild(hiddenInput);
-        labelWrapper.appendChild(box);
-        labelWrapper.appendChild(textSpan);
-        container.appendChild(labelWrapper);
-
-        return this._wrapWithLabel('Checkbox', container);
-    }
-
-    /* =========================================================================
-       2. RADIO BUTTONS CON EMISIÓN LED EXACTA (18x18px)
-       ========================================================================= */
-    createRadio(options = [], name = 'gio_radio', selectedValue = null, onChange = null) {
-        let currentVal = selectedValue !== null ? selectedValue : options[0];
-
-        const container = document.createElement('div');
-        container.style.cssText = "display: flex; flex-direction: column; gap: 8px; width: 100%; box-sizing: border-box;";
-
-        const radioElements = [];
-
-        options.forEach(opt => {
-            const labelText = typeof opt === 'object' ? opt.label : opt;
-            const val = typeof opt === 'object' ? opt.value : opt;
-
-            const item = document.createElement('div');
-            item.style.cssText = "display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; width: fit-content;";
-
-            const circle = document.createElement('div');
-            circle.style.cssText = `
-                width: 18px;
-                height: 18px;
-                border-radius: 50%;
+            .giopre-checkbox-box {
+                width: 16px;
+                height: 16px;
                 background: transparent;
-                border: 2px solid var(--textodisable);
+                border: 1.5px solid var(--giopre-border, #555555);
+                border-radius: 4px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                flex-shrink: 0;
-                transition: border-color 0.2s;
-            `;
-
-            const dot = document.createElement('div');
-            dot.style.cssText = `
+                transition: all 0.2s;
+                flex-shrink: 0 !important;
+                box-sizing: border-box;
+            }
+            .giopre-checkbox:hover .giopre-checkbox-box {
+                border-color: var(--giopre-text-muted, #8a8a8a);
+            }
+            .giopre-checkbox.checked .giopre-checkbox-box {
+                background: var(--giopre-accent, #4e92ff);
+                border-color: var(--giopre-accent, #4e92ff);
+                -webkit-box-shadow: 0px 1px 57px 13px var(--giopre-accent, #4e92ff);
+                box-shadow: 0px 1px 57px 13px var(--giopre-accent, #4e92ff);
+            }
+            .giopre-checkbox-mark {
+                display: none;
                 width: 8px;
-                height: 8px;
-                border-radius: 50%;
-                transform: scale(0);
-                transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            `;
-            circle.appendChild(dot);
-
-            const txt = document.createElement('span');
-            txt.textContent = labelText;
-            txt.style.cssText = "font-size: 13px; color: var(--texto);";
-
-            item.appendChild(circle);
-            item.appendChild(txt);
-            container.appendChild(item);
-
-            radioElements.push({ val, circle, dot, txt });
-
-            item.addEventListener('click', () => {
-                currentVal = val;
-                refreshUI();
-                if (onChange) onChange(currentVal);
-            });
-        });
-
-        const refreshUI = () => {
-            radioElements.forEach(r => {
-                const isActive = r.val === currentVal;
-                if (isActive) {
-                    r.circle.style.borderColor = "var(--textoActvioBlue)";
-                    r.dot.style.transform = "scale(1)";
-                    r.dot.classList.add('gio-led-exacto');
-                    r.txt.style.color = "var(--textoActivo)";
-                } else {
-                    r.circle.style.borderColor = "var(--textodisable)";
-                    r.dot.style.transform = "scale(0)";
-                    r.dot.classList.remove('gio-led-exacto');
-                    r.txt.style.color = "var(--texto)";
-                }
-            });
-        };
-
-        refreshUI();
-        return this._wrapWithLabel('Selección Exclusiva', container);
+                height: 4.5px;
+                border-left: 2px solid #ffffff;
+                border-bottom: 2px solid #ffffff;
+                transform: rotate(-45deg) translate(0.5px, -0.5px);
+                box-sizing: border-box;
+            }
+            .giopre-checkbox.checked .giopre-checkbox-mark {
+                display: block;
+            }
+            .giopre-checkbox .giopre-label {
+                font-size: var(--giopre-font-size-label, 12px);
+                font-weight: var(--giopre-font-weight-medium, 500);
+                color: var(--giopre-text-muted, #b0b0b0);
+                white-space: nowrap;
+                margin: var(--giopre-label-margin, 0px);
+                flex-shrink: 0;
+            }
+        `;
+        (document.head || document.documentElement).appendChild(style);
     }
 
-    /* =========================================================================
-       3. TOGGLE SWITCH CON EMISIÓN LED EXACTA
-       ========================================================================= */
-    createToggle(label = 'Interruptor', checked = false, onChange = null) {
-        let isChecked = !!checked;
+    const instance = {
+        checked: !!checked,
+        disabled: false,
+        element: document.createElement('div')
+    };
 
-        const wrap = document.createElement('div');
-        wrap.style.cssText = "display: flex; align-items: center; justify-content: space-between; gap: 10px; cursor: pointer; user-select: none; width: 100%; box-sizing: border-box;";
+    instance.element.className = `giopre-checkbox ${instance.checked ? 'checked' : ''}`;
+    instance.element.innerHTML = `
+        <div class="giopre-checkbox-box"><div class="giopre-checkbox-mark"></div></div>
+        <span class="giopre-label"></span>
+    `;
+    instance.element.querySelector('.giopre-label').textContent = label;
 
-        const lbl = document.createElement('span');
-        lbl.textContent = label;
-        lbl.style.cssText = "font-size: 13px; color: var(--texto); flex: 1;";
+    const handleClick = () => {
+        if (instance.disabled) return;
+        instance.checked = !instance.checked;
+        instance.element.classList.toggle('checked', instance.checked);
+        if (typeof onChange === 'function') {
+            onChange(instance.checked, instance);
+        }
+    };
 
-        const switchBg = document.createElement('div');
-        switchBg.style.cssText = "width: 36px; height: 20px; border-radius: 20px; background: var(--backg0); border: 1px solid var(--borde); position: relative; flex-shrink: 0; transition: all 0.25s ease;";
+    instance.element.addEventListener('click', handleClick);
 
-        const thumb = document.createElement('div');
-        thumb.style.cssText = `
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: var(--textodisable);
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    instance.getValue = () => instance.checked;
+
+    instance.setValue = (v) => {
+        instance.checked = !!v;
+        if (instance.element) {
+            instance.element.classList.toggle('checked', instance.checked);
+        }
+        return instance;
+    };
+
+    instance.setDisabled = (v) => {
+        instance.disabled = !!v;
+        if (instance.element) {
+            instance.element.classList.toggle('disabled', instance.disabled);
+        }
+        return instance;
+    };
+
+    instance.mount = (parent) => {
+        if (instance.element && parent) {
+            const p = parent.element ? parent.element : parent;
+            p.appendChild(instance.element);
+        }
+        return instance;
+    };
+
+    instance.destroy = () => {
+        if (instance.element) {
+            instance.element.removeEventListener('click', handleClick);
+            if (instance.element.parentNode) {
+                instance.element.parentNode.removeChild(instance.element);
+            }
+            instance.element = null;
+        }
+    };
+
+    return instance;
+}
+
+createRadio({ items = [], activeIndex = 0, onChange } = {}) {
+    const styleId = 'giopre-radiogroup-standalone-styles';
+    if (!document.getElementById(styleId)) {
+        const style = document.createElement('style');
+        style.id = styleId;
+        style.textContent = `
+            .giopre-radio-group {
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 12px;
+                margin: var(--giopre-margin, 4px);
+                flex-shrink: 0 !important;
+                font-family: var(--giopre-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+                box-sizing: border-box;
+            }
+            .giopre-radio-item {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                cursor: pointer;
+                touch-action: manipulation;
+                flex-shrink: 0;
+                min-height: 24px;
+                user-select: none;
+            }
+            .giopre-radio-item.disabled {
+                opacity: var(--giopre-opacity-disabled, 0.35);
+                cursor: not-allowed;
+                pointer-events: none;
+            }
+            .giopre-radio-circle {
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+                background: transparent;
+                border: 1.5px solid var(--giopre-border, #555555);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s;
+                flex-shrink: 0 !important;
+                box-sizing: border-box;
+            }
+            .giopre-radio-dot {
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: #ffffff;
+                display: none;
+                transform: scale(0);
+                transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                box-sizing: border-box;
+            }
+            .giopre-radio-item:hover .giopre-radio-circle {
+                border-color: var(--giopre-text-muted, #8a8a8a);
+            }
+            .giopre-radio-item.active .giopre-radio-circle {
+                background: var(--giopre-accent, #4e92ff);
+                border-color: var(--giopre-accent, #4e92ff);
+                -webkit-box-shadow: 0px 1px 57px 13px var(--giopre-accent, #4e92ff);
+                box-shadow: 0px 1px 57px 13px var(--giopre-accent, #4e92ff);
+            }
+            .giopre-radio-item.active .giopre-radio-dot {
+                display: block;
+                transform: scale(1);
+            }
+            .giopre-radio-group .giopre-label {
+                font-size: var(--giopre-font-size-label, 12px);
+                font-weight: var(--giopre-font-weight-medium, 500);
+                color: var(--giopre-text-muted, #b0b0b0);
+                white-space: nowrap;
+                margin: var(--giopre-label-margin, 0px);
+                flex-shrink: 0;
+            }
         `;
-        switchBg.appendChild(thumb);
+        (document.head || document.documentElement).appendChild(style);
+    }
 
-        const updateState = (state) => {
-            if (state) {
-                thumb.style.transform = "translateX(16px)";
-                thumb.classList.add('gio-led-exacto');
-                switchBg.style.borderColor = "var(--textoActvioBlue)";
-                lbl.style.color = "var(--textoActivo)";
-            } else {
-                thumb.style.transform = "translateX(0px)";
-                thumb.classList.remove('gio-led-exacto');
-                thumb.style.background = "var(--textodisable)";
-                switchBg.style.borderColor = "var(--borde)";
-                lbl.style.color = "var(--texto)";
+    const instance = {
+        items,
+        activeIndex,
+        disabled: false,
+        handlers: [],
+        domItems: [],
+        element: document.createElement('div')
+    };
+
+    instance.element.className = 'giopre-radio-group';
+
+    instance.select = (idx) => {
+        instance.activeIndex = idx;
+        instance.domItems.forEach((el, i) => el.classList.toggle('active', i === idx));
+        return instance;
+    };
+
+    instance.getValue = () => {
+        const c = instance.items[instance.activeIndex];
+        return c ? (c.value !== undefined ? c.value : c) : null;
+    };
+
+    instance.setValue = (v) => {
+        const idx = instance.items.findIndex(it => (it.value !== undefined ? it.value : it) === v);
+        if (idx !== -1) instance.select(idx);
+        return instance;
+    };
+
+    instance.setDisabled = (v) => {
+        instance.disabled = !!v;
+        instance.domItems.forEach(el => el.classList.toggle('disabled', instance.disabled));
+        return instance;
+    };
+
+    instance.mount = (parent) => {
+        if (instance.element && parent) {
+            const p = parent.element ? parent.element : parent;
+            p.appendChild(instance.element);
+        }
+        return instance;
+    };
+
+    instance.destroy = () => {
+        instance.handlers.forEach(({ el, h }) => el.removeEventListener('click', h));
+        instance.handlers = [];
+        instance.domItems = [];
+        if (instance.element) {
+            if (instance.element.parentNode) {
+                instance.element.parentNode.removeChild(instance.element);
+            }
+            instance.element = null;
+        }
+    };
+
+    instance.domItems = instance.items.map((item, idx) => {
+        const el = document.createElement('div');
+        el.className = `giopre-radio-item ${idx === instance.activeIndex ? 'active' : ''}`;
+        el.innerHTML = `
+            <div class="giopre-radio-circle"><div class="giopre-radio-dot"></div></div>
+            <span class="giopre-label"></span>
+        `;
+        el.querySelector('.giopre-label').textContent = item.label || item;
+
+        const h = () => {
+            if (instance.disabled) return;
+            instance.select(idx);
+            if (typeof onChange === 'function') {
+                onChange(instance.getValue(), idx, instance);
             }
         };
 
-        updateState(isChecked);
+        el.addEventListener('click', h);
+        instance.handlers.push({ el, h });
+        instance.element.appendChild(el);
+        return el;
+    });
 
-        wrap.addEventListener('click', () => {
-            isChecked = !isChecked;
-            updateState(isChecked);
-            if (onChange) onChange(isChecked);
-        });
+    return instance;
+}
 
-        wrap.appendChild(lbl);
-        wrap.appendChild(switchBg);
-
-        return this._wrapWithLabel('Estado', wrap);
+createToggle({ label = '', value = false, onChange } = {}) {
+    const styleId = 'giopre-toggle-standalone-styles';
+    if (!document.getElementById(styleId)) {
+        const style = document.createElement('style');
+        style.id = styleId;
+        style.textContent = `
+            .giopre-toggle {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                cursor: pointer;
+                margin: var(--giopre-margin, 4px);
+                touch-action: manipulation;
+                flex-shrink: 0 !important;
+                min-height: 24px;
+                user-select: none;
+                font-family: var(--giopre-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+                box-sizing: border-box;
+            }
+            .giopre-toggle.disabled {
+                opacity: var(--giopre-opacity-disabled, 0.35);
+                cursor: not-allowed;
+                pointer-events: none;
+            }
+            .giopre-toggle-switch {
+                width: 32px;
+                height: 18px;
+                border-radius: 18px;
+                background: transparent;
+                border: 1.5px solid var(--giopre-border, #555555);
+                position: relative;
+                transition: all 0.2s;
+                flex-shrink: 0 !important;
+                box-sizing: border-box;
+            }
+            .giopre-toggle-thumb {
+                width: 11px;
+                height: 11px;
+                background: var(--giopre-text-muted, #8a8a8a);
+                border-radius: 50%;
+                position: absolute;
+                top: 2px;
+                left: 2px;
+                transition: all 0.2s;
+                box-sizing: border-box;
+            }
+            .giopre-toggle:hover .giopre-toggle-switch {
+                border-color: var(--giopre-text-muted, #8a8a8a);
+            }
+            .giopre-toggle.active .giopre-toggle-switch {
+                background: var(--giopre-accent, #4e92ff);
+                border-color: var(--giopre-accent, #4e92ff);
+                -webkit-box-shadow: 0px 1px 57px 13px var(--giopre-accent, #4e92ff);
+                box-shadow: 0px 1px 57px 13px var(--giopre-accent, #4e92ff);
+            }
+            .giopre-toggle.active .giopre-toggle-thumb {
+                transform: translateX(14px);
+                background: #ffffff;
+            }
+            .giopre-toggle .giopre-label {
+                font-size: var(--giopre-font-size-label, 12px);
+                font-weight: var(--giopre-font-weight-medium, 500);
+                color: var(--giopre-text-muted, #b0b0b0);
+                white-space: nowrap;
+                margin: var(--giopre-label-margin, 0px);
+                flex-shrink: 0;
+            }
+        `;
+        (document.head || document.documentElement).appendChild(style);
     }
 
-    /* =========================================================================
-       4. SLIDER CON CAJÓN DESPLEGABLE
-       ========================================================================= */
+    const instance = {
+        value: !!value,
+        disabled: false,
+        element: document.createElement('div')
+    };
+
+    instance.element.className = `giopre-toggle ${instance.value ? 'active' : ''}`;
+    instance.element.innerHTML = `
+        <div class="giopre-toggle-switch"><div class="giopre-toggle-thumb"></div></div>
+        <span class="giopre-label"></span>
+    `;
+    instance.element.querySelector('.giopre-label').textContent = label;
+
+    const handleClick = () => {
+        if (instance.disabled) return;
+        instance.value = !instance.value;
+        instance.element.classList.toggle('active', instance.value);
+        if (typeof onChange === 'function') {
+            onChange(instance.value, instance);
+        }
+    };
+
+    instance.element.addEventListener('click', handleClick);
+
+    instance.getValue = () => instance.value;
+
+    instance.setValue = (v) => {
+        instance.value = !!v;
+        if (instance.element) {
+            instance.element.classList.toggle('active', instance.value);
+        }
+        return instance;
+    };
+
+    instance.setDisabled = (v) => {
+        instance.disabled = !!v;
+        if (instance.element) {
+            instance.element.classList.toggle('disabled', instance.disabled);
+        }
+        return instance;
+    };
+
+    instance.mount = (parent) => {
+        if (instance.element && parent) {
+            const p = parent.element ? parent.element : parent;
+            p.appendChild(instance.element);
+        }
+        return instance;
+    };
+
+    instance.destroy = () => {
+        if (instance.element) {
+            instance.element.removeEventListener('click', handleClick);
+            if (instance.element.parentNode) {
+                instance.element.parentNode.removeChild(instance.element);
+            }
+            instance.element = null;
+        }
+    };
+
+    return instance;
+}
+ 
+    
+
+     
+
+     
     createSlider({ label = 'Control Deslizante', min = 0, max = 100, step = 1, value = 50, onChange = null } = {}) {
         let curMin = Number(min);
         let curMax = Number(max);
@@ -4753,9 +4952,190 @@ createBrowserPanel({
         return this._wrapWithLabel('Ajuste Numérico', card);
     }
 
-    /* =========================================================================
-       5. SELECTOR CON BUSCADOR
-       ========================================================================= */
+      createButtonRectangular({
+    icon = 'square',
+    tooltip = '',
+    tooltipPosition = 'right',  
+    id = null,
+    active = false,
+    toggle = false,
+    size = 44,
+    iconSize = 22,
+    radius = 10,
+    container = null,
+    onClick = null
+} = {}) {
+    const STYLE_ID = 'gio-ibtn-standalone-styles';
+    if (!document.getElementById(STYLE_ID)) {
+        const style = document.createElement('style');
+        style.id = STYLE_ID;
+        style.textContent = `
+            .gio-ibtn-item {
+                position: relative;
+                width: var(--gio-ibtn-size, 44px);
+                height: var(--gio-ibtn-size, 44px);
+                min-width: var(--gio-ibtn-size, 44px);
+                border: none;
+                border-radius: var(--gio-ibtn-radius, 10px);
+                background: #333333;
+                color: #8c8e8f;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: background .18s, color .18s, transform .12s, opacity .2s;
+                padding: 0;
+                margin: 0;
+                flex-shrink: 0;
+                outline: none;
+                user-select: none;
+                box-sizing: border-box;
+            }
+            .gio-ibtn-item:hover:not(:disabled) {
+                background: #3d3d3d;
+                color: #4daafc;
+            }
+            .gio-ibtn-item:active:not(:disabled) {
+                transform: scale(.94);
+            }
+            .gio-ibtn-item.gio-ibtn-item--active {
+                color: #4daafc;
+                background: #383f48;
+            }
+            .gio-ibtn-item:disabled {
+                opacity: 0.4;
+                cursor: not-allowed;
+            }
+            .gio-ibtn-item svg {
+                width: var(--gio-ibtn-icon, 22px);
+                height: var(--gio-ibtn-icon, 22px);
+                fill: currentColor;
+                pointer-events: none;
+            }
+            .gio-ibtn-tip {
+                position: fixed;
+                padding: 6px 10px;
+                background: #1a1a1a;
+                color: #e7e7e7;
+                font-size: 12px;
+                font-family: system-ui, sans-serif;
+                white-space: nowrap;
+                border-radius: 6px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+                pointer-events: none;
+                opacity: 0;
+                transition: opacity .15s ease;
+                z-index: 10000;
+                border: 1px solid #444444;
+            }
+            .gio-ibtn-tip.gio-ibtn-tip--show {
+                opacity: 1;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    const getTooltipEl = () => {
+        let tip = document.getElementById('gio-ibtn-floating-tip');
+        if (!tip) {
+            tip = document.createElement('div');
+            tip.id = 'gio-ibtn-floating-tip';
+            tip.className = 'gio-ibtn-tip';
+            document.body.appendChild(tip);
+        }
+        return tip;
+    };
+
+    const showTip = (anchor, text, pos) => {
+        if (!text) return;
+        const tip = getTooltipEl();
+        tip.textContent = text;
+        tip.classList.remove('gio-ibtn-tip--show');
+
+        requestAnimationFrame(() => {
+            const r = anchor.getBoundingClientRect();
+            const tw = tip.offsetWidth;
+            const th = tip.offsetHeight;
+            const GAP = 8, PAD = 6;
+            let top, left;
+
+            switch (pos) {
+                case 'right':  top = r.top + r.height / 2 - th / 2; left = r.right + GAP; break;
+                case 'left':   top = r.top + r.height / 2 - th / 2; left = r.left - tw - GAP; break;
+                case 'top':    top = r.top - th - GAP;              left = r.left + r.width / 2 - tw / 2; break;
+                case 'bottom':
+                default:       top = r.bottom + GAP;                left = r.left + r.width / 2 - tw / 2; break;
+            }
+
+            left = Math.max(PAD, Math.min(left, innerWidth - tw - PAD));
+            top  = Math.max(PAD, Math.min(top, innerHeight - th - PAD));
+
+            tip.style.top = `${Math.round(top)}px`;
+            tip.style.left = `${Math.round(left)}px`;
+            tip.classList.add('gio-ibtn-tip--show');
+        });
+    };
+
+    const hideTip = () => {
+        const tip = document.getElementById('gio-ibtn-floating-tip');
+        if (tip) tip.classList.remove('gio-ibtn-tip--show');
+    };
+
+    const resolveIcon = (key) => {
+        if (!key) return '';
+        if (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB[key]) {
+            return GiovanniIconDB[key];
+        }
+        return key.startsWith('<') ? key : `<path d="${key}"/>`;
+    };
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'gio-ibtn-item' + (active ? ' gio-ibtn-item--active' : '');
+    if (id) btn.dataset.id = id;
+    btn.dataset.tooltip = tooltip;
+
+    btn.style.setProperty('--gio-ibtn-size', `${size}px`);
+    btn.style.setProperty('--gio-ibtn-icon', `${iconSize}px`);
+    btn.style.setProperty('--gio-ibtn-radius', `${radius}px`);
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.innerHTML = resolveIcon(icon);
+    btn.appendChild(svg);
+
+    btn.addEventListener('mouseenter', () => showTip(btn, btn.dataset.tooltip, tooltipPosition));
+    btn.addEventListener('mouseleave', hideTip);
+    btn.addEventListener('focus',      () => showTip(btn, btn.dataset.tooltip, tooltipPosition));
+    btn.addEventListener('blur',       hideTip);
+
+    const api = {
+        el: btn,
+        id,
+        isActive: () => btn.classList.contains('gio-ibtn-item--active'),
+        setActive: (v = true) => { btn.classList.toggle('gio-ibtn-item--active', Boolean(v)); return api; },
+        toggleActive: () => { btn.classList.toggle('gio-ibtn-item--active'); return api; },
+        setTooltip: (t) => { btn.dataset.tooltip = t; return api; },
+        setIcon: (key) => { svg.innerHTML = resolveIcon(key); return api; },
+        setDisabled: (v = true) => { btn.disabled = Boolean(v); return api; },
+        mount: (target) => {
+            const dest = target?.element || target;
+            if (dest && dest.appendChild) dest.appendChild(btn);
+            return api;
+        },
+        remove: () => { hideTip(); btn.remove(); }
+    };
+
+    btn.addEventListener('click', (e) => {
+        if (toggle) api.toggleActive();
+        if (typeof onClick === 'function') onClick(api, e);
+    });
+
+    if (container) api.mount(container);
+
+    return api;
+}
+ 
     createSelectSearch(options = [], selected = null, onChange = null) {
         const normalized = options.map(o => typeof o === 'object' ? o : { value: o, label: String(o) });
         let currentVal = selected !== null ? selected : (normalized[0]?.value ?? '');
@@ -4875,9 +5255,7 @@ createBrowserPanel({
         return this._wrapWithLabel('Selector Desplegable', wrap);
     }
 
-    /* =========================================================================
-       6. TABLA DINÁMICA CON REORDENAMIENTO INTERNO Y DRAG EXTERNO
-       ========================================================================= */
+    
     createTable({ label = 'Tabla de Datos', columns = [], data = [], endpoint = null, pageSize = 5, onRowDelete = null, onRowClick = null } = {}) {
         const container = document.createElement('div');
         container.style.cssText = "display: flex; flex-direction: column; gap: 6px; width: 100%; box-sizing: border-box; overflow: hidden;";
