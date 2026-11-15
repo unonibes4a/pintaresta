@@ -204,7 +204,7 @@
                     --ui-text-accordion: #8a8a8a;
                     --ui-text-accordion-open: #e0e0e0;
                     --ui-text-val: #e0e0e0;
-                    --ui-text-panel-title: #8a8a8a;
+                    --ui-text-panel-title: #4daafcc9;
                     --ui-text-dropdown-item: #8a8a8a;
                     --ui-text-dropdown-item-hover: #5c9ce6;
 
@@ -219,8 +219,8 @@
                     --ui-danger-bg: #212121;
                     --ui-danger-border: #3d3d3d;
                     --ui-danger-border-hover: #f8524941;
-                    --ui-danger-color: #e7acaa;
-                    --ui-danger-hover: #e7acaa;
+                    --ui-danger-color: #FFAA95;
+                    --ui-danger-hover: #FFAA95;
 
                     --ui-accent: #2160c7;
                     --ui-seg-item: #dddddd;
@@ -1037,7 +1037,7 @@
                     cursor: grab;
                     flex-shrink: 0;
                 }
-                .ui-panel-header:active { cursor: grabbing; }
+                .ui-panel-header:active { cursor: grabbing;   }
                 .ui-header-left { display: flex; align-items: center; gap: 8px; pointer-events: none; }
 
                 .ui-panel-title {
