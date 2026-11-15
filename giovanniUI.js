@@ -2685,7 +2685,7 @@ createInputText({
     return instance;
 }
 
- static hacerEditableNumerico(el, options = {}) {
+   static hacerEditableNumerico(el, options = {}) {
   if (!el) throw new Error('Elemento no válido');
 
   let {
@@ -2714,7 +2714,7 @@ createInputText({
           padding: 2px 10px;
           font-variant-numeric: tabular-nums;
           outline: none;
-          cursor: text;
+          cursor: pointer;
           transition: border-color 0.15s, background-color 0.15s, color 0.15s;
         }
 
@@ -2726,12 +2726,18 @@ createInputText({
           border-color: #4daafc;
           background-color: #181818;
           color: #ffffff;
+          cursor: text;
         }
       `;
       document.head.appendChild(style);
     }
     el.classList.add('inputGio-inline-num');
   }
+
+  const prevCursor = el.style.cursor;
+  const prevOutline = el.style.outline;
+  el.style.cursor = 'pointer';
+  el.style.setProperty('outline', 'none', 'important');
 
   let isFloat = type === 'float' || (step % 1 !== 0);
   let factor = isFloat ? Math.pow(10, decimals) : 1;
@@ -2795,6 +2801,8 @@ createInputText({
     prevValue = currentValue;
     el.contentEditable = 'true';
     el.dataset.editing = 'true';
+    el.style.cursor = 'text';
+    el.style.setProperty('outline', 'none', 'important');
     el.focus();
     selectAll();
   };
@@ -2857,6 +2865,7 @@ createInputText({
   const onBlur = () => {
     el.contentEditable = 'false';
     delete el.dataset.editing;
+    el.style.cursor = 'pointer';
     if (cancelled) {
       cancelled = false;
       currentValue = prevValue;
@@ -2889,12 +2898,13 @@ createInputText({
       el.removeEventListener('paste', onPaste);
       el.removeEventListener('blur', onBlur);
       el.contentEditable = 'false';
+      el.style.cursor = prevCursor;
+      el.style.outline = prevOutline;
       delete el.dataset.editing;
       if (styled) el.classList.remove('inputGio-inline-num');
     }
   };
 }
-
  
     _initMagneticDrag(fieldElement, handleElement) {
         let startX = 0, startY = 0, initLeft = 0, initTop = 0;
