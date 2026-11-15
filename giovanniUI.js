@@ -1060,7 +1060,7 @@ class GiovanniColorPicker {
       .gio-acc-header:active { cursor: grabbing; }
 
       .gio-acc-title {
-        color: var(--textotenue2);
+        color: #4daafcc9;// var(--textotenue2);
         font-size: 13px;
         font-weight: 600;
         pointer-events: none;
@@ -1163,7 +1163,7 @@ class GiovanniColorPicker {
         box-sizing: border-box;
         width: 100%;
         min-width: 0;
-        background: #2d2d2d;
+        background: #333333;
         color-scheme: dark;
       }
 
@@ -1863,7 +1863,7 @@ class Giovanni {
         style.textContent = `
             :root {
                 --backg0: #2d2d2d;
-                --backg1: #2d2d2d;
+                --backg1: #3c3c3c;
                 --backg2: #2d2d2d;
                 --backg3: #2d2d2d;
                 --backg: #303030;
@@ -2685,7 +2685,7 @@ createInputText({
     return instance;
 }
 
-  hacerEditableNumerico(el, options = {}) {
+ static hacerEditableNumerico(el, options = {}) {
   if (!el) throw new Error('Elemento no válido');
 
   let {
@@ -5620,7 +5620,7 @@ createToggle({ label = '', value = false, onChange } = {}) {
 
         const title = document.createElement('span');
         title.textContent = label;
-        title.style.cssText = "font-size: 12px; font-weight: 500; color: var(--texto); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;";
+        title.style.cssText = "font-size: 12px; font-weight: 500; color: #4daafc;  flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;";
 
         const rightTools = document.createElement('div');
         rightTools.style.cssText = "display: flex; align-items: center; gap: 6px; flex-shrink: 0;";
@@ -5628,6 +5628,9 @@ createToggle({ label = '', value = false, onChange } = {}) {
         const badge = document.createElement('span');
         badge.textContent = curVal;
         badge.style.cssText = "font-size: 11px; font-family: monospace; color: var(--textoActivo); background: var(--backg3); padding: 2px 8px; border-radius: 4px; border: 1px solid var(--borde);";
+         
+
+        
 
         const btnCajon = document.createElement('button');
         btnCajon.innerHTML = `<svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="1 1 5 5 9 1"></polyline></svg>`;
@@ -5678,6 +5681,7 @@ createToggle({ label = '', value = false, onChange } = {}) {
         const updateVisuals = (val) => {
             curVal = Number(val);
             badge.textContent = curVal;
+            badgeEditable.setValue(curVal);
             const pct = curMax > curMin ? Math.min(100, Math.max(0, ((curVal - curMin) / (curMax - curMin)) * 100)) : 0;
             fillBar.style.width = `${pct}%`;
             thumb.style.left = `${pct}%`;
@@ -5736,6 +5740,19 @@ createToggle({ label = '', value = false, onChange } = {}) {
         const inpExact = createCajonInput('Val', curVal, (v) => {
             if (!isNaN(v)) {
                 updateVisuals(Math.max(curMin, Math.min(curMax, v)));
+                if (onChange) onChange(curVal);
+            }
+        });
+
+         const badgeEditable = Giovanni.hacerEditableNumerico(badge, {
+            type: (curStep % 1 !== 0 || curVal % 1 !== 0) ? 'float' : 'int',
+            min: curMin,
+            max: curMax,
+            step: curStep,
+            value: curVal,
+            onChange: (newVal) => {
+                updateVisuals(newVal);
+                if (inpExact) inpExact.inp.value = curVal;
                 if (onChange) onChange(curVal);
             }
         });
