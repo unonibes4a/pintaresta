@@ -172,7 +172,7 @@
                     --ui-bg-dropdown-item-active: rgba(92, 156, 230, 0.12);
                     --ui-bg-segmented: #1a1a1a;
                     --ui-bg-segmented-active:#2160c7; 
-                    --ui-bg-segmented-active-h:#2160c7;  
+                    --ui-bg-segmented-active-h: #4daafc;  
                     --ui-bg-toggle-switch: #2b2b2b;
                     --ui-bg-slider-content: #212121;
 
@@ -1284,7 +1284,7 @@
                  
                 }
                 .ui-seg-item:hover {
-                    background: var(--ui-bg-segmented-active-h);
+                    background: #333333;
                 }
 
                 .ui-checkbox {
@@ -1674,8 +1674,8 @@ box-shadow: 0px 1px 57px 13px var(--textoledBrillo);
                 .ui-accordion-item.open {
                 border-color: var(--ui-accentaccordion);  
                  border-radius: 7px;
-                 -webkit-box-shadow: 5px 5px 15px 5px #000000; 
-box-shadow: 5px 5px 15px 5px #000000;
+-webkit-box-shadow: 50px 5px 40px -2px #000000c7; 
+box-shadow: 50px 5px 40px -2px #000000c7;
                 }
                 .ui-accordion-header {
                     min-height: 36px;
