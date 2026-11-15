@@ -154,7 +154,7 @@
 
                     --ui-bg-base: #000000;
                     --ui-bg-panel: #1e1e1e;
-                    --ui-bg-surface: #3333333;
+                    --ui-bg-surface: #404040a6;
                     --ui-bg-surface-hover: #2e2e2e;
                     --ui-bg-input: #252525;
                     --ui-bg-input-hover: #2b2b2b;
@@ -208,7 +208,7 @@
                     --ui-text-dropdown-item: #8a8a8a;
                     --ui-text-dropdown-item-hover: #5c9ce6;
 
-                    --ui-btn-bg: #2d2d2d;
+                    --ui-btn-bg: #373737;
                     --ui-btn-hover-bg: #333333;
                     --ui-primary-bg: #5c9ce6;
                     --ui-primary-hover-bg: #6fa9ec;
@@ -219,8 +219,8 @@
                     --ui-danger-bg: #212121;
                     --ui-danger-border: #3d3d3d;
                     --ui-danger-border-hover: #f8524941;
-                    --ui-danger-color: #f85149;
-                    --ui-danger-hover: #f85149;
+                    --ui-danger-color: #e7acaa;
+                    --ui-danger-hover: #e7acaa;
 
                     --ui-accent: #2160c7;
                     --ui-seg-item: #dddddd;
@@ -1080,6 +1080,10 @@
                     line-height: 1;
                     transition: all var(--ui-transition-fast);
                     touch-action: manipulation;
+                    color: #4daafc;
+                    text-shadow: 0px 0px 30px #4daafc;
+                    
+                    
                 }
                 .ui-icon-btn:hover {
                     background: var(--ui-bg-surface-hover);
@@ -1162,8 +1166,8 @@
 }
 
                 .ui-btn {
-                    background: var(--ui-btn-bg);                  
-                    border: 1px solid var(--ui-border);
+                    background: #414143;                  
+                    border:4px solid #404040;
                     height: 40px;              
                     border-radius: 10px;
                     display: flex;
@@ -1174,7 +1178,7 @@
                     align-content: center;
                     color: var(--texto); 
                     cursor: pointer;
-                    font-size:10.5px;// var(--ui-font-size-btn);
+                    font-size:10px; 
 
                 }
                 .ui-btn:hover{
@@ -1192,14 +1196,14 @@
            
 
                 .ui-btn-danger {
-                    background: var(--ui-danger-bg);
-                    border-color: var(--ui-danger-border);
+                  
+               
                     color: var(--ui-danger-color);
                 }
                 .ui-btn-danger:hover {
-                    border-color: var(--ui-danger-border-hover);
+                    
                     color: var(--ui-danger-hover);
-                    box-shadow: 0 0 0 3px rgba(248, 81, 73, 0.25);
+                  
                 }
 
                 .ui-input {
