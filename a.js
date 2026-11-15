@@ -45,7 +45,7 @@
                     --texto: #cccccc;
                     --textoActivo: #e3e3e3;
                     --textodisable: #60605f;
-                    --textoActvioBlue: #2160c7;
+                    --textoActvioBlue: #4daafc;
                     --textoledBrillo: #4e92ff;
                      
 
@@ -154,8 +154,8 @@
 
                     --ui-bg-base: #000000;
                     --ui-bg-panel: #1e1e1e;
-                    --ui-bg-surface: #333333;
-                    --ui-bg-surface-hover: #373737;
+                    --ui-bg-surface: #3333333;
+                    --ui-bg-surface-hover: #2e2e2e;
                     --ui-bg-input: #252525;
                     --ui-bg-input-hover: #2b2b2b;
                     --ui-bg-input-focus: #282828;
@@ -176,7 +176,7 @@
                     --ui-bg-toggle-switch: #2b2b2b;
                     --ui-bg-slider-content: #212121;
 
-                    --ui-border: #3a3a3a;
+                    --ui-border: #393939;
                     --ui-border-light: #2c2c2c;
                     --ui-border-hover: #444444;
                     --ui-border-focus: #5c9ce6;
@@ -218,9 +218,9 @@
 
                     --ui-danger-bg: #212121;
                     --ui-danger-border: #3d3d3d;
-                    --ui-danger-border-hover: #f85149;
+                    --ui-danger-border-hover: #f8524941;
                     --ui-danger-color: #f85149;
-                    --ui-danger-hover: #ff7b72;
+                    --ui-danger-hover: #f85149;
 
                     --ui-accent: #2160c7;
                     --ui-seg-item: #dddddd;
@@ -1097,7 +1097,7 @@
                     display: flex;
                     flex-direction: column;
                     gap: var(--ui-panel-body-gap);
-                    background: transparent;
+                    background: #333333;
                     overflow-y: auto !important;
                     overflow-x: hidden !important;
                     flex: 1 1 auto;
@@ -1136,7 +1136,7 @@
                 .ui-label {
                     font-size: var(--ui-font-size-label);
                     font-weight: var(--ui-font-weight-medium);
-                    color: var(--ui-text-muted);
+                    color: var(--textoActvioBlue);//textoActvioBlue ui-text-muted
                     white-space: nowrap;
                     margin: var(--ui-label-margin);
                     flex-shrink: 0;
@@ -1727,7 +1727,7 @@ box-shadow: 5px 5px 15px 5px #000000;
                 .ui-slider-card {
                     width: calc(100% - (var(--ui-margin-left) + var(--ui-margin-right)));
                     background: var(--ui-bg-surface);
-                    border: 1px solid var(--ui-border);
+                    border: 4px solid var(--ui-border);
                     border-radius: var(--ui-radius-sm);
                     padding: var(--ui-slider-card-padding);
                     display: flex;
@@ -1735,9 +1735,16 @@ box-shadow: 5px 5px 15px 5px #000000;
                     gap: 8px;
                     flex-shrink: 0 !important;
                     margin: var(--ui-slider-margin);
-                    transition: border-color var(--ui-transition-fast);
+                   transition: box-shadow 1s ease, border-color 1s ease;
+      
                 }
 
+
+                .ui-slider-card:hover{
+-webkit-box-shadow: 20px 2px 40px 7px #000000; 
+box-shadow: 20px 2px 40px 7px #000000;
+
+                }
                 .ui-slider-card-header {
                     display: flex;
                     align-items: center;
@@ -3653,14 +3660,12 @@ box-shadow: 5px 5px 15px 5px #000000;
             super();
             this.checked = !!checked;
             this.disabled = false;
-
             this.element = document.createElement('div');
             this.element.className = `ui-checkbox ${this.checked ? 'checked' : ''}`;
             this.element.innerHTML = `
                 <div class="ui-checkbox-box"><div class="ui-checkbox-mark"></div></div>
                 <span class="ui-label">${label}</span>
             `;
-
             this.handleClick = () => {
                 if (this.disabled) return;
                 this.checked = !this.checked;
