@@ -1,3 +1,221 @@
+
+
+
+
+
+function injectInlineNumericStyles() {
+  if (document.getElementById('inputGio-inline-num-styles')) return;
+  const style = document.createElement('style');
+  style.id = 'inputGio-inline-num-styles';
+  style.textContent = `
+    .inputGio-inline-num {
+      box-sizing: border-box;
+      background-color: #121212;
+      border: 1px solid #333333;
+      border-radius: 12px;
+      color: #4daafc;
+      padding: 2px 10px;
+      font-variant-numeric: tabular-nums;
+      outline: none;
+      cursor: text;
+      transition: border-color 0.15s, background-color 0.15s, color 0.15s;
+    }
+
+    .inputGio-inline-num:hover {
+      border-color: rgba(77, 170, 252, 0.5);
+    }
+
+    .inputGio-inline-num[data-editing="true"] {
+      border-color: #4daafc;
+      background-color: #181818;
+      color: #ffffff;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+function hacerEditableNumerico(el, options = {}) {
+  if (!el) throw new Error('Elemento no válido');
+
+  let {
+    type = 'int',          // 'int' | 'float'
+    min = -Infinity,
+    max = Infinity,
+    step = 1,
+    decimals = 2,
+    trigger = 'click',     // 'click' | 'dblclick'
+    value = undefined,
+    styled = false,        // false = respeta tu CSS | true = CSS InputGio
+    onChange = () => {}
+  } = options;
+
+  if (styled) {
+    injectInlineNumericStyles();
+    el.classList.add('inputGio-inline-num');
+  }
+
+  let isFloat = type === 'float' || (step % 1 !== 0);
+  let factor = isFloat ? Math.pow(10, decimals) : 1;
+
+  const recalcType = () => {
+    isFloat = type === 'float' || (step % 1 !== 0);
+    factor = isFloat ? Math.pow(10, decimals) : 1;
+  };
+
+  const clamp = (num) => {
+    if (Number.isNaN(num)) return currentValue;
+    const clamped = Math.max(min, Math.min(max, num));
+    return isFloat
+      ? Math.round(clamped * factor) / factor
+      : Math.round(clamped);
+  };
+
+  const parseRaw = (raw) => {
+    const cleaned = String(raw).trim().replace(',', '.');
+    return isFloat ? parseFloat(cleaned) : parseInt(cleaned, 10);
+  };
+
+  const selectAll = () => {
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  };
+
+  let currentValue = 0;
+  currentValue = clamp(parseRaw(value !== undefined ? value : el.textContent));
+  let prevValue = currentValue;
+  let cancelled = false;
+
+  if (value !== undefined) {
+    el.textContent = currentValue;
+  }
+
+  const commit = (raw, triggerCallback = true) => {
+    const next = clamp(parseRaw(raw));
+    const changed = next !== currentValue;
+    currentValue = next;
+    prevValue = next;
+    el.textContent = next;
+    if (triggerCallback && changed) {
+      onChange(currentValue, el);
+    }
+  };
+
+  const startEdit = (e) => {
+    e?.stopPropagation();
+    if (el.isContentEditable) return;
+
+    const synced = parseRaw(el.textContent);
+    if (!Number.isNaN(synced)) {
+      currentValue = clamp(synced);
+    }
+
+    cancelled = false;
+    prevValue = currentValue;
+    el.contentEditable = 'true';
+    el.dataset.editing = 'true';
+    el.focus();
+    selectAll();
+  };
+
+  const onKeyDown = (e) => {
+    e.stopPropagation();
+
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      el.blur();
+      return;
+    }
+
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      cancelled = true;
+      el.textContent = prevValue;
+      el.blur();
+      return;
+    }
+
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      const mult = e.shiftKey ? 10 : 1;
+      const delta = (e.key === 'ArrowUp' ? step : -step) * mult;
+      const current = parseRaw(el.textContent);
+      commit((Number.isNaN(current) ? prevValue : current) + delta, true);
+      selectAll();
+      return;
+    }
+
+    const nav = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Home', 'End'];
+    if (nav.includes(e.key) || e.ctrlKey || e.metaKey) return;
+
+    const selectedText = window.getSelection()?.toString() || '';
+
+    if (isFloat && (e.key === '.' || e.key === ',')) {
+      const hasDot = el.textContent.includes('.') && !selectedText.includes('.');
+      if (!hasDot) return;
+    }
+
+    if (min < 0 && e.key === '-') {
+      const hasMinus = el.textContent.includes('-') && !selectedText.includes('-');
+      if (!hasMinus) return;
+    }
+
+    if (!/^[0-9]$/.test(e.key)) {
+      e.preventDefault();
+    }
+  };
+
+  const onPaste = (e) => {
+    e.preventDefault();
+    const pasted = (e.clipboardData || window.clipboardData).getData('text');
+    const regex = isFloat ? /[^0-9.,-]/g : /[^0-9-]/g;
+    const clean = pasted.replace(regex, '').replace(',', '.');
+    document.execCommand('insertText', false, clean);
+  };
+
+  const onBlur = () => {
+    el.contentEditable = 'false';
+    delete el.dataset.editing;
+    if (cancelled) {
+      cancelled = false;
+      currentValue = prevValue;
+      el.textContent = prevValue;
+      return;
+    }
+    commit(el.textContent, true);
+  };
+
+  el.addEventListener(trigger, startEdit);
+  el.addEventListener('keydown', onKeyDown);
+  el.addEventListener('paste', onPaste);
+  el.addEventListener('blur', onBlur);
+
+  return {
+    getValue: () => currentValue,
+    setValue: (val) => commit(val, false),
+    startEdit,
+    updateOptions: (newOpts = {}) => {
+      if (newOpts.type !== undefined) type = newOpts.type;
+      if (newOpts.min !== undefined) min = newOpts.min;
+      if (newOpts.max !== undefined) max = newOpts.max;
+      if (newOpts.step !== undefined) step = newOpts.step;
+      if (newOpts.decimals !== undefined) decimals = newOpts.decimals;
+      recalcType();
+    },
+    destroy: () => {
+      el.removeEventListener(trigger, startEdit);
+      el.removeEventListener('keydown', onKeyDown);
+      el.removeEventListener('paste', onPaste);
+      el.removeEventListener('blur', onBlur);
+      el.contentEditable = 'false';
+      delete el.dataset.editing;
+      if (styled) el.classList.remove('inputGio-inline-num');
+    }
+  };
+}
+
 (function (global) {
     'use strict';
 
@@ -58,7 +276,7 @@
                      
                     --ui-cad-bg-stage: #0c0d12;
                     --ui-cad-hud-bg: #14151f;
-                    --ui-cad-hud-text: var(--ui-accent, #5c9ce6);
+                    --ui-cad-hud-text: var(--ui-accent, #4daafc);
                     --ui-cad-preview-bg: #1c1d2b;
                     --ui-cad-layer-item-bg: rgba(92, 156, 230, 0.06);
                     --ui-cad-layer-item-active-bg: rgba(92, 156, 230, 0.14);
@@ -171,7 +389,7 @@
                     --ui-bg-dropdown-item-hover: #333333;
                     --ui-bg-dropdown-item-active: rgba(92, 156, 230, 0.12);
                     --ui-bg-segmented: #1a1a1a;
-                    --ui-bg-segmented-active:#2160c7; 
+                    --ui-bg-segmented-active:#4daafc; 
                     --ui-bg-segmented-active-h: #4daafc;  
                     --ui-bg-toggle-switch: #2b2b2b;
                     --ui-bg-slider-content: #212121;
@@ -179,11 +397,11 @@
                     --ui-border: #393939;
                     --ui-border-light: #2c2c2c;
                     --ui-border-hover: #444444;
-                    --ui-border-focus: #5c9ce6;
+                    --ui-border-focus: #4daafc;
                     --ui-border-subtle: #2c2c2c;
                     --ui-border-cajon: #3a3a3a;
                     --ui-border-list: #3a3a3a;
-                    --ui-border-active: #5c9ce6;
+                    --ui-border-active: #4daafc;
                     --ui-border-card-row: #2c2c2c;
                     --ui-border-select: #3a3a3a;
                     --ui-border-circle: #3a3a3a;
@@ -206,13 +424,13 @@
                     --ui-text-val: #e0e0e0;
                     --ui-text-panel-title: #4daafcc9;
                     --ui-text-dropdown-item: #8a8a8a;
-                    --ui-text-dropdown-item-hover: #5c9ce6;
+                    --ui-text-dropdown-item-hover: #4daafc;
 
                     --ui-btn-bg: #373737;
                     --ui-btn-hover-bg: #333333;
-                    --ui-primary-bg: #5c9ce6;
+                    --ui-primary-bg: #4daafc;
                     --ui-primary-hover-bg: #6fa9ec;
-                    --ui-primary-border: #5c9ce6;
+                    --ui-primary-border: #4daafc;
                     --ui-primary-text: #ffffff;
                     --ui-primary-hover-text: #ffffff;
 
@@ -222,9 +440,9 @@
                     --ui-danger-color: #FFAA95;
                     --ui-danger-hover: #FFAA95;
 
-                    --ui-accent: #2160c7;
+                    --ui-accent: #4daafc;
                     --ui-seg-item: #dddddd;
-                    --ui-accent-hover: #2160c7;
+                    --ui-accent-hover: #4daafc;
                     --ui-accent-glow: rgba(92, 156, 230, 0.15);
                     --ui-accent-snap-border: rgba(92, 156, 230, 0.5);
                     --ui-accent-snap-shadow: rgba(92, 156, 230, 0.4);
@@ -233,12 +451,12 @@
 
                     --ui-toggle-switch-active-bg: #333333;
                     --ui-toggle-thumb-active: #ffffff;
-                    --ui-checkbox-box-active-bg: #5c9ce6;
-                    --ui-checkbox-box-active-border: #5c9ce6;
+                    --ui-checkbox-box-active-bg: #4daafc;
+                    --ui-checkbox-box-active-border: #4daafc;
                     --ui-checkbox-mark-color: #ffffff;
                     --ui-radio-circle-active-bg: #212121;
-                    --ui-radio-circle-active-border: #5c9ce6;
-                    --ui-radio-dot-color: #5c9ce6;
+                    --ui-radio-circle-active-border: #4daafc;
+                    --ui-radio-dot-color: #4daafc;
 
                     --ui-slider-bg: #151515;
                     --ui-slider-fill: #232323;
@@ -247,7 +465,7 @@
 
                     --ui-info-bg: #1e1e1e;
                     --ui-info-border: #3a3a3a;
-                    --ui-info-accent: #5c9ce6;
+                    --ui-info-accent: #4daafc;
                     --ui-info-text: #8a8a8a;
                     --ui-info-close: #8a8a8a;
                     --ui-info-close-hover: #ffffff;
@@ -256,7 +474,7 @@
                     --ui-badge-text: #8a8a8a;
                     --ui-scrollbar-size: 5px;
                     --ui-scrollbar-thumb: #3a3a3a;
-                    --ui-scrollbar-thumb-hover: #5c9ce6;
+                    --ui-scrollbar-thumb-hover: #4daafc;
 
                     --ui-shadow-floating: 0 16px 36px rgba(0, 0, 0, 0.65), 0 0 0 1px var(--ui-border);
                     --ui-shadow-panel: 0 16px 36px rgba(0, 0, 0, 0.65);
@@ -3434,9 +3652,21 @@ box-shadow: 20px 2px 40px 7px #000000;
             this.inputMin = this.element.querySelector('.input-min');
             this.inputMax = this.element.querySelector('.input-max');
             this.inputStep = this.element.querySelector('.input-step');
-
-            this.bindEvents();
+    
+      
             this.updateUI();
+            this.editableVal = hacerEditableNumerico(this.valDisplay, {
+    type: this.step % 1 !== 0 ? 'float' : 'int',
+    min: this.min,
+    max: this.max,
+    step: this.step,
+    value: this.value,
+    styled: false,  
+    onChange: (val) => {
+        this.setValue(val);
+    }
+});
+this.bindEvents();
         }
 
         bindEvents() {
@@ -3457,6 +3687,7 @@ box-shadow: 20px 2px 40px 7px #000000;
                 this.value = Number((this.min + steps * this.step).toFixed(2));
                 this.value = Math.max(this.min, Math.min(this.max, this.value));
                 this.updateUI();
+                
                 if (this.onChange) this.onChange(this.value, this);
             };
 
@@ -7328,3 +7559,585 @@ class UIDateRangePicker extends UIBaseComponent {
     global.UIDateRangePicker = UIDateRangePicker; // <--- AÑADIDO
 
 })(typeof window !== 'undefined' ? window : this);
+
+
+
+ 
+    class InputGioNumber {
+      static injectStyles() {
+        if (document.getElementById('inputGio-number-styles')) return;
+        const style = document.createElement('style');
+        style.id = 'inputGio-number-styles';
+        style.textContent = `
+          .inputGio-num-field {
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            width: 100%;
+            font-family: inherit;
+          }
+
+          .inputGio-num-label {
+            font-size: 13px;
+            color: #A6A0A0;
+            user-select: none;
+            flex-shrink: 0;
+          }
+
+          .inputGio-num-label.inputGio-num-scrub {
+            cursor: ew-resize;
+          }
+
+          .inputGio-num-label.inputGio-num-scrub:hover {
+            color: #ffffff;
+          }
+
+          .inputGio-num-wrap {
+            box-sizing: border-box;
+            display: inline-flex;
+            align-items: center;
+            background-color: #121212;
+            border: 1px solid #333333;
+            border-radius: 12px;
+            color: #A6A0A0;
+            font-family: inherit;
+            font-size: 13px;
+            overflow: hidden;
+            height: 30px;
+            transition: border-color 0.15s, background-color 0.15s;
+          }
+
+          .inputGio-num-wrap:hover {
+            border-color: rgba(77, 170, 252, 0.5);
+          }
+
+          .inputGio-num-wrap.inputGio-num-editing {
+            border-color: #4daafc;
+            background-color: #181818;
+          }
+
+          .inputGio-num-btn {
+            background-color: #2d2d2d;
+            color: #A6A0A0;
+            border: none;
+            width: 28px;
+            height: 100%;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            padding: 0;
+            transition: background-color 0.15s, color 0.15s;
+          }
+
+          .inputGio-num-btn:hover {
+            background-color: #333333;
+            color: #4daafc;
+          }
+
+          .inputGio-num-trigger {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 0 8px;
+            height: 100%;
+            cursor: text;
+          }
+
+          .inputGio-num-val {
+            min-width: 34px;
+            text-align: center;
+            font-variant-numeric: tabular-nums;
+            color: #4daafc;
+            outline: none;
+            white-space: nowrap;
+            line-height: 18px;
+            transition: color 0.15s;
+          }
+
+          .inputGio-num-val[contenteditable="true"] {
+            color: #ffffff;
+          }
+
+          .inputGio-num-unit {
+            font-size: 11px;
+            color: #A6A0A0;
+            opacity: 0.7;
+            user-select: none;
+          }
+
+          .inputGio-num-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #4daafc;
+            opacity: 0.55;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: opacity 0.15s;
+          }
+
+          .inputGio-num-trigger:hover .inputGio-num-icon {
+            opacity: 1;
+          }
+
+          .inputGio-num-editing .inputGio-num-icon {
+            display: none;
+          }
+        `;
+        document.head.appendChild(style);
+      }
+
+      constructor({
+        element,
+        container,
+        label = '',
+        value = 0,
+        min = -Infinity,
+        max = Infinity,
+        step = 1,
+        unit = '',
+        allowDecimal = false,
+        scrub = true,
+        onChange = () => {}
+      }) {
+        InputGioNumber.injectStyles();
+        this.ownedElement = !element;
+        this.root = element || document.createElement('div');
+        this.label = label;
+        this.min = min;
+        this.max = max;
+        this.step = step;
+        this.unit = unit;
+        this.allowDecimal = allowDecimal || (step % 1 !== 0);
+        this.scrub = scrub;
+        this.onChange = onChange;
+        this.value = this._clamp(Number(value));
+        this._prevValue = this.value;
+        this._pencilSvg = '<svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>';
+        this._build();
+        this._bindEvents();
+        if (container && this.ownedElement) {
+          container.appendChild(this.root);
+        }
+      }
+
+      _selectAll(el) {
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+
+      _clamp(num) {
+        if (Number.isNaN(num)) return this._prevValue ?? 0;
+        const clamped = Math.max(this.min, Math.min(this.max, num));
+        return this.allowDecimal ? Math.round(clamped * 100) / 100 : Math.round(clamped);
+      }
+
+      _build() {
+        this.root.classList.add('inputGio-num-field');
+        this.root.innerHTML = '';
+
+        if (this.label) {
+          this.labelEl = document.createElement('span');
+          this.labelEl.className = 'inputGio-num-label';
+          if (this.scrub) {
+            this.labelEl.classList.add('inputGio-num-scrub');
+            this.labelEl.title = 'Arrastra horizontalmente';
+          }
+          this.labelEl.textContent = this.label;
+          this.root.appendChild(this.labelEl);
+        }
+
+        this.wrap = document.createElement('div');
+        this.wrap.className = 'inputGio-num-wrap';
+
+        this.btnMinus = document.createElement('button');
+        this.btnMinus.type = 'button';
+        this.btnMinus.className = 'inputGio-num-btn';
+        this.btnMinus.textContent = '-';
+
+        this.trigger = document.createElement('div');
+        this.trigger.className = 'inputGio-num-trigger';
+        this.trigger.title = 'Clic para editar número';
+
+        this.valEl = document.createElement('div');
+        this.valEl.className = 'inputGio-num-val';
+        this.valEl.textContent = this.value;
+
+        this.trigger.appendChild(this.valEl);
+
+        if (this.unit) {
+          this.unitEl = document.createElement('span');
+          this.unitEl.className = 'inputGio-num-unit';
+          this.unitEl.textContent = this.unit;
+          this.trigger.appendChild(this.unitEl);
+        }
+
+        this.iconEl = document.createElement('span');
+        this.iconEl.className = 'inputGio-num-icon';
+        this.iconEl.innerHTML = this._pencilSvg;
+        this.trigger.appendChild(this.iconEl);
+
+        this.btnPlus = document.createElement('button');
+        this.btnPlus.type = 'button';
+        this.btnPlus.className = 'inputGio-num-btn';
+        this.btnPlus.textContent = '+';
+
+        this.wrap.appendChild(this.btnMinus);
+        this.wrap.appendChild(this.trigger);
+        this.wrap.appendChild(this.btnPlus);
+        this.root.appendChild(this.wrap);
+      }
+
+      _startEdit() {
+        if (this.valEl.isContentEditable) return;
+        this._prevValue = this.value;
+        this.valEl.contentEditable = 'true';
+        this.wrap.classList.add('inputGio-num-editing');
+        this.valEl.focus();
+        this._selectAll(this.valEl);
+      }
+
+      _commit(raw, triggerCallback = true) {
+        const parsed = this.allowDecimal ? parseFloat(raw) : parseInt(raw, 10);
+        const next = this._clamp(parsed);
+        this.value = next;
+        this._prevValue = next;
+        this.valEl.textContent = next;
+        if (triggerCallback) {
+          this.onChange(this.value);
+        }
+      }
+
+      _bindEvents() {
+        this._onMinus = () => this._commit(this.value - this.step);
+        this._onPlus = () => this._commit(this.value + this.step);
+        this._onTriggerClick = () => this._startEdit();
+
+        this._onKeyDown = (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            this.valEl.blur();
+            return;
+          }
+          if (e.key === 'Escape') {
+            e.preventDefault();
+            this.valEl.textContent = this._prevValue;
+            this.valEl.blur();
+            return;
+          }
+          if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+            e.preventDefault();
+            const mult = e.shiftKey ? 10 : 1;
+            const delta = (e.key === 'ArrowUp' ? this.step : -this.step) * mult;
+            const current = this.allowDecimal ? parseFloat(this.valEl.textContent) : parseInt(this.valEl.textContent, 10);
+            this._commit((Number.isNaN(current) ? this._prevValue : current) + delta);
+            this._selectAll(this.valEl);
+            return;
+          }
+
+          const nav = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Home', 'End'];
+          if (nav.includes(e.key) || e.ctrlKey || e.metaKey) return;
+          if (this.allowDecimal && e.key === '.' && !this.valEl.textContent.includes('.')) return;
+          if (this.min < 0 && e.key === '-' && !this.valEl.textContent.includes('-')) return;
+          if (!/^[0-9]$/.test(e.key)) {
+            e.preventDefault();
+          }
+        };
+
+        this._onInput = () => {
+          const regex = this.allowDecimal ? /[^0-9.-]/g : /[^0-9-]/g;
+          const cleaned = this.valEl.textContent.replace(regex, '');
+          if (cleaned !== this.valEl.textContent) {
+            this.valEl.textContent = cleaned;
+          }
+        };
+
+        this._onBlur = () => {
+          this.valEl.contentEditable = 'false';
+          this.wrap.classList.remove('inputGio-num-editing');
+          this._commit(this.valEl.textContent);
+        };
+
+        this.btnMinus.addEventListener('click', this._onMinus);
+        this.btnPlus.addEventListener('click', this._onPlus);
+        this.trigger.addEventListener('click', this._onTriggerClick);
+        this.valEl.addEventListener('keydown', this._onKeyDown);
+        this.valEl.addEventListener('input', this._onInput);
+        this.valEl.addEventListener('blur', this._onBlur);
+
+        if (this.labelEl && this.scrub) {
+          this._onLabelMouseDown = (e) => {
+            e.preventDefault();
+            const startX = e.clientX;
+            const startVal = this.value;
+            const onMove = (ev) => {
+              const steps = Math.round((ev.clientX - startX) / 3);
+              this._commit(startVal + steps * this.step);
+            };
+            const onUp = () => {
+              window.removeEventListener('mousemove', onMove);
+              window.removeEventListener('mouseup', onUp);
+            };
+            window.addEventListener('mousemove', onMove);
+            window.addEventListener('mouseup', onUp);
+          };
+          this.labelEl.addEventListener('mousedown', this._onLabelMouseDown);
+        }
+      }
+
+      getValue() {
+        return this.value;
+      }
+
+      setValue(val) {
+        this._commit(val, false);
+      }
+
+      destroy() {
+        this.btnMinus.removeEventListener('click', this._onMinus);
+        this.btnPlus.removeEventListener('click', this._onPlus);
+        this.trigger.removeEventListener('click', this._onTriggerClick);
+        this.valEl.removeEventListener('keydown', this._onKeyDown);
+        this.valEl.removeEventListener('input', this._onInput);
+        this.valEl.removeEventListener('blur', this._onBlur);
+        if (this.labelEl && this._onLabelMouseDown) {
+          this.labelEl.removeEventListener('mousedown', this._onLabelMouseDown);
+        }
+        this.root.classList.remove('inputGio-num-field');
+        this.root.innerHTML = '';
+        if (this.ownedElement && this.root.parentNode) {
+          this.root.parentNode.removeChild(this.root);
+        }
+      }
+    }
+
+    class InputGioText {
+      static injectStyles() {
+        if (document.getElementById('inputGio-text-styles')) return;
+        const style = document.createElement('style');
+        style.id = 'inputGio-text-styles';
+        style.textContent = `
+          .inputGio-text-field {
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            width: 100%;
+            font-family: inherit;
+          }
+
+          .inputGio-text-label {
+            font-size: 13px;
+            color: #A6A0A0;
+            user-select: none;
+            flex-shrink: 0;
+          }
+
+          .inputGio-text-wrap {
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            flex: 1;
+            min-width: 0;
+            min-height: 30px;
+            padding: 3px 12px;
+            gap: 6px;
+            background-color: #121212;
+            border: 1px solid #333333;
+            border-radius: 12px;
+            color: #A6A0A0;
+            font-family: inherit;
+            font-size: 13px;
+            transition: border-color 0.15s, background-color 0.15s;
+          }
+
+          .inputGio-text-wrap:hover {
+            border-color: rgba(77, 170, 252, 0.5);
+          }
+
+          .inputGio-text-wrap.inputGio-text-editing {
+            border-color: #4daafc;
+            background-color: #181818;
+          }
+
+          .inputGio-text-val {
+            flex: 1;
+            min-width: 0;
+            color: #4daafc;
+            outline: none;
+            white-space: nowrap;
+            overflow: hidden;
+            cursor: pointer;
+            user-select: none;
+            line-height: 20px;
+            transition: color 0.15s;
+          }
+
+          .inputGio-text-val[contenteditable="true"] {
+            color: #ffffff;
+            cursor: text;
+            user-select: text;
+            overflow-x: auto;
+          }
+
+          .inputGio-text-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #4daafc;
+            opacity: 0.55;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: opacity 0.15s;
+          }
+
+          .inputGio-text-wrap:hover .inputGio-text-icon {
+            opacity: 1;
+          }
+
+          .inputGio-text-editing .inputGio-text-icon {
+            display: none;
+          }
+        `;
+        document.head.appendChild(style);
+      }
+
+      constructor({
+        element,
+        container,
+        label = '',
+        value = '',
+        placeholder = 'Sin nombre',
+        trigger = 'dblclick',
+        onChange = () => {}
+      }) {
+        InputGioText.injectStyles();
+        this.ownedElement = !element;
+        this.root = element || document.createElement('div');
+        this.label = label;
+        this.placeholder = placeholder;
+        this.trigger = trigger;
+        this.onChange = onChange;
+        this.value = String(value).trim() || this.placeholder;
+        this._prevValue = this.value;
+        this._pencilSvg = '<svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>';
+        this._build();
+        this._bindEvents();
+        if (container && this.ownedElement) {
+          container.appendChild(this.root);
+        }
+      }
+
+      _selectAll(el) {
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+
+      _build() {
+        this.root.classList.add('inputGio-text-field');
+        this.root.innerHTML = '';
+
+        if (this.label) {
+          this.labelEl = document.createElement('span');
+          this.labelEl.className = 'inputGio-text-label';
+          this.labelEl.textContent = this.label;
+          this.root.appendChild(this.labelEl);
+        }
+
+        this.wrap = document.createElement('div');
+        this.wrap.className = 'inputGio-text-wrap';
+        this.wrap.title = this.trigger === 'click' ? 'Clic para editar texto' : 'Doble clic o clic en el lápiz para editar';
+
+        this.valEl = document.createElement('div');
+        this.valEl.className = 'inputGio-text-val';
+        this.valEl.textContent = this.value;
+
+        this.iconEl = document.createElement('span');
+        this.iconEl.className = 'inputGio-text-icon';
+        this.iconEl.innerHTML = this._pencilSvg;
+
+        this.wrap.appendChild(this.valEl);
+        this.wrap.appendChild(this.iconEl);
+        this.root.appendChild(this.wrap);
+      }
+
+      _startEdit() {
+        if (this.valEl.isContentEditable) return;
+        this._prevValue = this.value;
+        this.valEl.contentEditable = 'true';
+        this.wrap.classList.add('inputGio-text-editing');
+        this.valEl.focus();
+        this._selectAll(this.valEl);
+      }
+
+      _commit(raw, triggerCallback = true) {
+        const cleaned = String(raw).replace(/\s+/g, ' ').trim();
+        const next = cleaned || this._prevValue || this.placeholder;
+        this.value = next;
+        this._prevValue = next;
+        this.valEl.textContent = next;
+        if (triggerCallback) {
+          this.onChange(this.value);
+        }
+      }
+
+      _bindEvents() {
+        this._onStartEdit = () => this._startEdit();
+
+        this._onKeyDown = (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            this.valEl.blur();
+          } else if (e.key === 'Escape') {
+            e.preventDefault();
+            this.valEl.textContent = this._prevValue;
+            this.valEl.blur();
+          }
+        };
+
+        this._onBlur = () => {
+          this.valEl.contentEditable = 'false';
+          this.wrap.classList.remove('inputGio-text-editing');
+          this._commit(this.valEl.textContent);
+        };
+
+        this.valEl.addEventListener(this.trigger, this._onStartEdit);
+        this.iconEl.addEventListener('click', this._onStartEdit);
+        this.valEl.addEventListener('keydown', this._onKeyDown);
+        this.valEl.addEventListener('blur', this._onBlur);
+      }
+
+      getValue() {
+        return this.value;
+      }
+
+      setValue(val) {
+        this._commit(val, false);
+      }
+
+      destroy() {
+        this.valEl.removeEventListener(this.trigger, this._onStartEdit);
+        this.iconEl.removeEventListener('click', this._onStartEdit);
+        this.valEl.removeEventListener('keydown', this._onKeyDown);
+        this.valEl.removeEventListener('blur', this._onBlur);
+        this.root.classList.remove('inputGio-text-field');
+        this.root.innerHTML = '';
+        if (this.ownedElement && this.root.parentNode) {
+          this.root.parentNode.removeChild(this.root);
+        }
+      }
+    }
+
+  
