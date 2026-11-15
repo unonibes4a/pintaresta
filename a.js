@@ -2,57 +2,59 @@
 
 
 
-
-function injectInlineNumericStyles() {
-  if (document.getElementById('inputGio-inline-num-styles')) return;
-  const style = document.createElement('style');
-  style.id = 'inputGio-inline-num-styles';
-  style.textContent = `
-    .inputGio-inline-num {
-      box-sizing: border-box;
-      background-color: #121212;
-      border: 1px solid #333333;
-      border-radius: 12px;
-      color: #4daafc;
-      padding: 2px 10px;
-      font-variant-numeric: tabular-nums;
-      outline: none;
-      cursor: text;
-      transition: border-color 0.15s, background-color 0.15s, color 0.15s;
-    }
-
-    .inputGio-inline-num:hover {
-      border-color: rgba(77, 170, 252, 0.5);
-    }
-
-    .inputGio-inline-num[data-editing="true"] {
-      border-color: #4daafc;
-      background-color: #181818;
-      color: #ffffff;
-    }
-  `;
-  document.head.appendChild(style);
-}
-
-function hacerEditableNumerico(el, options = {}) {
+  function  hacerEditableNumerico(el, options = {}) {
   if (!el) throw new Error('Elemento no válido');
 
   let {
-    type = 'int',          // 'int' | 'float'
+    type = 'int',          
     min = -Infinity,
     max = Infinity,
     step = 1,
     decimals = 2,
-    trigger = 'click',     // 'click' | 'dblclick'
+    trigger = 'click',     
     value = undefined,
-    styled = false,        // false = respeta tu CSS | true = CSS InputGio
+    styled = false,        
     onChange = () => {}
   } = options;
 
   if (styled) {
-    injectInlineNumericStyles();
+    if (!document.getElementById('inputGio-inline-num-styles')) {
+      const style = document.createElement('style');
+      style.id = 'inputGio-inline-num-styles';
+      style.textContent = `
+        .inputGio-inline-num {
+          box-sizing: border-box;
+          background-color: #121212;
+          border: 1px solid #333333;
+          border-radius: 12px;
+          color: #4daafc;
+          padding: 2px 10px;
+          font-variant-numeric: tabular-nums;
+          outline: none;
+          cursor: pointer;
+          transition: border-color 0.15s, background-color 0.15s, color 0.15s;
+        }
+
+        .inputGio-inline-num:hover {
+          border-color: rgba(77, 170, 252, 0.5);
+        }
+
+        .inputGio-inline-num[data-editing="true"] {
+          border-color: #4daafc;
+          background-color: #181818;
+          color: #ffffff;
+          cursor: text;
+        }
+      `;
+      document.head.appendChild(style);
+    }
     el.classList.add('inputGio-inline-num');
   }
+
+  const prevCursor = el.style.cursor;
+  const prevOutline = el.style.outline;
+  el.style.cursor = 'pointer';
+  el.style.setProperty('outline', 'none', 'important');
 
   let isFloat = type === 'float' || (step % 1 !== 0);
   let factor = isFloat ? Math.pow(10, decimals) : 1;
@@ -116,6 +118,8 @@ function hacerEditableNumerico(el, options = {}) {
     prevValue = currentValue;
     el.contentEditable = 'true';
     el.dataset.editing = 'true';
+    el.style.cursor = 'text';
+    el.style.setProperty('outline', 'none', 'important');
     el.focus();
     selectAll();
   };
@@ -178,6 +182,7 @@ function hacerEditableNumerico(el, options = {}) {
   const onBlur = () => {
     el.contentEditable = 'false';
     delete el.dataset.editing;
+    el.style.cursor = 'pointer';
     if (cancelled) {
       cancelled = false;
       currentValue = prevValue;
@@ -210,6 +215,8 @@ function hacerEditableNumerico(el, options = {}) {
       el.removeEventListener('paste', onPaste);
       el.removeEventListener('blur', onBlur);
       el.contentEditable = 'false';
+      el.style.cursor = prevCursor;
+      el.style.outline = prevOutline;
       delete el.dataset.editing;
       if (styled) el.classList.remove('inputGio-inline-num');
     }
@@ -1996,6 +2003,7 @@ box-shadow: 20px 2px 40px 7px #000000;
                     padding: 2px 8px;
                     border-radius: 4px;
                     border: 1px solid var(--ui-border);
+                       cursor: pointer;
                 }
                 .ui-cajon-btn {
                     width: 22px;
