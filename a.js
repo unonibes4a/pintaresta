@@ -3509,7 +3509,8 @@ hacerEditableNumerico._utils = {
         </div>
       `;
 
-      this.element.querySelector('.ui-slider-label').textContent = this.label;
+      this.labelEl = this.element.querySelector('.ui-slider-label');
+      this.labelEl.textContent = this.label;
       this.track = this.element.querySelector('.ui-slider-track');
       this.fill = this.element.querySelector('.ui-slider-fill');
       this.thumb = this.element.querySelector('.ui-slider-thumb');
@@ -3567,6 +3568,23 @@ hacerEditableNumerico._utils = {
       });
 
       let trackRect = null;
+      let isDragging = false;
+      let isHoveringCard = false;
+
+      const updateLabelHighlight = () => {
+        if (!this.labelEl) return;
+        this.labelEl.style.color = (isDragging || isHoveringCard) ? '#4daafc' : '';
+      };
+
+      this._listen(this.element, 'pointerenter', () => {
+        isHoveringCard = true;
+        updateLabelHighlight();
+      });
+
+      this._listen(this.element, 'pointerleave', () => {
+        isHoveringCard = false;
+        updateLabelHighlight();
+      });
 
       const handleMove = (e) => {
         if (!trackRect) trackRect = this.track.getBoundingClientRect();
@@ -3593,6 +3611,9 @@ hacerEditableNumerico._utils = {
       };
 
       const stopMove = (e) => {
+        isDragging = false;
+        isHoveringCard = !!(this.element && this.element.matches(':hover'));
+        updateLabelHighlight();
         if (this.element) this.element.classList.remove('dragging');
         document.body.style.userSelect = '';
         document.body.style.webkitUserSelect = '';
@@ -3613,6 +3634,8 @@ hacerEditableNumerico._utils = {
         e.preventDefault();
         e.stopPropagation();
 
+        isDragging = true;
+        updateLabelHighlight();
         this.element.classList.add('dragging');
         document.body.style.userSelect = 'none';
         document.body.style.webkitUserSelect = 'none';
