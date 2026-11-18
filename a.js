@@ -366,8 +366,8 @@ hacerEditableNumerico._utils = {
       U.injectStyleOnce('ui-core-engine-styles', `
         :root {
           --backg0: #262626;
-          --texto: #cccccc;
-          --textodisable: #60605f;
+          --texto: #9e9e9e;
+          --textodisable: #9e9e9eb9;
           --textoledBrillo: #4e92ff;
 
           --ui-cad-hud-bg: #14151f;
