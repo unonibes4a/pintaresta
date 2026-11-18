@@ -1,106 +1,87 @@
- 
-      const GiovanniIconDB = {
- 
+const GiovanniIconDB = {
   camera: '<path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>',
   move: '<path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"/>',
   rotate: '<path d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"/>',
-   scale: '<path d="M12 5V2L8 6l4 4V7c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zM6 12c0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3c-3.31 0-6-2.69-6-6z"/>',
-   grid: '<path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8 20H4v-4h4v4zm0-6H4v-4h4v4zm0-6H4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4z"/>',
+  scale: '<path d="M12 5V2L8 6l4 4V7c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zM6 12c0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3c-3.31 0-6-2.69-6-6z"/>',
+  grid: '<path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8 20H4v-4h4v4zm0-6H4v-4h4v4zm0-6H4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4z"/>',
   cylinder: '<path d="M12 2C8.13 2 5 3.34 5 5v14c0 1.66 3.13 3 7 3s7-1.34 7-3V5c0-1.66-3.13-3-7-3zm0 2c3.31 0 5 1.01 5 1s-1.69 1-5 1-5-1.01-5-1 1.69-1 5-1zm0 16c-3.31 0-5-1.01-5-1v-2.09c1.4.66 3.13 1.09 5 1.09s3.6-.43 5-1.09V19c0 .01-1.69 1-5 1zm0-4c-3.31 0-5-1.01-5-1v-2.09c1.4.66 3.13 1.09 5 1.09s3.6-.43 5-1.09V15c0 .01-1.69 1-5 1zm0-4c-3.31 0-5-1.01-5-1V8.91c1.4.66 3.13 1.09 5 1.09s3.6-.43 5-1.09V11c0 .01-1.69 1-5 1z"/>',
- 
-  // --- CAD & Herramientas ---
-  pencil:     '<path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>',
-  square:     '<path d="M3 3h18v18H3V3zm2 2v14h14V5H5z"/>',
-  sphere:     '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>',
-  sliders:    '<path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>',
-  reset:      '<path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>',
-  drop:       '<path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>',
-  filter:     '<path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/>',
-  search:     '<path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>',
-  layers:     '<path d="M11.99 18.54l-7.37-5.73L3 14.07l9 7 9-7-1.63-1.27-7.38 5.74zM12 16l7.36-5.73L21 9l-9-7-9 7 1.63 1.27L12 16z"/>',
-  cube:       '<path d="M21 16.5c0 .38-.21.71-.53.88l-7.9 4.44c-.16.12-.36.18-.57.18-.21 0-.41-.06-.57-.18l-7.9-4.44A.991.991 0 0 1 3 16.5v-9c0-.38.21-.71.53-.88l7.9-4.44c.16-.12.36-.18.57-.18.21 0 .41.06.57.18l7.9 4.44c.32.17.53.5.53.88v9zM12 4.15L6.04 7.5 12 10.85l5.96-3.35L12 4.15zM5 15.91l6 3.38v-6.71L5 9.19v6.72zm14 0v-6.72l-6 3.38v6.72l6-3.38z"/>',
-  ruler:      '<path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-2 10H5V8h14v8zM7 10h2v4H7v-4zm4 0h2v4h-2v-4zm4 0h2v4h-2v-4z"/>',
-
-  // --- UI Universal & Navegación ---
-  home:         '<path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>',
-  menu:         '<path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/>',
-  menuOpen:     '<path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/>',
-  back:         '<path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>',
-  forward:      '<path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>',
-  up:           '<path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/>',
-  down:         '<path d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"/>',
-  chevronDown:  '<path d="M7 10l5 5 5-5z"/>',
-  chevronLeft:  '<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>',
+  pencil: '<path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>',
+  square: '<path d="M3 3h18v18H3V3zm2 2v14h14V5H5z"/>',
+  sphere: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>',
+  sliders: '<path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>',
+  reset: '<path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>',
+  drop: '<path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>',
+  filter: '<path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/>',
+  search: '<path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>',
+  layers: '<path d="M11.99 18.54l-7.37-5.73L3 14.07l9 7 9-7-1.63-1.27-7.38 5.74zM12 16l7.36-5.73L21 9l-9-7-9 7 1.63 1.27L12 16z"/>',
+  cube: '<path d="M21 16.5c0 .38-.21.71-.53.88l-7.9 4.44c-.16.12-.36.18-.57.18-.21 0-.41-.06-.57-.18l-7.9-4.44A.991.991 0 0 1 3 16.5v-9c0-.38.21-.71.53-.88l7.9-4.44c.16-.12.36-.18.57-.18.21 0 .41.06.57.18l7.9 4.44c.32.17.53.5.53.88v9zM12 4.15L6.04 7.5 12 10.85l5.96-3.35L12 4.15zM5 15.91l6 3.38v-6.71L5 9.19v6.72zm14 0v-6.72l-6 3.38v6.72l6-3.38z"/>',
+  ruler: '<path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-2 10H5V8h14v8zM7 10h2v4H7v-4zm4 0h2v4h-2v-4zm4 0h2v4h-2v-4z"/>',
+  home: '<path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>',
+  menu: '<path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/>',
+  menuOpen: '<path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/>',
+  back: '<path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>',
+  forward: '<path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>',
+  up: '<path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/>',
+  down: '<path d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"/>',
+  chevronDown: '<path d="M7 10l5 5 5-5z"/>',
+  chevronLeft: '<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>',
   chevronRight: '<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>',
-  expandMore:   '<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>',
-  expandLess:   '<path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"/>',
-
-  // --- Acciones & Edición ---
-  check:  '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>',
-  close:  '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>',
+  expandMore: '<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>',
+  expandLess: '<path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"/>',
+  check: '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>',
+  close: '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>',
   delete: '<path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>',
-  trash:  '<path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>',
-  edit:   '<path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>',
-  copy:   '<path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>',
-  save:   '<path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/>',
-  print:  '<path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/>',
-  undo:   '<path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/>',
-  redo:   '<path d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 16h9V7l-3.6 3.6z"/>',
-
-  // --- Formularios & Contacto ---
-  mail:     '<path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>',
-  email:    '<path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>',
-  phone:    '<path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>',
+  trash: '<path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>',
+  edit: '<path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>',
+  copy: '<path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>',
+  save: '<path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/>',
+  print: '<path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/>',
+  undo: '<path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/>',
+  redo: '<path d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 16h9V7l-3.6 3.6z"/>',
+  mail: '<path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>',
+  email: '<path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>',
+  phone: '<path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>',
   password: '<path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>',
-  lock:     '<path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>',
-  unlock:   '<path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/>',
-  user:     '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>',
-  users:    '<path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>',
-  send:     '<path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>',
-  attach:   '<path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"/>',
-
-  // --- Extras / Media ---
+  lock: '<path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>',
+  unlock: '<path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/>',
+  user: '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>',
+  users: '<path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>',
+  send: '<path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>',
+  attach: '<path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"/>',
   settings: '<path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>',
-  image:    '<path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>',
-  file:     '<path d="M6 2c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6H6zm7 7V3.5L18.5 9H13z"/>',
-  folder:   '<path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>',
-      // --- Edición de Video ---
-    play: '<path d="M8 5v14l11-7z"/>',
-    pause: '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>',
-    stop: '<path d="M6 6h12v12H6z"/>',
-    record: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6z"/>',
-    skipNext: '<path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>',
-    skipPrev: '<path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>',
-    fastForward: '<path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/>',
-    rewind: '<path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z"/>',
-    fullscreen: '<path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>',
-    fullscreenExit: '<path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>',
-    volumeUp: '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>',
-    volumeDown: '<path d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z"/>',
-    volumeMute: '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>',
-    videoCamera: '<path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>',
-    scissors: '<path d="M9.64 7.64c.23-.5.36-1.05.36-1.64 0-2.21-1.79-4-4-4S2 3.79 2 6s1.79 4 4 4c.59 0 1.14-.13 1.64-.36L10 12l-2.36 2.36C7.14 14.13 6.59 14 6 14c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4c0-.59-.13-1.14-.36-1.64L12 14l7 7h3v-1L9.64 7.64zM6 8c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm0 12c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm6-7.5c-.28 0-.5-.22-.5-.5s.22-.5.5-.5.5.22.5.5-.22.5-.5.5zM19 3l-6 6 2 2 7-7V3z"/>',
-
-    // --- Audio y Música ---
-    musicNote: '<path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>',
-    mic: '<path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/>',
-    micOff: '<path d="M19 11h-1.7c0 .74-.16 1.43-.43 2.05l1.23 1.23c.56-.98.9-2.09.9-3.28zm-4.02.17c0-.06.02-.11.02-.17V5c0-1.66-1.34-3-3-3S9 3.34 9 5v.18l5.98 5.99zM4.27 3L3 4.27l6.01 6.01V11c0 1.66 1.33 3 2.99 3 .22 0 .44-.03.65-.08l1.66 1.66c-.71.33-1.5.52-2.31.52-2.76 0-5.3-2.1-5.3-5.1H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c.91-.13 1.77-.45 2.54-.9L19.73 21 21 19.73 4.27 3z"/>',
-    headphones: '<path d="M12 3a9 9 0 0 0-9 9v7c0 1.1.9 2 2 2h4v-8H5v-1c0-3.87 3.13-7 7-7s7 3.13 7 7v1h-4v8h4c1.1 0 2-.9 2-2v-7a9 9 0 0 0-9-9z"/>',
-    equalizer: '<path d="M10 20h4V4h-4v16zm-6 0h4v-8H4v8zM16 9v11h4V9h-4z"/>',
-    playlist: '<path d="M4 10h12v2H4zm0-4h12v2H4zm0 8h8v2H4zm10 0v6l5-3z"/>',
-    radio: '<path d="M3.24 6.15C2.51 6.43 2 7.17 2 8v12c0 1.1.89 2 2 2h16c1.11 0 2-.9 2-2V8c0-1.11-.89-2-2-2H8.3l8.26-3.34L15.88 1 3.24 6.15zM7 20c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm13-8h-2v-2h-2v2H4V8h16v4z"/>',
-
-    // --- Editar Brochas y Pintura ---
-    brush: '<path d="M7 14c-1.66 0-3 1.34-3 3 0 1.31-1.16 2-2 2 .92 1.22 2.49 2 4 2 2.21 0 4-1.79 4-4 0-1.66-1.34-3-3-3zm13.71-9.37l-1.34-1.34a.996.996 0 0 0-1.41 0L9 12.25 11.75 15l8.96-8.96a.996.996 0 0 0 0-1.41z"/>',
-    formatPaint: '<path d="M18 4V3c0-.55-.45-1-1-1H5c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V6h1v4H9v11c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-9h8V4h-3z"/>',
-    colorLens: '<path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>',
-    palette: '<path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>',
-    fill: '<path d="M16.56 8.94L7.62 0 6.21 1.41l2.38 2.38-5.15 5.15c-.59.59-.59 1.54 0 2.12l5.5 5.5c.29.29.68.44 1.06.44s.77-.15 1.06-.44l5.5-5.5c.59-.58.59-1.53 0-2.12zM5.21 10L10 5.21 14.79 10H5.21zM19 11.5s-2 2.17-2 3.5c0 1.1.9 2 2 2s2-.9 2-2c0-1.33-2-3.5-2-3.5z"/>',
-    crop: '<path d="M17 15h2V7c0-1.1-.9-2-2-2H9v2h8v8zM7 17V1H5v4H1v2h4v10c0 1.1.9 2 2 2h10v4h2v-4h4v-2H7z"/>',
-    formatColorFill: '<path d="M16.56 8.94L7.62 0 6.21 1.41l2.38 2.38-5.15 5.15c-.59.59-.59 1.54 0 2.12l5.5 5.5c.29.29.68.44 1.06.44s.77-.15 1.06-.44l5.5-5.5c.59-.58.59-1.53 0-2.12zM5.21 10L10 5.21 14.79 10H5.21zM19 11.5s-2 2.17-2 3.5c0 1.1.9 2 2 2s2-.9 2-2c0-1.33-2-3.5-2-3.5z"/>',
-    eraser: '<path d="M16.24 3.56l4.95 4.94c.78.79.78 2.05 0 2.84L12 20.53a4.008 4.008 0 0 1-5.66 0L2.81 17c-.78-.79-.78-2.05 0-2.84l10.6-10.6c.79-.78 2.05-.78 2.83 0M4.22 15.58l3.54 3.53c.78.79 2.04.79 2.83 0l3.53-3.53-4.95-4.95-4.95 4.95z"/>'
-
-  
+  image: '<path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>',
+  file: '<path d="M6 2c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6H6zm7 7V3.5L18.5 9H13z"/>',
+  folder: '<path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>',
+  play: '<path d="M8 5v14l11-7z"/>',
+  pause: '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>',
+  stop: '<path d="M6 6h12v12H6z"/>',
+  record: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6z"/>',
+  skipNext: '<path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>',
+  skipPrev: '<path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>',
+  fastForward: '<path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/>',
+  rewind: '<path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z"/>',
+  fullscreen: '<path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>',
+  fullscreenExit: '<path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>',
+  volumeUp: '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>',
+  volumeDown: '<path d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z"/>',
+  volumeMute: '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>',
+  videoCamera: '<path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>',
+  scissors: '<path d="M9.64 7.64c.23-.5.36-1.05.36-1.64 0-2.21-1.79-4-4-4S2 3.79 2 6s1.79 4 4 4c.59 0 1.14-.13 1.64-.36L10 12l-2.36 2.36C7.14 14.13 6.59 14 6 14c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4c0-.59-.13-1.14-.36-1.64L12 14l7 7h3v-1L9.64 7.64zM6 8c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm0 12c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm6-7.5c-.28 0-.5-.22-.5-.5s.22-.5.5-.5.5.22.5.5-.22.5-.5.5zM19 3l-6 6 2 2 7-7V3z"/>',
+  musicNote: '<path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>',
+  mic: '<path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/>',
+  micOff: '<path d="M19 11h-1.7c0 .74-.16 1.43-.43 2.05l1.23 1.23c.56-.98.9-2.09.9-3.28zm-4.02.17c0-.06.02-.11.02-.17V5c0-1.66-1.34-3-3-3S9 3.34 9 5v.18l5.98 5.99zM4.27 3L3 4.27l6.01 6.01V11c0 1.66 1.33 3 2.99 3 .22 0 .44-.03.65-.08l1.66 1.66c-.71.33-1.5.52-2.31.52-2.76 0-5.3-2.1-5.3-5.1H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c.91-.13 1.77-.45 2.54-.9L19.73 21 21 19.73 4.27 3z"/>',
+  headphones: '<path d="M12 3a9 9 0 0 0-9 9v7c0 1.1.9 2 2 2h4v-8H5v-1c0-3.87 3.13-7 7-7s7 3.13 7 7v1h-4v8h4c1.1 0 2-.9 2-2v-7a9 9 0 0 0-9-9z"/>',
+  equalizer: '<path d="M10 20h4V4h-4v16zm-6 0h4v-8H4v8zM16 9v11h4V9h-4z"/>',
+  playlist: '<path d="M4 10h12v2H4zm0-4h12v2H4zm0 8h8v2H4zm10 0v6l5-3z"/>',
+  radio: '<path d="M3.24 6.15C2.51 6.43 2 7.17 2 8v12c0 1.1.89 2 2 2h16c1.11 0 2-.9 2-2V8c0-1.11-.89-2-2-2H8.3l8.26-3.34L15.88 1 3.24 6.15zM7 20c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm13-8h-2v-2h-2v2H4V8h16v4z"/>',
+  brush: '<path d="M7 14c-1.66 0-3 1.34-3 3 0 1.31-1.16 2-2 2 .92 1.22 2.49 2 4 2 2.21 0 4-1.79 4-4 0-1.66-1.34-3-3-3zm13.71-9.37l-1.34-1.34a.996.996 0 0 0-1.41 0L9 12.25 11.75 15l8.96-8.96a.996.996 0 0 0 0-1.41z"/>',
+  formatPaint: '<path d="M18 4V3c0-.55-.45-1-1-1H5c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V6h1v4H9v11c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-9h8V4h-3z"/>',
+  colorLens: '<path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>',
+  palette: '<path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>',
+  fill: '<path d="M16.56 8.94L7.62 0 6.21 1.41l2.38 2.38-5.15 5.15c-.59.59-.59 1.54 0 2.12l5.5 5.5c.29.29.68.44 1.06.44s.77-.15 1.06-.44l5.5-5.5c.59-.58.59-1.53 0-2.12zM5.21 10L10 5.21 14.79 10H5.21zM19 11.5s-2 2.17-2 3.5c0 1.1.9 2 2 2s2-.9 2-2c0-1.33-2-3.5-2-3.5z"/>',
+  crop: '<path d="M17 15h2V7c0-1.1-.9-2-2-2H9v2h8v8zM7 17V1H5v4H1v2h4v10c0 1.1.9 2 2 2h10v4h2v-4h4v-2H7z"/>',
+  formatColorFill: '<path d="M16.56 8.94L7.62 0 6.21 1.41l2.38 2.38-5.15 5.15c-.59.59-.59 1.54 0 2.12l5.5 5.5c.29.29.68.44 1.06.44s.77-.15 1.06-.44l5.5-5.5c.59-.58.59-1.53 0-2.12zM5.21 10L10 5.21 14.79 10H5.21zM19 11.5s-2 2.17-2 3.5c0 1.1.9 2 2 2s2-.9 2-2c0-1.33-2-3.5-2-3.5z"/>',
+  eraser: '<path d="M16.24 3.56l4.95 4.94c.78.79.78 2.05 0 2.84L12 20.53a4.008 4.008 0 0 1-5.66 0L2.81 17c-.78-.79-.78-2.05 0-2.84l10.6-10.6c.79-.78 2.05-.78 2.83 0M4.22 15.58l3.54 3.53c.78.79 2.04.79 2.83 0l3.53-3.53-4.95-4.95-4.95 4.95z"/>'
 };
 
 class GiovanniColorPicker {
@@ -110,14 +91,11 @@ class GiovanniColorPicker {
         this.onChange = options.onChange || (() => {});
         this.onEyedropper = options.onEyedropper || (() => {});
 
-       
         this.isTriangle = options.isTriangle ?? false;
-
         this.hueWidth = options.hueWidth || 34;
         this.canvasHeight = options.canvasHeight || 190;
         this.isEyedropperActive = false;
 
- 
         const init = options.initialColor || { r: 0.4, g: 1.0, b: 0.4, a: 1.0 };
         this.r = init.r > 1 ? init.r / 255 : (init.r ?? 1.0);
         this.g = init.g > 1 ? init.g / 255 : (init.g ?? 1.0);
@@ -128,7 +106,6 @@ class GiovanniColorPicker {
         this.h = hsv.h;
         this.s = hsv.s;
         this.v = hsv.v;
-
         this.hex = this.rgbToHex(this.r, this.g, this.b);
 
         this.injectStyles();
@@ -152,7 +129,6 @@ class GiovanniColorPicker {
 
     injectStyles() {
         if (document.getElementById('vanilla-color-picker-core-css')) return;
-
         const style = document.createElement('style');
         style.id = 'vanilla-color-picker-core-css';
         style.textContent = `
@@ -253,10 +229,10 @@ class GiovanniColorPicker {
                 position: relative;
                 overflow: hidden;
                 cursor: pointer;
-                background-image: 
-                    linear-gradient(45deg, #252529 25%, transparent 25%), 
-                    linear-gradient(-45deg, #252529 25%, transparent 25%), 
-                    linear-gradient(45deg, transparent 75%, #252529 75%), 
+                background-image:
+                    linear-gradient(45deg, #252529 25%, transparent 25%),
+                    linear-gradient(-45deg, #252529 25%, transparent 25%),
+                    linear-gradient(45deg, transparent 75%, #252529 75%),
                     linear-gradient(-45deg, transparent 75%, #252529 75%);
                 background-size: 8px 8px;
                 background-position: 0 0, 0 4px, 4px -4px, -4px 0px;
@@ -332,7 +308,6 @@ class GiovanniColorPicker {
         this.container.id = this.id;
         this.container.className = 'vcp-root';
 
-        // 1. Cabecera
         const header = document.createElement('div');
         header.className = 'vcp-header';
 
@@ -380,7 +355,6 @@ class GiovanniColorPicker {
         header.appendChild(actions);
         this.container.appendChild(header);
 
-        // 2.A: Área Rectangular
         this.rectArea = document.createElement('div');
         this.rectArea.className = 'vcp-canvas-area';
         this.rectArea.style.height = this.canvasHeight + 'px';
@@ -407,7 +381,6 @@ class GiovanniColorPicker {
         this.rectArea.appendChild(this.hueCanvas);
         this.container.appendChild(this.rectArea);
 
-        // 2.B: Área Triangular
         this.triangleArea = document.createElement('div');
         this.triangleArea.style.width = '100%';
         this.triangleArea.style.height = this.canvasHeight + 'px';
@@ -421,7 +394,6 @@ class GiovanniColorPicker {
         this.triangleArea.appendChild(this.triangleCanvas);
         this.container.appendChild(this.triangleArea);
 
-        // 3. Fila HEX y OBJETO RGBA
         const hexRow = document.createElement('div');
         hexRow.className = 'vcp-row';
 
@@ -443,7 +415,6 @@ class GiovanniColorPicker {
         hexRow.appendChild(this.inputRgbaObj);
         this.container.appendChild(hexRow);
 
-        // 4. Inputs numéricos R, G, B, A (SIN RESTRICCIÓN DE ESCRITURA)
         const rgbaGrid = document.createElement('div');
         rgbaGrid.className = 'vcp-grid-rgba';
 
@@ -459,7 +430,7 @@ class GiovanniColorPicker {
             const num = document.createElement('input');
             num.type = 'number';
             num.className = 'vcp-input';
-            num.step = 'any'; // <-- PERMITE CUALQUIER VALOR O DECIMAL LIBREMENTE
+            num.step = 'any';
             num.value = this[ch].toFixed(3);
 
             cell.appendChild(lbl);
@@ -467,16 +438,13 @@ class GiovanniColorPicker {
             rgbaGrid.appendChild(cell);
             this.inputs[ch] = num;
 
-            // Manejador que no interrumpe mientras escribes
             num.addEventListener('input', () => {
                 const raw = num.value.trim();
-                // Si el usuario acaba de teclear "0." o está borrando, no forzar nada
                 if (raw === '' || raw === '.' || raw === '-.' || raw.endsWith('.')) return;
 
                 let val = parseFloat(raw);
                 if (isNaN(val)) return;
 
-                // Si escribe formato 0-255 (ej: 128 o 255), lo normaliza automáticamente
                 if (val > 1 && ch !== 'a') {
                     val = val / 255;
                 }
@@ -491,12 +459,10 @@ class GiovanniColorPicker {
                     this.hex = this.rgbToHex(this.r, this.g, this.b);
                 }
 
-                // Actualiza canvas y otros inputs SIN sobreescribir este que estás tecleando
                 this.updateUI(ch);
                 this.emit();
             });
 
-            // Al salir del input, redondea de forma limpia a 3 decimales
             num.addEventListener('blur', () => {
                 num.value = parseFloat(this[ch].toFixed(3));
             });
@@ -504,7 +470,6 @@ class GiovanniColorPicker {
 
         this.container.appendChild(rgbaGrid);
 
-        // 5. Estadísticas
         this.statsBox = document.createElement('div');
         this.statsBox.className = 'vcp-stats-box';
         this.lblMin = document.createElement('div');
@@ -515,7 +480,6 @@ class GiovanniColorPicker {
         this.statsBox.appendChild(this.lblRatio);
         this.container.appendChild(this.statsBox);
 
-        // Eventos de inputs de texto
         this.inputHex.addEventListener('change', (e) => {
             let val = e.target.value.trim();
             if (!val.startsWith('#')) val = '#' + val;
@@ -735,24 +699,25 @@ class GiovanniColorPicker {
         ctx.strokeRect(0, barY - 2, w, 4);
     }
 
+    _syncFromHSV() {
+        const rgb = this.hsvToRgb(this.h, this.s, this.v);
+        this.r = rgb.r;
+        this.g = rgb.g;
+        this.b = rgb.b;
+        this.hex = this.rgbToHex(this.r, this.g, this.b);
+        this.updateUI();
+        this.emit();
+    }
+
     initCanvasEvents() {
         let isDraggingSV = false;
         const handleSV = (e) => {
             const rect = this.svCanvas.getBoundingClientRect();
             const x = Math.max(0, Math.min(rect.width, e.clientX - rect.left));
             const y = Math.max(0, Math.min(rect.height, e.clientY - rect.top));
-
             this.s = x / rect.width;
             this.v = 1 - (y / rect.height);
-
-            const rgb = this.hsvToRgb(this.h, this.s, this.v);
-            this.r = rgb.r;
-            this.g = rgb.g;
-            this.b = rgb.b;
-            this.hex = this.rgbToHex(this.r, this.g, this.b);
-
-            this.updateUI();
-            this.emit();
+            this._syncFromHSV();
         };
 
         this.svCanvas.addEventListener('pointerdown', (e) => {
@@ -762,23 +727,15 @@ class GiovanniColorPicker {
         });
         this.svCanvas.addEventListener('pointermove', (e) => { if (isDraggingSV) handleSV(e); });
         this.svCanvas.addEventListener('pointerup', () => { isDraggingSV = false; });
+        this.svCanvas.addEventListener('pointercancel', () => { isDraggingSV = false; });
 
         let isDraggingHue = false;
         const handleHue = (e) => {
             const rect = this.hueCanvas.getBoundingClientRect();
             const y = Math.max(0, Math.min(rect.height, e.clientY - rect.top));
-
             this.h = (1 - (y / rect.height)) * 360;
             if (this.h >= 360) this.h = 0;
-
-            const rgb = this.hsvToRgb(this.h, this.s, this.v);
-            this.r = rgb.r;
-            this.g = rgb.g;
-            this.b = rgb.b;
-            this.hex = this.rgbToHex(this.r, this.g, this.b);
-
-            this.updateUI();
-            this.emit();
+            this._syncFromHSV();
         };
 
         this.hueCanvas.addEventListener('pointerdown', (e) => {
@@ -788,7 +745,9 @@ class GiovanniColorPicker {
         });
         this.hueCanvas.addEventListener('pointermove', (e) => { if (isDraggingHue) handleHue(e); });
         this.hueCanvas.addEventListener('pointerup', () => { isDraggingHue = false; });
+        this.hueCanvas.addEventListener('pointercancel', () => { isDraggingHue = false; });
 
+        let isDraggingTri = false;
         let triMode = null;
         const handleTriangleCanvas = (e) => {
             const rect = this.triangleCanvas.getBoundingClientRect();
@@ -826,25 +785,26 @@ class GiovanniColorPicker {
                 }
             }
 
-            const rgb = this.hsvToRgb(this.h, this.s, this.v);
-            this.r = rgb.r;
-            this.g = rgb.g;
-            this.b = rgb.b;
-            this.hex = this.rgbToHex(this.r, this.g, this.b);
-
-            this.updateUI();
-            this.emit();
+            this._syncFromHSV();
         };
 
         this.triangleCanvas.addEventListener('pointerdown', (e) => {
+            isDraggingTri = true;
             triMode = null;
             this.triangleCanvas.setPointerCapture(e.pointerId);
             handleTriangleCanvas(e);
         });
         this.triangleCanvas.addEventListener('pointermove', (e) => {
-            if (e.buttons === 1) handleTriangleCanvas(e);
+            if (isDraggingTri) handleTriangleCanvas(e);
         });
-        this.triangleCanvas.addEventListener('pointerup', () => { triMode = null; });
+        this.triangleCanvas.addEventListener('pointerup', () => {
+            isDraggingTri = false;
+            triMode = null;
+        });
+        this.triangleCanvas.addEventListener('pointercancel', () => {
+            isDraggingTri = false;
+            triMode = null;
+        });
     }
 
     getRGBAObjectString() {
@@ -857,24 +817,19 @@ class GiovanniColorPicker {
     }
 
     updateStats() {
-        let min = Math.min(this.r, this.g, this.b);
-        let max = Math.max(this.r, this.g, this.b);
-        let ratio = max > 0 ? (min / max) : 0;
+        const min = Math.min(this.r, this.g, this.b);
+        const max = Math.max(this.r, this.g, this.b);
+        const ratio = max > 0 ? (min / max) : 0;
 
         this.lblMin.innerHTML = `Mín: <span class="vcp-stats-val">${min.toFixed(2)}</span>`;
         this.lblMax.innerHTML = `Máx: <span class="vcp-stats-val">${max.toFixed(2)}</span>`;
         this.lblRatio.innerHTML = `Mín/Máx: <span class="vcp-stats-ratio">${ratio.toFixed(3)}</span>`;
     }
 
-    /**
-     * Actualiza la interfaz. Si se le pasa `skipChannel`, no toca ese input
-     * para no interrumpir lo que el usuario está escribiendo.
-     */
     updateUI(skipChannel = null) {
         this.previewColor.style.background = this.getRGBAString();
 
         ['r', 'g', 'b', 'a'].forEach(ch => {
-            // No sobreescribir el campo que el usuario tiene enfocado/activo
             if (ch !== skipChannel && document.activeElement !== this.inputs[ch]) {
                 this.inputs[ch].value = parseFloat(this[ch].toFixed(3));
             }
@@ -951,13 +906,15 @@ class GiovanniColorPicker {
     }
 
     hsvToRgb(h, s, v) {
-        let f = (n, k = (n + h / 60) % 6) => v - v * s * Math.max(Math.min(k, 4 - k, 1), 0);
+        const f = (n, k = (n + h / 60) % 6) => v - v * s * Math.max(Math.min(k, 4 - k, 1), 0);
         return { r: f(5), g: f(3), b: f(1) };
     }
 
     rgbToHsv(r, g, b) {
-        let max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
-        let h = 0, s = max === 0 ? 0 : d / max, v = max;
+        const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+        let h = 0;
+        const s = max === 0 ? 0 : d / max;
+        const v = max;
         if (max !== min) {
             switch (max) {
                 case r: h = (g - b) / d + (g < b ? 6 : 0); break;
@@ -985,697 +942,524 @@ class GiovanniColorPicker {
 }
 
  class GiovanniToggleAcordion {
-  static _injectCSS() {
-    if (document.getElementById('gio-accordion-theme-styles')) return;
-    const style = document.createElement('style');
-    style.id = 'gio-accordion-theme-styles';
-    style.textContent = `
-      :root {
-        --bg: #2d2d2d;
-        --backghead: #2f2f2f;
-        --textoA: #4daafc;
-        --textoAlfa: #959ba0;
-        --textotenue: #8c8e8f;
-        --shadow: #00000093;
-        --textotenue2: #a4a7a8;
-      }
+    static _injectCSS() {
+        if (document.getElementById('gio-accordion-theme-styles')) return;
+        const style = document.createElement('style');
+        style.id = 'gio-accordion-theme-styles';
+        style.textContent = `
+            :root {
+                --bg: #2d2d2d;
+                --backghead: #2f2f2f;
+                --textoA: #4daafc;
+                --textoAlfa: #959ba0;
+                --textotenue: #8c8e8f;
+                --shadow: #00000093;
+                --textotenue2: #a4a7a8;
+            }
 
-      .gio-acc-item {
-        position: relative;
-        background: var(--bg);
-        border: 20px solid #333333;
-        border-radius: 13px;
-        display: flex;
-        flex-direction: column;
-        box-sizing: border-box;
-        margin-bottom: 12px;
-        transition: border-color 0.3s, box-shadow 0.2s;
-        overflow: hidden;
-        min-width: min(300px, 100%);
-        flex-shrink: 0;
-        box-shadow: -6px 2px 50px 9px var(--shadow);
-        max-width: 77vw;
-        width: 100%;
-      }
+            .gio-acc-item {
+                position: relative;
+                background: var(--bg);
+                border: 20px solid #333333;
+                border-radius: 13px;
+                display: flex;
+                flex-direction: column;
+                box-sizing: border-box;
+                margin-bottom: 12px;
+                transition: border-color 0.3s, box-shadow 0.2s;
+                overflow: hidden;
+                min-width: 0;
+                flex-shrink: 0;
+                box-shadow: -6px 2px 50px 9px var(--shadow);
+                max-width: 100%;
+                width: 100%;
+            }
 
-      .gio-acc-item.gio-is-floating {
-        position: fixed !important;
-        z-index: 99999 !important;
-        margin: 0 !important;
-      }
+            .gio-acc-item.gio-is-floating {
+                position: fixed !important;
+                z-index: 99999 !important;
+                margin: 0 !important;
+                max-width: calc(100vw - 20px);
+            }
 
-      .gio-acc-item.is-dragging {
-        position: fixed !important;
-        opacity: 0.94;
-        z-index: 999999 !important;
-        box-shadow: 0 22px 48px rgba(0, 0, 0, 0.55), 0 0 18px rgba(77, 170, 252, 0.16) !important;
-        pointer-events: none;
-        margin: 0 !important;
-        border-color: var(--textoAlfa) !important;
-        transform: scale(0.985);
-        transition: box-shadow 0.18s, border-color 0.18s, transform 0.15s !important;
-      }
+            .gio-acc-item.is-dragging {
+                position: fixed !important;
+                opacity: 0.94;
+                z-index: 999999 !important;
+                box-shadow: 0 22px 48px rgba(0, 0, 0, 0.55), 0 0 18px rgba(77, 170, 252, 0.16) !important;
+                pointer-events: none;
+                margin: 0 !important;
+                border-color: var(--textoAlfa) !important;
+                transform: scale(0.985);
+                max-width: calc(100vw - 20px);
+                transition: box-shadow 0.18s, border-color 0.18s, transform 0.15s !important;
+            }
 
-      .gio-acc-item.is-animating-reset {
-        z-index: 999999 !important;
-        pointer-events: none !important;
-      }
+            .gio-acc-item.is-animating-reset {
+                z-index: 999999 !important;
+                pointer-events: none !important;
+            }
 
-      .gio-acc-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 14px;
-        cursor: grab;
-        user-select: none;
-        background: var(--backghead);
-        border-radius: 8px 8px 0 0;
-        min-height: 44px;
-        height: 45px;
-        flex-shrink: 0;
-        transition: background 0.2s;
-        box-sizing: border-box;
-        width: 100%;
-      }
-      .gio-acc-header:active { cursor: grabbing; }
+            .gio-acc-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 14px;
+                cursor: grab;
+                user-select: none;
+                touch-action: none;
+                background: var(--backghead);
+                border-radius: 8px 8px 0 0;
+                min-height: 44px;
+                height: 45px;
+                flex-shrink: 0;
+                transition: background 0.2s;
+                box-sizing: border-box;
+                width: 100%;
+                min-width: 0;
+            }
+            .gio-acc-header:active { cursor: grabbing; }
 
-      .gio-acc-title {
-        color: #4daafcc9;// var(--textotenue2);
-        font-size: 13px;
-        font-weight: 600;
-        pointer-events: none;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        flex: 1;
-        padding-right: 10px;
-      }
+            .gio-acc-title {
+                color: #4daafcc9;
+                font-size: 13px;
+                font-weight: 600;
+                pointer-events: none;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                flex: 1;
+                min-width: 0;
+                padding-right: 10px;
+            }
 
-      .gio-acc-header-tools {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        flex-shrink: 0;
-      }
+            .gio-acc-header-tools {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                flex-shrink: 0;
+            }
 
-      .gio-acc-btn-reset, .gio-acc-btn-toggle {
-        background: transparent;
-        border: none;
-        padding: 4px;
-        cursor: pointer;
-        color: var(--textotenue);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 4px;
-        transition: color 0.2s, background 0.2s, transform 0.25s ease;
-      }
-      .gio-acc-btn-reset:hover {
-        color: var(--textoA);
-        background: rgba(255, 255, 255, 0.08);
-        transform: rotate(-90deg);
-      }
-      .gio-acc-btn-reset svg {
-        width: 16px;
-        height: 16px;
-        fill: currentColor;
-        pointer-events: none;
-      }
-      .gio-acc-btn-toggle:hover {
-        color: var(--textoA);
-        background: rgba(255, 255, 255, 0.08);
-      }
+            .gio-acc-btn-reset, .gio-acc-btn-toggle {
+                background: transparent;
+                border: none;
+                padding: 4px;
+                cursor: pointer;
+                color: var(--textotenue);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 4px;
+                transition: color 0.2s, background 0.2s, transform 0.25s ease;
+            }
+            .gio-acc-btn-reset:hover {
+                color: var(--textoA);
+                background: rgba(255, 255, 255, 0.08);
+                transform: rotate(-90deg);
+            }
+            .gio-acc-btn-reset svg {
+                width: 16px;
+                height: 16px;
+                fill: currentColor;
+                pointer-events: none;
+            }
+            .gio-acc-btn-toggle:hover {
+                color: var(--textoA);
+                background: rgba(255, 255, 255, 0.08);
+            }
 
-      .gio-acc-chevron {
-        width: 16px;
-        height: 16px;
-        stroke: currentColor;
-        stroke-width: 2.2;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-        fill: none;
-        transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
-        pointer-events: none;
-      }
-      .gio-acc-item.open .gio-acc-chevron {
-        transform: rotate(180deg);
-        stroke: var(--textoA);
-      }
+            .gio-acc-chevron {
+                width: 16px;
+                height: 16px;
+                stroke: currentColor;
+                stroke-width: 2.2;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                fill: none;
+                transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+                pointer-events: none;
+            }
+            .gio-acc-item.open .gio-acc-chevron {
+                transform: rotate(180deg);
+                stroke: var(--textoA);
+            }
 
-      .gio-acc-content {
-        flex: 0 1 auto;
-        min-height: 0;
-        max-height: 0;
-        opacity: 0;
-        overflow-x: hidden;
-        overflow-y: hidden;
-        transition: max-height 0.26s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
-        background: #1e1e1e;
-        border-bottom-left-radius: 8px;
-        border-bottom-right-radius: 8px;
-        width: 100%;
-        box-sizing: border-box;
-        scrollbar-width: thin;
-        scrollbar-color: var(--textotenue) #1e1e1e;
-      }
-      .gio-acc-content::-webkit-scrollbar {
-        width: 6px;
-      }
-      .gio-acc-content::-webkit-scrollbar-track {
-        background: #1e1e1e;
-        border-radius: 4px;
-      }
-      .gio-acc-content::-webkit-scrollbar-thumb {
-        background: var(--textotenue);
-        border-radius: 4px;
-      }
-      .gio-acc-content::-webkit-scrollbar-thumb:hover {
-        background: var(--textoA);
-      }
-      .gio-acc-item.open > .gio-acc-content { opacity: 1; }
+            .gio-acc-content {
+                flex: 0 1 auto;
+                min-height: 0;
+                min-width: 0;
+                max-width: 100%;
+                max-height: 0;
+                opacity: 0;
+                overflow-x: hidden;
+                overflow-y: hidden;
+                transition: max-height 0.26s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+                background: #1e1e1e;
+                border-bottom-left-radius: 8px;
+                border-bottom-right-radius: 8px;
+                width: 100%;
+                box-sizing: border-box;
+                scrollbar-width: thin;
+                scrollbar-color: var(--textotenue) #1e1e1e;
+            }
+            .gio-acc-content::-webkit-scrollbar {
+                width: 6px;
+            }
+            .gio-acc-content::-webkit-scrollbar-track {
+                background: #1e1e1e;
+                border-radius: 4px;
+            }
+            .gio-acc-content::-webkit-scrollbar-thumb {
+                background: var(--textotenue);
+                border-radius: 4px;
+            }
+            .gio-acc-content::-webkit-scrollbar-thumb:hover {
+                background: var(--textoA);
+            }
+            .gio-acc-item.open > .gio-acc-content { opacity: 1; }
 
-      .gio-acc-body {
-        padding: 12px;
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
-        box-sizing: border-box;
-        width: 100%;
-        min-width: 0;
-        background: #333333;
-        color-scheme: dark;
-      }
+            .gio-acc-body {
+                padding: 12px;
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+                box-sizing: border-box;
+                width: 100%;
+                max-width: 100%;
+                min-width: 0;
+                background: #333333;
+                color-scheme: dark;
+                overflow-wrap: anywhere;
+                overflow-x: hidden;
+            }
 
-      .gio-acc-body > * {
-        max-width: 100%;
-        min-width: 0;
-        box-sizing: border-box;
-        flex-shrink: 0;
-      }
+            .gio-acc-body > * {
+                max-width: 100%;
+                min-width: 0;
+                box-sizing: border-box;
+                flex-shrink: 0;
+            }
 
-      .gio-acc-body > input[type="checkbox"],
-      .gio-acc-body > input[type="radio"] {
-        align-self: flex-start;
-        width: auto;
-      }
+            .gio-acc-body > input[type="checkbox"],
+            .gio-acc-body > input[type="radio"] {
+                align-self: flex-start;
+                width: auto;
+            }
 
-      .gio-acc-body input,
-      .gio-acc-body select,
-      .gio-acc-body textarea,
-      .gio-acc-body button {
-        max-width: 100%;
-        min-width: 0;
-        box-sizing: border-box;
-      }
+            .gio-acc-body input,
+            .gio-acc-body select,
+            .gio-acc-body textarea,
+            .gio-acc-body button {
+                max-width: 100%;
+                min-width: 0;
+                box-sizing: border-box;
+            }
 
-      .gio-drag-zone-active {
-        outline: 2px dashed rgba(77, 170, 252, 0.75) !important;
-        outline-offset: -2px !important;
-        background: rgba(77, 170, 252, 0.08) !important;
-      }
-    `;
-    document.head.appendChild(style);
-  }
+            .gio-acc-body img,
+            .gio-acc-body video,
+            .gio-acc-body canvas,
+            .gio-acc-body table,
+            .gio-acc-body pre {
+                max-width: 100%;
+            }
+            .gio-acc-body pre { overflow-x: auto; }
 
-  constructor(title, parentElement = null, widthPercent = null, maxHeight = 700, resetDuration = 1.7) {
-    GiovanniToggleAcordion._injectCSS();
+            .gio-drag-zone-active {
+                outline: 2px dashed rgba(77, 170, 252, 0.75) !important;
+                outline-offset: -2px !important;
+                background: rgba(77, 170, 252, 0.08) !important;
+            }
+        `;
+        document.head.appendChild(style);
+    }
 
-    this.isOpen = true;
-    this.widthPercent = widthPercent;
-    this.maxHeight = maxHeight;
-    this.resetDuration = resetDuration;
-    this.fitPadding = 16;
-    this._isResetting = false;
-    this._roParent = null;
-
-    this.element = document.createElement('div');
-    this.element.className = 'gio-acc-item open';
-    this.element._gioAcordion = this;
-
-    this.header = document.createElement('div');
-    this.header.className = 'gio-acc-header';
-
-    this.titleSpan = document.createElement('span');
-    this.titleSpan.className = 'gio-acc-title';
-    this.titleSpan.textContent = title;
-
-    const tools = document.createElement('div');
-    tools.className = 'gio-acc-header-tools';
-
-    this.btnReset = document.createElement('button');
-    this.btnReset.type = 'button';
-    this.btnReset.className = 'gio-acc-btn-reset';
-    this.btnReset.title = 'Restaurar';
-    this.btnReset.innerHTML = `
-      <svg viewBox="0 0 24 24">
-        <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
-      </svg>
-    `;
-    this.btnReset.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.resetPosition();
-    });
-
-    this.btnToggle = document.createElement('button');
-    this.btnToggle.type = 'button';
-    this.btnToggle.className = 'gio-acc-btn-toggle';
-    this.btnToggle.title = 'Alternar';
-
-    this.chevron = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    this.chevron.setAttribute('viewBox', '0 0 24 24');
-    this.chevron.setAttribute('class', 'gio-acc-chevron');
-    this.chevron.innerHTML = '<polyline points="6 9 12 15 18 9"></polyline>';
-    this.btnToggle.appendChild(this.chevron);
-
-    this.btnToggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.toggle();
-    });
-
-    tools.appendChild(this.btnReset);
-    tools.appendChild(this.btnToggle);
-
-    this.header.appendChild(this.titleSpan);
-    this.header.appendChild(tools);
-
-    this.content = document.createElement('div');
-    this.content.className = 'gio-acc-content';
-
-    this.body = document.createElement('div');
-    this.body.className = 'gio-acc-body';
-
-    this.content.appendChild(this.body);
-    this.element.appendChild(this.header);
-    this.element.appendChild(this.content);
-
-    this._setupResizeObserver();
-    this._initMagneticDrag();
-
-    if (parentElement) {
-      this.adaptToParent(parentElement);
-      this._saveInitialPosition(parentElement);
-    } else {
-      setTimeout(() => {
-        if (this.element.parentNode) {
-          this._saveInitialPosition(this.element.parentNode);
-          this._applyFit(this.element.parentNode);
+    static _ensureDragHelpers() {
+        if (!GiovanniToggleAcordion._helpers) {
+            const mk = (css) => {
+                const d = document.createElement('div');
+                d.style.cssText = css;
+                document.body.appendChild(d);
+                return d;
+            };
+            const helpers = {
+                placeholder: mk('display:none;border:2px dashed #4daafc;border-radius:10px;margin-bottom:12px;box-sizing:border-box;background:rgba(77,170,252,.08)'),
+                guideV: mk('display:none;position:fixed;top:0;bottom:0;width:1px;background:#4daafc;z-index:1000000;pointer-events:none'),
+                guideH: mk('display:none;position:fixed;left:0;right:0;height:1px;background:#4daafc;z-index:1000000;pointer-events:none')
+            };
+            helpers.placeholder.classList.add('gio-drop-ph');
+            helpers.placeholder.remove();
+            GiovanniToggleAcordion._helpers = helpers;
         }
-      }, 0);
+        return GiovanniToggleAcordion._helpers;
     }
 
-    setTimeout(() => this._updateHeight(this.isOpen), 50);
-  }
+    constructor(title, parentElement = null, widthPercent = null, maxHeight = 700, resetDuration = 1.7) {
+        GiovanniToggleAcordion._injectCSS();
 
-  _registerDropZone(parent) {
-    if (parent && parent !== document.body && parent !== document.documentElement) {
-      parent.setAttribute('data-gio-dropzone', '1');
-    }
-  }
-
-  _saveInitialPosition(parent) {
-    this._registerDropZone(parent);
-    this._originParent = parent;
-    this._originNextSibling = this.element.nextSibling;
-  }
-
-  _applyFit(parent) {
-    if (this._roParent) {
-      this._roParent.disconnect();
-      this._roParent = null;
-    }
-    if (!parent || parent === document.body) {
-      this.element.style.width = '';
-      this.element.style.maxWidth = '';
-      this.element.style.boxSizing = '';
-      return;
-    }
-    this._registerDropZone(parent);
-    const ro = new ResizeObserver(() => this._fitToParent(parent));
-    ro.observe(parent);
-    this._roParent = ro;
-    this._fitToParent(parent);
-  }
-
-  _fitToParent(parent) {
-    if (!parent || parent === document.body) {
-      this.element.style.width = '';
-      this.element.style.maxWidth = '';
-      this.element.style.boxSizing = '';
-      return;
-    }
-    const cs = getComputedStyle(parent);
-    const padL = parseFloat(cs.paddingLeft) || 0;
-    const padR = parseFloat(cs.paddingRight) || 0;
-    const borderL = parseFloat(cs.borderLeftWidth) || 0;
-    const borderR = parseFloat(cs.borderRightWidth) || 0;
-
-    const inner = parent.clientWidth - padL - padR;
-    const maxOuter = parent.clientWidth - borderL - borderR;
-    const avail = Math.min(inner, maxOuter) - this.fitPadding;
-
-    let w = (typeof this.widthPercent === 'number' && this.widthPercent > 0 && this.widthPercent <= 100)
-      ? avail * (this.widthPercent / 100)
-      : avail;
-
-    if (w < 120) w = Math.max(120, Math.min(inner, maxOuter));
-
-    this.element.style.boxSizing = 'border-box';
-    this.element.style.width = `${Math.floor(w)}px`;
-    this.element.style.maxWidth = '100%';
-  }
-
-  _animateFromRect(firstRect, durationSec = 0.28) {
-    const lastRect = this.element.getBoundingClientRect();
-    const deltaX = firstRect.left - lastRect.left;
-    const deltaY = firstRect.top - lastRect.top;
-
-    if (Math.abs(deltaX) < 1 && Math.abs(deltaY) < 1) {
-      this._isResetting = false;
-      return;
-    }
-
-    this.element.classList.add('is-animating-reset');
-    this.element.style.transformOrigin = 'top left';
-    this.element.style.transition = 'none';
-    this.element.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
-
-    requestAnimationFrame(() => {
-      this.element.style.transition = `transform ${durationSec}s cubic-bezier(0.22, 1, 0.36, 1)`;
-      this.element.style.transform = 'translate(0px, 0px)';
-
-      const onEnd = () => {
-        this.element.classList.remove('is-animating-reset');
-        this.element.style.transition = '';
-        this.element.style.transform = '';
-        this.element.style.transformOrigin = '';
+        this.isOpen = true;
+        this.widthPercent = widthPercent;
+        this.maxHeight = maxHeight;
+        this.resetDuration = resetDuration;
+        this.fitPadding = 16;
+        this.screenMargin = 8;
         this._isResetting = false;
-        this.element.removeEventListener('transitionend', onEnd);
-      };
+        this._roParent = null;
+        this._fittedParent = null;
+        this._fitRaf = null;
+        this._fitRaf2 = null;
+        this._lastFitW = null;
+        this._lastFitMaxW = null;
 
-      this.element.addEventListener('transitionend', onEnd);
-    });
-  }
+        this.element = document.createElement('div');
+        this.element.className = 'gio-acc-item open';
+        this.element._gioAcordion = this;
 
-  resetPosition() {
-    if (!this._originParent || this._isResetting) return;
+        this.header = document.createElement('div');
+        this.header.className = 'gio-acc-header';
 
-    this._isResetting = true;
-    const firstRect = this.element.getBoundingClientRect();
+        this.titleSpan = document.createElement('span');
+        this.titleSpan.className = 'gio-acc-title';
+        this.titleSpan.textContent = title;
 
-    this.element.classList.remove('is-dragging', 'gio-is-floating');
-    this.element.style.position = '';
-    this.element.style.left = '';
-    this.element.style.top = '';
-    this.element.style.maxWidth = '';
-    this.element.style.pointerEvents = '';
+        const tools = document.createElement('div');
+        tools.className = 'gio-acc-header-tools';
 
-    if (this._originNextSibling && this._originNextSibling.parentNode === this._originParent) {
-      this._originParent.insertBefore(this.element, this._originNextSibling);
-    } else {
-      this._originParent.appendChild(this.element);
-    }
+        this.btnReset = document.createElement('button');
+        this.btnReset.type = 'button';
+        this.btnReset.className = 'gio-acc-btn-reset';
+        this.btnReset.title = 'Restaurar';
+        this.btnReset.innerHTML = `
+            <svg viewBox="0 0 24 24">
+                <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+            </svg>
+        `;
+        this.btnReset.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.resetPosition();
+        });
 
-    this._applyFit(this._originParent);
+        this.btnToggle = document.createElement('button');
+        this.btnToggle.type = 'button';
+        this.btnToggle.className = 'gio-acc-btn-toggle';
+        this.btnToggle.title = 'Alternar';
 
-    if (this.isOpen) {
-      this._updateHeight(true);
-    }
+        this.chevron = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        this.chevron.setAttribute('viewBox', '0 0 24 24');
+        this.chevron.setAttribute('class', 'gio-acc-chevron');
+        this.chevron.innerHTML = '<polyline points="6 9 12 15 18 9"></polyline>';
+        this.btnToggle.appendChild(this.chevron);
 
-    this._animateFromRect(firstRect, this.resetDuration);
-  }
+        this.btnToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.toggle();
+        });
 
-  _setupResizeObserver() {
-    this._ro = new ResizeObserver(() => {
-      if (this.isOpen) this._updateHeight(true);
-    });
-    this._ro.observe(this.body);
+        tools.appendChild(this.btnReset);
+        tools.appendChild(this.btnToggle);
 
-    this._mo = new MutationObserver(() => {
-      if (this.isOpen) this._updateHeight(true);
-    });
-    this._mo.observe(this.body, { childList: true, subtree: true });
+        this.header.appendChild(this.titleSpan);
+        this.header.appendChild(tools);
 
-    window.addEventListener('resize', () => {
-      if (this.isOpen) this._updateHeight(true);
-    });
-  }
+        this.content = document.createElement('div');
+        this.content.className = 'gio-acc-content';
 
-  _getEffectiveMaxHeight() {
-    let limit = Number(this.maxHeight) > 0 ? Number(this.maxHeight) : 700;
-    if (this.element.classList.contains('gio-is-floating') || this.element.classList.contains('is-dragging')) {
-      const headerH = this.header ? this.header.offsetHeight : 45;
-      const cs = getComputedStyle(this.element);
-      const borderV = (parseFloat(cs.borderTopWidth) || 0) + (parseFloat(cs.borderBottomWidth) || 0);
-      const viewportAvail = window.innerHeight - headerH - borderV - 24;
-      if (viewportAvail > 120) {
-        limit = Math.min(limit, viewportAvail);
-      }
-    }
-    return limit;
-  }
+        this.body = document.createElement('div');
+        this.body.className = 'gio-acc-body';
 
-  _updateHeight(open) {
-    if (!open) {
-      this.content.style.overflowX = 'hidden';
-      this.content.style.overflowY = 'hidden';
-      this.content.style.maxHeight = '0px';
-      return;
-    }
-    const limit = this._getEffectiveMaxHeight();
-    const scrollH = this.body.scrollHeight;
-    if (scrollH > limit) {
-      this.content.style.maxHeight = `${limit}px`;
-      this.content.style.overflowX = 'hidden';
-      this.content.style.overflowY = 'auto';
-    } else {
-      this.content.style.maxHeight = `${scrollH}px`;
-      this.content.style.overflowX = 'hidden';
-      this.content.style.overflowY = 'hidden';
-    }
-  }
+        this.content.appendChild(this.body);
+        this.element.appendChild(this.header);
+        this.element.appendChild(this.content);
 
-  setMaxHeight(maxHeight) {
-    this.maxHeight = maxHeight;
-    if (this.isOpen) this._updateHeight(true);
-    return this;
-  }
+        this._setupResizeObserver();
+        this._initMagneticDrag();
 
-  adaptToParent(container, insertBefore = null) {
-    if (!container || !(container instanceof HTMLElement)) container = document.body;
-    this.element.classList.remove('is-dragging', 'gio-is-floating');
-
-    this.element.style.position = '';
-    this.element.style.left = '';
-    this.element.style.top = '';
-    this.element.style.maxWidth = '';
-    this.element.style.pointerEvents = '';
-
-    if (insertBefore && insertBefore.parentNode === container) {
-      container.insertBefore(this.element, insertBefore);
-    } else {
-      container.appendChild(this.element);
-    }
-
-    this._applyFit(container);
-
-    if (!this._originParent) {
-      this._saveInitialPosition(container);
-    }
-  }
-
-  toggle() { this.isOpen ? this.close() : this.open(); }
-  open() {
-    this.isOpen = true;
-    this.element.classList.add('open');
-    this._updateHeight(true);
-    return this;
-  }
-  close() {
-    this.isOpen = false;
-    this.element.classList.remove('open');
-    this._updateHeight(false);
-    return this;
-  }
-
-  _isDropTarget(el) {
-    if (!el || el === document.body || el === document.documentElement) return false;
-    if (el === this.element || this.element.contains(el)) return false;
-    return (
-      el.hasAttribute('data-gio-dropzone') ||
-      el.classList.contains('gio-drop-zone') ||
-      el.classList.contains('gio-acc-item') ||
-      el.classList.contains('app-workspace') ||
-      el.classList.contains('gio-acc-body') ||
-      el.classList.contains('otro-menu') ||
-      el.id === 'zona-drop' ||
-      el.tagName === 'ASIDE'
-    );
-  }
-
-  _initMagneticDrag() {
-    let startX = 0, startY = 0;
-    let grabOffsetX = 0, grabOffsetY = 0;
-    let isDragging = false, hasMoved = false;
-    let lastHighlightZone = null;
-    const snapDistance = 18;
-
-    let placeholder = document.getElementById('gio-snap-placeholder');
-    if (!placeholder) {
-      placeholder = document.createElement('div');
-      placeholder.id = 'gio-snap-placeholder';
-      placeholder.style.cssText = 'border:2px dashed #4daafc; border-radius:10px; background:rgba(77, 170, 252, 0.14); box-shadow:inset 0 0 12px rgba(77, 170, 252, 0.18); margin-bottom:12px; display:none; pointer-events:none; width:100%; height:52px; box-sizing:border-box; flex-shrink:0;';
-      document.body.appendChild(placeholder);
-    }
-
-    let guideV = document.getElementById('gio-snap-v') || (() => {
-      const g = document.createElement('div'); g.id = 'gio-snap-v';
-      g.style.cssText = 'position:fixed; top:0; bottom:0; width:1px; background:#4daafc; box-shadow:0 0 8px #4daafc; z-index:9999999; display:none; pointer-events:none;';
-      document.body.appendChild(g); return g;
-    })();
-
-    let guideH = document.getElementById('gio-snap-h') || (() => {
-      const g = document.createElement('div'); g.id = 'gio-snap-h';
-      g.style.cssText = 'position:fixed; left:0; right:0; height:1px; background:#4daafc; box-shadow:0 0 8px #4daafc; z-index:9999999; display:none; pointer-events:none;';
-      document.body.appendChild(g); return g;
-    })();
-
-    const resolveDropContext = (clientX, clientY) => {
-      this.element.style.pointerEvents = 'none';
-      const hits = document.elementsFromPoint(clientX, clientY);
-      this.element.style.pointerEvents = 'auto';
-
-      const hit = hits.find(el => el !== placeholder && this._isDropTarget(el));
-      if (!hit) return { container: null, hoveredItem: null };
-
-      if (hit.classList.contains('gio-acc-item')) {
-        const parent = hit.parentNode;
-        if (!parent || parent === document.body) {
-          return { container: null, hoveredItem: null };
-        }
-        return { container: parent, hoveredItem: hit };
-      }
-
-      return { container: hit, hoveredItem: null };
-    };
-
-    const placePlaceholderInContainer = (container, clientY) => {
-      const siblings = Array.from(container.children).filter(
-        ch => ch !== this.element && ch !== placeholder && ch.classList.contains('gio-acc-item')
-      );
-      let insertBeforeNode = null;
-      for (const sib of siblings) {
-        const r = sib.getBoundingClientRect();
-        if (clientY < r.top + r.height / 2) {
-          insertBeforeNode = sib;
-          break;
-        }
-      }
-      if (placeholder.parentNode !== container || placeholder.nextSibling !== insertBeforeNode) {
-        container.insertBefore(placeholder, insertBeforeNode);
-      }
-    };
-
-    const clearZoneHighlight = () => {
-      if (lastHighlightZone) {
-        lastHighlightZone.classList.remove('gio-drag-zone-active');
-        lastHighlightZone = null;
-      }
-    };
-
-    const onPointerMove = (e) => {
-      if (!isDragging) return;
-      const dx = e.clientX - startX;
-      const dy = e.clientY - startY;
-
-      if (!hasMoved && Math.hypot(dx, dy) > 6) {
-        hasMoved = true;
-        const rect = this.element.getBoundingClientRect();
-        const dragW = Math.min(rect.width, Math.max(300, window.innerWidth * 0.45));
-        const ratioX = rect.width > 0 ? (startX - rect.left) / rect.width : 0.5;
-        grabOffsetX = ratioX * dragW;
-        grabOffsetY = startY - rect.top;
-
-        placeholder.style.display = 'block';
-        placeholder.style.width = '100%';
-        placeholder.style.height = `${Math.min(Math.max(rect.height * 0.25, 48), 72)}px`;
-
-        if (this.element.parentNode && this.element.parentNode !== document.body) {
-          this.element.parentNode.insertBefore(placeholder, this.element.nextSibling);
+        if (parentElement) {
+            this.adaptToParent(parentElement);
+            this._saveInitialPosition(parentElement);
+        } else {
+            setTimeout(() => {
+                if (this.element.parentNode) {
+                    if (!this._originParent) this._saveInitialPosition(this.element.parentNode);
+                    this._applyFit(this.element.parentNode);
+                }
+            }, 0);
         }
 
-        document.body.appendChild(this.element);
-        this.element.classList.add('is-dragging');
-        this.element.style.width = `${Math.round(dragW)}px`;
-        this.element.style.maxWidth = `${Math.round(dragW)}px`;
+        setTimeout(() => this._updateHeight(this.isOpen), 50);
+    }
+
+    _registerDropZone(parent) {
+        if (parent && parent !== document.body && parent !== document.documentElement) {
+            parent.setAttribute('data-gio-dropzone', '1');
+        }
+    }
+
+    _saveInitialPosition(parent) {
+        this._registerDropZone(parent);
+        this._originParent = parent;
+        this._originNextSibling = this.element.nextSibling;
+    }
+
+    _limitWidthToScreenOrigin(desiredW, originX = null) {
+        const MIN_W = 120;
+        const margin = this.screenMargin ?? 8;
+        const viewportW = document.documentElement.clientWidth || window.innerWidth;
+        let x = originX;
+        if (typeof x !== 'number' || Number.isNaN(x)) x = this.element.getBoundingClientRect().left;
+
+        const maxAllowed = Math.max(0, Math.floor(viewportW - margin - Math.max(0, x)));
+        const width = Math.min(maxAllowed, Math.max(MIN_W, Math.floor(desiredW)));
+        return { width, maxAllowed, distToRight: viewportW - x };
+    }
+
+    _fitToParent(parent) {
+        const el = this.element;
+        if (!parent || !(parent instanceof HTMLElement)) {
+            el.style.width = '';
+            el.style.maxWidth = '';
+            return;
+        }
+        if (el.classList.contains('is-dragging') || el.classList.contains('gio-is-floating') || this._isResetting) return;
+
+        const viewportW = document.documentElement.clientWidth || window.innerWidth;
+        const left = Math.max(0, el.getBoundingClientRect().left);
+        const maxAllowed = Math.max(0, Math.floor(viewportW - (this.screenMargin ?? 8) - left));
+
+        const pct = (typeof this.widthPercent === 'number' && this.widthPercent > 0 && this.widthPercent < 100)
+            ? `${this.widthPercent}%`
+            : '';
+        const mw = `${maxAllowed}px`;
+
+        el.style.boxSizing = 'border-box';
+        if (el.style.width !== pct) el.style.width = pct;
+        if (el.style.maxWidth !== mw) el.style.maxWidth = mw;
         if (this.isOpen) this._updateHeight(true);
-      }
+    }
 
-      if (!hasMoved) return;
+    _scheduleFit() {
+        if (this._fitRaf2) return;
+        this._fitRaf2 = requestAnimationFrame(() => {
+            this._fitRaf2 = null;
+            const p = this.element.parentNode;
+            if (!p || !(p instanceof HTMLElement)) return;
+            this._lastFitW = null;
+            this._lastFitMaxW = null;
+            if (this.element.classList.contains('gio-is-floating')) this._clampFloatingToViewport();
+            else this._fitToParent(p);
+        });
+    }
 
-      const curW = this.element.offsetWidth;
-      const curH = this.element.offsetHeight;
-      const screenW = window.innerWidth;
-      const screenH = window.innerHeight;
-
-      let targetX = Math.max(10, Math.min(screenW - curW - 10, e.clientX - grabOffsetX));
-      let targetY = Math.max(10, Math.min(screenH - curH - 10, e.clientY - grabOffsetY));
-
-      const { container } = resolveDropContext(e.clientX, e.clientY);
-
-      if (container !== lastHighlightZone) {
-        clearZoneHighlight();
-        if (container) {
-          container.classList.add('gio-drag-zone-active');
-          lastHighlightZone = container;
+    _applyFit(parent) {
+        this._roParent?.disconnect();
+        this._roParent = null;
+        if (this._fitRaf) {
+            cancelAnimationFrame(this._fitRaf);
+            this._fitRaf = null;
         }
-      }
 
-      if (container) {
-        guideV.style.display = 'none';
-        guideH.style.display = 'none';
-        placeholder.style.display = 'block';
-        placePlaceholderInContainer(container, e.clientY);
-      } else {
-        placeholder.style.display = 'none';
-        if (placeholder.parentNode) placeholder.remove();
+        this._fittedParent = parent || null;
+        this._lastFitW = null;
+        this._lastFitMaxW = null;
 
-        let snapX = null, snapY = null;
-        if (targetX < snapDistance) snapX = 10;
-        if (targetY < snapDistance) snapY = 10;
-        if (screenW - (targetX + curW) < snapDistance) snapX = screenW - 10;
-        if (screenH - (targetY + curH) < snapDistance) snapY = screenH - 10;
+        if (!parent) {
+            this.element.style.width = '';
+            this.element.style.maxWidth = '';
+            return;
+        }
+        this._registerDropZone(parent);
 
-        guideV.style.display = snapX !== null ? 'block' : 'none';
-        if (snapX !== null) guideV.style.left = `${snapX}px`;
-        guideH.style.display = snapY !== null ? 'block' : 'none';
-        if (snapY !== null) guideH.style.top = `${snapY}px`;
-      }
+        const ro = new ResizeObserver(() => this._scheduleFit());
+        for (let n = parent; n; n = n.parentElement) ro.observe(n);
+        ro.observe(document.documentElement);
+        this._roParent = ro;
 
-      this.element.style.left = `${targetX}px`;
-      this.element.style.top = `${targetY}px`;
-    };
+        this._fitToParent(parent);
+        this._fitRaf = requestAnimationFrame(() => {
+            this._fitRaf = null;
+            this._fitToParent(parent);
+        });
+    }
 
-    const onPointerUp = (e) => {
-      if (!isDragging) return;
-      isDragging = false;
-      guideV.style.display = 'none';
-      guideH.style.display = 'none';
-      clearZoneHighlight();
+    _getMinVisibleBottom() {
+        const headerH = this.header ? this.header.offsetHeight : 45;
+        const cs = getComputedStyle(this.element);
+        const borderTop = parseFloat(cs.borderTopWidth) || 0;
+        return headerH + borderTop + 16;
+    }
 
-      window.removeEventListener('pointermove', onPointerMove);
-      window.removeEventListener('pointerup', onPointerUp);
+    _clampFloatingToViewport() {
+        if (!this.element.classList.contains('gio-is-floating')) return;
 
-      if (!hasMoved) return;
+        const viewportW = document.documentElement.clientWidth || window.innerWidth;
+        const viewportH = document.documentElement.clientHeight || window.innerHeight;
+        const margin = 10;
 
-      const firstRect = this.element.getBoundingClientRect();
-      const { container } = resolveDropContext(e.clientX, e.clientY);
+        let curLeft = parseFloat(this.element.style.left);
+        let curTop = parseFloat(this.element.style.top);
+        if (Number.isNaN(curLeft) || Number.isNaN(curTop)) {
+            const rect = this.element.getBoundingClientRect();
+            if (Number.isNaN(curLeft)) curLeft = rect.left;
+            if (Number.isNaN(curTop)) curTop = rect.top;
+        }
 
-      if (container) {
-        placePlaceholderInContainer(container, e.clientY);
-        placeholder.parentNode.insertBefore(this.element, placeholder);
-        placeholder.style.display = 'none';
-        placeholder.remove();
+        curLeft = Math.max(margin, Math.min(curLeft, Math.max(margin, viewportW - margin - 240)));
+
+        const idealFloatW = Math.max(Math.min(280, viewportW * 0.9), Math.min(viewportW * 0.5, 460));
+        const { width: floatW, maxAllowed } = this._limitWidthToScreenOrigin(idealFloatW, curLeft);
+
+        this.element.style.left = `${Math.round(curLeft)}px`;
+        this.element.style.width = `${floatW}px`;
+        this.element.style.maxWidth = `${maxAllowed}px`;
+
+        if (this.isOpen) this._updateHeight(true);
+
+        const maxTop = Math.max(margin, viewportH - this._getMinVisibleBottom());
+        curTop = Math.max(margin, Math.min(curTop, maxTop));
+        this.element.style.top = `${Math.round(curTop)}px`;
+    }
+
+    _animateFromRect(firstRect, durationSec = 0.28) {
+        const lastRect = this.element.getBoundingClientRect();
+        const deltaX = firstRect.left - lastRect.left;
+        const deltaY = firstRect.top - lastRect.top;
+
+        if (Math.abs(deltaX) < 1 && Math.abs(deltaY) < 1) {
+            this._isResetting = false;
+            return;
+        }
+
+        this.element.classList.add('is-animating-reset');
+        this.element.style.transformOrigin = 'top left';
+        this.element.style.transition = 'none';
+        this.element.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+
+        requestAnimationFrame(() => {
+            this.element.style.transition = `transform ${durationSec}s cubic-bezier(0.22, 1, 0.36, 1)`;
+            this.element.style.transform = 'translate(0px, 0px)';
+
+            let done = false;
+            const onEnd = () => {
+                if (done) return;
+                done = true;
+                this.element.classList.remove('is-animating-reset');
+                this.element.style.transition = '';
+                this.element.style.transform = '';
+                this.element.style.transformOrigin = '';
+                this._isResetting = false;
+                this.element.removeEventListener('transitionend', onEnd);
+            };
+
+            this.element.addEventListener('transitionend', onEnd);
+            setTimeout(onEnd, Math.ceil(durationSec * 1000) + 80);
+        });
+    }
+
+    resetPosition() {
+        if (!this._originParent || this._isResetting) return;
+
+        this._isResetting = true;
+        const firstRect = this.element.getBoundingClientRect();
 
         this.element.classList.remove('is-dragging', 'gio-is-floating');
         this.element.style.position = '';
@@ -1684,87 +1468,408 @@ class GiovanniColorPicker {
         this.element.style.maxWidth = '';
         this.element.style.pointerEvents = '';
 
-        this._applyFit(container);
-        if (this.isOpen) this._updateHeight(true);
-        this._animateFromRect(firstRect, 0.28);
-      } else {
-        placeholder.style.display = 'none';
-        if (placeholder.parentNode) placeholder.remove();
-
-        this.element.classList.remove('is-dragging');
-        this.element.classList.add('gio-is-floating');
-        this.element.style.pointerEvents = '';
-
-        const curLeft = parseFloat(this.element.style.left) || 0;
-        const screenW = window.innerWidth;
-        const halfScreenW = screenW * 0.5;
-
-        let floatW = Math.max(280, Math.min(halfScreenW, 460));
-        if (curLeft > halfScreenW) {
-          floatW = Math.min(floatW, Math.max(260, screenW - curLeft - 20));
+        if (this._originNextSibling && this._originNextSibling.parentNode === this._originParent) {
+            this._originParent.insertBefore(this.element, this._originNextSibling);
+        } else {
+            this._originParent.appendChild(this.element);
         }
 
-        this.element.style.width = `${floatW}px`;
-        this.element.style.maxWidth = `${floatW}px`;
+        this._isResetting = false;
+        this._applyFit(this._originParent);
+        this._isResetting = true;
+
+        if (this.isOpen) {
+            this._updateHeight(true);
+        }
+
+        this._animateFromRect(firstRect, this.resetDuration);
+    }
+
+    _setupResizeObserver() {
+        this._ro = new ResizeObserver(() => {
+            if (this.isOpen) this._updateHeight(true);
+        });
+        this._ro.observe(this.body);
+
+        this._roSelf = new ResizeObserver(() => {
+            if (this.element.classList.contains('is-dragging') || this.element.classList.contains('gio-is-floating') || this._isResetting) {
+                return;
+            }
+            const parent = this.element.parentNode;
+            if (parent && parent instanceof HTMLElement) {
+                if (!this._originParent) {
+                    this._saveInitialPosition(parent);
+                }
+                if (parent !== this._fittedParent) {
+                    this._applyFit(parent);
+                } else {
+                    this._fitToParent(parent);
+                }
+            }
+        });
+        this._roSelf.observe(this.element);
+
+        this._mo = new MutationObserver(() => {
+            if (this.isOpen) this._updateHeight(true);
+        });
+        this._mo.observe(this.body, { childList: true, subtree: true });
+
+        window.addEventListener('resize', () => this._scheduleFit());
+        window.addEventListener('scroll', () => this._scheduleFit(), { capture: true, passive: true });
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', () => this._scheduleFit());
+        }
+
+        this._moParent = new MutationObserver(() => {
+            const p = this.element.parentNode;
+            if (!p || this.element.classList.contains('gio-is-floating') ||
+                this.element.classList.contains('is-dragging') || this._isResetting) return;
+            if (p !== this._fittedParent && p instanceof HTMLElement) {
+                if (!this._originParent) this._saveInitialPosition(p);
+                this._applyFit(p);
+            } else {
+                this._scheduleFit();
+            }
+        });
+        this._moParent.observe(document.body, { childList: true, subtree: true });
+
+        document.addEventListener('transitionend', () => this._scheduleFit(), true);
+        document.addEventListener('animationend', () => this._scheduleFit(), true);
+    }
+
+    _getEffectiveMaxHeight() {
+        let limit = Number(this.maxHeight) > 0 ? Number(this.maxHeight) : 700;
+        if (this.element.classList.contains('gio-is-floating') || this.element.classList.contains('is-dragging')) {
+            const headerH = this.header ? this.header.offsetHeight : 45;
+            const cs = getComputedStyle(this.element);
+            const borderV = (parseFloat(cs.borderTopWidth) || 0) + (parseFloat(cs.borderBottomWidth) || 0);
+            const viewportAvail = (document.documentElement.clientHeight || window.innerHeight) - headerH - borderV - 24;
+            if (viewportAvail > 120) {
+                limit = Math.min(limit, viewportAvail);
+            }
+        }
+        return limit;
+    }
+
+    _updateHeight(open) {
+        if (!open) {
+            this.content.style.overflowX = 'hidden';
+            this.content.style.overflowY = 'hidden';
+            this.content.style.maxHeight = '0px';
+            return;
+        }
+        const limit = this._getEffectiveMaxHeight();
+        const scrollH = this.body.scrollHeight;
+        if (scrollH > limit) {
+            this.content.style.maxHeight = `${limit}px`;
+            this.content.style.overflowX = 'hidden';
+            this.content.style.overflowY = 'auto';
+        } else {
+            this.content.style.maxHeight = `${scrollH}px`;
+            this.content.style.overflowX = 'hidden';
+            this.content.style.overflowY = 'hidden';
+        }
+    }
+
+    setMaxHeight(maxHeight) {
+        this.maxHeight = maxHeight;
         if (this.isOpen) this._updateHeight(true);
-      }
-    };
-
-    this.header.addEventListener('pointerdown', (e) => {
-      if (e.button !== 0 || e.target.closest('button, input, select, textarea, label, svg') || this._isResetting) return;
-      isDragging = true;
-      hasMoved = false;
-      startX = e.clientX;
-      startY = e.clientY;
-      window.addEventListener('pointermove', onPointerMove);
-      window.addEventListener('pointerup', onPointerUp);
-    });
-  }
-
-  append(child, index = null) { return this.addChild(child, index); }
-
-  addChild(child, index = null) {
-    if (!child) return this;
-    if (Array.isArray(child)) {
-      child.forEach(item => this.addChild(item));
-      return this;
+        return this;
     }
-    const node = child.element || (child instanceof Node ? child : null);
-    if (node) {
-      if (typeof index === 'number' && index >= 0 && index < this.body.children.length) {
-        this.body.insertBefore(node, this.body.children[index]);
-      } else {
-        this.body.appendChild(node);
-      }
-      if (this.isOpen) this._updateHeight(true);
+
+    adaptToParent(container, insertBefore = null) {
+        if (!container || !(container instanceof HTMLElement)) container = document.body;
+        this.element.classList.remove('is-dragging', 'gio-is-floating');
+
+        this.element.style.position = '';
+        this.element.style.left = '';
+        this.element.style.top = '';
+        this.element.style.maxWidth = '';
+        this.element.style.pointerEvents = '';
+
+        if (insertBefore && insertBefore.parentNode === container) {
+            container.insertBefore(this.element, insertBefore);
+        } else {
+            container.appendChild(this.element);
+        }
+
+        this._applyFit(container);
+
+        if (!this._originParent) {
+            this._saveInitialPosition(container);
+        }
     }
-    return this;
-  }
 
-  removeChild(child) {
-    const node = child?.element || (child instanceof Node ? child : null);
-    if (node && node.parentNode === this.body) {
-      this.body.removeChild(node);
-      if (this.isOpen) this._updateHeight(true);
+    toggle() { this.isOpen ? this.close() : this.open(); }
+    open() {
+        this.isOpen = true;
+        this.element.classList.add('open');
+        this._updateHeight(true);
+        return this;
     }
-    return this;
-  }
+    close() {
+        this.isOpen = false;
+        this.element.classList.remove('open');
+        this._updateHeight(false);
+        return this;
+    }
 
-  clear() {
-    this.body.innerHTML = '';
-    if (this.isOpen) this._updateHeight(true);
-    return this;
-  }
+    _isDropTarget(el) {
+        if (!el || el === document.body || el === document.documentElement) return false;
+        if (el === this.element || this.element.contains(el)) return false;
+        return (
+            el.hasAttribute('data-gio-dropzone') ||
+            el.classList.contains('gio-drop-zone') ||
+            el.classList.contains('gio-acc-item') ||
+            el.classList.contains('app-workspace') ||
+            el.classList.contains('gio-acc-body') ||
+            el.classList.contains('otro-menu') ||
+            el.id === 'zona-drop' ||
+            el.tagName === 'ASIDE'
+        );
+    }
 
-  getChildren() {
-    return Array.from(this.body.children);
-  }
+    _initMagneticDrag() {
+        let startX = 0, startY = 0;
+        let grabOffsetX = 0, grabOffsetY = 0;
+        let isDragging = false, hasMoved = false;
+        let lastHighlightZone = null;
+        const snapDistance = 18;
+
+        const { placeholder, guideV, guideH } = GiovanniToggleAcordion._ensureDragHelpers();
+
+        const resolveDropContext = (clientX, clientY) => {
+            this.element.style.pointerEvents = 'none';
+            const hits = document.elementsFromPoint(clientX, clientY);
+            this.element.style.pointerEvents = '';
+
+            const hit = hits.find(el => el !== placeholder && this._isDropTarget(el));
+            if (!hit) return { container: null, hoveredItem: null };
+
+            if (hit.classList.contains('gio-acc-item')) {
+                const parent = hit.parentNode;
+                if (!parent || parent === document.body) {
+                    return { container: null, hoveredItem: null };
+                }
+                return { container: parent, hoveredItem: hit };
+            }
+
+            return { container: hit, hoveredItem: null };
+        };
+
+        const placePlaceholderInContainer = (container, clientY) => {
+            const siblings = Array.from(container.children).filter(
+                ch => ch !== this.element && ch !== placeholder && ch.classList.contains('gio-acc-item')
+            );
+            let insertBeforeNode = null;
+            for (const sib of siblings) {
+                const r = sib.getBoundingClientRect();
+                if (clientY < r.top + r.height / 2) {
+                    insertBeforeNode = sib;
+                    break;
+                }
+            }
+            if (placeholder.parentNode !== container || placeholder.nextSibling !== insertBeforeNode) {
+                container.insertBefore(placeholder, insertBeforeNode);
+            }
+        };
+
+        const clearZoneHighlight = () => {
+            if (lastHighlightZone) {
+                lastHighlightZone.classList.remove('gio-drag-zone-active');
+                lastHighlightZone = null;
+            }
+        };
+
+        const onPointerMove = (e) => {
+            if (!isDragging) return;
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+
+            if (!hasMoved && Math.hypot(dx, dy) > 6) {
+                hasMoved = true;
+                this._fittedParent = null;
+                this._lastFitW = null;
+                this._lastFitMaxW = null;
+
+                const rect = this.element.getBoundingClientRect();
+                const viewportW = document.documentElement.clientWidth || window.innerWidth;
+                const baseDragW = Math.min(
+                    rect.width,
+                    Math.max(Math.min(240, viewportW - 20), viewportW * 0.45)
+                );
+                const { width: dragW } = this._limitWidthToScreenOrigin(baseDragW, rect.left);
+                const ratioX = rect.width > 0 ? (startX - rect.left) / rect.width : 0.5;
+                grabOffsetX = ratioX * dragW;
+                grabOffsetY = startY - rect.top;
+
+                placeholder.style.display = 'block';
+                placeholder.style.width = '100%';
+                placeholder.style.height = `${Math.min(Math.max(rect.height * 0.25, 48), 72)}px`;
+
+                if (this.element.parentNode && this.element.parentNode !== document.body) {
+                    this.element.parentNode.insertBefore(placeholder, this.element.nextSibling);
+                }
+
+                document.body.appendChild(this.element);
+                this.element.classList.add('is-dragging');
+                this.element.style.width = `${dragW}px`;
+                this.element.style.maxWidth = `${dragW}px`;
+                if (this.isOpen) this._updateHeight(true);
+            }
+
+            if (!hasMoved) return;
+
+            const screenW = document.documentElement.clientWidth || window.innerWidth;
+            const screenH = document.documentElement.clientHeight || window.innerHeight;
+
+            const curW = this.element.offsetWidth;
+            const maxLeft = Math.max(10, screenW - Math.min(curW, 180) - 10);
+            const maxTop = Math.max(10, screenH - this._getMinVisibleBottom());
+
+            const targetX = Math.max(10, Math.min(maxLeft, e.clientX - grabOffsetX));
+            const targetY = Math.max(10, Math.min(maxTop, e.clientY - grabOffsetY));
+
+            const { maxAllowed } = this._limitWidthToScreenOrigin(curW, targetX);
+            this.element.style.maxWidth = `${maxAllowed}px`;
+
+            const curH = this.element.offsetHeight;
+            const { container } = resolveDropContext(e.clientX, e.clientY);
+
+            if (container !== lastHighlightZone) {
+                clearZoneHighlight();
+                if (container) {
+                    container.classList.add('gio-drag-zone-active');
+                    lastHighlightZone = container;
+                }
+            }
+
+            if (container) {
+                guideV.style.display = 'none';
+                guideH.style.display = 'none';
+                placeholder.style.display = 'block';
+                placePlaceholderInContainer(container, e.clientY);
+            } else {
+                placeholder.style.display = 'none';
+                if (placeholder.parentNode) placeholder.remove();
+
+                let snapX = null, snapY = null;
+                if (targetX < snapDistance) snapX = 10;
+                if (targetY < snapDistance) snapY = 10;
+                if (Math.abs((screenW - 10) - (targetX + this.element.offsetWidth)) < snapDistance) snapX = screenW - 10;
+                if (Math.abs((screenH - 10) - (targetY + curH)) < snapDistance) snapY = screenH - 10;
+
+                guideV.style.display = snapX !== null ? 'block' : 'none';
+                if (snapX !== null) guideV.style.left = `${snapX}px`;
+                guideH.style.display = snapY !== null ? 'block' : 'none';
+                if (snapY !== null) guideH.style.top = `${snapY}px`;
+            }
+
+            this.element.style.left = `${targetX}px`;
+            this.element.style.top = `${targetY}px`;
+        };
+
+        const onPointerUp = (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            guideV.style.display = 'none';
+            guideH.style.display = 'none';
+            clearZoneHighlight();
+
+            window.removeEventListener('pointermove', onPointerMove);
+            window.removeEventListener('pointerup', onPointerUp);
+            window.removeEventListener('pointercancel', onPointerUp);
+
+            if (!hasMoved) return;
+
+            const firstRect = this.element.getBoundingClientRect();
+            const { container } = resolveDropContext(e.clientX, e.clientY);
+
+            if (container) {
+                placePlaceholderInContainer(container, e.clientY);
+                placeholder.parentNode.insertBefore(this.element, placeholder);
+                placeholder.style.display = 'none';
+                placeholder.remove();
+
+                this.element.classList.remove('is-dragging', 'gio-is-floating');
+                this.element.style.position = '';
+                this.element.style.left = '';
+                this.element.style.top = '';
+                this.element.style.maxWidth = '';
+                this.element.style.pointerEvents = '';
+
+                this._applyFit(container);
+                if (this.isOpen) this._updateHeight(true);
+                this._animateFromRect(firstRect, 0.28);
+            } else {
+                placeholder.style.display = 'none';
+                if (placeholder.parentNode) placeholder.remove();
+
+                this.element.classList.remove('is-dragging');
+                this.element.classList.add('gio-is-floating');
+                this.element.style.pointerEvents = '';
+
+                this._clampFloatingToViewport();
+            }
+        };
+
+        this.header.addEventListener('pointerdown', (e) => {
+            if (e.button !== 0 || e.target.closest('button, input, select, textarea, label, svg') || this._isResetting) return;
+            isDragging = true;
+            hasMoved = false;
+            startX = e.clientX;
+            startY = e.clientY;
+            window.addEventListener('pointermove', onPointerMove);
+            window.addEventListener('pointerup', onPointerUp);
+            window.addEventListener('pointercancel', onPointerUp);
+        });
+    }
+
+    append(child, index = null) { return this.addChild(child, index); }
+
+    addChild(child, index = null) {
+        if (!child) return this;
+        if (Array.isArray(child)) {
+            child.forEach(item => this.addChild(item));
+            return this;
+        }
+        const node = child.element || (child instanceof Node ? child : null);
+        if (node) {
+            if (typeof index === 'number' && index >= 0 && index < this.body.children.length) {
+                this.body.insertBefore(node, this.body.children[index]);
+            } else {
+                this.body.appendChild(node);
+            }
+            if (this.isOpen) this._updateHeight(true);
+        }
+        return this;
+    }
+
+    removeChild(child) {
+        const node = child?.element || (child instanceof Node ? child : null);
+        if (node && node.parentNode === this.body) {
+            this.body.removeChild(node);
+            if (this.isOpen) this._updateHeight(true);
+        }
+        return this;
+    }
+
+    clear() {
+        this.body.innerHTML = '';
+        if (this.isOpen) this._updateHeight(true);
+        return this;
+    }
+
+    getChildren() {
+        return Array.from(this.body.children);
+    }
 }
-    class GiovanniWrapperAcordion extends GiovanniToggleAcordion {
-      constructor(target, options = {}) {
+
+class GiovanniWrapperAcordion extends GiovanniToggleAcordion {
+    constructor(target, options = {}) {
         const el = typeof target === 'string' ? document.querySelector(target) : target;
         if (!el || !(el instanceof HTMLElement)) {
-          throw new Error('GiovanniWrapperAcordion: elemento no encontrado.');
+            throw new Error('GiovanniWrapperAcordion: elemento no encontrado.');
         }
 
         const opts = typeof options === 'string' ? { title: options } : (options || {});
@@ -1780,59 +1885,48 @@ class GiovanniColorPicker {
         this.originalElement = el;
 
         if (opts.embedDiv) {
-          this.body.appendChild(el);
+            this.body.appendChild(el);
         } else {
-          while (el.firstChild) {
-            this.body.appendChild(el.firstChild);
-          }
+            while (el.firstChild) {
+                this.body.appendChild(el.firstChild);
+            }
         }
 
         if (parent) {
-          parent.insertBefore(this.element, nextSibling);
-          if (!opts.embedDiv) el.remove();
-          this._saveInitialPosition(parent);
-          this._applyFit(parent);
+            parent.insertBefore(this.element, nextSibling);
+            if (!opts.embedDiv) el.remove();
+            this._saveInitialPosition(parent);
+            this._applyFit(parent);
         }
 
         setTimeout(() => this._updateHeight(this.isOpen), 60);
-      }
     }
-
-
-   
-   function agregarClaseAElementos(nombreClase) {
-  const elementos = document.querySelectorAll('aside, main, div, footer');
-  
-  elementos.forEach(el => {
- 
-    if (el.closest('.gio-acc-item') || el.id.startsWith('gio-snap-')) {
-      return;
-    }
-    el.classList.add(nombreClase);
-  });
 }
 
-          setTimeout(() => {
-     agregarClaseAElementos("app-workspace");
-        },2000); 
-   
-   const injectStyles = `
-  /*   ::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-        background: transparent;
-    }
-    ::-webkit-scrollbar-thumb {
-        background: #444; 
-        border-radius: 3px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-        background: #666;
-    } */
+function agregarClaseAElementos(nombreClase) {
+    const elementos = document.querySelectorAll('aside, main, div, footer');
+    elementos.forEach(el => {
+        if (
+            el.closest('.gio-acc-item') ||
+            el.closest('.gio-menu') ||
+            el.closest('.gioU-menu') ||
+            el.closest('.gio-browser') ||
+            el.closest('.gio-container') ||
+            el.closest('.vcp-root') ||
+            el.classList.contains('gio-tooltip') ||
+            el.classList.contains('gioU-tooltip') ||
+            el.id.startsWith('gio-snap-')
+        ) {
+            return;
+        }
+        el.classList.add(nombreClase);
+    });
+}
 
-        *::-webkit-scrollbar {
+ 
+
+const injectStyles = `
+*::-webkit-scrollbar {
     width: 6px !important;
     height: 6px !important;
 }
@@ -1852,9 +1946,10 @@ styleSheet.type = 'text/css';
 styleSheet.innerText = injectStyles;
 document.head.appendChild(styleSheet);
 
- 
 class Giovanni {
     static _cssInjected = false;
+    static _tooltipState = { el: null, rafId: 0, anchor: null, placement: 'right', text: '', bound: false };
+
     static _injectGlobalStyles() {
         if (Giovanni._cssInjected) return;
         Giovanni._cssInjected = true;
@@ -1865,15 +1960,13 @@ class Giovanni {
                 --backg0: #2d2d2d;
                 --backg1: #3c3c3c;
                 --backg2: #2d2d2d;
-                --backg3: #2d2d2d;
+                --backg3: #2e2e2e;
                 --backg: #303030;
                 --borde: #4d4d4d;
-                 
                 --slidernofill: #4a4a4a;
                 --sliderfill: #363636;
                 --texto: #8c8e8f;
-     
-         
+                --textoAlfa: #959ba0;
                 --textoActivo: #e3e3e3bb;
                 --textodisable: #60605f;
                 --textoActvioBlue: #4daafc;
@@ -1883,93 +1976,110 @@ class Giovanni {
                 --scrollbar-size: 5px;
             }
 
-            .gio-menu {
-    position: fixed;
-    z-index: 9999;
-    display: flex;
-    flex-direction: row;
-    gap: var(--gio-gap, 8px);
-    padding: var(--gio-padding, 8px);
-    background: var(--backg1);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
-    transition: transform .28s ease, opacity .28s ease;
-    max-width: calc(100vw - 24px);
-    max-height: calc(100vh - 24px);
-    box-sizing: border-box;
-}
-.gio-menu.gio-left   { left: 0;  top: 50%; transform: translateY(-50%); flex-direction: column; border-radius: 0 var(--radius) var(--radius) 0; }
-.gio-menu.gio-right  { right: 0; top: 50%; transform: translateY(-50%); flex-direction: column; border-radius: var(--radius) 0 0 var(--radius); }
-.gio-menu.gio-top    { top: 0;    left: 50%; transform: translateX(-50%); border-radius: 0 0 var(--radius) var(--radius); }
-.gio-menu.gio-bottom { bottom: 0; left: 50%; transform: translateX(-50%); border-radius: var(--radius) var(--radius) 0 0; }
+            .gio-menu, .gioU-menu {
+                position: fixed;
+                z-index: 9999;
+                display: flex;
+                flex-direction: row;
+                gap: var(--gio-gap, var(--gioU-gap, 8px));
+                padding: var(--gio-padding, var(--gioU-padding, 8px));
+                background: var(--backg1);
+                box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+                transition: transform .28s ease, opacity .28s ease;
+                max-width: calc(100vw - 24px);
+                max-height: calc(100vh - 24px);
+                box-sizing: border-box;
+            }
+            .gio-menu.gio-left, .gioU-menu.gioU-left     { left: 0;   top: 50%; transform: translateY(-50%); flex-direction: column; border-radius: 0 var(--radius) var(--radius) 0; }
+            .gio-menu.gio-right, .gioU-menu.gioU-right   { right: 0;  top: 50%; transform: translateY(-50%); flex-direction: column; border-radius: var(--radius) 0 0 var(--radius); }
+            .gio-menu.gio-top, .gioU-menu.gioU-top       { top: 0;    left: 50%; transform: translateX(-50%); flex-direction: row; border-radius: 0 0 var(--radius) var(--radius); }
+            .gio-menu.gio-bottom, .gioU-menu.gioU-bottom { bottom: 0; left: 50%; transform: translateX(-50%); flex-direction: row; border-radius: var(--radius) var(--radius) 0 0; }
 
-.gio-menu-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gio-gap, 8px);
-    max-height: calc(100vh - 100px);
-    overflow-y: auto;
-    overflow-x: hidden;
-    scrollbar-gutter: stable;
-}
-.gio-menu.gio-top .gio-menu-list,
-.gio-menu.gio-bottom .gio-menu-list {
-    flex-direction: row;
-    max-height: none;
-    max-width: calc(100vw - 100px);
-    overflow-y: hidden;
-    overflow-x: auto;
-}
+            .gio-menu-list, .gioU-menu-list {
+                display: flex;
+                flex-direction: column;
+                gap: var(--gio-gap, var(--gioU-gap, 8px));
+                max-height: calc(100vh - 100px);
+                overflow-y: auto;
+                overflow-x: hidden;
+                scrollbar-gutter: stable;
+            }
+            .gio-menu.gio-top .gio-menu-list,
+            .gio-menu.gio-bottom .gio-menu-list,
+            .gioU-menu.gioU-top .gioU-menu-list,
+            .gioU-menu.gioU-bottom .gioU-menu-list {
+                flex-direction: row;
+                max-height: none;
+                max-width: calc(100vw - 100px);
+                overflow-y: hidden;
+                overflow-x: auto;
+            }
 
-.gio-btn {
-    position: relative;
-    width: var(--gio-btn-size, 44px);
-    height: var(--gio-btn-size, 44px);
-    min-width: var(--gio-btn-size, 44px);
-    border: none;
-    border-radius: var(--gio-btn-radius, 10px);
-    background: var(--backg0);
-    color: var(--texto);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background .18s, color .18s, transform .12s, opacity .2s;
-    padding: 0;
-    flex-shrink: 0;
-}
-.gio-btn:hover  { background: var(--backg3); color: var(--textoActvioBlue); }
-.gio-btn:active { transform: scale(.94); }
-.gio-btn.gio-active { color: var(--textoActvioBlue); background: var(--textoledBrillo); }
-.gio-btn svg { width: var(--gio-icon-size, 22px); height: var(--gio-icon-size, 22px); fill: currentColor; pointer-events: none; }
-.gio-btn.gio-burger { color: var(--textoActvioBlue); }
+            .gio-btn, .gioU-btn {
+                position: relative;
+                width: var(--gio-btn-size, var(--gioU-btn-size, 44px));
+                height: var(--gio-btn-size, var(--gioU-btn-size, 44px));
+                min-width: var(--gio-btn-size, var(--gioU-btn-size, 44px));
+                border: none;
+                border-radius: var(--gio-btn-radius, var(--gioU-btn-radius, 10px));
+                background: var(--backg0);
+                color: var(--texto);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: background .18s, color .18s, transform .12s, opacity .2s;
+                padding: 0;
+                flex-shrink: 0;
+            }
+            .gio-btn:hover, .gioU-btn:hover { background: var(--backg3); color: var(--textoActvioBlue); }
+            .gio-btn:active, .gioU-btn:active { transform: scale(.94); }
+            .gio-btn.gio-active, .gioU-btn.gioU-active { color: var(--textoActvioBlue); background: var(--textoledBrillo); }
+            .gio-btn svg, .gioU-btn svg { width: var(--gio-icon-size, var(--gioU-icon-size, 22px)); height: var(--gio-icon-size, var(--gioU-icon-size, 22px)); fill: currentColor; pointer-events: none; }
+            .gio-btn.gio-burger, .gioU-btn.gioU-burger { color: var(--textoActvioBlue); }
 
-.gio-menu.gio-collapsed .gio-menu-list {
-    display: none;
-}
-.gio-menu.gio-collapsed.gio-left   { transform: translateY(-50%) translateX(-2px); }
-.gio-menu.gio-collapsed.gio-right  { transform: translateY(-50%) translateX(2px); }
-.gio-menu.gio-collapsed.gio-top    { transform: translateX(-50%) translateY(-2px); }
-.gio-menu.gio-collapsed.gio-bottom { transform: translateX(-50%) translateY(2px); }
-.gio-menu.gio-collapsed { padding: calc(var(--gio-padding, 8px) * 0.75); gap: 0; }
+            .gio-menu.gio-collapsed .gio-menu-list,
+            .gioU-menu.gioU-collapsed .gioU-menu-list { display: none; }
+            .gio-menu.gio-collapsed.gio-left,
+            .gioU-menu.gioU-collapsed.gioU-left   { transform: translateY(-50%) translateX(-2px); }
+            .gio-menu.gio-collapsed.gio-right,
+            .gioU-menu.gioU-collapsed.gioU-right  { transform: translateY(-50%) translateX(2px); }
+            .gio-menu.gio-collapsed.gio-top,
+            .gioU-menu.gioU-collapsed.gioU-top    { transform: translateX(-50%) translateY(-2px); }
+            .gio-menu.gio-collapsed.gio-bottom,
+            .gioU-menu.gioU-collapsed.gioU-bottom { transform: translateX(-50%) translateY(2px); }
+            .gio-menu.gio-collapsed,
+            .gioU-menu.gioU-collapsed { padding: calc(var(--gio-padding, var(--gioU-padding, 8px)) * 0.75); gap: 0; }
 
-.gio-tooltip {
-    position: fixed;
-    padding: 6px 10px;
-    background: var(--backg0);
-    color: var(--textoActivo);
-    font-size: 12px;
-    font-family: system-ui, sans-serif;
-    white-space: nowrap;
-    border-radius: 6px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
-    pointer-events: none;
-    opacity: 0;
-    transform: translateY(-50%) scale(.9);
-    transition: opacity .15s, transform .15s;
-    z-index: 10000;
-    border: 1px solid var(--borde);
-}
-.gio-tooltip.gio-visible { opacity: 1; transform: translateY(-50%) scale(1); }
+            .gioU-sep-v {
+                height: 1px; width: 100%;
+                background: var(--borde);
+                margin: 4px 0; flex-shrink: 0;
+            }
+            .gioU-sep-h {
+                width: 1px; height: 100%;
+                background: var(--borde);
+                margin: 0 4px; flex-shrink: 0;
+            }
+
+            .gio-tooltip {
+                position: fixed;
+                padding: 6px 10px;
+                background: var(--backg0);
+                color: var(--textoActivo);
+                font-size: 12px;
+                font-family: system-ui, sans-serif;
+                white-space: nowrap;
+                border-radius: 6px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+                pointer-events: none;
+                opacity: 0;
+                transform: scale(.94);
+                transition: opacity .15s, transform .15s;
+                z-index: 10000;
+                border: 1px solid var(--borde);
+            }
+            .gio-tooltip.gio-visible { opacity: 1; transform: scale(1); }
 
             .gio-container *::-webkit-scrollbar,
             .gio-custom-scroll::-webkit-scrollbar {
@@ -2005,7 +2115,6 @@ class Giovanni {
                 color: var(--texto);
             }
 
-            /* CAMPO ARRASTRABLE */
             .gio-field {
                 width: 100%;
                 box-sizing: border-box;
@@ -2023,7 +2132,6 @@ class Giovanni {
                 border-color: #5c5c5c;
             }
 
-            /* ESTADO ARRASTRÁNDOSE (IDÉNTICO A GIOVANNI TOGGLE ACORDION) */
             .gio-field.is-dragging {
                 position: fixed !important;
                 opacity: 0.92;
@@ -2035,7 +2143,6 @@ class Giovanni {
                 background: var(--backg1) !important;
             }
 
-            /* ASA DE ARRASTRE */
             .gio-field-handle {
                 display: flex;
                 align-items: center;
@@ -2073,7 +2180,6 @@ class Giovanni {
                 fill: var(--textoActvioBlue);
             }
 
-            /* EMISIÓN LED EXACTA */
             .gio-led-exacto {
                 background: var(--textoledBrillo) !important;
                 -webkit-box-shadow: 0px 1px 57px 13px var(--textoledBrillo) !important;
@@ -2088,12 +2194,219 @@ class Giovanni {
         (document.head || document.documentElement).appendChild(style);
     }
 
+    static _resolveIcon(key) {
+        if (!key) return GiovanniIconDB.square || '';
+        if (GiovanniIconDB[key]) return GiovanniIconDB[key];
+        if (typeof key === 'string' && key.trim().startsWith('<')) return key;
+        return GiovanniIconDB.square || '';
+    }
+
+    static _ensureDragHelpers() {
+        let placeholder = document.getElementById('gio-snap-placeholder');
+        if (!placeholder) {
+            placeholder = document.createElement('div');
+            placeholder.id = 'gio-snap-placeholder';
+            placeholder.style.cssText = 'border:2px dashed #4daafc; border-radius:10px; background:rgba(77, 170, 252, 0.14); box-shadow:inset 0 0 12px rgba(77, 170, 252, 0.18); margin-bottom:12px; display:none; pointer-events:none; width:100%; height:52px; box-sizing:border-box; flex-shrink:0;';
+            document.body.appendChild(placeholder);
+        }
+
+        let guideV = document.getElementById('gio-snap-v');
+        if (!guideV) {
+            guideV = document.createElement('div');
+            guideV.id = 'gio-snap-v';
+            guideV.style.cssText = 'position:fixed; top:0; bottom:0; width:1px; background:#4daafc; box-shadow:0 0 8px #4daafc; z-index:9999999; display:none; pointer-events:none;';
+            document.body.appendChild(guideV);
+        }
+
+        let guideH = document.getElementById('gio-snap-h');
+        if (!guideH) {
+            guideH = document.createElement('div');
+            guideH.id = 'gio-snap-h';
+            guideH.style.cssText = 'position:fixed; left:0; right:0; height:1px; background:#4daafc; box-shadow:0 0 8px #4daafc; z-index:9999999; display:none; pointer-events:none;';
+            document.body.appendChild(guideH);
+        }
+
+        return { placeholder, guideV, guideH };
+    }
+
+    static _ensureTooltipEl() {
+        Giovanni._injectGlobalStyles();
+        const st = Giovanni._tooltipState;
+        if (!st.el || !st.el.isConnected) {
+            st.el = document.createElement('div');
+            st.el.className = 'gio-tooltip';
+            document.body.appendChild(st.el);
+        }
+        if (!st.bound) {
+            st.bound = true;
+            const reposition = () => {
+                if (st.anchor && st.anchor.isConnected && st.text) {
+                    Giovanni._showTooltip(st.anchor, st.text, st.placement);
+                }
+            };
+            window.addEventListener('resize', reposition, { passive: true });
+            window.addEventListener('scroll', reposition, { passive: true, capture: true });
+        }
+        return st.el;
+    }
+
+    static _showTooltip(target, text, placement = 'right') {
+        if (!target || !text) return;
+        const st = Giovanni._tooltipState;
+        const tip = Giovanni._ensureTooltipEl();
+        st.anchor = target;
+        st.placement = placement;
+        st.text = text;
+        tip.textContent = text;
+        tip.classList.remove('gio-visible');
+
+        const compute = (r, tw, th, pl) => {
+            const GAP = 8;
+            switch (pl) {
+                case 'right': return { top: r.top + r.height / 2 - th / 2, left: r.right + GAP };
+                case 'left': return { top: r.top + r.height / 2 - th / 2, left: r.left - tw - GAP };
+                case 'top': return { top: r.top - th - GAP, left: r.left + r.width / 2 - tw / 2 };
+                case 'bottom':
+                default: return { top: r.bottom + GAP, left: r.left + r.width / 2 - tw / 2 };
+            }
+        };
+
+        const fits = (r, tw, th, pl) => {
+            const PAD = 6;
+            const { top, left } = compute(r, tw, th, pl);
+            return left >= PAD && left + tw <= window.innerWidth - PAD && top >= PAD && top + th <= window.innerHeight - PAD;
+        };
+
+        cancelAnimationFrame(st.rafId);
+        st.rafId = requestAnimationFrame(() => {
+            if (!st.anchor || !st.anchor.isConnected) return;
+            const r = st.anchor.getBoundingClientRect();
+            const tw = tip.offsetWidth;
+            const th = tip.offsetHeight;
+            const PAD = 6;
+            const opposite = { right: 'left', left: 'right', top: 'bottom', bottom: 'top' };
+            const perp = {
+                right: ['top', 'bottom'],
+                left: ['top', 'bottom'],
+                top: ['right', 'left'],
+                bottom: ['right', 'left']
+            };
+            const order = [placement, opposite[placement] || 'left', ...(perp[placement] || ['top', 'bottom'])];
+            const pl = order.find(p => fits(r, tw, th, p)) || placement;
+            let { top, left } = compute(r, tw, th, pl);
+            left = Math.max(PAD, Math.min(left, window.innerWidth - tw - PAD));
+            top = Math.max(PAD, Math.min(top, window.innerHeight - th - PAD));
+            tip.style.left = `${Math.round(left)}px`;
+            tip.style.top = `${Math.round(top)}px`;
+            tip.classList.add('gio-visible');
+        });
+    }
+
+    static _hideTooltip() {
+        const st = Giovanni._tooltipState;
+        cancelAnimationFrame(st.rafId);
+        st.anchor = null;
+        st.text = '';
+        if (st.el) st.el.classList.remove('gio-visible');
+    }
+
+    static _showGlobalTooltip(target, text, position) {
+        const map = { left: 'right', right: 'left', top: 'bottom', bottom: 'top' };
+        Giovanni._showTooltip(target, text, map[position] || 'top');
+    }
+
+    static _hideGlobalTooltip() {
+        Giovanni._hideTooltip();
+    }
+
+    static _edgeToTooltipPlacement(position) {
+        if (position === 'right') return 'left';
+        if (position === 'top') return 'bottom';
+        if (position === 'bottom') return 'top';
+        return 'right';
+    }
+
     constructor() {
         Giovanni._injectGlobalStyles();
         this.element = document.createElement('div');
         this.element.className = 'gio-container';
     }
 
+    _attachTooltip(el, placement) {
+        const getTip = () => el.dataset.tooltip || el.title || '';
+        el.addEventListener('mouseenter', () => Giovanni._showTooltip(el, getTip(), placement));
+        el.addEventListener('mouseleave', () => Giovanni._hideTooltip());
+        el.addEventListener('focus', () => Giovanni._showTooltip(el, getTip(), placement));
+        el.addEventListener('blur', () => Giovanni._hideTooltip());
+    }
+
+    _createMenuBtn({
+        icon,
+        tooltip = '',
+        bId = null,
+        active = false,
+        onClick = null,
+        defaultOnClick = null,
+        btnClass = 'gio-btn',
+        activeClass = 'gio-active',
+        tooltipPlacement = 'right',
+        buttonSize = null,
+        iconSize = null,
+        createdButtons = [],
+        isBurger = false
+    }) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = btnClass + (active ? ` ${activeClass}` : '');
+        if (bId) btn.dataset.id = bId;
+        btn.dataset.tooltip = tooltip;
+
+        if (buttonSize != null) {
+            btn.style.width = `${buttonSize}px`;
+            btn.style.height = `${buttonSize}px`;
+            btn.style.minWidth = `${buttonSize}px`;
+        }
+
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('viewBox', '0 0 24 24');
+        if (iconSize != null) {
+            svg.style.width = `${iconSize}px`;
+            svg.style.height = `${iconSize}px`;
+        }
+        svg.innerHTML = Giovanni._resolveIcon(icon);
+        btn.appendChild(svg);
+
+        this._attachTooltip(btn, tooltipPlacement);
+
+        const ref = {
+            el: btn,
+            id: bId,
+            isSeparator: false,
+            isBurger,
+            setActive: (v = true) => btn.classList.toggle(activeClass, Boolean(v)),
+            setTooltip: (t) => { btn.dataset.tooltip = t; },
+            setIcon: (key) => { svg.innerHTML = Giovanni._resolveIcon(key); },
+            remove: () => {
+                btn.remove();
+                const i = createdButtons.indexOf(ref);
+                if (i > -1) createdButtons.splice(i, 1);
+            }
+        };
+
+        btn.addEventListener('click', (e) => {
+            if (!ref.isBurger) {
+                createdButtons.forEach(r => {
+                    if (r !== ref && !r.isSeparator && !r.isBurger) r.setActive(false);
+                });
+                ref.setActive(true);
+            }
+            if (typeof onClick === 'function') onClick(btn, e);
+            else if (typeof defaultOnClick === 'function') defaultOnClick(btn, e);
+        });
+
+        createdButtons.push(ref);
+        return ref;
+    }
 
     createInputNumber({
     element = null,
@@ -2113,125 +2426,104 @@ class Giovanni {
         const style = document.createElement('style');
         style.id = styleId;
         style.textContent = `
-          .inputGio-num-field {
-            box-sizing: border-box;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            width: 100%;
-            font-family: inherit;
-          }
-
-          .inputGio-num-label {
-            font-size: 13px;
-            color: #A6A0A0;
-            user-select: none;
-            flex-shrink: 0;
-          }
-
-          .inputGio-num-label.inputGio-num-scrub {
-            cursor: ew-resize;
-          }
-
-          .inputGio-num-label.inputGio-num-scrub:hover {
-            color: #ffffff;
-          }
-
-          .inputGio-num-wrap {
-            box-sizing: border-box;
-            display: inline-flex;
-            align-items: center;
-            background-color: #121212;
-            border: 1px solid #333333;
-            border-radius: 12px;
-            color: #A6A0A0;
-            font-family: inherit;
-            font-size: 13px;
-            overflow: hidden;
-            height: 30px;
-            transition: border-color 0.15s, background-color 0.15s;
-          }
-
-          .inputGio-num-wrap:hover {
-            border-color: rgba(77, 170, 252, 0.5);
-          }
-
-          .inputGio-num-wrap.inputGio-num-editing {
-            border-color: #4daafc;
-            background-color: #181818;
-          }
-
-          .inputGio-num-btn {
-            background-color: #2d2d2d;
-            color: #A6A0A0;
-            border: none;
-            width: 28px;
-            height: 100%;
-            cursor: pointer;
-            font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            user-select: none;
-            padding: 0;
-            transition: background-color 0.15s, color 0.15s;
-          }
-
-          .inputGio-num-btn:hover {
-            background-color: #333333;
-            color: #4daafc;
-          }
-
-          .inputGio-num-trigger {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 0 8px;
-            height: 100%;
-            cursor: text;
-          }
-
-          .inputGio-num-val {
-            min-width: 34px;
-            text-align: center;
-            font-variant-numeric: tabular-nums;
-            color: #4daafc;
-            outline: none;
-            white-space: nowrap;
-            line-height: 18px;
-            transition: color 0.15s;
-          }
-
-          .inputGio-num-val[contenteditable="true"] {
-            color: #ffffff;
-          }
-
-          .inputGio-num-unit {
-            font-size: 11px;
-            color: #A6A0A0;
-            opacity: 0.7;
-            user-select: none;
-          }
-
-          .inputGio-num-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            color: #4daafc;
-            opacity: 0.55;
-            cursor: pointer;
-            flex-shrink: 0;
-            transition: opacity 0.15s;
-          }
-
-          .inputGio-num-trigger:hover .inputGio-num-icon {
-            opacity: 1;
-          }
-
-          .inputGio-num-editing .inputGio-num-icon {
-            display: none;
-          }
+            .inputGio-num-field {
+                box-sizing: border-box;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+                width: 100%;
+                font-family: inherit;
+            }
+            .inputGio-num-label {
+                font-size: 13px;
+                color: #A6A0A0;
+                user-select: none;
+                flex-shrink: 0;
+            }
+            .inputGio-num-label.inputGio-num-scrub { cursor: ew-resize; }
+            .inputGio-num-label.inputGio-num-scrub:hover { color: #ffffff; }
+            .inputGio-num-wrap {
+                box-sizing: border-box;
+                display: inline-flex;
+                align-items: center;
+                background-color: var(--backg3);
+                border: 1px solid #333333;
+                border-radius: 12px;
+                color: #A6A0A0;
+                font-family: inherit;
+                font-size: 13px;
+                overflow: hidden;
+                height: 30px;
+                transition: border-color 0.15s, background-color 0.15s;
+            }
+            .inputGio-num-wrap:hover { border-color: rgba(77, 170, 252, 0.5); }
+            .inputGio-num-wrap.inputGio-num-editing {
+                border-color: #4daafc;
+                /* Sin background-color: #181818 para que no se vea negro */
+            }
+            .inputGio-num-btn {
+                background-color: #2d2d2d;
+                color: #A6A0A0;
+                border: none;
+                width: 28px;
+                height: 100%;
+                cursor: pointer;
+                font-size: 14px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                user-select: none;
+                padding: 0;
+                transition: background-color 0.15s, color 0.15s;
+            }
+            .inputGio-num-btn:hover { background-color: #333333; color: #4daafc; }
+            .inputGio-num-trigger {
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+                padding: 0 8px;
+                height: 100%;
+                cursor: text;
+                background: transparent;
+            }
+            .inputGio-num-val {
+                min-width: 34px;
+                text-align: center;
+                font-variant-numeric: tabular-nums;
+                color: #4daafc;
+                background: transparent;
+                outline: none;
+                box-shadow: none;
+                white-space: nowrap;
+                line-height: 18px;
+                transition: color 0.15s;
+                -webkit-tap-highlight-color: transparent;
+            }
+            .inputGio-num-val:focus {
+                outline: none;
+                background: transparent;
+                box-shadow: none;
+            }
+            /* Quita el azul por defecto del navegador al seleccionar */
+            .inputGio-num-val::selection {
+                background: rgba(255, 255, 255, 0.14); /* o transparent si no quieres ningún fondo */
+                color: inherit;
+            }
+            .inputGio-num-val[contenteditable="true"] { color: #ffffff; }
+            .inputGio-num-unit { font-size: 11px; color: #A6A0A0; opacity: 0.7; user-select: none; }
+            .inputGio-num-icon {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                color: #4daafc;
+                opacity: 0.55;
+                cursor: pointer;
+                flex-shrink: 0;
+                transition: opacity 0.15s;
+            }
+            .inputGio-num-trigger:hover .inputGio-num-icon { opacity: 1; }
+            .inputGio-num-editing .inputGio-num-icon { display: none; }
         `;
         (document.head || document.documentElement).appendChild(style);
     }
@@ -2249,9 +2541,10 @@ class Giovanni {
         return isDecimal ? Math.round(clamped * 100) / 100 : Math.round(clamped);
     };
 
-    const selectAll = (el) => {
+    const moveCaretToEnd = (el) => {
         const range = document.createRange();
         range.selectNodeContents(el);
+        range.collapse(false);
         const sel = window.getSelection();
         sel.removeAllRanges();
         sel.addRange(range);
@@ -2296,7 +2589,6 @@ class Giovanni {
     const valEl = document.createElement('div');
     valEl.className = 'inputGio-num-val';
     valEl.textContent = instance.value;
-
     trigger.appendChild(valEl);
 
     if (unit) {
@@ -2327,7 +2619,7 @@ class Giovanni {
         valEl.contentEditable = 'true';
         wrap.classList.add('inputGio-num-editing');
         valEl.focus();
-        selectAll(valEl);
+        moveCaretToEnd(valEl); // Evita seleccionar todo en azul al entrar
     };
 
     const commit = (raw, triggerCallback = true) => {
@@ -2363,30 +2655,26 @@ class Giovanni {
             const delta = (e.key === 'ArrowUp' ? step : -step) * mult;
             const current = isDecimal ? parseFloat(valEl.textContent) : parseInt(valEl.textContent, 10);
             commit((Number.isNaN(current) ? prevValue : current) + delta);
-            selectAll(valEl);
+            moveCaretToEnd(valEl);
             return;
         }
-
         const nav = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Home', 'End'];
         if (nav.includes(e.key) || e.ctrlKey || e.metaKey) return;
         if (isDecimal && e.key === '.' && !valEl.textContent.includes('.')) return;
         if (min < 0 && e.key === '-' && !valEl.textContent.includes('-')) return;
-        if (!/^[0-9]$/.test(e.key)) {
-            e.preventDefault();
-        }
+        if (!/^[0-9]$/.test(e.key)) e.preventDefault();
     };
 
     const onInput = () => {
         const regex = isDecimal ? /[^0-9.-]/g : /[^0-9-]/g;
         const cleaned = valEl.textContent.replace(regex, '');
-        if (cleaned !== valEl.textContent) {
-            valEl.textContent = cleaned;
-        }
+        if (cleaned !== valEl.textContent) valEl.textContent = cleaned;
     };
 
     const onBlur = () => {
         valEl.contentEditable = 'false';
         wrap.classList.remove('inputGio-num-editing');
+        window.getSelection()?.removeAllRanges();
         commit(valEl.textContent);
     };
 
@@ -2418,12 +2706,10 @@ class Giovanni {
     }
 
     instance.getValue = () => instance.value;
-
     instance.setValue = (val) => {
         commit(val, false);
         return instance;
     };
-
     instance.mount = (parent) => {
         if (instance.element && parent) {
             const p = parent.element ? parent.element : parent;
@@ -2431,7 +2717,6 @@ class Giovanni {
         }
         return instance;
     };
-
     instance.destroy = () => {
         btnMinus.removeEventListener('click', onMinus);
         btnPlus.removeEventListener('click', onPlus);
@@ -2439,26 +2724,19 @@ class Giovanni {
         valEl.removeEventListener('keydown', onKeyDown);
         valEl.removeEventListener('input', onInput);
         valEl.removeEventListener('blur', onBlur);
-        if (labelEl && onLabelMouseDown) {
-            labelEl.removeEventListener('mousedown', onLabelMouseDown);
-        }
+        if (labelEl && onLabelMouseDown) labelEl.removeEventListener('mousedown', onLabelMouseDown);
         root.classList.remove('inputGio-num-field');
         root.innerHTML = '';
-        if (ownedElement && root.parentNode) {
-            root.parentNode.removeChild(root);
-        }
+        if (ownedElement && root.parentNode) root.parentNode.removeChild(root);
         instance.element = null;
         instance.root = null;
     };
 
-    if (container && ownedElement) {
-        instance.mount(container);
-    }
-
+    if (container && ownedElement) instance.mount(container);
     return instance;
 }
 
-createInputText({
+   createInputText({
     element = null,
     container = null,
     label = '',
@@ -2472,88 +2750,86 @@ createInputText({
         const style = document.createElement('style');
         style.id = styleId;
         style.textContent = `
-          .inputGio-text-field {
-            box-sizing: border-box;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            width: 100%;
-            font-family: inherit;
-          }
-
-          .inputGio-text-label {
-            font-size: 13px;
-            color: #A6A0A0;
-            user-select: none;
-            flex-shrink: 0;
-          }
-
-          .inputGio-text-wrap {
-            box-sizing: border-box;
-            display: flex;
-            align-items: center;
-            flex: 1;
-            min-width: 0;
-            min-height: 30px;
-            padding: 3px 12px;
-            gap: 6px;
-            background-color: #121212;
-            border: 1px solid #333333;
-            border-radius: 12px;
-            color: #A6A0A0;
-            font-family: inherit;
-            font-size: 13px;
-            transition: border-color 0.15s, background-color 0.15s;
-          }
-
-          .inputGio-text-wrap:hover {
-            border-color: rgba(77, 170, 252, 0.5);
-          }
-
-          .inputGio-text-wrap.inputGio-text-editing {
-            border-color: #4daafc;
-            background-color: #181818;
-          }
-
-          .inputGio-text-val {
-            flex: 1;
-            min-width: 0;
-            color: #4daafc;
-            outline: none;
-            white-space: nowrap;
-            overflow: hidden;
-            cursor: pointer;
-            user-select: none;
-            line-height: 20px;
-            transition: color 0.15s;
-          }
-
-          .inputGio-text-val[contenteditable="true"] {
-            color: #ffffff;
-            cursor: text;
-            user-select: text;
-            overflow-x: auto;
-          }
-
-          .inputGio-text-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            color: #4daafc;
-            opacity: 0.55;
-            cursor: pointer;
-            flex-shrink: 0;
-            transition: opacity 0.15s;
-          }
-
-          .inputGio-text-wrap:hover .inputGio-text-icon {
-            opacity: 1;
-          }
-
-          .inputGio-text-editing .inputGio-text-icon {
-            display: none;
-          }
+            .inputGio-text-field {
+                box-sizing: border-box;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+                width: 100%;
+                font-family: inherit;
+            }
+            .inputGio-text-label {
+                font-size: 13px;
+                color: #A6A0A0;
+                user-select: none;
+                flex-shrink: 0;
+            }
+            .inputGio-text-wrap {
+                box-sizing: border-box;
+                display: flex;
+                align-items: center;
+                flex: 1;
+                min-width: 0;
+                min-height: 30px;
+                padding: 3px 12px;
+                gap: 6px;
+                background-color: var(--backg3);
+                border: 1px solid #333333;
+                border-radius: 12px;
+                color: #A6A0A0;
+                font-family: inherit;
+                font-size: 13px;
+                transition: border-color 0.15s, background-color 0.15s;
+            }
+            .inputGio-text-wrap:hover * { color: #4daafcc2; }
+            .inputGio-text-wrap.inputGio-text-editing {
+                border-color: #4daafc;
+                /* Sin background-color: #181818 para que no se vea negro */
+            }
+            .inputGio-text-val {
+                flex: 1;
+                min-width: 0;
+                color: var(--texto);
+                background: transparent;
+                outline: none;
+                box-shadow: none;
+                white-space: nowrap;
+                overflow: hidden;
+                cursor: pointer;
+                user-select: none;
+                line-height: 20px;
+                transition: color 0.15s;
+                -webkit-tap-highlight-color: transparent;
+            }
+            .inputGio-text-val:focus {
+                outline: none;
+                background: transparent;
+                box-shadow: none;
+            }
+            /* Quita el resaltado azul por defecto del navegador al seleccionar */
+            .inputGio-text-val::selection {
+                background: rgba(255, 255, 255, 0.14); /* o transparent si no quieres ningún fondo */
+                color: inherit;
+            }
+            .inputGio-text-val[contenteditable="true"] {
+                color: var(--texto);
+                cursor: text;
+                user-select: text;
+                overflow-x: auto;
+            }
+            .inputGio-text-icon {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                color: #4daafc;
+                opacity: 0.55;
+                cursor: pointer;
+                flex-shrink: 0;
+                transition: opacity 0.15s;
+            }
+            .inputGio-text-wrap:hover .inputGio-text-icon { opacity: 1; }
+            .inputGio-text-editing .inputGio-text-icon { display: none; }
         `;
         (document.head || document.documentElement).appendChild(style);
     }
@@ -2571,9 +2847,10 @@ createInputText({
         root
     };
 
-    const selectAll = (el) => {
+    const moveCaretToEnd = (el) => {
         const range = document.createRange();
         range.selectNodeContents(el);
+        range.collapse(false);
         const sel = window.getSelection();
         sel.removeAllRanges();
         sel.addRange(range);
@@ -2611,7 +2888,7 @@ createInputText({
         valEl.contentEditable = 'true';
         wrap.classList.add('inputGio-text-editing');
         valEl.focus();
-        selectAll(valEl);
+        moveCaretToEnd(valEl); // Pone el cursor al final sin seleccionar todo en azul
     };
 
     const commit = (raw, triggerCallback = true) => {
@@ -2641,6 +2918,7 @@ createInputText({
     const onBlur = () => {
         valEl.contentEditable = 'false';
         wrap.classList.remove('inputGio-text-editing');
+        window.getSelection()?.removeAllRanges();
         commit(valEl.textContent);
     };
 
@@ -2650,12 +2928,10 @@ createInputText({
     valEl.addEventListener('blur', onBlur);
 
     instance.getValue = () => instance.value;
-
     instance.setValue = (val) => {
         commit(val, false);
         return instance;
     };
-
     instance.mount = (parent) => {
         if (instance.element && parent) {
             const p = parent.element ? parent.element : parent;
@@ -2663,7 +2939,6 @@ createInputText({
         }
         return instance;
     };
-
     instance.destroy = () => {
         valEl.removeEventListener(trigger, onStartEdit);
         iconEl.removeEventListener('click', onStartEdit);
@@ -2671,267 +2946,220 @@ createInputText({
         valEl.removeEventListener('blur', onBlur);
         root.classList.remove('inputGio-text-field');
         root.innerHTML = '';
-        if (ownedElement && root.parentNode) {
-            root.parentNode.removeChild(root);
-        }
+        if (ownedElement && root.parentNode) root.parentNode.removeChild(root);
         instance.element = null;
         instance.root = null;
     };
 
-    if (container && ownedElement) {
-        instance.mount(container);
-    }
-
+    if (container && ownedElement) instance.mount(container);
     return instance;
 }
 
-   static hacerEditableNumerico(el, options = {}) {
-  if (!el) throw new Error('Elemento no válido');
+    static hacerEditableNumerico(el, options = {}) {
+        if (!el) throw new Error('Elemento no válido');
 
-  let {
-    type = 'int',          
-    min = -Infinity,
-    max = Infinity,
-    step = 1,
-    decimals = 2,
-    trigger = 'click',     
-    value = undefined,
-    styled = false,        
-    onChange = () => {}
-  } = options;
+        let {
+            type = 'int',
+            min = -Infinity,
+            max = Infinity,
+            step = 1,
+            decimals = 2,
+            trigger = 'click',
+            value = undefined,
+            styled = false,
+            onChange = () => {}
+        } = options;
 
-  if (styled) {
-    if (!document.getElementById('inputGio-inline-num-styles')) {
-      const style = document.createElement('style');
-      style.id = 'inputGio-inline-num-styles';
-      style.textContent = `
-        .inputGio-inline-num {
-          box-sizing: border-box;
-          background-color: #121212;
-          border: 1px solid #333333;
-          border-radius: 12px;
-          color: #4daafc;
-          padding: 2px 10px;
-          font-variant-numeric: tabular-nums;
-          outline: none;
-          cursor: pointer;
-          transition: border-color 0.15s, background-color 0.15s, color 0.15s;
+        if (styled) {
+            if (!document.getElementById('inputGio-inline-num-styles')) {
+                const style = document.createElement('style');
+                style.id = 'inputGio-inline-num-styles';
+                style.textContent = `
+                    .inputGio-inline-num {
+                        box-sizing: border-box;
+                        background-color: var(--backg3);
+                        border: 1px solid #333333;
+                        border-radius: 12px;
+                        color: #4daafc;
+                        padding: 2px 10px;
+                        font-variant-numeric: tabular-nums;
+                        outline: none;
+                        cursor: pointer;
+                        transition: border-color 0.15s, background-color 0.15s, color 0.15s;
+                    }
+                    .inputGio-inline-num:hover { border-color: rgba(77, 170, 252, 0.5); }
+                    .inputGio-inline-num[data-editing="true"] {
+                        border-color: #4daafc;
+                        background-color: #181818;
+                        color: #ffffff;
+                        cursor: text;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            el.classList.add('inputGio-inline-num');
         }
 
-        .inputGio-inline-num:hover {
-          border-color: rgba(77, 170, 252, 0.5);
-        }
+        const prevCursor = el.style.cursor;
+        const prevOutline = el.style.outline;
+        el.style.cursor = 'pointer';
+        el.style.setProperty('outline', 'none', 'important');
 
-        .inputGio-inline-num[data-editing="true"] {
-          border-color: #4daafc;
-          background-color: #181818;
-          color: #ffffff;
-          cursor: text;
-        }
-      `;
-      document.head.appendChild(style);
+        let isFloat = type === 'float' || (step % 1 !== 0);
+        let factor = isFloat ? Math.pow(10, decimals) : 1;
+
+        const recalcType = () => {
+            isFloat = type === 'float' || (step % 1 !== 0);
+            factor = isFloat ? Math.pow(10, decimals) : 1;
+        };
+
+        const clamp = (num) => {
+            if (Number.isNaN(num)) return currentValue;
+            const clamped = Math.max(min, Math.min(max, num));
+            return isFloat ? Math.round(clamped * factor) / factor : Math.round(clamped);
+        };
+
+        const parseRaw = (raw) => {
+            const cleaned = String(raw).trim().replace(',', '.');
+            return isFloat ? parseFloat(cleaned) : parseInt(cleaned, 10);
+        };
+
+        const selectAll = () => {
+            const range = document.createRange();
+            range.selectNodeContents(el);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+        };
+
+        let currentValue = 0;
+        currentValue = clamp(parseRaw(value !== undefined ? value : el.textContent));
+        let prevValue = currentValue;
+        let cancelled = false;
+
+        if (value !== undefined) el.textContent = currentValue;
+
+        const commit = (raw, triggerCallback = true) => {
+            const next = clamp(parseRaw(raw));
+            const changed = next !== currentValue;
+            currentValue = next;
+            prevValue = next;
+            el.textContent = next;
+            if (triggerCallback && changed) onChange(currentValue, el);
+        };
+
+        const startEdit = (e) => {
+            e?.stopPropagation();
+            if (el.isContentEditable) return;
+
+            const synced = parseRaw(el.textContent);
+            if (!Number.isNaN(synced)) currentValue = clamp(synced);
+
+            cancelled = false;
+            prevValue = currentValue;
+            el.contentEditable = 'true';
+            el.dataset.editing = 'true';
+            el.style.cursor = 'text';
+            el.style.setProperty('outline', 'none', 'important');
+            el.focus();
+            selectAll();
+        };
+
+        const onKeyDown = (e) => {
+            e.stopPropagation();
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                el.blur();
+                return;
+            }
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                cancelled = true;
+                el.textContent = prevValue;
+                el.blur();
+                return;
+            }
+            if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const mult = e.shiftKey ? 10 : 1;
+                const delta = (e.key === 'ArrowUp' ? step : -step) * mult;
+                const current = parseRaw(el.textContent);
+                commit((Number.isNaN(current) ? prevValue : current) + delta, true);
+                selectAll();
+                return;
+            }
+            const nav = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Home', 'End'];
+            if (nav.includes(e.key) || e.ctrlKey || e.metaKey) return;
+            const selectedText = window.getSelection()?.toString() || '';
+            if (isFloat && (e.key === '.' || e.key === ',')) {
+                const hasDot = el.textContent.includes('.') && !selectedText.includes('.');
+                if (!hasDot) return;
+            }
+            if (min < 0 && e.key === '-') {
+                const hasMinus = el.textContent.includes('-') && !selectedText.includes('-');
+                if (!hasMinus) return;
+            }
+            if (!/^[0-9]$/.test(e.key)) e.preventDefault();
+        };
+
+        const onPaste = (e) => {
+            e.preventDefault();
+            const pasted = (e.clipboardData || window.clipboardData).getData('text');
+            const regex = isFloat ? /[^0-9.,-]/g : /[^0-9-]/g;
+            const clean = pasted.replace(regex, '').replace(',', '.');
+            document.execCommand('insertText', false, clean);
+        };
+
+        const onBlur = () => {
+            el.contentEditable = 'false';
+            delete el.dataset.editing;
+            el.style.cursor = 'pointer';
+            if (cancelled) {
+                cancelled = false;
+                currentValue = prevValue;
+                el.textContent = prevValue;
+                return;
+            }
+            commit(el.textContent, true);
+        };
+
+        el.addEventListener(trigger, startEdit);
+        el.addEventListener('keydown', onKeyDown);
+        el.addEventListener('paste', onPaste);
+        el.addEventListener('blur', onBlur);
+
+        return {
+            getValue: () => currentValue,
+            setValue: (val) => commit(val, false),
+            startEdit,
+            updateOptions: (newOpts = {}) => {
+                if (newOpts.type !== undefined) type = newOpts.type;
+                if (newOpts.min !== undefined) min = newOpts.min;
+                if (newOpts.max !== undefined) max = newOpts.max;
+                if (newOpts.step !== undefined) step = newOpts.step;
+                if (newOpts.decimals !== undefined) decimals = newOpts.decimals;
+                recalcType();
+            },
+            destroy: () => {
+                el.removeEventListener(trigger, startEdit);
+                el.removeEventListener('keydown', onKeyDown);
+                el.removeEventListener('paste', onPaste);
+                el.removeEventListener('blur', onBlur);
+                el.contentEditable = 'false';
+                el.style.cursor = prevCursor;
+                el.style.outline = prevOutline;
+                delete el.dataset.editing;
+                if (styled) el.classList.remove('inputGio-inline-num');
+            }
+        };
     }
-    el.classList.add('inputGio-inline-num');
-  }
 
-  const prevCursor = el.style.cursor;
-  const prevOutline = el.style.outline;
-  el.style.cursor = 'pointer';
-  el.style.setProperty('outline', 'none', 'important');
-
-  let isFloat = type === 'float' || (step % 1 !== 0);
-  let factor = isFloat ? Math.pow(10, decimals) : 1;
-
-  const recalcType = () => {
-    isFloat = type === 'float' || (step % 1 !== 0);
-    factor = isFloat ? Math.pow(10, decimals) : 1;
-  };
-
-  const clamp = (num) => {
-    if (Number.isNaN(num)) return currentValue;
-    const clamped = Math.max(min, Math.min(max, num));
-    return isFloat
-      ? Math.round(clamped * factor) / factor
-      : Math.round(clamped);
-  };
-
-  const parseRaw = (raw) => {
-    const cleaned = String(raw).trim().replace(',', '.');
-    return isFloat ? parseFloat(cleaned) : parseInt(cleaned, 10);
-  };
-
-  const selectAll = () => {
-    const range = document.createRange();
-    range.selectNodeContents(el);
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
-  };
-
-  let currentValue = 0;
-  currentValue = clamp(parseRaw(value !== undefined ? value : el.textContent));
-  let prevValue = currentValue;
-  let cancelled = false;
-
-  if (value !== undefined) {
-    el.textContent = currentValue;
-  }
-
-  const commit = (raw, triggerCallback = true) => {
-    const next = clamp(parseRaw(raw));
-    const changed = next !== currentValue;
-    currentValue = next;
-    prevValue = next;
-    el.textContent = next;
-    if (triggerCallback && changed) {
-      onChange(currentValue, el);
-    }
-  };
-
-  const startEdit = (e) => {
-    e?.stopPropagation();
-    if (el.isContentEditable) return;
-
-    const synced = parseRaw(el.textContent);
-    if (!Number.isNaN(synced)) {
-      currentValue = clamp(synced);
-    }
-
-    cancelled = false;
-    prevValue = currentValue;
-    el.contentEditable = 'true';
-    el.dataset.editing = 'true';
-    el.style.cursor = 'text';
-    el.style.setProperty('outline', 'none', 'important');
-    el.focus();
-    selectAll();
-  };
-
-  const onKeyDown = (e) => {
-    e.stopPropagation();
-
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      el.blur();
-      return;
-    }
-
-    if (e.key === 'Escape') {
-      e.preventDefault();
-      cancelled = true;
-      el.textContent = prevValue;
-      el.blur();
-      return;
-    }
-
-    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-      e.preventDefault();
-      const mult = e.shiftKey ? 10 : 1;
-      const delta = (e.key === 'ArrowUp' ? step : -step) * mult;
-      const current = parseRaw(el.textContent);
-      commit((Number.isNaN(current) ? prevValue : current) + delta, true);
-      selectAll();
-      return;
-    }
-
-    const nav = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Home', 'End'];
-    if (nav.includes(e.key) || e.ctrlKey || e.metaKey) return;
-
-    const selectedText = window.getSelection()?.toString() || '';
-
-    if (isFloat && (e.key === '.' || e.key === ',')) {
-      const hasDot = el.textContent.includes('.') && !selectedText.includes('.');
-      if (!hasDot) return;
-    }
-
-    if (min < 0 && e.key === '-') {
-      const hasMinus = el.textContent.includes('-') && !selectedText.includes('-');
-      if (!hasMinus) return;
-    }
-
-    if (!/^[0-9]$/.test(e.key)) {
-      e.preventDefault();
-    }
-  };
-
-  const onPaste = (e) => {
-    e.preventDefault();
-    const pasted = (e.clipboardData || window.clipboardData).getData('text');
-    const regex = isFloat ? /[^0-9.,-]/g : /[^0-9-]/g;
-    const clean = pasted.replace(regex, '').replace(',', '.');
-    document.execCommand('insertText', false, clean);
-  };
-
-  const onBlur = () => {
-    el.contentEditable = 'false';
-    delete el.dataset.editing;
-    el.style.cursor = 'pointer';
-    if (cancelled) {
-      cancelled = false;
-      currentValue = prevValue;
-      el.textContent = prevValue;
-      return;
-    }
-    commit(el.textContent, true);
-  };
-
-  el.addEventListener(trigger, startEdit);
-  el.addEventListener('keydown', onKeyDown);
-  el.addEventListener('paste', onPaste);
-  el.addEventListener('blur', onBlur);
-
-  return {
-    getValue: () => currentValue,
-    setValue: (val) => commit(val, false),
-    startEdit,
-    updateOptions: (newOpts = {}) => {
-      if (newOpts.type !== undefined) type = newOpts.type;
-      if (newOpts.min !== undefined) min = newOpts.min;
-      if (newOpts.max !== undefined) max = newOpts.max;
-      if (newOpts.step !== undefined) step = newOpts.step;
-      if (newOpts.decimals !== undefined) decimals = newOpts.decimals;
-      recalcType();
-    },
-    destroy: () => {
-      el.removeEventListener(trigger, startEdit);
-      el.removeEventListener('keydown', onKeyDown);
-      el.removeEventListener('paste', onPaste);
-      el.removeEventListener('blur', onBlur);
-      el.contentEditable = 'false';
-      el.style.cursor = prevCursor;
-      el.style.outline = prevOutline;
-      delete el.dataset.editing;
-      if (styled) el.classList.remove('inputGio-inline-num');
-    }
-  };
-}
- 
     _initMagneticDrag(fieldElement, handleElement) {
         let startX = 0, startY = 0, initLeft = 0, initTop = 0;
         let isDragging = false, hasMoved = false;
-        const threshold = 16;  
+        const threshold = 16;
 
- 
-        let placeholder = document.getElementById('gio-snap-placeholder');
-        if (!placeholder) {
-            placeholder = document.createElement('div');
-            placeholder.id = 'gio-snap-placeholder';
-            placeholder.style.cssText = 'border:2px dashed #4daafc; border-radius:8px; background:rgba(33, 96, 199, 0.15); margin-bottom:12px; display:none; pointer-events:none; width:100%; box-sizing:border-box; transition:height 0.15s;';
-            document.body.appendChild(placeholder);
-        }
-
-   
-        let guideV = document.getElementById('gio-snap-v') || (() => {
-            const g = document.createElement('div'); g.id = 'gio-snap-v';
-            g.style.cssText = 'position:fixed; top:0; bottom:0; width:1px; background:#4daafc; box-shadow:0 0 8px #4daafc; z-index:9999999; display:none; pointer-events:none;';
-            document.body.appendChild(g); return g;
-        })();
-
-        let guideH = document.getElementById('gio-snap-h') || (() => {
-            const g = document.createElement('div'); g.id = 'gio-snap-h';
-            g.style.cssText = 'position:fixed; left:0; right:0; height:1px; background:#4daafc; box-shadow:0 0 8px #4daafc; z-index:9999999; display:none; pointer-events:none;';
-            document.body.appendChild(g); return g;
-        })();
+        const { placeholder, guideV, guideH } = Giovanni._ensureDragHelpers();
 
         const onPointerMove = (e) => {
             if (!isDragging) return;
@@ -2962,9 +3190,8 @@ createInputText({
 
             fieldElement.style.pointerEvents = 'none';
             const hits = document.elementsFromPoint(e.clientX, e.clientY);
-            fieldElement.style.pointerEvents = 'auto';
+            fieldElement.style.pointerEvents = '';
 
-           
             const dropTarget = hits.find(el => el !== fieldElement && el !== placeholder && (
                 el.classList.contains('gio-acc-item') ||
                 el.classList.contains('gio-acc-body') ||
@@ -2981,11 +3208,10 @@ createInputText({
                 const r = dropTarget.getBoundingClientRect();
                 if (dropTarget.classList.contains('gio-field') || dropTarget.classList.contains('gio-acc-item')) {
                     dropTarget.parentNode?.insertBefore(placeholder, e.clientY < r.top + r.height / 2 ? dropTarget : dropTarget.nextSibling);
-                } else if (dropTarget.classList.contains('gio-acc-body') || dropTarget.classList.contains('gio-container') || dropTarget.classList.contains('app-workspace')) {
+                } else {
                     dropTarget.appendChild(placeholder);
                 }
             } else {
-            
                 placeholder.style.display = 'none';
                 const w = fieldElement.offsetWidth;
                 const h = fieldElement.offsetHeight;
@@ -3018,7 +3244,6 @@ createInputText({
             if (!hasMoved) return;
 
             if (placeholder.style.display !== 'none' && placeholder.parentNode) {
-           
                 placeholder.parentNode.insertBefore(fieldElement, placeholder);
                 placeholder.style.display = 'none';
                 placeholder.remove();
@@ -3028,8 +3253,8 @@ createInputText({
                 fieldElement.style.left = '';
                 fieldElement.style.top = '';
                 fieldElement.style.width = '100%';
+                fieldElement.style.pointerEvents = '';
             } else {
-           
                 placeholder.style.display = 'none';
                 if (placeholder.parentNode) placeholder.remove();
 
@@ -3037,6 +3262,7 @@ createInputText({
                 fieldElement.style.position = 'fixed';
                 fieldElement.style.zIndex = '999999';
                 fieldElement.style.margin = '0';
+                fieldElement.style.pointerEvents = '';
             }
         };
 
@@ -3050,108 +3276,104 @@ createInputText({
             window.addEventListener('pointerup', onPointerUp);
         });
     }
-       BotonItem({
-    icon = '',
-    title = '',
-    id = '',
-    parent = null,
-    iconDB = GiovanniIconDB,
-    onClick = null,
-    onMouseEnter = null,
-    onMouseLeave = null,
-    strokeWidth = 2,
-    iconSize = 55,
-    useStroke = true
-} = {}) {
 
-    const styleId = 'boton-item-styles';
-    if (!document.getElementById(styleId)) {
-        const style = document.createElement('style');
-        style.id = styleId;
-        style.textContent = `
-            .brush-item { 
-                aspect-ratio: 1; 
-                background: #333; 
-                border-radius: 4px; 
-                border: 1px solid #444; 
-                cursor: pointer; 
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                user-select: none;
-                box-sizing: border-box;
-                transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
-            }
-            .brush-item:hover { border-color: #4daafc; color: #4daafc; }
-            .brush-item:active, .brush-item.active {
-                border-color: #4daafc;
-                background-color: #262c33;
-                color: #4daafc;
-            }
-            .brush-item:focus-visible {
-                outline: 2px solid #4daafc;
-                outline-offset: 2px;
-            }
-            .brush-item svg {
-                pointer-events: none;
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
-    const dom = document.createElement('div');
-    dom.className = 'brush-item';
-    dom.setAttribute('role', 'button');
-    dom.setAttribute('tabindex', '0');
-    if (title || icon) dom.title = title || icon;
-    if (id) dom.id = id;
-
-    const path = iconDB && iconDB[icon] ? iconDB[icon] : icon;
-
-    if (path) {
-        const svgStyle = useStroke
-            ? `width:${iconSize}%;height:${iconSize}%;fill:none;stroke:currentColor;
-               stroke-width:${strokeWidth};stroke-linecap:round;stroke-linejoin:round;`
-            : `width:${iconSize}%;height:${iconSize}%;fill:currentColor;stroke:none;`;
-
-        dom.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true" style="${svgStyle}">${path}</svg>`;
-    }
-
-    const boton = {
-        dom,
-        iconName: icon,
-        title: title || icon,
-        id,
-        setActive(active) {
-            dom.classList.toggle('active', Boolean(active));
-        },
-        setStrokeWidth(w) {
-            const svg = dom.querySelector('svg');
-            if (svg) svg.style.strokeWidth = w;
+    BotonItem({
+        icon = '',
+        title = '',
+        id = '',
+        parent = null,
+        iconDB = GiovanniIconDB,
+        onClick = null,
+        onMouseEnter = null,
+        onMouseLeave = null,
+        strokeWidth = 2,
+        iconSize = 55,
+        useStroke = true
+    } = {}) {
+        const styleId = 'boton-item-styles';
+        if (!document.getElementById(styleId)) {
+            const style = document.createElement('style');
+            style.id = styleId;
+            style.textContent = `
+                .brush-item {
+                    aspect-ratio: 1;
+                    background: #333;
+                    border-radius: 4px;
+                    border: 1px solid #444;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    user-select: none;
+                    box-sizing: border-box;
+                    transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+                }
+                .brush-item:hover { border-color: #4daafc; color: #4daafc; }
+                .brush-item:active, .brush-item.active {
+                    border-color: #4daafc;
+                    background-color: #262c33;
+                    color: #4daafc;
+                }
+                .brush-item:focus-visible {
+                    outline: 2px solid #4daafc;
+                    outline-offset: 2px;
+                }
+                .brush-item svg { pointer-events: none; }
+            `;
+            document.head.appendChild(style);
         }
-    };
 
-    dom.addEventListener('click', (e) => {
-        if (typeof onClick === 'function') onClick(boton, e);
-    });
+        const dom = document.createElement('div');
+        dom.className = 'brush-item';
+        dom.setAttribute('role', 'button');
+        dom.setAttribute('tabindex', '0');
+        if (title || icon) dom.title = title || icon;
+        if (id) dom.id = id;
 
-    dom.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            dom.click();
+        const path = iconDB && iconDB[icon] ? iconDB[icon] : icon;
+
+        if (path) {
+            const svgStyle = useStroke
+                ? `width:${iconSize}%;height:${iconSize}%;fill:none;stroke:currentColor;stroke-width:${strokeWidth};stroke-linecap:round;stroke-linejoin:round;`
+                : `width:${iconSize}%;height:${iconSize}%;fill:currentColor;stroke:none;`;
+            dom.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true" style="${svgStyle}">${path}</svg>`;
         }
-    });
 
-    if (typeof onMouseEnter === 'function') {
-        dom.addEventListener('mouseenter', (e) => onMouseEnter(boton, e));
-    }
-    if (typeof onMouseLeave === 'function') {
-        dom.addEventListener('mouseleave', (e) => onMouseLeave(boton, e));
-    }
-    if (parent) parent.appendChild(dom);
+        const boton = {
+            dom,
+            iconName: icon,
+            title: title || icon,
+            id,
+            setActive(active) {
+                dom.classList.toggle('active', Boolean(active));
+            },
+            setStrokeWidth(w) {
+                const svg = dom.querySelector('svg');
+                if (svg) svg.style.strokeWidth = w;
+            }
+        };
 
-    return boton;
-}
+        dom.addEventListener('click', (e) => {
+            if (typeof onClick === 'function') onClick(boton, e);
+        });
+
+        dom.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                dom.click();
+            }
+        });
+
+        if (typeof onMouseEnter === 'function') {
+            dom.addEventListener('mouseenter', (e) => onMouseEnter(boton, e));
+        }
+        if (typeof onMouseLeave === 'function') {
+            dom.addEventListener('mouseleave', (e) => onMouseLeave(boton, e));
+        }
+        if (parent) parent.appendChild(dom);
+
+        return boton;
+    }
 
     _wrapWithLabel(label, el) {
         const wrap = document.createElement('div');
@@ -3187,2440 +3409,1595 @@ createInputText({
         this.element.appendChild(wrap);
         return wrap;
     }
-    static _tooltipRegistry = { el: null };
 
-static _ensureTooltipEl() {
-  if (!Giovanni._tooltipRegistry.el) {
-    const t = document.createElement('div');
-    t.className = 'gio-tooltip';
-    document.body.appendChild(t);
-    Giovanni._tooltipRegistry.el = t;
-  }
-  return Giovanni._tooltipRegistry.el;
-}
-
-static _showGlobalTooltip(target, text, position) {
-  if (!text) return;
-  const tt = Giovanni._ensureTooltipEl();
-  tt.textContent = text;
-  tt.classList.add('gio-visible');
-
-  requestAnimationFrame(() => {
-    const r = target.getBoundingClientRect();
-    const tw = tt.offsetWidth;
-    const th = tt.offsetHeight;
-    const g = 10;
-    let top, left, origin = 'center center';
-
-    switch (position) {
-      case 'left':   left = r.right + g; top = r.top + r.height / 2; origin = 'left center'; break;
-      case 'right':  left = r.left - tw - g; top = r.top + r.height / 2; origin = 'right center'; break;
-      case 'top':    left = r.left + r.width / 2 - tw / 2; top = r.bottom + g + th / 2; break;
-      case 'bottom':
-      default:       left = r.left + r.width / 2 - tw / 2; top = r.top - g - th / 2; break;
-    }
-
-    const m = 6;
-    if (left < m) left = m;
-    if (left + tw > window.innerWidth - m) left = window.innerWidth - tw - m;
-    if (top - th / 2 < m) top = th / 2 + m;
-    if (top + th / 2 > window.innerHeight - m) top = window.innerHeight - th / 2 - m;
-
-    tt.style.left = `${left}px`;
-    tt.style.top  = `${top}px`;
-    tt.style.transformOrigin = origin;
-  });
-}
-
-static _hideGlobalTooltip() {
-  Giovanni._tooltipRegistry.el?.classList.remove('gio-visible');
-}
-
-createBottomMenu({
-  buttons = [],
-  id = `gio-bottom-${Math.random().toString(36).slice(2, 8)}`,
-  offset = 20,
-  gap = 8,
-  padding = 6,
-  buttonSize = 36,
-  iconSize = 18,
-  radius = 10,
-  bg = 'var(--backg1)',
-  border = 'var(--borde)',
-  defaultOnClick = null
-} = {}) {
-
-  const wrap = document.createElement('div');
-  wrap.id = id;
-  wrap.style.cssText = `
-    position: fixed; bottom: ${offset}px; left: 50%;
-    transform: translateX(-50%);
-    display: flex; gap: ${gap}px;
-    padding: ${padding}px;
-    background: ${bg};
-    border: 1px solid ${border};
-    border-radius: ${radius}px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.5);
-    z-index: 9999;
-    max-width: calc(100vw - ${offset * 2}px);
-    box-sizing: border-box;
-    align-items: center;
-  `;
-
-  const listEl = document.createElement('div');
-  listEl.className = 'gio-custom-scroll';
-  listEl.style.cssText = `display:flex; gap:${gap}px; overflow-x:auto; overflow-y:hidden; max-width:100%; align-items:center;`;
-
-  const created = [];
-
-  const makeBtn = ({ icon, tooltip = '', bId = null, active = false, separator = false, onClick = null }) => {
-    if (separator) {
-      const sep = document.createElement('div');
-      sep.style.cssText = 'width:1px; height:20px; background:var(--borde); flex-shrink:0;';
-      listEl.appendChild(sep);
-      return { el: sep, isSeparator: true, remove: () => sep.remove() };
-    }
-
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'gio-btn' + (active ? ' gio-active' : '');
-    btn.dataset.tooltip = tooltip;
-    if (bId) btn.dataset.id = bId;
-    btn.style.width = `${buttonSize}px`;
-    btn.style.height = `${buttonSize}px`;
-    btn.style.minWidth = `${buttonSize}px`;
-
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('viewBox', '0 0 24 24');
-    svg.style.width = `${iconSize}px`;
-    svg.style.height = `${iconSize}px`;
-    svg.innerHTML = GiovanniIconDB[icon] || GiovanniIconDB.square;
-    btn.appendChild(svg);
-
-    btn.addEventListener('mouseenter', () => Giovanni._showGlobalTooltip(btn, btn.dataset.tooltip, 'bottom'));
-    btn.addEventListener('mouseleave', () => Giovanni._hideGlobalTooltip());
-    btn.addEventListener('focus', () => Giovanni._showGlobalTooltip(btn, btn.dataset.tooltip, 'bottom'));
-    btn.addEventListener('blur', () => Giovanni._hideGlobalTooltip());
-    btn.addEventListener('click', (e) => {
-      if (typeof onClick === 'function') onClick(btn, e);
-      else if (typeof defaultOnClick === 'function') defaultOnClick(btn, e);
-    });
-
-    const ref = {
-      el: btn, id: bId,
-      setActive: (v = true) => btn.classList.toggle('gio-active', v),
-      setTooltip: (t) => { btn.dataset.tooltip = t; },
-      setIcon: (k) => { svg.innerHTML = GiovanniIconDB[k] || GiovanniIconDB.square; },
-      remove: () => { btn.remove(); const i = created.indexOf(ref); if (i > -1) created.splice(i, 1); }
-    };
-    created.push(ref);
-    listEl.appendChild(btn);
-    return ref;
-  };
-
-  buttons.forEach(b => makeBtn(b));
-  wrap.appendChild(listEl);
-  document.body.appendChild(wrap);
-
-  return {
-    el: wrap, listEl, id, buttons: created,
-    createButton: makeBtn,
-    show: () => wrap.style.display = '',
-    hide: () => wrap.style.display = 'none',
-    destroy: () => { wrap.remove(); created.length = 0; },
-    getButton: (bid) => created.find(b => b.id === bid)
-  };
-}
-createToolbar({
-  buttons = [],
-  container = null,
-  orientation = 'horizontal',
-  gap = 8,
-  padding = 6,
-  bg = 'var(--backg1)',
-  border = '1px solid var(--borde)',
-  radius = 10,
-  buttonSize = 36,
-  iconSize = 18,
-  defaultOnClick = null,
-  tooltipPosition = null
-} = {}) {
-
-  const wrap = document.createElement('div');
-  wrap.style.cssText = `
-    display:inline-flex;
-    flex-direction:${orientation === 'vertical' ? 'column' : 'row'};
-    align-items:center;
-    gap:${gap}px; padding:${padding}px;
-    background:${bg}; border:${border}; border-radius:${radius}px;
-    box-sizing:border-box;
-  `;
-
-  const created = [];
-  const ttPos = tooltipPosition || (orientation === 'vertical' ? 'right' : 'bottom');
-
-  const makeBtn = ({ icon, tooltip = '', bId = null, active = false, separator = false, onClick = null }) => {
-    if (separator) {
-      const sep = document.createElement('div');
-      sep.style.cssText = orientation === 'vertical'
-        ? 'height:1px; width:20px; background:var(--borde); flex-shrink:0; margin:2px 0;'
-        : 'width:1px; height:20px; background:var(--borde); flex-shrink:0; margin:0 2px;';
-      wrap.appendChild(sep);
-      return { el: sep, isSeparator: true, remove: () => sep.remove() };
-    }
-
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'gio-btn' + (active ? ' gio-active' : '');
-    btn.dataset.tooltip = tooltip;
-    if (bId) btn.dataset.id = bId;
-    btn.style.width = `${buttonSize}px`;
-    btn.style.height = `${buttonSize}px`;
-    btn.style.minWidth = `${buttonSize}px`;
-
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('viewBox', '0 0 24 24');
-    svg.style.width = `${iconSize}px`;
-    svg.style.height = `${iconSize}px`;
-    svg.innerHTML = GiovanniIconDB[icon] || GiovanniIconDB.square;
-    btn.appendChild(svg);
-
-    btn.addEventListener('mouseenter', () => Giovanni._showGlobalTooltip(btn, btn.dataset.tooltip, ttPos));
-    btn.addEventListener('mouseleave', () => Giovanni._hideGlobalTooltip());
-    btn.addEventListener('focus', () => Giovanni._showGlobalTooltip(btn, btn.dataset.tooltip, ttPos));
-    btn.addEventListener('blur', () => Giovanni._hideGlobalTooltip());
-    btn.addEventListener('click', (e) => {
-      if (typeof onClick === 'function') onClick(btn, e);
-      else if (typeof defaultOnClick === 'function') defaultOnClick(btn, e);
-    });
-
-    const ref = {
-      el: btn, id: bId,
-      setActive: (v = true) => btn.classList.toggle('gio-active', v),
-      setTooltip: (t) => { btn.dataset.tooltip = t; },
-      setIcon: (k) => { svg.innerHTML = GiovanniIconDB[k] || GiovanniIconDB.square; },
-      remove: () => { btn.remove(); const i = created.indexOf(ref); if (i > -1) created.splice(i, 1); }
-    };
-    created.push(ref);
-    wrap.appendChild(btn);
-    return ref;
-  };
-
-  buttons.forEach(b => makeBtn(b));
-  if (container) container.appendChild(wrap);
-
-  return {
-    el: wrap, buttons: created,
-    createButton: makeBtn,
-    destroy: () => { wrap.remove(); created.length = 0; },
-    getButton: (bid) => created.find(b => b.id === bid)
-  };
-}
-
-
-   createUniversalMenu({
-    position = 'left',
-    buttons = [],
-    id = `gio-menu-${Math.random().toString(36).slice(2, 8)}`,
-    collapsible = true,
-    defaultCollapsed = false,
-    burgerTooltip = 'Mostrar / ocultar menú',
-    buttonSize = 44,
-    iconSize = 22,
-    radius = 10,
-    gap = 8,
-    padding = 8,
-    defaultOnClick = null
-} = {}) {
-
-    const STYLE_ID = 'gio-universal-menu-styles-v2';
-    if (!document.getElementById(STYLE_ID)) {
-        const style = document.createElement('style');
-        style.id = STYLE_ID;
-        style.textContent = `
-            .gioU-menu {
-                position: fixed;
-                z-index: 9999;
-                display: flex;
-                gap: var(--gioU-gap, 8px);
-                padding: var(--gioU-padding, 8px);
-                background: var(--backg1, #2d2d2d);
-                box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
-                transition: transform .28s ease, opacity .28s ease;
-                max-width: calc(100vw - 24px);
-                max-height: calc(100vh - 24px);
-                box-sizing: border-box;
-            }
-            .gioU-menu.gioU-left   { left: 0;  top: 50%; transform: translateY(-50%); flex-direction: column; border-radius: 0 var(--radius, 6px) var(--radius, 6px) 0; }
-            .gioU-menu.gioU-right  { right: 0; top: 50%; transform: translateY(-50%); flex-direction: column; border-radius: var(--radius, 6px) 0 0 var(--radius, 6px); }
-            .gioU-menu.gioU-top    { top: 0;    left: 50%; transform: translateX(-50%); flex-direction: row;    border-radius: 0 0 var(--radius, 6px) var(--radius, 6px); }
-            .gioU-menu.gioU-bottom { bottom: 0; left: 50%; transform: translateX(-50%); flex-direction: row;    border-radius: var(--radius, 6px) var(--radius, 6px) 0 0; }
-
-            .gioU-menu-list {
-                display: flex;
-                flex-direction: column;
-                gap: var(--gioU-gap, 8px);
-                max-height: calc(100vh - 100px);
-                overflow-y: auto;
-                overflow-x: hidden;
-                scrollbar-gutter: stable;
-            }
-            .gioU-menu.gioU-top .gioU-menu-list,
-            .gioU-menu.gioU-bottom .gioU-menu-list {
-                flex-direction: row;
-                max-height: none;
-                max-width: calc(100vw - 100px);
-                overflow-y: hidden;
-                overflow-x: auto;
-            }
-
-            .gioU-btn {
-                position: relative;
-                width: var(--gioU-btn-size, 44px);
-                height: var(--gioU-btn-size, 44px);
-                min-width: var(--gioU-btn-size, 44px);
-                border: none;
-                border-radius: var(--gioU-btn-radius, 10px);
-                background: var(--backg0, #333);
-                color: var(--texto, #8c8e8f);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                transition: background .18s, color .18s, transform .12s, opacity .2s;
-                padding: 0;
-                flex-shrink: 0;
-            }
-            .gioU-btn:hover  { background: var(--backg3, #3d3d3d); color: var(--textoActvioBlue, #4daafc); }
-            .gioU-btn:active { transform: scale(.94); }
-            .gioU-btn.gioU-active { color: var(--textoActvioBlue, #4daafc); background: var(--textoledBrillo, #383f48); }
-            .gioU-btn svg { width: var(--gioU-icon-size, 22px); height: var(--gioU-icon-size, 22px); fill: currentColor; pointer-events: none; }
-            .gioU-btn.gioU-burger { color: var(--textoActvioBlue, #4daafc); }
-
-            .gioU-menu.gioU-collapsed .gioU-menu-list { display: none; }
-            .gioU-menu.gioU-collapsed.gioU-left   { transform: translateY(-50%) translateX(-2px); }
-            .gioU-menu.gioU-collapsed.gioU-right  { transform: translateY(-50%) translateX(2px); }
-            .gioU-menu.gioU-collapsed.gioU-top    { transform: translateX(-50%) translateY(-2px); }
-            .gioU-menu.gioU-collapsed.gioU-bottom { transform: translateX(-50%) translateY(2px); }
-            .gioU-menu.gioU-collapsed { padding: calc(var(--gioU-padding, 8px) * 0.75); gap: 0; }
-
-            .gioU-tooltip {
-                position: fixed;
-                padding: 6px 10px;
-                background: var(--backg0, #1a1a1a);
-                color: var(--textoActivo, #e7e7e7);
-                font-size: 12px;
-                font-family: system-ui, sans-serif;
-                white-space: nowrap;
-                border-radius: 6px;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
-                pointer-events: none;
-                opacity: 0;
-                transition: opacity .15s ease;
-                z-index: 10000;
-                border: 1px solid var(--borde, #444);
-            }
-            .gioU-tooltip.gioU-visible { opacity: 1; }
-
-            .gioU-sep-v {
-                height: 1px; width: 100%;
-                background: var(--borde, #4d4d4d);
-                margin: 4px 0; flex-shrink: 0;
-            }
-            .gioU-sep-h {
-                width: 1px; height: 100%;
-                background: var(--borde, #4d4d4d);
-                margin: 0 4px; flex-shrink: 0;
-            }
+    _createFixedBarMenu({
+        edge = 'top',
+        buttons = [],
+        id,
+        offset,
+        gap,
+        padding,
+        buttonSize,
+        iconSize,
+        radius,
+        bg,
+        border,
+        defaultOnClick
+    }) {
+        const wrap = document.createElement('div');
+        wrap.id = id;
+        wrap.style.cssText = `
+            position: fixed; ${edge}: ${offset}px; left: 50%;
+            transform: translateX(-50%);
+            display: flex; gap: ${gap}px;
+            padding: ${padding}px;
+            background: ${bg};
+            border: 1px solid ${border};
+            border-radius: ${radius}px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+            z-index: 9999;
+            max-width: calc(100vw - ${offset * 2}px);
+            box-sizing: border-box;
+            align-items: center;
         `;
-        document.head.appendChild(style);
+
+        const listEl = document.createElement('div');
+        listEl.className = 'gio-custom-scroll';
+        listEl.style.cssText = `display:flex; gap:${gap}px; overflow-x:auto; overflow-y:hidden; max-width:100%; align-items:center;`;
+
+        const created = [];
+        const tooltipPlacement = edge === 'bottom' ? 'top' : 'bottom';
+
+        const makeBtn = (cfg = {}) => {
+            if (cfg.separator) {
+                const sep = document.createElement('div');
+                sep.style.cssText = 'width:1px; height:20px; background:var(--borde); flex-shrink:0;';
+                listEl.appendChild(sep);
+                const sRef = { el: sep, isSeparator: true, remove: () => sep.remove() };
+                created.push(sRef);
+                return sRef;
+            }
+            const ref = this._createMenuBtn({
+                ...cfg,
+                defaultOnClick,
+                btnClass: 'gio-btn',
+                activeClass: 'gio-active',
+                tooltipPlacement,
+                buttonSize,
+                iconSize,
+                createdButtons: created
+            });
+            listEl.appendChild(ref.el);
+            return ref;
+        };
+
+        buttons.forEach(b => makeBtn(b));
+        wrap.appendChild(listEl);
+        document.body.appendChild(wrap);
+
+        return {
+            el: wrap,
+            listEl,
+            id,
+            buttons: created,
+            createButton: makeBtn,
+            show: () => { wrap.style.display = ''; },
+            hide: () => { wrap.style.display = 'none'; },
+            destroy: () => {
+                Giovanni._hideTooltip();
+                wrap.remove();
+                created.length = 0;
+            },
+            getButton: (bid) => created.find(b => b.id === bid)
+        };
     }
 
-    const Tooltip = (() => {
-        let el = null;
-        let rafId = 0;
-        let anchor = null;
-        let placement = 'right';
-        let text = '';
+    createBottomMenu({
+        buttons = [],
+        id = `gio-bottom-${Math.random().toString(36).slice(2, 8)}`,
+        offset = 20,
+        gap = 8,
+        padding = 6,
+        buttonSize = 36,
+        iconSize = 18,
+        radius = 10,
+        bg = 'var(--backg1)',
+        border = 'var(--borde)',
+        defaultOnClick = null
+    } = {}) {
+        return this._createFixedBarMenu({
+            edge: 'bottom',
+            buttons,
+            id,
+            offset,
+            gap,
+            padding,
+            buttonSize,
+            iconSize,
+            radius,
+            bg,
+            border,
+            defaultOnClick
+        });
+    }
 
-        const ensure = () => {
-            if (!el || !el.isConnected) {
-                el = document.createElement('div');
-                el.className = 'gioU-tooltip';
-                document.body.appendChild(el);
+    createTopMenu({
+        buttons = [],
+        id = `gio-top-${Math.random().toString(36).slice(2, 8)}`,
+        offset = 12,
+        gap = 8,
+        padding = 8,
+        buttonSize = 40,
+        iconSize = 20,
+        radius = 10,
+        bg = 'var(--backg1)',
+        border = 'var(--borde)',
+        defaultOnClick = null
+    } = {}) {
+        return this._createFixedBarMenu({
+            edge: 'top',
+            buttons,
+            id,
+            offset,
+            gap,
+            padding,
+            buttonSize,
+            iconSize,
+            radius,
+            bg,
+            border,
+            defaultOnClick
+        });
+    }
+
+    createToolbar({
+        buttons = [],
+        container = null,
+        orientation = 'horizontal',
+        gap = 8,
+        padding = 6,
+        bg = 'var(--backg1)',
+        border = '1px solid var(--borde)',
+        radius = 10,
+        buttonSize = 36,
+        iconSize = 18,
+        defaultOnClick = null,
+        tooltipPosition = null
+    } = {}) {
+        const wrap = document.createElement('div');
+        wrap.style.cssText = `
+            display:inline-flex;
+            flex-direction:${orientation === 'vertical' ? 'column' : 'row'};
+            align-items:center;
+            gap:${gap}px; padding:${padding}px;
+            background:${bg}; border:${border}; border-radius:${radius}px;
+            box-sizing:border-box;
+        `;
+
+        const created = [];
+        const ttPos = tooltipPosition || (orientation === 'vertical' ? 'right' : 'bottom');
+
+        const makeBtn = (cfg = {}) => {
+            if (cfg.separator) {
+                const sep = document.createElement('div');
+                sep.style.cssText = orientation === 'vertical'
+                    ? 'height:1px; width:20px; background:var(--borde); flex-shrink:0; margin:2px 0;'
+                    : 'width:1px; height:20px; background:var(--borde); flex-shrink:0; margin:0 2px;';
+                wrap.appendChild(sep);
+                const sRef = { el: sep, isSeparator: true, remove: () => sep.remove() };
+                created.push(sRef);
+                return sRef;
             }
-            return el;
+            const ref = this._createMenuBtn({
+                ...cfg,
+                defaultOnClick,
+                btnClass: 'gio-btn',
+                activeClass: 'gio-active',
+                tooltipPlacement: ttPos,
+                buttonSize,
+                iconSize,
+                createdButtons: created
+            });
+            wrap.appendChild(ref.el);
+            return ref;
         };
 
-        const compute = (r, tw, th, pl) => {
-            const GAP = 8;
-            let top, left;
-            switch (pl) {
-                case 'right':  top = r.top + r.height / 2 - th / 2; left = r.right + GAP; break;
-                case 'left':   top = r.top + r.height / 2 - th / 2; left = r.left - tw - GAP; break;
-                case 'top':    top = r.top - th - GAP;              left = r.left + r.width / 2 - tw / 2; break;
-                case 'bottom': top = r.bottom + GAP;                left = r.left + r.width / 2 - tw / 2; break;
-                default:       top = r.top + r.height / 2 - th / 2; left = r.right + GAP;
+        buttons.forEach(b => makeBtn(b));
+        if (container) {
+            const dest = container.element || container;
+            if (dest && dest.appendChild) dest.appendChild(wrap);
+        }
+
+        return {
+            el: wrap,
+            buttons: created,
+            createButton: makeBtn,
+            destroy: () => {
+                Giovanni._hideTooltip();
+                wrap.remove();
+                created.length = 0;
+            },
+            getButton: (bid) => created.find(b => b.id === bid)
+        };
+    }
+
+    _createEdgeMenu({
+        position = 'left',
+        buttons = [],
+        id,
+        collapsible = true,
+        defaultCollapsed = false,
+        burgerTooltip = 'Mostrar / ocultar menú',
+        buttonSize = 44,
+        iconSize = 22,
+        radius = 10,
+        gap = 8,
+        padding = 8,
+        defaultOnClick = null,
+        prefix = 'gio'
+    }) {
+        const menuClass = `${prefix}-menu`;
+        const listClass = `${prefix}-menu-list`;
+        const btnClass = `${prefix}-btn`;
+        const activeClass = `${prefix}-active`;
+        const collapsedClass = `${prefix}-collapsed`;
+        const burgerClass = `${prefix}-burger`;
+        const posClass = `${prefix}-${position}`;
+
+        const menuEl = document.createElement('div');
+        menuEl.id = id;
+        menuEl.className = `${menuClass} ${posClass}`;
+        menuEl.style.setProperty(`--${prefix}-btn-size`, `${buttonSize}px`);
+        menuEl.style.setProperty(`--${prefix}-icon-size`, `${iconSize}px`);
+        menuEl.style.setProperty(`--${prefix}-btn-radius`, `${radius}px`);
+        menuEl.style.setProperty(`--${prefix}-gap`, `${gap}px`);
+        menuEl.style.setProperty(`--${prefix}-padding`, `${padding}px`);
+
+        const listEl = document.createElement('div');
+        listEl.className = `${listClass} gio-custom-scroll`;
+
+        let collapsed = false;
+        let burgerRef = null;
+        const createdButtons = [];
+        const tooltipPlacement = Giovanni._edgeToTooltipPlacement(position);
+
+        const createButton = (cfg = {}) => {
+            if (cfg.separator) {
+                const isVertical = (position === 'left' || position === 'right');
+                const sep = document.createElement('div');
+                sep.className = isVertical ? 'gioU-sep-v' : 'gioU-sep-h';
+                listEl.appendChild(sep);
+                const sRef = { el: sep, isSeparator: true, remove: () => sep.remove() };
+                createdButtons.push(sRef);
+                return sRef;
             }
-            return { top, left };
+            const ref = this._createMenuBtn({
+                ...cfg,
+                defaultOnClick,
+                btnClass,
+                activeClass,
+                tooltipPlacement,
+                createdButtons,
+                isBurger: cfg.bId === '__burger__'
+            });
+            if (!ref.isBurger) listEl.appendChild(ref.el);
+            return ref;
         };
 
-        const fits = (r, tw, th, pl) => {
-            const PAD = 6, vw = innerWidth, vh = innerHeight;
-            const { top, left } = compute(r, tw, th, pl);
-            return left >= PAD && left + tw <= vw - PAD && top >= PAD && top + th <= vh - PAD;
+        const collapse = () => {
+            if (!collapsible || collapsed) return;
+            collapsed = true;
+            menuEl.classList.add(collapsedClass);
+            burgerRef?.setIcon('menu');
+            Giovanni._hideTooltip();
         };
 
-        const show = (anchorEl, txt, preferred = 'right') => {
-            if (!txt) return;
-            anchor = anchorEl;
-            placement = preferred;
-            text = txt;
+        const expand = () => {
+            if (!collapsible || !collapsed) return;
+            collapsed = false;
+            menuEl.classList.remove(collapsedClass);
+            burgerRef?.setIcon('menuOpen');
+        };
 
-            const tip = ensure();
-            tip.textContent = txt;
-            tip.classList.remove('gioU-visible');
+        const toggle = () => collapsed ? expand() : collapse();
 
-            cancelAnimationFrame(rafId);
-            rafId = requestAnimationFrame(() => {
-                if (!anchor || !anchor.isConnected) return;
+        if (collapsible) {
+            burgerRef = createButton({
+                icon: defaultCollapsed ? 'menu' : 'menuOpen',
+                tooltip: burgerTooltip,
+                bId: '__burger__',
+                onClick: () => toggle()
+            });
+            burgerRef.el.classList.add(burgerClass);
+            menuEl.appendChild(burgerRef.el);
+        }
 
-                const r  = anchor.getBoundingClientRect();
-                const tw = tip.offsetWidth;
-                const th = tip.offsetHeight;
-                const PAD = 6, vw = innerWidth, vh = innerHeight;
+        buttons.forEach(b => createButton(b));
 
-                const opposite = { right: 'left', left: 'right', top: 'bottom', bottom: 'top' };
-                const perp = {
-                    right:  ['top', 'bottom'],
-                    left:   ['top', 'bottom'],
-                    top:    ['right', 'left'],
-                    bottom: ['right', 'left']
-                };
+        menuEl.appendChild(listEl);
+        document.body.appendChild(menuEl);
 
-                const order = [placement, opposite[placement], ...perp[placement]];
-                let pl = order.find(p => fits(r, tw, th, p)) || placement;
+        if (defaultCollapsed) collapse();
 
-                let { top, left } = compute(r, tw, th, pl);
+        return {
+            el: menuEl,
+            listEl,
+            id,
+            buttons: createdButtons,
+            createButton,
+            toggle,
+            collapse,
+            expand,
+            isCollapsed: () => collapsed,
+            setSizes: (s = {}) => {
+                if (s.buttonSize) menuEl.style.setProperty(`--${prefix}-btn-size`, `${s.buttonSize}px`);
+                if (s.iconSize) menuEl.style.setProperty(`--${prefix}-icon-size`, `${s.iconSize}px`);
+                if (s.radius) menuEl.style.setProperty(`--${prefix}-btn-radius`, `${s.radius}px`);
+                if (s.gap != null) menuEl.style.setProperty(`--${prefix}-gap`, `${s.gap}px`);
+                if (s.padding != null) menuEl.style.setProperty(`--${prefix}-padding`, `${s.padding}px`);
+            },
+            show: () => { menuEl.style.display = ''; },
+            hide: () => { menuEl.style.display = 'none'; },
+            destroy: () => {
+                Giovanni._hideTooltip();
+                menuEl.remove();
+                createdButtons.length = 0;
+            },
+            getButton: (bId) => createdButtons.find(b => b.id === bId)
+        };
+    }
 
-                left = Math.max(PAD, Math.min(left, vw - tw - PAD));
-                top  = Math.max(PAD, Math.min(top,  vh - th - PAD));
+    createUniversalMenu({
+        position = 'left',
+        buttons = [],
+        id = `gio-menu-${Math.random().toString(36).slice(2, 8)}`,
+        collapsible = true,
+        defaultCollapsed = false,
+        burgerTooltip = 'Mostrar / ocultar menú',
+        buttonSize = 44,
+        iconSize = 22,
+        radius = 10,
+        gap = 8,
+        padding = 8,
+        defaultOnClick = null
+    } = {}) {
+        return this._createEdgeMenu({
+            position,
+            buttons,
+            id,
+            collapsible,
+            defaultCollapsed,
+            burgerTooltip,
+            buttonSize,
+            iconSize,
+            radius,
+            gap,
+            padding,
+            defaultOnClick,
+            prefix: 'gioU'
+        });
+    }
 
-                tip.style.top  = `${Math.round(top)}px`;
-                tip.style.left = `${Math.round(left)}px`;
-                tip.classList.add('gioU-visible');
+    createSideMenu({
+        position = 'left',
+        buttons = [],
+        id = `gio-menu-${Math.random().toString(36).slice(2, 8)}`,
+        collapsible = true,
+        defaultCollapsed = false,
+        burgerTooltip = 'Mostrar / ocultar menú',
+        buttonSize = 44,
+        iconSize = 22,
+        radius = 10,
+        gap = 8,
+        padding = 8,
+        defaultOnClick = null
+    } = {}) {
+        return this._createEdgeMenu({
+            position,
+            buttons,
+            id,
+            collapsible,
+            defaultCollapsed,
+            burgerTooltip,
+            buttonSize,
+            iconSize,
+            radius,
+            gap,
+            padding,
+            defaultOnClick,
+            prefix: 'gio'
+        });
+    }
+
+    createUnversalSideMenu({
+        position = 'left',
+        buttons = [],
+        id = `gio-menu-${Math.random().toString(36).slice(2, 8)}`,
+        collapsible = true,
+        defaultCollapsed = false,
+        burgerTooltip = 'Mostrar / ocultar menú',
+        buttonSize = 44,
+        iconSize = 22,
+        radius = 10,
+        gap = 8,
+        padding = 8,
+        defaultOnClick = null
+    } = {}) {
+        return this._createEdgeMenu({
+            position,
+            buttons,
+            id,
+            collapsible,
+            defaultCollapsed,
+            burgerTooltip,
+            buttonSize,
+            iconSize,
+            radius,
+            gap,
+            padding,
+            defaultOnClick,
+            prefix: 'gio'
+        });
+    }
+
+    createRibbonGroup({
+        container = null,
+        label = 'Grupo',
+        buttons = [],
+        buttonSize = 44,
+        iconSize = 20,
+        defaultOnClick = null
+    } = {}) {
+        const STYLE_ID = 'gio-ribbon-group-styles';
+        if (!document.getElementById(STYLE_ID)) {
+            const style = document.createElement('style');
+            style.id = STYLE_ID;
+            style.textContent = `
+                .gio-ribbon-group {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    border-right: 1px solid var(--borde, #444);
+                    padding-right: 15px;
+                    height: 100%;
+                    justify-content: space-between;
+                    box-sizing: border-box;
+                }
+                .gio-ribbon-row {
+                    display: flex;
+                    gap: 5px;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    align-items: center;
+                    flex: 1;
+                }
+                .gio-ribbon-title {
+                    font-size: 10px;
+                    color: var(--texto, #8c8e8f);
+                    text-transform: uppercase;
+                    letter-spacing: .5px;
+                    margin-top: 2px;
+                    text-align: center;
+                    user-select: none;
+                    pointer-events: none;
+                }
+                .gio-ribbon-btn {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    background: transparent;
+                    border: 1px solid transparent;
+                    color: var(--textoActivo, #e7e7e7);
+                    cursor: pointer;
+                    padding: 4px 8px;
+                    border-radius: 6px;
+                    transition: all .18s;
+                    box-sizing: border-box;
+                    font-family: inherit;
+                }
+                .gio-ribbon-btn:hover {
+                    background: var(--backg3, #3d3d3d);
+                    border-color: var(--borde, #444);
+                }
+                .gio-ribbon-btn:active {
+                    transform: scale(.94);
+                }
+                .gio-ribbon-btn.gio-active {
+                    background: rgba(77, 170, 252, 0.15);
+                    border-color: var(--textoActvioBlue, #4daafc);
+                    color: var(--textoActvioBlue, #4daafc);
+                }
+                .gio-ribbon-btn svg {
+                    width: var(--gio-icon-size, 20px);
+                    height: var(--gio-icon-size, 20px);
+                    margin-bottom: 2px;
+                    fill: currentColor;
+                    pointer-events: none;
+                }
+                .gio-ribbon-btn .gio-ribbon-btn-text {
+                    font-size: 10px;
+                    text-align: center;
+                    line-height: 1.1;
+                    pointer-events: none;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        const group = document.createElement('div');
+        group.className = 'gio-ribbon-group';
+
+        const row = document.createElement('div');
+        row.className = 'gio-ribbon-row';
+
+        const title = document.createElement('span');
+        title.className = 'gio-ribbon-title';
+        title.textContent = label;
+
+        const created = [];
+
+        const makeBtn = ({ icon, text = '', tooltip = '', bId = null, active = false, onClick = null }) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'gio-ribbon-btn' + (active ? ' gio-active' : '');
+            btn.dataset.tooltip = tooltip || text;
+            if (bId) btn.dataset.id = bId;
+            btn.style.minWidth = `${buttonSize}px`;
+            btn.style.setProperty('--gio-icon-size', `${iconSize}px`);
+
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('viewBox', '0 0 24 24');
+            svg.innerHTML = Giovanni._resolveIcon(icon);
+            btn.appendChild(svg);
+
+            if (text) {
+                const span = document.createElement('span');
+                span.className = 'gio-ribbon-btn-text';
+                span.textContent = text;
+                btn.appendChild(span);
+            }
+
+            this._attachTooltip(btn, 'bottom');
+
+            const ref = {
+                el: btn,
+                id: bId,
+                isSeparator: false,
+                setActive: (v = true) => btn.classList.toggle('gio-active', Boolean(v)),
+                setTooltip: (t) => { btn.dataset.tooltip = t; },
+                setIcon: (k) => { svg.innerHTML = Giovanni._resolveIcon(k); },
+                remove: () => {
+                    btn.remove();
+                    const i = created.indexOf(ref);
+                    if (i > -1) created.splice(i, 1);
+                }
+            };
+
+            btn.addEventListener('click', (e) => {
+                created.forEach(r => {
+                    if (r !== ref && !r.isSeparator) r.setActive(false);
+                });
+                ref.setActive(true);
+                if (typeof onClick === 'function') onClick(btn, e);
+                else if (typeof defaultOnClick === 'function') defaultOnClick(btn, e);
+            });
+
+            created.push(ref);
+            row.appendChild(btn);
+            return ref;
+        };
+
+        buttons.forEach(b => makeBtn(b));
+        group.appendChild(row);
+        group.appendChild(title);
+        if (container) {
+            const dest = container.element || container;
+            if (dest && dest.appendChild) dest.appendChild(group);
+        }
+
+        return {
+            el: group,
+            row,
+            label,
+            buttons: created,
+            createButton: makeBtn,
+            destroy: () => {
+                Giovanni._hideTooltip();
+                group.remove();
+                created.length = 0;
+            },
+            getButton: (bid) => created.find(b => b.id === bid)
+        };
+    }
+
+    createButtonSimple({
+        text = 'TinkerAtlas',
+        onClick = null,
+        fullWidth = false,
+        label = null
+    } = {}) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = text;
+        btn.style.cssText = `
+            background: #2d2d2d;
+            color: var(--texto);
+            border: 3px solid #2d2d2d0c;
+            border-radius: var(--radius);
+            padding: 8px 16px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            outline: none;
+            user-select: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: ${fullWidth ? '100%' : 'fit-content'};
+            box-sizing: border-box;
+            transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+        `;
+
+        btn.addEventListener('mouseenter', () => {
+            btn.style.color = 'var(--textoActvioBlue)';
+        });
+
+        btn.addEventListener('mouseleave', () => {
+            btn.style.color = 'var(--texto)';
+            btn.style.background = '#383737';
+            btn.style.boxShadow = 'none';
+        });
+
+        btn.addEventListener('mousedown', () => {
+            btn.style.transform = 'scale(0.97)';
+        });
+        btn.addEventListener('mouseup', () => {
+            btn.style.transform = 'scale(1)';
+        });
+
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (onClick) onClick(btn, e);
+        });
+
+        btn.setText = (nuevoTexto) => {
+            btn.textContent = nuevoTexto;
+            return btn;
+        };
+
+        if (label) {
+            return this._wrapWithLabel(label, btn);
+        }
+
+        return btn;
+    }
+
+    createBrowserPanel({
+        label = 'Browser',
+        data = [],
+        width = 260,
+        maxHeight = 350,
+        defaultOpen = true,
+        container = null,
+        onSelect = null,
+        onVisibilityToggle = null,
+        onContextMenu = null
+    } = {}) {
+        const STYLE_ID = 'gio-browser-styles';
+        if (!document.getElementById(STYLE_ID)) {
+            const style = document.createElement('style');
+            style.id = STYLE_ID;
+            style.textContent = `
+                .gio-browser {
+                    background: #11161d;
+                    border-right: 1px solid #333333;
+                    display: flex;
+                    flex-direction: column;
+                    height: auto;
+                    font-family: 'Segoe UI', Roboto, sans-serif;
+                    font-size: 12px;
+                    color: #b9c1cc;
+                    user-select: none;
+                    box-sizing: border-box;
+                    overflow: hidden;
+                    flex-shrink: 0;
+                    position: relative;
+                }
+                .gio-browser.is-dragging {
+                    position: fixed !important;
+                    opacity: 0.92;
+                    z-index: 999999 !important;
+                    box-shadow: 0 16px 36px rgba(0,0,0,0.8), 0 0 15px rgba(33, 96, 199, 0.4) !important;
+                    pointer-events: none;
+                    margin: 0 !important;
+                    border: 1px solid #4daafc !important;
+                }
+                    .gio-browser-head {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 8px 12px;
+                    border-bottom: 1px solid #333333;
+                    font-size: 12px;
+                    font-weight: 600;
+                    color: #e6ebf1;
+                    background: #333333;
+                    cursor: grab;
+                    box-sizing: border-box;
+                }
+                .gio-browser-head:active {
+                    cursor: grabbing;
+                }
+                .gio-browser-head-left {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                }
+                .gio-browser-head-right {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+                .gio-browser-head span.small {
+                    font-size: 11px;
+                    color: #8c93a0;
+                    font-weight: 400;
+                }
+                .gio-browser-toggle-btn {
+                    background: transparent;
+                    border: none;
+                    color: #8c93a0;
+                    cursor: pointer;
+                    padding: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), color 0.15s;
+                }
+                .gio-browser-toggle-btn:hover {
+                    color: #4daafc;
+                }
+                .gio-browser-toggle-btn.closed {
+                    transform: rotate(-90deg);
+                }
+                .gio-browser-body {
+                    transition: max-height 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+                    overflow: hidden;
+                    display: flex;
+                    flex-direction: column;
+                }
+                .gio-browser-body.collapsed {
+                    max-height: 0 !important;
+                    opacity: 0;
+                }
+                .gio-browser-tree {
+                    overflow-y: auto;
+                    padding: 6px 4px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1px;
+                    background: #1e1e1e;
+                    box-sizing: border-box;
+                }
+                .gio-browser-row {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    padding: 4px 6px;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    transition: background 0.12s;
+                    border-left: 2px solid transparent;
+                }
+                .gio-browser-row:hover {
+                    background: #1e1e1e;
+                }
+                .gio-browser-row.selected {
+                    background: #1e2a3a;
+                    border-left-color: #4daafc;
+                }
+                .gio-browser-chevron {
+                    width: 12px;
+                    height: 12px;
+                    flex-shrink: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #6c7685;
+                    transition: transform 0.15s;
+                }
+                .gio-browser-chevron.open {
+                    transform: rotate(90deg);
+                    color: #4daafc;
+                }
+                .gio-browser-icon {
+                    width: 14px;
+                    height: 14px;
+                    flex-shrink: 0;
+                    fill: currentColor;
+                    color: #8aa0b8;
+                }
+                .gio-browser-name {
+                    flex: 1;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    font-size: 12px;
+                }
+                .gio-browser-name.editing {
+                    color: #4daafc;
+                    font-weight: 600;
+                }
+                .gio-browser-eye {
+                    width: 16px;
+                    height: 16px;
+                    background: transparent;
+                    border: none;
+                    padding: 0;
+                    color: #6c7685;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    opacity: 0.8;
+                }
+                .gio-browser-eye:hover {
+                    color: #4daafc;
+                }
+                .gio-browser-eye.off {
+                    color: #3a4250;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        const root = document.createElement('div');
+        root.className = 'gio-browser';
+        root.style.width = typeof width === 'number' ? `${width}px` : width;
+
+        const head = document.createElement('div');
+        head.className = 'gio-browser-head';
+
+        const headLeft = document.createElement('div');
+        headLeft.className = 'gio-browser-head-left';
+
+        const labelEl = document.createElement('span');
+        labelEl.textContent = label;
+        headLeft.appendChild(labelEl);
+
+        const headRight = document.createElement('div');
+        headRight.className = 'gio-browser-head-right';
+
+        const countEl = document.createElement('span');
+        countEl.className = 'small';
+        countEl.textContent = '0 bodies';
+
+        const toggleBtn = document.createElement('button');
+        toggleBtn.type = 'button';
+        toggleBtn.className = 'gio-browser-toggle-btn' + (defaultOpen ? '' : ' closed');
+        toggleBtn.innerHTML = `
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+        `;
+
+        headRight.appendChild(countEl);
+        headRight.appendChild(toggleBtn);
+        head.appendChild(headLeft);
+        head.appendChild(headRight);
+
+        const bodyWrap = document.createElement('div');
+        bodyWrap.className = 'gio-browser-body' + (defaultOpen ? '' : ' collapsed');
+        bodyWrap.style.maxHeight = defaultOpen ? `${maxHeight}px` : '0px';
+
+        const tree = document.createElement('div');
+        tree.className = 'gio-browser-tree gio-custom-scroll';
+        tree.style.maxHeight = `${maxHeight}px`;
+
+        bodyWrap.appendChild(tree);
+        root.appendChild(head);
+        root.appendChild(bodyWrap);
+
+        let state = JSON.parse(JSON.stringify(data));
+        let selectedId = null;
+        let isOpen = !!defaultOpen;
+        const expanded = new Set();
+
+        const countBodies = (nodes) => {
+            let count = 0;
+            nodes.forEach(n => {
+                count++;
+                if (n.children && n.children.length > 0) count += countBodies(n.children);
+            });
+            return count;
+        };
+
+        const updateHeaderCount = () => {
+            countEl.textContent = `${countBodies(state)} bodies`;
+        };
+
+        const seedExpand = (nodes) => {
+            nodes.forEach(n => {
+                if (n.open) expanded.add(n.id);
+                if (n.children) seedExpand(n.children);
+            });
+        };
+        seedExpand(state);
+
+        const toggle = (force) => {
+            isOpen = typeof force === 'boolean' ? force : !isOpen;
+            if (isOpen) {
+                bodyWrap.classList.remove('collapsed');
+                bodyWrap.style.maxHeight = `${maxHeight}px`;
+                toggleBtn.classList.remove('closed');
+            } else {
+                bodyWrap.classList.add('collapsed');
+                bodyWrap.style.maxHeight = '0px';
+                toggleBtn.classList.add('closed');
+            }
+        };
+
+        toggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggle();
+        });
+
+        const startEditInline = (nameEl, item) => {
+            const input = document.createElement('input');
+            input.value = item.name;
+            input.style.cssText = `
+                flex:1; background:#0c1118; border:1px solid #4daafc;
+                color:#e6ebf1; font-size:12px; padding:1px 4px;
+                border-radius:3px; outline:none; font-family:inherit;
+            `;
+            nameEl.replaceWith(input);
+            input.focus();
+            input.select();
+
+            const commit = () => {
+                const v = input.value.trim();
+                if (v) item.name = v;
+                render();
+            };
+            input.addEventListener('blur', commit);
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') input.blur();
+                if (e.key === 'Escape') { input.value = item.name; input.blur(); }
             });
         };
 
-        const hide = () => {
-            cancelAnimationFrame(rafId);
-            anchor = null;
-            text = '';
-            if (el) el.classList.remove('gioU-visible');
+        const render = () => {
+            tree.innerHTML = '';
+            updateHeaderCount();
+
+            const build = (items, depth = 0) => {
+                items.forEach(item => {
+                    const row = document.createElement('div');
+                    row.className = 'gio-browser-row' + (item.id === selectedId ? ' selected' : '');
+                    row.style.paddingLeft = `${6 + depth * 14}px`;
+
+                    const hasChildren = item.children && item.children.length > 0;
+                    const isBranchOpen = expanded.has(item.id);
+
+                    const chev = document.createElement('div');
+                    chev.className = 'gio-browser-chevron' + (isBranchOpen ? ' open' : '');
+                    if (hasChildren) {
+                        chev.appendChild(Giovanni.getSVG('chevronRight', 10));
+                        chev.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            if (isBranchOpen) expanded.delete(item.id);
+                            else expanded.add(item.id);
+                            render();
+                        });
+                    }
+                    row.appendChild(chev);
+
+                    const iconSpan = document.createElement('span');
+                    iconSpan.className = 'gio-browser-icon';
+                    iconSpan.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14">${Giovanni._resolveIcon(item.icon)}</svg>`;
+                    row.appendChild(iconSpan);
+
+                    const name = document.createElement('span');
+                    name.className = 'gio-browser-name' + (item.editing ? ' editing' : '');
+                    name.textContent = item.name || item.id;
+                    row.appendChild(name);
+
+                    const eye = document.createElement('button');
+                    eye.type = 'button';
+                    eye.className = 'gio-browser-eye' + (item.visible === false ? ' off' : '');
+                    eye.title = item.visible === false ? 'Mostrar' : 'Ocultar';
+                    eye.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                        ${item.visible === false
+                            ? '<path d="M12 6a9.77 9.77 0 0 1 8.82 5.5A9.77 9.77 0 0 1 12 17a9.77 9.77 0 0 1-8.82-5.5A9.77 9.77 0 0 1 12 6m0-2C7 4 2.73 7.11 1 12c1.73 4.89 6 8 11 8s9.27-3.11 11-8c-1.73-4.89-6-8-11-8z"/>'
+                            : '<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5C21.27 7.61 17 4.5 12 4.5zm0 12a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9z"/>'}
+                    </svg>`;
+                    eye.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        item.visible = item.visible === false ? true : false;
+                        if (onVisibilityToggle) onVisibilityToggle(item, item.visible);
+                        render();
+                    });
+                    row.appendChild(eye);
+
+                    row.addEventListener('click', () => {
+                        selectedId = item.id;
+                        render();
+                        if (onSelect) onSelect(item);
+                    });
+
+                    row.addEventListener('dblclick', () => {
+                        startEditInline(name, item);
+                    });
+
+                    row.addEventListener('contextmenu', (e) => {
+                        e.preventDefault();
+                        if (onContextMenu) onContextMenu(e, item);
+                    });
+
+                    tree.appendChild(row);
+
+                    if (hasChildren && isBranchOpen) build(item.children, depth + 1);
+                });
+            };
+
+            build(state);
         };
 
-        const reposition = () => {
-            if (anchor && text) show(anchor, text, placement);
+        const initMagneticDrag = () => {
+            let startX = 0, startY = 0, initLeft = 0, initTop = 0;
+            let isDragging = false, hasMoved = false;
+            const threshold = 16;
+
+            const { placeholder, guideV, guideH } = Giovanni._ensureDragHelpers();
+
+            const onPointerMove = (e) => {
+                if (!isDragging) return;
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+
+                if (!hasMoved && Math.hypot(dx, dy) > 6) {
+                    hasMoved = true;
+                    const rect = root.getBoundingClientRect();
+                    placeholder.style.height = `${rect.height}px`;
+                    placeholder.style.display = 'block';
+
+                    if (root.parentNode) {
+                        root.parentNode.insertBefore(placeholder, root.nextSibling);
+                    }
+
+                    document.body.appendChild(root);
+                    root.classList.add('is-dragging');
+                    root.style.width = `${rect.width}px`;
+                    initLeft = rect.left;
+                    initTop = rect.top;
+                }
+
+                if (!hasMoved) return;
+
+                let targetX = initLeft + dx;
+                let targetY = initTop + dy;
+
+                root.style.pointerEvents = 'none';
+                const hits = document.elementsFromPoint(e.clientX, e.clientY);
+                root.style.pointerEvents = '';
+
+                const dropTarget = hits.find(el => el !== root && el !== placeholder && (
+                    el.classList.contains('gio-browser') ||
+                    el.classList.contains('gio-acc-item') ||
+                    el.classList.contains('gio-acc-body') ||
+                    el.classList.contains('app-workspace') ||
+                    el.classList.contains('gio-container') ||
+                    el.classList.contains('gio-field')
+                ));
+
+                if (dropTarget) {
+                    guideV.style.display = 'none';
+                    guideH.style.display = 'none';
+                    placeholder.style.display = 'block';
+
+                    const r = dropTarget.getBoundingClientRect();
+                    if (dropTarget.classList.contains('gio-browser') || dropTarget.classList.contains('gio-acc-item') || dropTarget.classList.contains('gio-field')) {
+                        dropTarget.parentNode?.insertBefore(placeholder, e.clientY < r.top + r.height / 2 ? dropTarget : dropTarget.nextSibling);
+                    } else {
+                        dropTarget.appendChild(placeholder);
+                    }
+                } else {
+                    placeholder.style.display = 'none';
+                    const w = root.offsetWidth;
+                    const h = root.offsetHeight;
+                    let snapX = null, snapY = null;
+
+                    if (Math.abs(targetX) < threshold) { targetX = 0; snapX = 0; }
+                    if (Math.abs(targetY) < threshold) { targetY = 0; snapY = 0; }
+                    if (Math.abs(targetX + w - window.innerWidth) < threshold) { targetX = window.innerWidth - w; snapX = window.innerWidth; }
+                    if (Math.abs(targetY + h - window.innerHeight) < threshold) { targetY = window.innerHeight - h; snapY = window.innerHeight; }
+
+                    guideV.style.display = snapX !== null ? 'block' : 'none';
+                    if (snapX !== null) guideV.style.left = `${snapX}px`;
+                    guideH.style.display = snapY !== null ? 'block' : 'none';
+                    if (snapY !== null) guideH.style.top = `${snapY}px`;
+                }
+
+                root.style.left = `${targetX}px`;
+                root.style.top = `${targetY}px`;
+            };
+
+            const onPointerUp = () => {
+                if (!isDragging) return;
+                isDragging = false;
+                guideV.style.display = 'none';
+                guideH.style.display = 'none';
+
+                window.removeEventListener('pointermove', onPointerMove);
+                window.removeEventListener('pointerup', onPointerUp);
+
+                if (!hasMoved) return;
+
+                if (placeholder.style.display !== 'none' && placeholder.parentNode) {
+                    placeholder.parentNode.insertBefore(root, placeholder);
+                    placeholder.style.display = 'none';
+                    placeholder.remove();
+
+                    root.classList.remove('is-dragging');
+                    root.style.position = '';
+                    root.style.left = '';
+                    root.style.top = '';
+                    root.style.width = typeof width === 'number' ? `${width}px` : width;
+                    root.style.pointerEvents = '';
+                } else {
+                    placeholder.style.display = 'none';
+                    if (placeholder.parentNode) placeholder.remove();
+
+                    root.classList.remove('is-dragging');
+                    root.style.position = 'fixed';
+                    root.style.zIndex = '999999';
+                    root.style.margin = '0';
+                    root.style.pointerEvents = '';
+                }
+            };
+
+            head.addEventListener('pointerdown', (e) => {
+                if (e.button !== 0 || e.target.closest('button, input')) return;
+                isDragging = true;
+                hasMoved = false;
+                startX = e.clientX;
+                startY = e.clientY;
+                window.addEventListener('pointermove', onPointerMove);
+                window.addEventListener('pointerup', onPointerUp);
+            });
         };
 
-        addEventListener('resize', reposition, { passive: true });
-        addEventListener('scroll', reposition, { passive: true, capture: true });
+        initMagneticDrag();
+        render();
 
-        return { show, hide, reposition };
-    })();
-
-    const menuEl = document.createElement('div');
-    menuEl.id = id;
-    menuEl.className = `gioU-menu gioU-${position}`;
-    menuEl.style.setProperty('--gioU-btn-size',   `${buttonSize}px`);
-    menuEl.style.setProperty('--gioU-icon-size',  `${iconSize}px`);
-    menuEl.style.setProperty('--gioU-btn-radius', `${radius}px`);
-    menuEl.style.setProperty('--gioU-gap',        `${gap}px`);
-    menuEl.style.setProperty('--gioU-padding',    `${padding}px`);
-
-    const listEl = document.createElement('div');
-    listEl.className = 'gioU-menu-list gio-custom-scroll';
-
-    let collapsed = false;
-    let burgerRef = null;
-    const createdButtons = [];
-
-    const preferredTT = position === 'right'  ? 'left'
-                     : position === 'top'    ? 'bottom'
-                     : position === 'bottom' ? 'top'
-                     : 'right';
-
-    const createButton = ({ icon, tooltip = '', bId = null, active = false, onClick = null, separator = false }) => {
-        if (separator) {
-            const isVertical = (position === 'left' || position === 'right');
-            const sep = document.createElement('div');
-            sep.className = isVertical ? 'gioU-sep-v' : 'gioU-sep-h';
-            listEl.appendChild(sep);
-            return { el: sep, isSeparator: true };
+        if (container) {
+            const parent = container.element || container;
+            if (parent && parent.appendChild) parent.appendChild(root);
         }
 
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'gioU-btn' + (active ? ' gioU-active' : '');
-        if (bId) btn.dataset.id = bId;
-        btn.dataset.tooltip = tooltip;
-
-        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svg.setAttribute('viewBox', '0 0 24 24');
-        svg.innerHTML = (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB[icon])
-            || (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB.square)
-            || '';
-        btn.appendChild(svg);
-
-        btn.addEventListener('mouseenter', () => Tooltip.show(btn, btn.dataset.tooltip, preferredTT));
-        btn.addEventListener('mouseleave', () => Tooltip.hide());
-        btn.addEventListener('focus',      () => Tooltip.show(btn, btn.dataset.tooltip, preferredTT));
-        btn.addEventListener('blur',       () => Tooltip.hide());
-
-       btn.addEventListener('click', (e) => {    
-    createdButtons.forEach(r => {
-        if (r !== ref && !r.isSeparator) r.setActive(false);
-    }); 
-    ref.setActive(true);    
-    if (typeof onClick === 'function') onClick(btn, e);
-    else if (typeof defaultOnClick === 'function') defaultOnClick(btn, e);
-});
-
-        const ref = {
-            el: btn,
-            id: bId,
-            setActive: (v = true) => btn.classList.toggle('gioU-active', v),
-            setTooltip: (t) => { btn.dataset.tooltip = t; },
-            setIcon: (key) => {
-                svg.innerHTML = (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB[key])
-                    || (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB.square)
-                    || '';
-            },
-            remove: () => {
-                btn.remove();
-                const i = createdButtons.indexOf(ref);
-                if (i > -1) createdButtons.splice(i, 1);
-            }
+        return {
+            el: root,
+            treeEl: tree,
+            toggle: () => toggle(),
+            open: () => toggle(true),
+            close: () => toggle(false),
+            isOpen: () => isOpen,
+            getData: () => state,
+            setData: (d) => { state = JSON.parse(JSON.stringify(d)); render(); },
+            select: (id) => { selectedId = id; render(); },
+            expand: (id) => { expanded.add(id); render(); },
+            collapse: (id) => { expanded.delete(id); render(); }
         };
-        createdButtons.push(ref);
-        listEl.appendChild(btn);
-        return ref;
-    };
-
-    const collapse = () => {
-        if (!collapsible || collapsed) return;
-        collapsed = true;
-        menuEl.classList.add('gioU-collapsed');
-        burgerRef?.setIcon('menu');
-        Tooltip.hide();
-    };
-    const expand = () => {
-        if (!collapsible || !collapsed) return;
-        collapsed = false;
-        menuEl.classList.remove('gioU-collapsed');
-        burgerRef?.setIcon('menuOpen');
-    };
-    const toggle = () => collapsed ? expand() : collapse();
-
-    if (collapsible) {
-        burgerRef = createButton({
-            icon: 'menu',
-            tooltip: burgerTooltip,
-            bId: '__burger__',
-            onClick: () => toggle()
-        });
-        burgerRef.el.classList.add('gioU-burger');
-        menuEl.appendChild(burgerRef.el);
     }
 
-    buttons.forEach(b => createButton(b));
-
-    menuEl.appendChild(listEl);
-    document.body.appendChild(menuEl);
-
-    if (defaultCollapsed) collapse();
-
-    return {
-        el: menuEl,
-        listEl,
-        id,
-        buttons: createdButtons,
-        createButton,
-        toggle,
-        collapse,
-        expand,
-        isCollapsed: () => collapsed,
-        setSizes: (s = {}) => {
-            if (s.buttonSize) menuEl.style.setProperty('--gioU-btn-size',   `${s.buttonSize}px`);
-            if (s.iconSize)   menuEl.style.setProperty('--gioU-icon-size',  `${s.iconSize}px`);
-            if (s.radius)     menuEl.style.setProperty('--gioU-btn-radius', `${s.radius}px`);
-            if (s.gap != null)menuEl.style.setProperty('--gioU-gap',        `${s.gap}px`);
-            if (s.padding != null)menuEl.style.setProperty('--gioU-padding',`${s.padding}px`);
-        },
-        show: () => { menuEl.style.display = ''; },
-        hide: () => { menuEl.style.display = 'none'; },
-        destroy: () => {
-            Tooltip.hide();
-            menuEl.remove();
-            createdButtons.length = 0;
-        },
-        getButton: (bId) => createdButtons.find(b => b.id === bId)
-    };
-}
-
-  createRibbonGroup({
-  container = null,
-  label = 'Grupo',
-  buttons = [],
-  buttonSize = 44,
-  iconSize = 20,
-  defaultOnClick = null
-} = {}) {
-
-  const STYLE_ID = 'gio-ribbon-group-styles';
-  if (!document.getElementById(STYLE_ID)) {
-    const style = document.createElement('style');
-    style.id = STYLE_ID;
-    style.textContent = `
-      .gio-ribbon-group {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        border-right: 1px solid var(--borde, #444);
-        padding-right: 15px;
-        height: 100%;
-        justify-content: space-between;
-        box-sizing: border-box;
-      }
-
-      .gio-ribbon-row {
-        display: flex;
-        gap: 5px;
-        flex-wrap: wrap;
-        justify-content: center;
-        align-items: center;
-        flex: 1;
-      }
-
-      .gio-ribbon-title {
-        font-size: 10px;
-        color: var(--texto, #8c8e8f);
-        text-transform: uppercase;
-        letter-spacing: .5px;
-        margin-top: 2px;
-        text-align: center;
-        user-select: none;
-        pointer-events: none;
-      }
-
-      .gio-ribbon-btn {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background: transparent;
-        border: 1px solid transparent;
-        color: var(--textoActivo, #e7e7e7);
-        cursor: pointer;
-        padding: 4px 8px;
-        border-radius: 6px;
-        transition: all .18s;
-        box-sizing: border-box;
-        font-family: inherit;
-      }
-      .gio-ribbon-btn:hover {
-        background: var(--backg3, #3d3d3d);
-        border-color: var(--borde, #444);
-      }
-      .gio-ribbon-btn:active {
-        transform: scale(.94);
-      }
-      .gio-ribbon-btn.gio-active {
-        background: rgba(77, 170, 252, 0.15);
-        border-color: var(--textoActvioBlue, #4daafc);
-        color: var(--textoActvioBlue, #4daafc);
-      }
-      .gio-ribbon-btn svg {
-        width: var(--gio-icon-size, 20px);
-        height: var(--gio-icon-size, 20px);
-        margin-bottom: 2px;
-        fill: currentColor;
-        pointer-events: none;
-      }
-      .gio-ribbon-btn .gio-ribbon-btn-text {
-        font-size: 10px;
-        text-align: center;
-        line-height: 1.1;
-        pointer-events: none;
-      }
-
-      .gio-tooltip {
-        position: fixed;
-        padding: 6px 10px;
-        background: var(--backg0, #1a1a1a);
-        color: var(--textoActivo, #e7e7e7);
-        font-size: 12px;
-        font-family: system-ui, sans-serif;
-        white-space: nowrap;
-        border-radius: 6px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity .15s ease;
-        z-index: 10000;
-        border: 1px solid var(--borde, #444);
-      }
-      .gio-tooltip.gio-visible { opacity: 1; }
-    `;
-    document.head.appendChild(style);
-  }
-
-  const group = document.createElement('div');
-  group.className = 'gio-ribbon-group';
-
-  const row = document.createElement('div');
-  row.className = 'gio-ribbon-row';
-
-  const title = document.createElement('span');
-  title.className = 'gio-ribbon-title';
-  title.textContent = label;
-
-  const created = [];
-
-  const makeBtn = ({ icon, text = '', tooltip = '', bId = null, active = false, onClick = null }) => {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'gio-ribbon-btn' + (active ? ' gio-active' : '');
-    btn.dataset.tooltip = tooltip || text;
-    if (bId) btn.dataset.id = bId;
-    btn.style.minWidth = `${buttonSize}px`;
-    btn.style.setProperty('--gio-icon-size', `${iconSize}px`);
-
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('viewBox', '0 0 24 24');
-    svg.innerHTML = (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB[icon])
-      || (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB.square)
-      || '';
-    btn.appendChild(svg);
-
-    if (text) {
-      const span = document.createElement('span');
-      span.className = 'gio-ribbon-btn-text';
-      span.textContent = text;
-      btn.appendChild(span);
-    }
-
-    const showTip = () => {
-      if (typeof Giovanni !== 'undefined' && typeof Giovanni._showGlobalTooltip === 'function') {
-        Giovanni._showGlobalTooltip(btn, btn.dataset.tooltip, 'bottom');
-      }
-    };
-    const hideTip = () => {
-      if (typeof Giovanni !== 'undefined' && typeof Giovanni._hideGlobalTooltip === 'function') {
-        Giovanni._hideGlobalTooltip();
-      }
-    };
-
-    btn.addEventListener('mouseenter', showTip);
-    btn.addEventListener('mouseleave', hideTip);
-    btn.addEventListener('focus', showTip);
-    btn.addEventListener('blur', hideTip);
-
-    const ref = {
-      el: btn,
-      id: bId,
-      isSeparator: false,
-      setActive: (v = true) => btn.classList.toggle('gio-active', v),
-      setTooltip: (t) => { btn.dataset.tooltip = t; },
-      setIcon: (k) => {
-        svg.innerHTML = (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB[k])
-          || (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB.square)
-          || '';
-      },
-      remove: () => {
-        btn.remove();
-        const i = created.indexOf(ref);
-        if (i > -1) created.splice(i, 1);
-      }
-    };
-
-    btn.addEventListener('click', (e) => {
-      created.forEach(r => {
-        if (r !== ref && !r.isSeparator) r.setActive(false);
-      });
-      ref.setActive(true);
-
-      if (typeof onClick === 'function') onClick(btn, e);
-      else if (typeof defaultOnClick === 'function') defaultOnClick(btn, e);
-    });
-
-    created.push(ref);
-    row.appendChild(btn);
-    return ref;
-  };
-
-  buttons.forEach(b => makeBtn(b));
-  group.appendChild(row);
-  group.appendChild(title);
-  if (container) container.appendChild(group);
-
-  return {
-    el: group,
-    row,
-    label,
-    buttons: created,
-    createButton: makeBtn,
-    destroy: () => { group.remove(); created.length = 0; },
-    getButton: (bid) => created.find(b => b.id === bid)
-  };
-}
-   createTopMenu({
-  buttons = [],
-  id = `gio-top-${Math.random().toString(36).slice(2, 8)}`,
-  offset = 12,
-  gap = 8,
-  padding = 8,
-  buttonSize = 40,
-  iconSize = 20,
-  radius = 10,
-  bg = 'var(--backg1)',
-  border = 'var(--borde)',
-  defaultOnClick = null
-} = {}) {
-
-  const STYLE_ID = 'gio-top-menu-styles';
-  if (!document.getElementById(STYLE_ID)) {
-    const style = document.createElement('style');
-    style.id = STYLE_ID;
-    style.textContent = `
-      .gio-btn {
-        position: relative;
-        width: var(--gio-btn-size, 44px);
-        height: var(--gio-btn-size, 44px);
-        min-width: var(--gio-btn-size, 44px);
-        border: none;
-        border-radius: var(--gio-btn-radius, 10px);
-        background: var(--backg0, #333);
-        color: var(--texto, #8c8e8f);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: background .18s, color .18s, transform .12s, opacity .2s;
-        padding: 0;
-        flex-shrink: 0;
-      }
-      .gio-btn:hover  { background: var(--backg3, #3d3d3d); color: var(--textoActvioBlue, #4daafc); }
-      .gio-btn:active { transform: scale(.94); }
-      .gio-btn.gio-active { color: var(--textoActvioBlue, #4daafc); background: var(--textoledBrillo, #383f48); }
-      .gio-btn svg { width: var(--gio-icon-size, 22px); height: var(--gio-icon-size, 22px); fill: currentColor; pointer-events: none; }
-
-      .gio-tooltip {
-        position: fixed;
-        padding: 6px 10px;
-        background: var(--backg0, #1a1a1a);
-        color: var(--textoActivo, #e7e7e7);
-        font-size: 12px;
-        font-family: system-ui, sans-serif;
-        white-space: nowrap;
-        border-radius: 6px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity .15s ease;
-        z-index: 10000;
-        border: 1px solid var(--borde, #444);
-      }
-      .gio-tooltip.gio-visible { opacity: 1; }
-
-      .gio-custom-scroll::-webkit-scrollbar { width: 5px; height: 5px; }
-      .gio-custom-scroll::-webkit-scrollbar-track { background: transparent; }
-      .gio-custom-scroll::-webkit-scrollbar-thumb { background: var(--borde, #4d4d4d); border-radius: 4px; }
-      .gio-custom-scroll::-webkit-scrollbar-thumb:hover { background: var(--textoledBrillo, #383f48); }
-    `;
-    document.head.appendChild(style);
-  }
-
-  const wrap = document.createElement('div');
-  wrap.id = id;
-  wrap.style.cssText = `
-    position: fixed; top: ${offset}px; left: 50%;
-    transform: translateX(-50%);
-    display: flex; gap: ${gap}px;
-    padding: ${padding}px;
-    background: ${bg};
-    border: 1px solid ${border};
-    border-radius: ${radius}px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.5);
-    z-index: 9999;
-    max-width: calc(100vw - ${offset * 2}px);
-    box-sizing: border-box;
-  `;
-
-  const listEl = document.createElement('div');
-  listEl.className = 'gio-custom-scroll';
-  listEl.style.cssText = `display:flex; gap:${gap}px; overflow-x:auto; overflow-y:hidden; max-width:100%;`;
-
-  const created = [];
-
-  const makeBtn = ({ icon, tooltip = '', bId = null, active = false, onClick = null }) => {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'gio-btn' + (active ? ' gio-active' : '');
-    btn.dataset.tooltip = tooltip;
-    if (bId) btn.dataset.id = bId;
-    btn.style.width = `${buttonSize}px`;
-    btn.style.height = `${buttonSize}px`;
-    btn.style.minWidth = `${buttonSize}px`;
-    btn.style.setProperty('--gio-btn-size', `${buttonSize}px`);
-    btn.style.setProperty('--gio-icon-size', `${iconSize}px`);
-
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('viewBox', '0 0 24 24');
-    svg.style.width = `${iconSize}px`;
-    svg.style.height = `${iconSize}px`;
-    svg.innerHTML = (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB[icon])
-      || (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB.square)
-      || '';
-    btn.appendChild(svg);
-
-    const showTip = () => {
-      if (typeof Giovanni !== 'undefined' && typeof Giovanni._showGlobalTooltip === 'function') {
-        Giovanni._showGlobalTooltip(btn, btn.dataset.tooltip, 'top');
-      }
-    };
-    const hideTip = () => {
-      if (typeof Giovanni !== 'undefined' && typeof Giovanni._hideGlobalTooltip === 'function') {
-        Giovanni._hideGlobalTooltip();
-      }
-    };
-
-    btn.addEventListener('mouseenter', showTip);
-    btn.addEventListener('mouseleave', hideTip);
-    btn.addEventListener('focus', showTip);
-    btn.addEventListener('blur', hideTip);
-
-    const ref = {
-      el: btn,
-      id: bId,
-      isSeparator: false,
-      setActive: (v = true) => btn.classList.toggle('gio-active', v),
-      setTooltip: (t) => { btn.dataset.tooltip = t; },
-      setIcon: (k) => {
-        svg.innerHTML = (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB[k])
-          || (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB.square)
-          || '';
-      },
-      remove: () => {
-        btn.remove();
-        const i = created.indexOf(ref);
-        if (i > -1) created.splice(i, 1);
-      }
-    };
-
-    btn.addEventListener('click', (e) => {
-      created.forEach(r => {
-        if (r !== ref && !r.isSeparator) r.setActive(false);
-      });
-      ref.setActive(true);
-
-      if (typeof onClick === 'function') onClick(btn, e);
-      else if (typeof defaultOnClick === 'function') defaultOnClick(btn, e);
-    });
-
-    created.push(ref);
-    listEl.appendChild(btn);
-    return ref;
-  };
-
-  buttons.forEach(b => makeBtn(b));
-  wrap.appendChild(listEl);
-  document.body.appendChild(wrap);
-
-  return {
-    el: wrap,
-    listEl,
-    id,
-    buttons: created,
-    createButton: makeBtn,
-    show: () => { wrap.style.display = ''; },
-    hide: () => { wrap.style.display = 'none'; },
-    destroy: () => { wrap.remove(); created.length = 0; },
-    getButton: (bid) => created.find(b => b.id === bid)
-  };
-}
-
-    createSideMenu({
-  position = 'left',
-  buttons = [],
-  id = `gio-menu-${Math.random().toString(36).slice(2, 8)}`,
-  collapsible = true,
-  defaultCollapsed = false,
-  burgerTooltip = 'Mostrar / ocultar menú',
-  buttonSize = 44,
-  iconSize = 22,
-  radius = 10,
-  gap = 8,
-  padding = 8,
-  defaultOnClick = null
-} = {}) {
-
-  const menuEl = document.createElement('div');
-  menuEl.id = id;
-  menuEl.className = `gio-menu gio-${position}`;
-  menuEl.style.setProperty('--gio-btn-size',   `${buttonSize}px`);
-  menuEl.style.setProperty('--gio-icon-size',  `${iconSize}px`);
-  menuEl.style.setProperty('--gio-btn-radius', `${radius}px`);
-  menuEl.style.setProperty('--gio-gap',        `${gap}px`);
-  menuEl.style.setProperty('--gio-padding',    `${padding}px`);
-
-  const listEl = document.createElement('div');
-  listEl.className = 'gio-menu-list gio-custom-scroll';
-
-  const tooltipEl = document.createElement('div');
-  tooltipEl.className = 'gio-tooltip';
-
-  let collapsed = false;
-  let burgerRef = null;
-  const createdButtons = [];
-
-  const createButton = ({ icon, tooltip = '', bId = null, active = false, onClick = null }) => {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'gio-btn' + (active ? ' gio-active' : '');
-    if (bId) btn.dataset.id = bId;
-    btn.dataset.tooltip = tooltip;
-
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('viewBox', '0 0 24 24');
-    svg.innerHTML = GiovanniIconDB[icon] || GiovanniIconDB.square;
-    btn.appendChild(svg);
-
-    btn.addEventListener('mouseenter', () => showTooltip(btn, btn.dataset.tooltip));
-    btn.addEventListener('mouseleave', hideTooltip);
-    btn.addEventListener('focus',      () => showTooltip(btn, btn.dataset.tooltip));
-    btn.addEventListener('blur',       hideTooltip);
-
-    btn.addEventListener('click', (e) => {
-      if (typeof onClick === 'function') onClick(btn, e);
-      else if (typeof defaultOnClick === 'function') defaultOnClick(btn, e);
-    });
-
-    const ref = {
-      el: btn,
-      id: bId,
-      setActive: (v = true) => btn.classList.toggle('gio-active', v),
-      setTooltip: (t) => { btn.dataset.tooltip = t; },
-      setIcon: (key) => { svg.innerHTML = GiovanniIconDB[key] || GiovanniIconDB.square; },
-      remove: () => {
-        btn.remove();
-        const i = createdButtons.indexOf(ref);
-        if (i > -1) createdButtons.splice(i, 1);
-      }
-    };
-    createdButtons.push(ref);
-    return ref;
-  };
-
- const showTooltip = (target, text) => Giovanni._showGlobalTooltip(target, text, position);
-const hideTooltip = () => Giovanni._hideGlobalTooltip();
- 
-
-  const collapse = () => {
-    if (!collapsible || collapsed) return;
-    collapsed = true;
-    menuEl.classList.add('gio-collapsed');
-    burgerRef?.setIcon('menu');
-    hideTooltip();
-  };
-  const expand = () => {
-    if (!collapsible || !collapsed) return;
-    collapsed = false;
-    menuEl.classList.remove('gio-collapsed');
-    burgerRef?.setIcon('menuOpen');
-  };
-  const toggle = () => collapsed ? expand() : collapse();
-
-  if (collapsible) {
-    burgerRef = createButton({
-      icon: 'menu',
-      tooltip: burgerTooltip,
-      bId: '__burger__',
-      onClick: () => toggle()
-    });
-    burgerRef.el.classList.add('gio-burger');
-    menuEl.appendChild(burgerRef.el);
-  }
-
-  buttons.forEach(b => {
-    const ref = createButton(b);
-    listEl.appendChild(ref.el);
-  });
-
-  menuEl.appendChild(listEl);
-  document.body.appendChild(menuEl);
-  document.body.appendChild(tooltipEl);
-
-  if (defaultCollapsed) collapse();
-
-  return {
-    el: menuEl,
-    listEl,
-    id,
-    buttons: createdButtons,
-    createButton,
-    toggle,
-    collapse,
-    expand,
-    isCollapsed: () => collapsed,
-    setSizes: (s = {}) => {
-      if (s.buttonSize) menuEl.style.setProperty('--gio-btn-size',   `${s.buttonSize}px`);
-      if (s.iconSize)   menuEl.style.setProperty('--gio-icon-size',  `${s.iconSize}px`);
-      if (s.radius)     menuEl.style.setProperty('--gio-btn-radius', `${s.radius}px`);
-      if (s.gap != null)menuEl.style.setProperty('--gio-gap',        `${s.gap}px`);
-      if (s.padding != null)menuEl.style.setProperty('--gio-padding',`${s.padding}px`);
-    },
-    show: () => { menuEl.style.display = ''; },
-    hide: () => { menuEl.style.display = 'none'; },
-    destroy: () => {
-      tooltipEl.remove();
-      menuEl.remove();
-      createdButtons.length = 0;
-    },
-    getButton: (bId) => createdButtons.find(b => b.id === bId)
-  };
-}
-
-    createButtonSimple = function({ 
-    text = 'TinkerAtlas', 
-    onClick = null, 
-    fullWidth = false, 
-    label = null 
-} = {}) {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.textContent = text;
-    btn.style.cssText = `
-        background: #2d2d2d;
-        color: var(--texto);
-        border: 3px solid #2d2d2d0c;
-        border-radius: var(--radius);
-        padding: 8px 16px;
-        font-family: inherit;
-        font-size: 13px;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-        cursor: pointer;
-        outline: none;
-        user-select: none;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: ${fullWidth ? '100%' : 'fit-content'};
-        box-sizing: border-box;
-        transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-    `;
-
-    // Efecto Hover (Azul Neón + Glow)
-    btn.addEventListener('mouseenter', () => {
-        btn.style.color = 'var(--textoActvioBlue)';
-    
-    
- 
-    });
-
-    btn.addEventListener('mouseleave', () => {
-        btn.style.color = 'var(--texto)';
-   
-        btn.style.background = '#383737';
-        btn.style.boxShadow = 'none';
-    });
-
-    // Efecto Click (Pulsación)
-    btn.addEventListener('mousedown', () => {
-        btn.style.transform = 'scale(0.97)';
-    });
-    btn.addEventListener('mouseup', () => {
-        btn.style.transform = 'scale(1)';
-    });
-
-    btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (onClick) onClick(btn, e);
-    });
-
-  
-    btn.setText = (nuevoTexto) => {
-        btn.textContent = nuevoTexto;
-        return btn;
-    };
-
- 
-    if (label) {
-        return this._wrapWithLabel(label, btn);
-    }
-
-    return btn;
-};
-
-
-createBrowserPanel({
-  label = 'Browser',
-  data = [],
-  width = 260,
-  maxHeight = 350,
-  defaultOpen = true,
-  container = null,
-  onSelect = null,
-  onVisibilityToggle = null,
-  onContextMenu = null
-} = {}) {
-  const STYLE_ID = 'gio-browser-styles';
-  if (!document.getElementById(STYLE_ID)) {
-    const style = document.createElement('style');
-    style.id = STYLE_ID;
-    style.textContent = `
-      .gio-browser {
-        background: #11161d;
-        border-right: 1px solid #333333;
-        display: flex;
-        flex-direction: column;
-        height: auto;
-        font-family: 'Segoe UI', Roboto, sans-serif;
-        font-size: 12px;
-        color: #b9c1cc;
-        user-select: none;
-        box-sizing: border-box;
-        overflow: hidden;
-        flex-shrink: 0;
-        position: relative;
-      }
-      .gio-browser.is-dragging {
-        position: fixed !important;
-        opacity: 0.92;
-        z-index: 999999 !important;
-        box-shadow: 0 16px 36px rgba(0,0,0,0.8), 0 0 15px rgba(33, 96, 199, 0.4) !important;
-        pointer-events: none;
-        margin: 0 !important;
-        border: 1px solid #4daafc !important;
-      }
-      .gio-browser-head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 8px 12px;
-        border-bottom: 1px solid #333333;
-        font-size: 12px;
-        font-weight: 600;
-        color: #e6ebf1;
-        background: #333333;
-        cursor: grab;
-        box-sizing: border-box;
-      }
-      .gio-browser-head:active {
-        cursor: grabbing;
-      }
-      .gio-browser-head-left {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-      }
-      .gio-browser-head-right {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-      .gio-browser-head span.small {
-        font-size: 11px;
-        color: #8c93a0;
-        font-weight: 400;
-      }
-      .gio-browser-toggle-btn {
-        background: transparent;
-        border: none;
-        color: #8c93a0;
-        cursor: pointer;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), color 0.15s;
-      }
-      .gio-browser-toggle-btn:hover {
-        color: #4daafc;
-      }
-      .gio-browser-toggle-btn.closed {
-        transform: rotate(-90deg);
-      }
-      .gio-browser-body {
-        transition: max-height 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-      }
-      .gio-browser-body.collapsed {
-        max-height: 0 !important;
-        opacity: 0;
-      }
-      .gio-browser-tree {
-        overflow-y: auto;
-        padding: 6px 4px;
-        display: flex;
-        flex-direction: column;
-        gap: 1px;
-        background: #1e1e1e;
-        box-sizing: border-box;
-      }
-      .gio-browser-row {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        padding: 4px 6px;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background 0.12s;
-        border-left: 2px solid transparent;
-      }
-      .gio-browser-row:hover {
-        background: #1e1e1e;
-      }
-      .gio-browser-row.selected {
-        background: #1e2a3a;
-        border-left-color: #4daafc;
-      }
-      .gio-browser-chevron {
-        width: 12px;
-        height: 12px;
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #6c7685;
-        transition: transform 0.15s;
-      }
-      .gio-browser-chevron.open {
-        transform: rotate(90deg);
-        color: #4daafc;
-      }
-      .gio-browser-icon {
-        width: 14px;
-        height: 14px;
-        flex-shrink: 0;
-        fill: currentColor;
-        color: #8aa0b8;
-      }
-      .gio-browser-name {
-        flex: 1;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        font-size: 12px;
-      }
-      .gio-browser-name.editing {
-        color: #4daafc;
-        font-weight: 600;
-      }
-      .gio-browser-eye {
-        width: 16px;
-        height: 16px;
-        background: transparent;
-        border: none;
-        padding: 0;
-        color: #6c7685;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0.8;
-      }
-      .gio-browser-eye:hover {
-        color: #4daafc;
-      }
-      .gio-browser-eye.off {
-        color: #3a4250;
-      }
-    `;
-    document.head.appendChild(style);
-  }
-
-  const root = document.createElement('div');
-  root.className = 'gio-browser';
-  root.style.width = typeof width === 'number' ? `${width}px` : width;
-
-  const head = document.createElement('div');
-  head.className = 'gio-browser-head';
-
-  const headLeft = document.createElement('div');
-  headLeft.className = 'gio-browser-head-left';
-
-  const labelEl = document.createElement('span');
-  labelEl.textContent = label;
-  headLeft.appendChild(labelEl);
-
-  const headRight = document.createElement('div');
-  headRight.className = 'gio-browser-head-right';
-
-  const countEl = document.createElement('span');
-  countEl.className = 'small';
-  countEl.textContent = '0 bodies';
-
-  const toggleBtn = document.createElement('button');
-  toggleBtn.type = 'button';
-  toggleBtn.className = 'gio-browser-toggle-btn' + (defaultOpen ? '' : ' closed');
-  toggleBtn.innerHTML = `
-    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="6 9 12 15 18 9"></polyline>
-    </svg>
-  `;
-
-  headRight.appendChild(countEl);
-  headRight.appendChild(toggleBtn);
-  head.appendChild(headLeft);
-  head.appendChild(headRight);
-
-  const bodyWrap = document.createElement('div');
-  bodyWrap.className = 'gio-browser-body' + (defaultOpen ? '' : ' collapsed');
-  bodyWrap.style.maxHeight = defaultOpen ? `${maxHeight}px` : '0px';
-
-  const tree = document.createElement('div');
-  tree.className = 'gio-browser-tree gio-custom-scroll';
-  tree.style.maxHeight = `${maxHeight}px`;
-
-  bodyWrap.appendChild(tree);
-  root.appendChild(head);
-  root.appendChild(bodyWrap);
-
-  let state = JSON.parse(JSON.stringify(data));
-  let selectedId = null;
-  let isOpen = !!defaultOpen;
-  const expanded = new Set();
-
-  const countBodies = (nodes) => {
-    let count = 0;
-    nodes.forEach(n => {
-      count++;
-      if (n.children && n.children.length > 0) count += countBodies(n.children);
-    });
-    return count;
-  };
-
-  const updateHeaderCount = () => {
-    countEl.textContent = `${countBodies(state)} bodies`;
-  };
-
-  const seedExpand = (nodes) => {
-    nodes.forEach(n => {
-      if (n.open) expanded.add(n.id);
-      if (n.children) seedExpand(n.children);
-    });
-  };
-  seedExpand(state);
-
-  const toggle = (force) => {
-    isOpen = typeof force === 'boolean' ? force : !isOpen;
-    if (isOpen) {
-      bodyWrap.classList.remove('collapsed');
-      bodyWrap.style.maxHeight = `${maxHeight}px`;
-      toggleBtn.classList.remove('closed');
-    } else {
-      bodyWrap.classList.add('collapsed');
-      bodyWrap.style.maxHeight = '0px';
-      toggleBtn.classList.add('closed');
-    }
-  };
-
-  toggleBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    toggle();
-  });
-
-  const render = () => {
-    tree.innerHTML = '';
-    updateHeaderCount();
-
-    const build = (items, depth = 0) => {
-      items.forEach(item => {
-        const row = document.createElement('div');
-        row.className = 'gio-browser-row' + (item.id === selectedId ? ' selected' : '');
-        row.style.paddingLeft = `${6 + depth * 14}px`;
-
-        const hasChildren = item.children && item.children.length > 0;
-        const isBranchOpen = expanded.has(item.id);
-
-        const chev = document.createElement('div');
-        chev.className = 'gio-browser-chevron' + (isBranchOpen ? ' open' : '');
-        if (hasChildren) {
-          chev.appendChild(Giovanni.getSVG('chevronRight', 10));
-          chev.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (isBranchOpen) expanded.delete(item.id);
-            else expanded.add(item.id);
-            render();
-          });
-        }
-        row.appendChild(chev);
-
-        const iconSpan = document.createElement('span');
-        iconSpan.className = 'gio-browser-icon';
-        iconSpan.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14">${GiovanniIconDB[item.icon] || GiovanniIconDB.square}</svg>`;
-        row.appendChild(iconSpan);
-
-        const name = document.createElement('span');
-        name.className = 'gio-browser-name' + (item.editing ? ' editing' : '');
-        name.textContent = item.name || item.id;
-        row.appendChild(name);
-
-        const eye = document.createElement('button');
-        eye.type = 'button';
-        eye.className = 'gio-browser-eye' + (item.visible === false ? ' off' : '');
-        eye.title = item.visible === false ? 'Mostrar' : 'Ocultar';
-        eye.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
-          ${item.visible === false
-            ? '<path d="M12 6a9.77 9.77 0 0 1 8.82 5.5A9.77 9.77 0 0 1 12 17a9.77 9.77 0 0 1-8.82-5.5A9.77 9.77 0 0 1 12 6m0-2C7 4 2.73 7.11 1 12c1.73 4.89 6 8 11 8s9.27-3.11 11-8c-1.73-4.89-6-8-11-8z"/>'
-            : '<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5C21.27 7.61 17 4.5 12 4.5zm0 12a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9z"/>'}
-        </svg>`;
-        eye.addEventListener('click', (e) => {
-          e.stopPropagation();
-          item.visible = item.visible === false ? true : false;
-          if (onVisibilityToggle) onVisibilityToggle(item, item.visible);
-          render();
-        });
-        row.appendChild(eye);
-
-        row.addEventListener('click', () => {
-          selectedId = item.id;
-          render();
-          if (onSelect) onSelect(item);
-        });
-
-        row.addEventListener('dblclick', () => {
-          startEditInline(name, item);
-        });
-
-        row.addEventListener('contextmenu', (e) => {
-          e.preventDefault();
-          if (onContextMenu) onContextMenu(e, item);
-        });
-
-        tree.appendChild(row);
-
-        if (hasChildren && isBranchOpen) build(item.children, depth + 1);
-      });
-    };
-
-    build(state);
-  };
-
-  const startEditInline = (nameEl, item) => {
-    const input = document.createElement('input');
-    input.value = item.name;
-    input.style.cssText = `
-      flex:1; background:#0c1118; border:1px solid #4daafc;
-      color:#e6ebf1; font-size:12px; padding:1px 4px;
-      border-radius:3px; outline:none; font-family:inherit;
-    `;
-    nameEl.replaceWith(input);
-    input.focus();
-    input.select();
-
-    const commit = () => {
-      const v = input.value.trim();
-      if (v) item.name = v;
-      render();
-    };
-    input.addEventListener('blur', commit);
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') input.blur();
-      if (e.key === 'Escape') { input.value = item.name; input.blur(); }
-    });
-  };
-
-  const initMagneticDrag = () => {
-    let startX = 0, startY = 0, initLeft = 0, initTop = 0;
-    let isDragging = false, hasMoved = false;
-    const threshold = 16;
-
-    let placeholder = document.getElementById('gio-snap-placeholder');
-    if (!placeholder) {
-      placeholder = document.createElement('div');
-      placeholder.id = 'gio-snap-placeholder';
-      placeholder.style.cssText = 'border:2px dashed #4daafc; border-radius:8px; background:rgba(33, 96, 199, 0.15); margin-bottom:12px; display:none; pointer-events:none; width:100%; box-sizing:border-box; transition:height 0.15s; flex-shrink:0;';
-      document.body.appendChild(placeholder);
-    }
-
-    let guideV = document.getElementById('gio-snap-v') || (() => {
-      const g = document.createElement('div'); g.id = 'gio-snap-v';
-      g.style.cssText = 'position:fixed; top:0; bottom:0; width:1px; background:#4daafc; box-shadow:0 0 8px #4daafc; z-index:9999999; display:none; pointer-events:none;';
-      document.body.appendChild(g); return g;
-    })();
-
-    let guideH = document.getElementById('gio-snap-h') || (() => {
-      const g = document.createElement('div'); g.id = 'gio-snap-h';
-      g.style.cssText = 'position:fixed; left:0; right:0; height:1px; background:#4daafc; box-shadow:0 0 8px #4daafc; z-index:9999999; display:none; pointer-events:none;';
-      document.body.appendChild(g); return g;
-    })();
-
-    const onPointerMove = (e) => {
-      if (!isDragging) return;
-      const dx = e.clientX - startX;
-      const dy = e.clientY - startY;
-
-      if (!hasMoved && Math.hypot(dx, dy) > 6) {
-        hasMoved = true;
-        const rect = root.getBoundingClientRect();
-        placeholder.style.height = `${rect.height}px`;
-        placeholder.style.display = 'block';
-
-        if (root.parentNode) {
-          root.parentNode.insertBefore(placeholder, root.nextSibling);
+    createCheckbox({ label = '', checked = false, onChange } = {}) {
+        const styleId = 'giopre-checkbox-standalone-styles';
+        if (!document.getElementById(styleId)) {
+            const style = document.createElement('style');
+            style.id = styleId;
+            style.textContent = `
+                .giopre-checkbox {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    cursor: pointer;
+                    margin: var(--giopre-margin, 4px);
+                    touch-action: manipulation;
+                    flex-shrink: 0 !important;
+                    min-height: 24px;
+                    user-select: none;
+                    font-family: var(--giopre-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+                    box-sizing: border-box;
+                }
+                .giopre-checkbox.disabled {
+                    opacity: var(--giopre-opacity-disabled, 0.35);
+                    cursor: not-allowed;
+                    pointer-events: none;
+                }
+                .giopre-checkbox-box {
+                    width: 16px;
+                    height: 16px;
+                    background: transparent;
+                    border: 1.5px solid var(--giopre-border, #555555);
+                    border-radius: 4px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all 0.2s;
+                    flex-shrink: 0 !important;
+                    box-sizing: border-box;
+                }
+                .giopre-checkbox:hover .giopre-checkbox-box {
+                    border-color: var(--giopre-text-muted, #8a8a8a);
+                }
+                .giopre-checkbox.checked .giopre-checkbox-box {
+                    background: var(--giopre-accent, #4e92ff);
+                    border-color: var(--giopre-accent, #4e92ff);
+                    -webkit-box-shadow: 0px 1px 57px 13px var(--giopre-accent, #4e92ff);
+                    box-shadow: 0px 1px 57px 13px var(--giopre-accent, #4e92ff);
+                }
+                .giopre-checkbox-mark {
+                    display: none;
+                    width: 8px;
+                    height: 4.5px;
+                    border-left: 2px solid #ffffff;
+                    border-bottom: 2px solid #ffffff;
+                    transform: rotate(-45deg) translate(0.5px, -0.5px);
+                    box-sizing: border-box;
+                }
+                .giopre-checkbox.checked .giopre-checkbox-mark {
+                    display: block;
+                }
+                .giopre-checkbox .giopre-label {
+                    font-size: var(--giopre-font-size-label, 12px);
+                    font-weight: var(--giopre-font-weight-medium, 500);
+                    color: var(--giopre-text-muted, #b0b0b0);
+                    white-space: nowrap;
+                    margin: var(--giopre-label-margin, 0px);
+                    flex-shrink: 0;
+                }
+            `;
+            (document.head || document.documentElement).appendChild(style);
         }
 
-        document.body.appendChild(root);
-        root.classList.add('is-dragging');
-        root.style.width = `${rect.width}px`;
-        initLeft = rect.left;
-        initTop = rect.top;
-      }
-
-      if (!hasMoved) return;
-
-      let targetX = initLeft + dx;
-      let targetY = initTop + dy;
-
-      root.style.pointerEvents = 'none';
-      const hits = document.elementsFromPoint(e.clientX, e.clientY);
-      root.style.pointerEvents = 'auto';
-
-      const dropTarget = hits.find(el => el !== root && el !== placeholder && (
-        el.classList.contains('gio-browser') ||
-        el.classList.contains('gio-acc-item') ||
-        el.classList.contains('gio-acc-body') ||
-        el.classList.contains('app-workspace') ||
-        el.classList.contains('gio-container') ||
-        el.classList.contains('gio-field')
-      ));
-
-      if (dropTarget) {
-        guideV.style.display = 'none';
-        guideH.style.display = 'none';
-        placeholder.style.display = 'block';
-
-        const r = dropTarget.getBoundingClientRect();
-        if (dropTarget.classList.contains('gio-browser') || dropTarget.classList.contains('gio-acc-item') || dropTarget.classList.contains('gio-field')) {
-          dropTarget.parentNode?.insertBefore(placeholder, e.clientY < r.top + r.height / 2 ? dropTarget : dropTarget.nextSibling);
-        } else {
-          dropTarget.appendChild(placeholder);
-        }
-      } else {
-        placeholder.style.display = 'none';
-        const w = root.offsetWidth;
-        const h = root.offsetHeight;
-        let snapX = null, snapY = null;
-
-        if (Math.abs(targetX) < threshold) { targetX = 0; snapX = 0; }
-        if (Math.abs(targetY) < threshold) { targetY = 0; snapY = 0; }
-        if (Math.abs(targetX + w - window.innerWidth) < threshold) { targetX = window.innerWidth - w; snapX = window.innerWidth; }
-        if (Math.abs(targetY + h - window.innerHeight) < threshold) { targetY = window.innerHeight - h; snapY = window.innerHeight; }
-
-        guideV.style.display = snapX !== null ? 'block' : 'none';
-        if (snapX !== null) guideV.style.left = `${snapX}px`;
-        guideH.style.display = snapY !== null ? 'block' : 'none';
-        if (snapY !== null) guideH.style.top = `${snapY}px`;
-      }
-
-      root.style.left = `${targetX}px`;
-      root.style.top = `${targetY}px`;
-    };
-
-    const onPointerUp = () => {
-      if (!isDragging) return;
-      isDragging = false;
-      guideV.style.display = 'none';
-      guideH.style.display = 'none';
-
-      window.removeEventListener('pointermove', onPointerMove);
-      window.removeEventListener('pointerup', onPointerUp);
-
-      if (!hasMoved) return;
-
-      if (placeholder.style.display !== 'none' && placeholder.parentNode) {
-        placeholder.parentNode.insertBefore(root, placeholder);
-        placeholder.style.display = 'none';
-        placeholder.remove();
-
-        root.classList.remove('is-dragging');
-        root.style.position = '';
-        root.style.left = '';
-        root.style.top = '';
-        root.style.width = typeof width === 'number' ? `${width}px` : width;
-      } else {
-        placeholder.style.display = 'none';
-        if (placeholder.parentNode) placeholder.remove();
-
-        root.classList.remove('is-dragging');
-        root.style.position = 'fixed';
-        root.style.zIndex = '999999';
-        root.style.margin = '0';
-      }
-    };
-
-    head.addEventListener('pointerdown', (e) => {
-      if (e.button !== 0 || e.target.closest('button, input')) return;
-      isDragging = true;
-      hasMoved = false;
-      startX = e.clientX;
-      startY = e.clientY;
-      window.addEventListener('pointermove', onPointerMove);
-      window.addEventListener('pointerup', onPointerUp);
-    });
-  };
-
-  initMagneticDrag();
-  render();
-
-  if (container) {
-    const parent = container.element || container;
-    if (parent && parent.appendChild) parent.appendChild(root);
-  }
-
-  return {
-    el: root,
-    treeEl: tree,
-    toggle: () => toggle(),
-    open: () => toggle(true),
-    close: () => toggle(false),
-    isOpen: () => isOpen,
-    getData: () => state,
-    setData: (d) => { state = JSON.parse(JSON.stringify(d)); render(); },
-    select: (id) => { selectedId = id; render(); },
-    expand: (id) => { expanded.add(id); render(); },
-    collapse: (id) => { expanded.delete(id); render(); }
-  };
-}
- 
-
-       createUnversalSideMenu({
-  position = 'left',
-  buttons = [],
-  id = `gio-menu-${Math.random().toString(36).slice(2, 8)}`,
-  collapsible = true,
-  defaultCollapsed = false,
-  burgerTooltip = 'Mostrar / ocultar menú',
-  buttonSize = 44,
-  iconSize = 22,
-  radius = 10,
-  gap = 8,
-  padding = 8,
-  defaultOnClick = null
-} = {}) {
-
-  const STYLE_ID = 'gio-universal-side-menu-styles';
-  if (!document.getElementById(STYLE_ID)) {
-    const style = document.createElement('style');
-    style.id = STYLE_ID;
-    style.textContent = `
-      .gio-menu {
-        position: fixed;
-        z-index: 9999;
-        display: flex;
-        gap: var(--gio-gap, 8px);
-        padding: var(--gio-padding, 8px);
-        background: var(--backg1, #2d2d2d);
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
-        transition: transform .28s ease, opacity .28s ease;
-        max-width: calc(100vw - 24px);
-        max-height: calc(100vh - 24px);
-        box-sizing: border-box;
-      }
-      .gio-menu.gio-left   { left: 0;  top: 50%; transform: translateY(-50%); flex-direction: column; border-radius: 0 var(--radius, 6px) var(--radius, 6px) 0; }
-      .gio-menu.gio-right  { right: 0; top: 50%; transform: translateY(-50%); flex-direction: column; border-radius: var(--radius, 6px) 0 0 var(--radius, 6px); }
-      .gio-menu.gio-top    { top: 0;    left: 50%; transform: translateX(-50%); flex-direction: row;    border-radius: 0 0 var(--radius, 6px) var(--radius, 6px); }
-      .gio-menu.gio-bottom { bottom: 0; left: 50%; transform: translateX(-50%); flex-direction: row;    border-radius: var(--radius, 6px) var(--radius, 6px) 0 0; }
-
-      .gio-menu-list {
-        display: flex;
-        flex-direction: column;
-        gap: var(--gio-gap, 8px);
-        max-height: calc(100vh - 100px);
-        overflow-y: auto;
-        overflow-x: hidden;
-        scrollbar-gutter: stable;
-      }
-      .gio-menu.gio-top .gio-menu-list,
-      .gio-menu.gio-bottom .gio-menu-list {
-        flex-direction: row;
-        max-height: none;
-        max-width: calc(100vw - 100px);
-        overflow-y: hidden;
-        overflow-x: auto;
-      }
-
-      .gio-btn {
-        position: relative;
-        width: var(--gio-btn-size, 44px);
-        height: var(--gio-btn-size, 44px);
-        min-width: var(--gio-btn-size, 44px);
-        border: none;
-        border-radius: var(--gio-btn-radius, 10px);
-        background: var(--backg0, #333);
-        color: var(--texto, #8c8e8f);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: background .18s, color .18s, transform .12s, opacity .2s;
-        padding: 0;
-        flex-shrink: 0;
-      }
-      .gio-btn:hover  { background: var(--backg3, #3d3d3d); color: var(--textoActvioBlue, #4daafc); }
-      .gio-btn:active { transform: scale(.94); }
-      .gio-btn.gio-active { color: var(--textoActvioBlue, #4daafc); background: var(--textoledBrillo, #383f48); }
-      .gio-btn svg { width: var(--gio-icon-size, 22px); height: var(--gio-icon-size, 22px); fill: currentColor; pointer-events: none; }
-      .gio-btn.gio-burger { color: var(--textoActvioBlue, #4daafc); }
-
-      .gio-menu.gio-collapsed .gio-menu-list { display: none; }
-      .gio-menu.gio-collapsed.gio-left   { transform: translateY(-50%) translateX(-2px); }
-      .gio-menu.gio-collapsed.gio-right  { transform: translateY(-50%) translateX(2px); }
-      .gio-menu.gio-collapsed.gio-top    { transform: translateX(-50%) translateY(-2px); }
-      .gio-menu.gio-collapsed.gio-bottom { transform: translateX(-50%) translateY(2px); }
-      .gio-menu.gio-collapsed { padding: calc(var(--gio-padding, 8px) * 0.75); gap: 0; }
-
-      .gio-tooltip {
-        position: fixed;
-        padding: 6px 10px;
-        background: var(--backg0, #1a1a1a);
-        color: var(--textoActivo, #e7e7e7);
-        font-size: 12px;
-        font-family: system-ui, sans-serif;
-        white-space: nowrap;
-        border-radius: 6px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity .15s ease;
-        z-index: 10000;
-        border: 1px solid var(--borde, #444);
-      }
-      .gio-tooltip.gio-visible { opacity: 1; }
-
-      .gio-custom-scroll::-webkit-scrollbar { width: 5px; height: 5px; }
-      .gio-custom-scroll::-webkit-scrollbar-track { background: transparent; }
-      .gio-custom-scroll::-webkit-scrollbar-thumb { background: var(--borde, #4d4d4d); border-radius: 4px; }
-      .gio-custom-scroll::-webkit-scrollbar-thumb:hover { background: var(--textoledBrillo, #383f48); }
-    `;
-    document.head.appendChild(style);
-  }
-
-  const menuEl = document.createElement('div');
-  menuEl.id = id;
-  menuEl.className = `gio-menu gio-${position}`;
-  menuEl.style.setProperty('--gio-btn-size',   `${buttonSize}px`);
-  menuEl.style.setProperty('--gio-icon-size',  `${iconSize}px`);
-  menuEl.style.setProperty('--gio-btn-radius', `${radius}px`);
-  menuEl.style.setProperty('--gio-gap',        `${gap}px`);
-  menuEl.style.setProperty('--gio-padding',    `${padding}px`);
-
-  const listEl = document.createElement('div');
-  listEl.className = 'gio-menu-list gio-custom-scroll';
-
-  const tooltipEl = document.createElement('div');
-  tooltipEl.className = 'gio-tooltip';
-
-  let collapsed = false;
-  let burgerRef = null;
-  const createdButtons = [];
-
-  const showTooltip = (target, text) => {
-    if (!text) return;
-    tooltipEl.textContent = text;
-    tooltipEl.classList.add('gio-visible');
-
-    requestAnimationFrame(() => {
-      const r = target.getBoundingClientRect();
-      const tw = tooltipEl.offsetWidth;
-      const th = tooltipEl.offsetHeight;
-      const g = 10;
-      let top, left, origin = 'center center';
-
-      switch (position) {
-        case 'left':   left = r.right + g; top = r.top + r.height / 2; origin = 'left center'; break;
-        case 'right':  left = r.left - tw - g; top = r.top + r.height / 2; origin = 'right center'; break;
-        case 'top':    left = r.left + r.width / 2 - tw / 2; top = r.bottom + g + th / 2; break;
-        case 'bottom':
-        default:       left = r.left + r.width / 2 - tw / 2; top = r.top - g - th / 2; break;
-      }
-
-      const m = 6;
-      if (left < m) left = m;
-      if (left + tw > window.innerWidth - m) left = window.innerWidth - tw - m;
-      if (top - th / 2 < m) top = th / 2 + m;
-      if (top + th / 2 > window.innerHeight - m) top = window.innerHeight - th / 2 - m;
-
-      tooltipEl.style.left = `${left}px`;
-      tooltipEl.style.top  = `${top}px`;
-      tooltipEl.style.transformOrigin = origin;
-    });
-  };
-
-  const hideTooltip = () => tooltipEl.classList.remove('gio-visible');
-
-  const createButton = ({ icon, tooltip = '', bId = null, active = false, onClick = null }) => {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'gio-btn' + (active ? ' gio-active' : '');
-    if (bId) btn.dataset.id = bId;
-    btn.dataset.tooltip = tooltip;
-
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('viewBox', '0 0 24 24');
-    svg.innerHTML = (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB[icon])
-      || (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB.square)
-      || '';
-    btn.appendChild(svg);
-
-    btn.addEventListener('mouseenter', () => showTooltip(btn, btn.dataset.tooltip));
-    btn.addEventListener('mouseleave', hideTooltip);
-    btn.addEventListener('focus',      () => showTooltip(btn, btn.dataset.tooltip));
-    btn.addEventListener('blur',       hideTooltip);
-
-    const ref = {
-      el: btn,
-      id: bId,
-      isBurger: bId === '__burger__',
-      setActive: (v = true) => btn.classList.toggle('gio-active', v),
-      setTooltip: (t) => { btn.dataset.tooltip = t; },
-      setIcon: (key) => {
-        svg.innerHTML = (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB[key])
-          || (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB.square)
-          || '';
-      },
-      remove: () => {
-        btn.remove();
-        const i = createdButtons.indexOf(ref);
-        if (i > -1) createdButtons.splice(i, 1);
-      }
-    };
-
-    btn.addEventListener('click', (e) => {
-      if (!ref.isBurger) {
-        createdButtons.forEach(r => {
-          if (r !== ref && !r.isBurger) r.setActive(false);
-        });
-        ref.setActive(true);
-      }
-
-      if (typeof onClick === 'function') onClick(btn, e);
-      else if (typeof defaultOnClick === 'function') defaultOnClick(btn, e);
-    });
-
-    createdButtons.push(ref);
-    return ref;
-  };
-
-  const collapse = () => {
-    if (!collapsible || collapsed) return;
-    collapsed = true;
-    menuEl.classList.add('gio-collapsed');
-    burgerRef?.setIcon('menu');
-    hideTooltip();
-  };
-
-  const expand = () => {
-    if (!collapsible || !collapsed) return;
-    collapsed = false;
-    menuEl.classList.remove('gio-collapsed');
-    burgerRef?.setIcon('menuOpen');
-  };
-
-  const toggle = () => collapsed ? expand() : collapse();
-
-  if (collapsible) {
-    burgerRef = createButton({
-      icon: 'menu',
-      tooltip: burgerTooltip,
-      bId: '__burger__',
-      onClick: () => toggle()
-    });
-    burgerRef.el.classList.add('gio-burger');
-    menuEl.appendChild(burgerRef.el);
-  }
-
-  buttons.forEach(b => {
-    const ref = createButton(b);
-    listEl.appendChild(ref.el);
-  });
-
-  menuEl.appendChild(listEl);
-  document.body.appendChild(menuEl);
-  document.body.appendChild(tooltipEl);
-
-  if (defaultCollapsed) collapse();
-
-  return {
-    el: menuEl,
-    listEl,
-    id,
-    buttons: createdButtons,
-    createButton,
-    toggle,
-    collapse,
-    expand,
-    isCollapsed: () => collapsed,
-    setSizes: (s = {}) => {
-      if (s.buttonSize) menuEl.style.setProperty('--gio-btn-size',   `${s.buttonSize}px`);
-      if (s.iconSize)   menuEl.style.setProperty('--gio-icon-size',  `${s.iconSize}px`);
-      if (s.radius)     menuEl.style.setProperty('--gio-btn-radius', `${s.radius}px`);
-      if (s.gap != null)menuEl.style.setProperty('--gio-gap',        `${s.gap}px`);
-      if (s.padding != null)menuEl.style.setProperty('--gio-padding',`${s.padding}px`);
-    },
-    show: () => { menuEl.style.display = ''; },
-    hide: () => { menuEl.style.display = 'none'; },
-    destroy: () => {
-      tooltipEl.remove();
-      menuEl.remove();
-      createdButtons.length = 0;
-    },
-    getButton: (bId) => createdButtons.find(b => b.id === bId)
-  };
-}
-    
- 
- createCheckbox({ label = '', checked = false, onChange } = {}) {
-    const styleId = 'giopre-checkbox-standalone-styles';
-    if (!document.getElementById(styleId)) {
-        const style = document.createElement('style');
-        style.id = styleId;
-        style.textContent = `
-            .giopre-checkbox {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                cursor: pointer;
-                margin: var(--giopre-margin, 4px);
-                touch-action: manipulation;
-                flex-shrink: 0 !important;
-                min-height: 24px;
-                user-select: none;
-                font-family: var(--giopre-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
-                box-sizing: border-box;
-            }
-            .giopre-checkbox.disabled {
-                opacity: var(--giopre-opacity-disabled, 0.35);
-                cursor: not-allowed;
-                pointer-events: none;
-            }
-            .giopre-checkbox-box {
-                width: 16px;
-                height: 16px;
-                background: transparent;
-                border: 1.5px solid var(--giopre-border, #555555);
-                border-radius: 4px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transition: all 0.2s;
-                flex-shrink: 0 !important;
-                box-sizing: border-box;
-            }
-            .giopre-checkbox:hover .giopre-checkbox-box {
-                border-color: var(--giopre-text-muted, #8a8a8a);
-            }
-            .giopre-checkbox.checked .giopre-checkbox-box {
-                background: var(--giopre-accent, #4e92ff);
-                border-color: var(--giopre-accent, #4e92ff);
-                -webkit-box-shadow: 0px 1px 57px 13px var(--giopre-accent, #4e92ff);
-                box-shadow: 0px 1px 57px 13px var(--giopre-accent, #4e92ff);
-            }
-            .giopre-checkbox-mark {
-                display: none;
-                width: 8px;
-                height: 4.5px;
-                border-left: 2px solid #ffffff;
-                border-bottom: 2px solid #ffffff;
-                transform: rotate(-45deg) translate(0.5px, -0.5px);
-                box-sizing: border-box;
-            }
-            .giopre-checkbox.checked .giopre-checkbox-mark {
-                display: block;
-            }
-            .giopre-checkbox .giopre-label {
-                font-size: var(--giopre-font-size-label, 12px);
-                font-weight: var(--giopre-font-weight-medium, 500);
-                color: var(--giopre-text-muted, #b0b0b0);
-                white-space: nowrap;
-                margin: var(--giopre-label-margin, 0px);
-                flex-shrink: 0;
-            }
-        `;
-        (document.head || document.documentElement).appendChild(style);
-    }
-
-    const instance = {
-        checked: !!checked,
-        disabled: false,
-        element: document.createElement('div')
-    };
-
-    instance.element.className = `giopre-checkbox ${instance.checked ? 'checked' : ''}`;
-    instance.element.innerHTML = `
-        <div class="giopre-checkbox-box"><div class="giopre-checkbox-mark"></div></div>
-        <span class="giopre-label"></span>
-    `;
-    instance.element.querySelector('.giopre-label').textContent = label;
-
-    const handleClick = () => {
-        if (instance.disabled) return;
-        instance.checked = !instance.checked;
-        instance.element.classList.toggle('checked', instance.checked);
-        if (typeof onChange === 'function') {
-            onChange(instance.checked, instance);
-        }
-    };
-
-    instance.element.addEventListener('click', handleClick);
-
-    instance.getValue = () => instance.checked;
-
-    instance.setValue = (v) => {
-        instance.checked = !!v;
-        if (instance.element) {
-            instance.element.classList.toggle('checked', instance.checked);
-        }
-        return instance;
-    };
-
-    instance.setDisabled = (v) => {
-        instance.disabled = !!v;
-        if (instance.element) {
-            instance.element.classList.toggle('disabled', instance.disabled);
-        }
-        return instance;
-    };
-
-    instance.mount = (parent) => {
-        if (instance.element && parent) {
-            const p = parent.element ? parent.element : parent;
-            p.appendChild(instance.element);
-        }
-        return instance;
-    };
-
-    instance.destroy = () => {
-        if (instance.element) {
-            instance.element.removeEventListener('click', handleClick);
-            if (instance.element.parentNode) {
-                instance.element.parentNode.removeChild(instance.element);
-            }
-            instance.element = null;
-        }
-    };
-
-    return instance;
-}
-
-createRadio({ items = [], activeIndex = 0, onChange } = {}) {
-    const styleId = 'giopre-radiogroup-standalone-styles';
-    if (!document.getElementById(styleId)) {
-        const style = document.createElement('style');
-        style.id = styleId;
-        style.textContent = `
-            .giopre-radio-group {
-                display: flex;
-                align-items: center;
-                flex-wrap: wrap;
-                gap: 12px;
-                margin: var(--giopre-margin, 4px);
-                flex-shrink: 0 !important;
-                font-family: var(--giopre-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
-                box-sizing: border-box;
-            }
-            .giopre-radio-item {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                cursor: pointer;
-                touch-action: manipulation;
-                flex-shrink: 0;
-                min-height: 24px;
-                user-select: none;
-            }
-            .giopre-radio-item.disabled {
-                opacity: var(--giopre-opacity-disabled, 0.35);
-                cursor: not-allowed;
-                pointer-events: none;
-            }
-            .giopre-radio-circle {
-                width: 16px;
-                height: 16px;
-                border-radius: 50%;
-                background: transparent;
-                border: 1.5px solid var(--giopre-border, #555555);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transition: all 0.2s;
-                flex-shrink: 0 !important;
-                box-sizing: border-box;
-            }
-            .giopre-radio-dot {
-                width: 6px;
-                height: 6px;
-                border-radius: 50%;
-                background: #ffffff;
-                display: none;
-                transform: scale(0);
-                transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                box-sizing: border-box;
-            }
-            .giopre-radio-item:hover .giopre-radio-circle {
-                border-color: var(--giopre-text-muted, #8a8a8a);
-            }
-            .giopre-radio-item.active .giopre-radio-circle {
-                background: var(--giopre-accent, #4e92ff);
-                border-color: var(--giopre-accent, #4e92ff);
-                -webkit-box-shadow: 0px 1px 57px 13px var(--giopre-accent, #4e92ff);
-                box-shadow: 0px 1px 57px 13px var(--giopre-accent, #4e92ff);
-            }
-            .giopre-radio-item.active .giopre-radio-dot {
-                display: block;
-                transform: scale(1);
-            }
-            .giopre-radio-group .giopre-label {
-                font-size: var(--giopre-font-size-label, 12px);
-                font-weight: var(--giopre-font-weight-medium, 500);
-                color: var(--giopre-text-muted, #b0b0b0);
-                white-space: nowrap;
-                margin: var(--giopre-label-margin, 0px);
-                flex-shrink: 0;
-            }
-        `;
-        (document.head || document.documentElement).appendChild(style);
-    }
-
-    const instance = {
-        items,
-        activeIndex,
-        disabled: false,
-        handlers: [],
-        domItems: [],
-        element: document.createElement('div')
-    };
-
-    instance.element.className = 'giopre-radio-group';
-
-    instance.select = (idx) => {
-        instance.activeIndex = idx;
-        instance.domItems.forEach((el, i) => el.classList.toggle('active', i === idx));
-        return instance;
-    };
-
-    instance.getValue = () => {
-        const c = instance.items[instance.activeIndex];
-        return c ? (c.value !== undefined ? c.value : c) : null;
-    };
-
-    instance.setValue = (v) => {
-        const idx = instance.items.findIndex(it => (it.value !== undefined ? it.value : it) === v);
-        if (idx !== -1) instance.select(idx);
-        return instance;
-    };
-
-    instance.setDisabled = (v) => {
-        instance.disabled = !!v;
-        instance.domItems.forEach(el => el.classList.toggle('disabled', instance.disabled));
-        return instance;
-    };
-
-    instance.mount = (parent) => {
-        if (instance.element && parent) {
-            const p = parent.element ? parent.element : parent;
-            p.appendChild(instance.element);
-        }
-        return instance;
-    };
-
-    instance.destroy = () => {
-        instance.handlers.forEach(({ el, h }) => el.removeEventListener('click', h));
-        instance.handlers = [];
-        instance.domItems = [];
-        if (instance.element) {
-            if (instance.element.parentNode) {
-                instance.element.parentNode.removeChild(instance.element);
-            }
-            instance.element = null;
-        }
-    };
-
-    instance.domItems = instance.items.map((item, idx) => {
-        const el = document.createElement('div');
-        el.className = `giopre-radio-item ${idx === instance.activeIndex ? 'active' : ''}`;
-        el.innerHTML = `
-            <div class="giopre-radio-circle"><div class="giopre-radio-dot"></div></div>
+        const instance = {
+            checked: !!checked,
+            disabled: false,
+            element: document.createElement('div')
+        };
+
+        instance.element.className = `giopre-checkbox ${instance.checked ? 'checked' : ''}`;
+        instance.element.innerHTML = `
+            <div class="giopre-checkbox-box"><div class="giopre-checkbox-mark"></div></div>
             <span class="giopre-label"></span>
         `;
-        el.querySelector('.giopre-label').textContent = item.label || item;
+        instance.element.querySelector('.giopre-label').textContent = label;
 
-        const h = () => {
+        const handleClick = () => {
             if (instance.disabled) return;
-            instance.select(idx);
+            instance.checked = !instance.checked;
+            instance.element.classList.toggle('checked', instance.checked);
             if (typeof onChange === 'function') {
-                onChange(instance.getValue(), idx, instance);
+                onChange(instance.checked, instance);
             }
         };
 
-        el.addEventListener('click', h);
-        instance.handlers.push({ el, h });
-        instance.element.appendChild(el);
-        return el;
-    });
+        instance.element.addEventListener('click', handleClick);
 
-    return instance;
-}
+        instance.getValue = () => instance.checked;
+        instance.setValue = (v) => {
+            instance.checked = !!v;
+            if (instance.element) instance.element.classList.toggle('checked', instance.checked);
+            return instance;
+        };
+        instance.setDisabled = (v) => {
+            instance.disabled = !!v;
+            if (instance.element) instance.element.classList.toggle('disabled', instance.disabled);
+            return instance;
+        };
+        instance.mount = (parent) => {
+            if (instance.element && parent) {
+                const p = parent.element ? parent.element : parent;
+                p.appendChild(instance.element);
+            }
+            return instance;
+        };
+        instance.destroy = () => {
+            if (instance.element) {
+                instance.element.removeEventListener('click', handleClick);
+                if (instance.element.parentNode) instance.element.parentNode.removeChild(instance.element);
+                instance.element = null;
+            }
+        };
 
-createToggle({ label = '', value = false, onChange } = {}) {
-    const styleId = 'giopre-toggle-standalone-styles';
-    if (!document.getElementById(styleId)) {
-        const style = document.createElement('style');
-        style.id = styleId;
-        style.textContent = `
-            .giopre-toggle {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                cursor: pointer;
-                margin: var(--giopre-margin, 4px);
-                touch-action: manipulation;
-                flex-shrink: 0 !important;
-                min-height: 24px;
-                user-select: none;
-                font-family: var(--giopre-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
-                box-sizing: border-box;
-            }
-            .giopre-toggle.disabled {
-                opacity: var(--giopre-opacity-disabled, 0.35);
-                cursor: not-allowed;
-                pointer-events: none;
-            }
-            .giopre-toggle-switch {
-                width: 32px;
-                height: 18px;
-                border-radius: 18px;
-                background: transparent;
-                border: 1.5px solid var(--giopre-border, #555555);
-                position: relative;
-                transition: all 0.2s;
-                flex-shrink: 0 !important;
-                box-sizing: border-box;
-            }
-            .giopre-toggle-thumb {
-                width: 11px;
-                height: 11px;
-                background: var(--giopre-text-muted, #8a8a8a);
-                border-radius: 50%;
-                position: absolute;
-                top: 2px;
-                left: 2px;
-                transition: all 0.2s;
-                box-sizing: border-box;
-            }
-            .giopre-toggle:hover .giopre-toggle-switch {
-                border-color: var(--giopre-text-muted, #8a8a8a);
-            }
-            .giopre-toggle.active .giopre-toggle-switch {
-                background: var(--giopre-accent, #4e92ff);
-                border-color: var(--giopre-accent, #4e92ff);
-                -webkit-box-shadow: 0px 1px 57px 13px var(--giopre-accent, #4e92ff);
-                box-shadow: 0px 1px 57px 13px var(--giopre-accent, #4e92ff);
-            }
-            .giopre-toggle.active .giopre-toggle-thumb {
-                transform: translateX(14px);
-                background: #ffffff;
-            }
-            .giopre-toggle .giopre-label {
-                font-size: var(--giopre-font-size-label, 12px);
-                font-weight: var(--giopre-font-weight-medium, 500);
-                color: var(--giopre-text-muted, #b0b0b0);
-                white-space: nowrap;
-                margin: var(--giopre-label-margin, 0px);
-                flex-shrink: 0;
-            }
-        `;
-        (document.head || document.documentElement).appendChild(style);
+        return instance;
     }
 
-    const instance = {
-        value: !!value,
-        disabled: false,
-        element: document.createElement('div')
-    };
-
-    instance.element.className = `giopre-toggle ${instance.value ? 'active' : ''}`;
-    instance.element.innerHTML = `
-        <div class="giopre-toggle-switch"><div class="giopre-toggle-thumb"></div></div>
-        <span class="giopre-label"></span>
-    `;
-    instance.element.querySelector('.giopre-label').textContent = label;
-
-    const handleClick = () => {
-        if (instance.disabled) return;
-        instance.value = !instance.value;
-        instance.element.classList.toggle('active', instance.value);
-        if (typeof onChange === 'function') {
-            onChange(instance.value, instance);
+    createRadio({ items = [], activeIndex = 0, onChange } = {}) {
+        const styleId = 'giopre-radiogroup-standalone-styles';
+        if (!document.getElementById(styleId)) {
+            const style = document.createElement('style');
+            style.id = styleId;
+            style.textContent = `
+                .giopre-radio-group {
+                    display: flex;
+                    align-items: center;
+                    flex-wrap: wrap;
+                    gap: 12px;
+                    margin: var(--giopre-margin, 4px);
+                    flex-shrink: 0 !important;
+                    font-family: var(--giopre-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+                    box-sizing: border-box;
+                }
+                .giopre-radio-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    cursor: pointer;
+                    touch-action: manipulation;
+                    flex-shrink: 0;
+                    min-height: 24px;
+                    user-select: none;
+                }
+                .giopre-radio-item.disabled {
+                    opacity: var(--giopre-opacity-disabled, 0.35);
+                    cursor: not-allowed;
+                    pointer-events: none;
+                }
+                .giopre-radio-circle {
+                    width: 16px;
+                    height: 16px;
+                    border-radius: 50%;
+                    background: transparent;
+                    border: 1.5px solid var(--giopre-border, #555555);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all 0.2s;
+                    flex-shrink: 0 !important;
+                    box-sizing: border-box;
+                }
+                .giopre-radio-dot {
+                    width: 6px;
+                    height: 6px;
+                    border-radius: 50%;
+                    background: #ffffff;
+                    display: none;
+                    transform: scale(0);
+                    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    box-sizing: border-box;
+                }
+                .giopre-radio-item:hover .giopre-radio-circle {
+                    border-color: var(--giopre-text-muted, #8a8a8a);
+                }
+                .giopre-radio-item.active .giopre-radio-circle {
+                    background: var(--giopre-accent, #4e92ff);
+                    border-color: var(--giopre-accent, #4e92ff);
+                    -webkit-box-shadow: 0px 1px 57px 13px var(--giopre-accent, #4e92ff);
+                    box-shadow: 0px 1px 57px 13px var(--giopre-accent, #4e92ff);
+                }
+                .giopre-radio-item.active .giopre-radio-dot {
+                    display: block;
+                    transform: scale(1);
+                }
+                .giopre-radio-group .giopre-label {
+                    font-size: var(--giopre-font-size-label, 12px);
+                    font-weight: var(--giopre-font-weight-medium, 500);
+                    color: var(--giopre-text-muted, #b0b0b0);
+                    white-space: nowrap;
+                    margin: var(--giopre-label-margin, 0px);
+                    flex-shrink: 0;
+                }
+            `;
+            (document.head || document.documentElement).appendChild(style);
         }
-    };
 
-    instance.element.addEventListener('click', handleClick);
+        const instance = {
+            items,
+            activeIndex,
+            disabled: false,
+            handlers: [],
+            domItems: [],
+            element: document.createElement('div')
+        };
 
-    instance.getValue = () => instance.value;
+        instance.element.className = 'giopre-radio-group';
 
-    instance.setValue = (v) => {
-        instance.value = !!v;
-        if (instance.element) {
-            instance.element.classList.toggle('active', instance.value);
-        }
-        return instance;
-    };
-
-    instance.setDisabled = (v) => {
-        instance.disabled = !!v;
-        if (instance.element) {
-            instance.element.classList.toggle('disabled', instance.disabled);
-        }
-        return instance;
-    };
-
-    instance.mount = (parent) => {
-        if (instance.element && parent) {
-            const p = parent.element ? parent.element : parent;
-            p.appendChild(instance.element);
-        }
-        return instance;
-    };
-
-    instance.destroy = () => {
-        if (instance.element) {
-            instance.element.removeEventListener('click', handleClick);
-            if (instance.element.parentNode) {
-                instance.element.parentNode.removeChild(instance.element);
+        instance.select = (idx) => {
+            instance.activeIndex = idx;
+            instance.domItems.forEach((el, i) => el.classList.toggle('active', i === idx));
+            return instance;
+        };
+        instance.getValue = () => {
+            const c = instance.items[instance.activeIndex];
+            return c ? (c.value !== undefined ? c.value : c) : null;
+        };
+        instance.setValue = (v) => {
+            const idx = instance.items.findIndex(it => (it.value !== undefined ? it.value : it) === v);
+            if (idx !== -1) instance.select(idx);
+            return instance;
+        };
+        instance.setDisabled = (v) => {
+            instance.disabled = !!v;
+            instance.domItems.forEach(el => el.classList.toggle('disabled', instance.disabled));
+            return instance;
+        };
+        instance.mount = (parent) => {
+            if (instance.element && parent) {
+                const p = parent.element ? parent.element : parent;
+                p.appendChild(instance.element);
             }
-            instance.element = null;
+            return instance;
+        };
+        instance.destroy = () => {
+            instance.handlers.forEach(({ el, h }) => el.removeEventListener('click', h));
+            instance.handlers = [];
+            instance.domItems = [];
+            if (instance.element) {
+                if (instance.element.parentNode) instance.element.parentNode.removeChild(instance.element);
+                instance.element = null;
+            }
+        };
+
+        instance.domItems = instance.items.map((item, idx) => {
+            const el = document.createElement('div');
+            el.className = `giopre-radio-item ${idx === instance.activeIndex ? 'active' : ''}`;
+            el.innerHTML = `
+                <div class="giopre-radio-circle"><div class="giopre-radio-dot"></div></div>
+                <span class="giopre-label"></span>
+            `;
+            el.querySelector('.giopre-label').textContent = item.label || item;
+
+            const h = () => {
+                if (instance.disabled) return;
+                instance.select(idx);
+                if (typeof onChange === 'function') {
+                    onChange(instance.getValue(), idx, instance);
+                }
+            };
+
+            el.addEventListener('click', h);
+            instance.handlers.push({ el, h });
+            instance.element.appendChild(el);
+            return el;
+        });
+
+        return instance;
+    }
+
+    createToggle({ label = '', value = false, onChange } = {}) {
+        const styleId = 'giopre-toggle-standalone-styles';
+        if (!document.getElementById(styleId)) {
+            const style = document.createElement('style');
+            style.id = styleId;
+            style.textContent = `
+                .giopre-toggle {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    cursor: pointer;
+                    margin: var(--giopre-margin, 4px);
+                    touch-action: manipulation;
+                    flex-shrink: 0 !important;
+                    min-height: 24px;
+                    user-select: none;
+                    font-family: var(--giopre-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+                    box-sizing: border-box;
+                }
+                .giopre-toggle.disabled {
+                    opacity: var(--giopre-opacity-disabled, 0.35);
+                    cursor: not-allowed;
+                    pointer-events: none;
+                }
+                .giopre-toggle-switch {
+                    width: 32px;
+                    height: 18px;
+                    border-radius: 18px;
+                    background: transparent;
+                    border: 1.5px solid var(--giopre-border, #555555);
+                    position: relative;
+                    transition: all 0.2s;
+                    flex-shrink: 0 !important;
+                    box-sizing: border-box;
+                }
+                .giopre-toggle-thumb {
+                    width: 11px;
+                    height: 11px;
+                    background: var(--giopre-text-muted, #8a8a8a);
+                    border-radius: 50%;
+                    position: absolute;
+                    top: 2px;
+                    left: 2px;
+                    transition: all 0.2s;
+                    box-sizing: border-box;
+                }
+                .giopre-toggle:hover .giopre-toggle-switch {
+                    border-color: var(--giopre-text-muted, #8a8a8a);
+                }
+                .giopre-toggle.active .giopre-toggle-switch {
+                    background: var(--giopre-accent, #4e92ff);
+                    border-color: var(--giopre-accent, #4e92ff);
+                    -webkit-box-shadow: 0px 1px 57px 13px var(--giopre-accent, #4e92ff);
+                    box-shadow: 0px 1px 57px 13px var(--giopre-accent, #4e92ff);
+                }
+                .giopre-toggle.active .giopre-toggle-thumb {
+                    transform: translateX(14px);
+                    background: #ffffff;
+                }
+                .giopre-toggle .giopre-label {
+                    font-size: var(--giopre-font-size-label, 12px);
+                    font-weight: var(--giopre-font-weight-medium, 500);
+                    color: var(--giopre-text-muted, #b0b0b0);
+                    white-space: nowrap;
+                    margin: var(--giopre-label-margin, 0px);
+                    flex-shrink: 0;
+                }
+            `;
+            (document.head || document.documentElement).appendChild(style);
         }
-    };
 
-    return instance;
-}
- 
-    
+        const instance = {
+            value: !!value,
+            disabled: false,
+            element: document.createElement('div')
+        };
 
-     
+        instance.element.className = `giopre-toggle ${instance.value ? 'active' : ''}`;
+        instance.element.innerHTML = `
+            <div class="giopre-toggle-switch"><div class="giopre-toggle-thumb"></div></div>
+            <span class="giopre-label"></span>
+        `;
+        instance.element.querySelector('.giopre-label').textContent = label;
 
-     
+        const handleClick = () => {
+            if (instance.disabled) return;
+            instance.value = !instance.value;
+            instance.element.classList.toggle('active', instance.value);
+            if (typeof onChange === 'function') {
+                onChange(instance.value, instance);
+            }
+        };
+
+        instance.element.addEventListener('click', handleClick);
+
+        instance.getValue = () => instance.value;
+        instance.setValue = (v) => {
+            instance.value = !!v;
+            if (instance.element) instance.element.classList.toggle('active', instance.value);
+            return instance;
+        };
+        instance.setDisabled = (v) => {
+            instance.disabled = !!v;
+            if (instance.element) instance.element.classList.toggle('disabled', instance.disabled);
+            return instance;
+        };
+        instance.mount = (parent) => {
+            if (instance.element && parent) {
+                const p = parent.element ? parent.element : parent;
+                p.appendChild(instance.element);
+            }
+            return instance;
+        };
+        instance.destroy = () => {
+            if (instance.element) {
+                instance.element.removeEventListener('click', handleClick);
+                if (instance.element.parentNode) instance.element.parentNode.removeChild(instance.element);
+                instance.element = null;
+            }
+        };
+
+        return instance;
+    }
+
     createSlider({ label = 'Control Deslizante', min = 0, max = 100, step = 1, value = 50, onChange = null } = {}) {
         let curMin = Number(min);
         let curMax = Number(max);
         let curStep = Number(step);
         let curVal = Math.max(curMin, Math.min(curMax, Number(value)));
+        let badgeEditable = null;
 
         const card = document.createElement('div');
         card.style.cssText = "display: flex; flex-direction: column; gap: 8px; box-sizing: border-box; width: 100%; user-select: none;";
@@ -5630,7 +5007,7 @@ createToggle({ label = '', value = false, onChange } = {}) {
 
         const title = document.createElement('span');
         title.textContent = label;
-        title.style.cssText = "font-size: 12px; font-weight: 500; color: #4daafc;  flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;";
+        title.style.cssText = "font-size: 12px; font-weight: 500; color: #4daafc; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;";
 
         const rightTools = document.createElement('div');
         rightTools.style.cssText = "display: flex; align-items: center; gap: 6px; flex-shrink: 0;";
@@ -5638,9 +5015,6 @@ createToggle({ label = '', value = false, onChange } = {}) {
         const badge = document.createElement('span');
         badge.textContent = curVal;
         badge.style.cssText = "font-size: 11px; font-family: monospace; color: var(--textoActivo); background: var(--backg3); padding: 2px 8px; border-radius: 4px; border: 1px solid var(--borde);";
-         
-
-        
 
         const btnCajon = document.createElement('button');
         btnCajon.innerHTML = `<svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="1 1 5 5 9 1"></polyline></svg>`;
@@ -5690,11 +5064,24 @@ createToggle({ label = '', value = false, onChange } = {}) {
 
         const updateVisuals = (val) => {
             curVal = Number(val);
-            badge.textContent = curVal;
-            badgeEditable.setValue(curVal);
+            if (badgeEditable) {
+                badgeEditable.setValue(curVal);
+            } else {
+                badge.textContent = curVal;
+            }
             const pct = curMax > curMin ? Math.min(100, Math.max(0, ((curVal - curMin) / (curMax - curMin)) * 100)) : 0;
             fillBar.style.width = `${pct}%`;
             thumb.style.left = `${pct}%`;
+        };
+
+        const syncBounds = () => {
+            if (!badgeEditable) return;
+            badgeEditable.updateOptions({
+                type: (curStep % 1 !== 0 || curVal % 1 !== 0) ? 'float' : 'int',
+                min: curMin,
+                max: curMax,
+                step: curStep
+            });
         };
 
         const handleDrag = (e) => {
@@ -5703,7 +5090,7 @@ createToggle({ label = '', value = false, onChange } = {}) {
             let ratio = (cx - r.left) / r.width;
             ratio = Math.max(0, Math.min(1, ratio));
 
-            let raw = curMin + ratio * (curMax - curMin);
+            const raw = curMin + ratio * (curMax - curMin);
             const steps = Math.round((raw - curMin) / curStep);
             let calculated = Number((curMin + steps * curStep).toFixed(2));
             calculated = Math.max(curMin, Math.min(curMax, calculated));
@@ -5744,9 +5131,28 @@ createToggle({ label = '', value = false, onChange } = {}) {
             btnCajon.style.color = isOpen ? 'var(--textoledBrillo)' : 'var(--textodisable)';
         });
 
-        const inpMin = createCajonInput('Mín', curMin, (v) => { if (!isNaN(v)) { curMin = v; updateVisuals(curVal); } });
-        const inpMax = createCajonInput('Máx', curMax, (v) => { if (!isNaN(v)) { curMax = v; updateVisuals(curVal); } });
-        const inpStep = createCajonInput('Paso', curStep, (v) => { if (!isNaN(v) && v > 0) curStep = v; });
+        const inpMin = createCajonInput('Mín', curMin, (v) => {
+            if (!isNaN(v)) {
+                curMin = v;
+                syncBounds();
+                updateVisuals(Math.max(curMin, Math.min(curMax, curVal)));
+                inpExact.inp.value = curVal;
+            }
+        });
+        const inpMax = createCajonInput('Máx', curMax, (v) => {
+            if (!isNaN(v)) {
+                curMax = v;
+                syncBounds();
+                updateVisuals(Math.max(curMin, Math.min(curMax, curVal)));
+                inpExact.inp.value = curVal;
+            }
+        });
+        const inpStep = createCajonInput('Paso', curStep, (v) => {
+            if (!isNaN(v) && v > 0) {
+                curStep = v;
+                syncBounds();
+            }
+        });
         const inpExact = createCajonInput('Val', curVal, (v) => {
             if (!isNaN(v)) {
                 updateVisuals(Math.max(curMin, Math.min(curMax, v)));
@@ -5754,7 +5160,7 @@ createToggle({ label = '', value = false, onChange } = {}) {
             }
         });
 
-         const badgeEditable = Giovanni.hacerEditableNumerico(badge, {
+        badgeEditable = Giovanni.hacerEditableNumerico(badge, {
             type: (curStep % 1 !== 0 || curVal % 1 !== 0) ? 'float' : 'int',
             min: curMin,
             max: curMax,
@@ -5762,7 +5168,7 @@ createToggle({ label = '', value = false, onChange } = {}) {
             value: curVal,
             onChange: (newVal) => {
                 updateVisuals(newVal);
-                if (inpExact) inpExact.inp.value = curVal;
+                inpExact.inp.value = curVal;
                 if (onChange) onChange(curVal);
             }
         });
@@ -5780,190 +5186,125 @@ createToggle({ label = '', value = false, onChange } = {}) {
         return this._wrapWithLabel('Ajuste Numérico', card);
     }
 
-      createButtonRectangular({
-    icon = 'square',
-    tooltip = '',
-    tooltipPosition = 'right',  
-    id = null,
-    active = false,
-    toggle = false,
-    size = 44,
-    iconSize = 22,
-    radius = 10,
-    container = null,
-    onClick = null
-} = {}) {
-    const STYLE_ID = 'gio-ibtn-standalone-styles';
-    if (!document.getElementById(STYLE_ID)) {
-        const style = document.createElement('style');
-        style.id = STYLE_ID;
-        style.textContent = `
-            .gio-ibtn-item {
-                position: relative;
-                width: var(--gio-ibtn-size, 44px);
-                height: var(--gio-ibtn-size, 44px);
-                min-width: var(--gio-ibtn-size, 44px);
-                border: none;
-                border-radius: var(--gio-ibtn-radius, 10px);
-                background: #333333;
-                color: #8c8e8f;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                transition: background .18s, color .18s, transform .12s, opacity .2s;
-                padding: 0;
-                margin: 0;
-                flex-shrink: 0;
-                outline: none;
-                user-select: none;
-                box-sizing: border-box;
-            }
-            .gio-ibtn-item:hover:not(:disabled) {
-                background: #3d3d3d;
-                color: #4daafc;
-            }
-            .gio-ibtn-item:active:not(:disabled) {
-                transform: scale(.94);
-            }
-            .gio-ibtn-item.gio-ibtn-item--active {
-                color: #4daafc;
-                background: #383f48;
-            }
-            .gio-ibtn-item:disabled {
-                opacity: 0.4;
-                cursor: not-allowed;
-            }
-            .gio-ibtn-item svg {
-                width: var(--gio-ibtn-icon, 22px);
-                height: var(--gio-ibtn-icon, 22px);
-                fill: currentColor;
-                pointer-events: none;
-            }
-            .gio-ibtn-tip {
-                position: fixed;
-                padding: 6px 10px;
-                background: #1a1a1a;
-                color: #e7e7e7;
-                font-size: 12px;
-                font-family: system-ui, sans-serif;
-                white-space: nowrap;
-                border-radius: 6px;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
-                pointer-events: none;
-                opacity: 0;
-                transition: opacity .15s ease;
-                z-index: 10000;
-                border: 1px solid #444444;
-            }
-            .gio-ibtn-tip.gio-ibtn-tip--show {
-                opacity: 1;
-            }
-        `;
-        document.head.appendChild(style);
+     createButtonRectangular({
+        icon = 'square',
+        tooltip = '',
+        tooltipPosition = 'right',
+        id = null,
+        active = false,
+        toggle = false,
+        size = 44,
+        iconSize = 22,
+        radius = 10,
+        container = null,
+        onClick = null
+    } = {}, customDim = null) {
+        // Tu CSS original intacto
+        const STYLE_ID = 'gio-ibtn-standalone-styles';
+        if (!document.getElementById(STYLE_ID)) {
+            const style = document.createElement('style');
+            style.id = STYLE_ID;
+            style.textContent = `
+                .gio-ibtn-item {
+                    position: relative;
+                    width: var(--gio-ibtn-size, 44px);
+                    height: var(--gio-ibtn-size, 44px);
+                    min-width: var(--gio-ibtn-size, 44px);
+                    border: none;
+                    border-radius: var(--gio-ibtn-radius, 10px);
+                    background: #333333;
+                    color: #8c8e8f;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    transition: background .18s, color .18s, transform .12s, opacity .2s;
+                    padding: 0;
+                    margin: 0;
+                    flex-shrink: 0;
+                    outline: none;
+                    user-select: none;
+                    box-sizing: border-box;
+                }
+                .gio-ibtn-item:hover:not(:disabled) {
+                    background: #3d3d3d;
+                    color: #4daafc;
+                }
+                .gio-ibtn-item:active:not(:disabled) {
+                    transform: scale(.94);
+                }
+                .gio-ibtn-item.gio-ibtn-item--active {
+                    color: #4daafc;
+                    background: #383f48;
+                }
+                .gio-ibtn-item:disabled {
+                    opacity: 0.4;
+                    cursor: not-allowed;
+                }
+                .gio-ibtn-item svg {
+                    width: var(--gio-ibtn-icon, 22px);
+                    height: var(--gio-ibtn-icon, 22px);
+                    fill: currentColor;
+                    pointer-events: none;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'gio-ibtn-item' + (active ? ' gio-ibtn-item--active' : '');
+        if (id) btn.dataset.id = id;
+        btn.dataset.tooltip = tooltip;
+
+       
+        if (customDim && (customDim.w != null || customDim.h != null)) {
+            const finalW = typeof customDim.w === 'number' ? `${customDim.w}px` : customDim.w;
+            const finalH = typeof customDim.h === 'number' ? `${customDim.h}px` : customDim.h;
+            btn.style.width = finalW;
+            btn.style.minWidth = finalW;
+            btn.style.height = finalH;
+        } else {
+            btn.style.setProperty('--gio-ibtn-size', `${size}px`);
+        }
+
+        btn.style.setProperty('--gio-ibtn-icon', `${iconSize}px`);
+        btn.style.setProperty('--gio-ibtn-radius', `${radius}px`);
+
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('viewBox', '0 0 24 24');
+        svg.innerHTML = Giovanni._resolveIcon(icon);
+        btn.appendChild(svg);
+
+        this._attachTooltip(btn, tooltipPosition);
+
+        const api = {
+            el: btn,
+            id,
+            isActive: () => btn.classList.contains('gio-ibtn-item--active'),
+            setActive: (v = true) => { btn.classList.toggle('gio-ibtn-item--active', Boolean(v)); return api; },
+            toggleActive: () => { btn.classList.toggle('gio-ibtn-item--active'); return api; },
+            setTooltip: (t) => { btn.dataset.tooltip = t; return api; },
+            setIcon: (key) => { svg.innerHTML = Giovanni._resolveIcon(key); return api; },
+            setDisabled: (v = true) => { btn.disabled = Boolean(v); return api; },
+            mount: (target) => {
+                const dest = target?.element || target;
+                if (dest && dest.appendChild) dest.appendChild(btn);
+                return api;
+            },
+            remove: () => { Giovanni._hideTooltip(); btn.remove(); }
+        };
+
+        btn.addEventListener('click', (e) => {
+            if (toggle) api.toggleActive();
+            if (typeof onClick === 'function') onClick(api, e);
+        });
+
+        if (container) api.mount(container);
+
+        return api;
     }
 
-    const getTooltipEl = () => {
-        let tip = document.getElementById('gio-ibtn-floating-tip');
-        if (!tip) {
-            tip = document.createElement('div');
-            tip.id = 'gio-ibtn-floating-tip';
-            tip.className = 'gio-ibtn-tip';
-            document.body.appendChild(tip);
-        }
-        return tip;
-    };
-
-    const showTip = (anchor, text, pos) => {
-        if (!text) return;
-        const tip = getTooltipEl();
-        tip.textContent = text;
-        tip.classList.remove('gio-ibtn-tip--show');
-
-        requestAnimationFrame(() => {
-            const r = anchor.getBoundingClientRect();
-            const tw = tip.offsetWidth;
-            const th = tip.offsetHeight;
-            const GAP = 8, PAD = 6;
-            let top, left;
-
-            switch (pos) {
-                case 'right':  top = r.top + r.height / 2 - th / 2; left = r.right + GAP; break;
-                case 'left':   top = r.top + r.height / 2 - th / 2; left = r.left - tw - GAP; break;
-                case 'top':    top = r.top - th - GAP;              left = r.left + r.width / 2 - tw / 2; break;
-                case 'bottom':
-                default:       top = r.bottom + GAP;                left = r.left + r.width / 2 - tw / 2; break;
-            }
-
-            left = Math.max(PAD, Math.min(left, innerWidth - tw - PAD));
-            top  = Math.max(PAD, Math.min(top, innerHeight - th - PAD));
-
-            tip.style.top = `${Math.round(top)}px`;
-            tip.style.left = `${Math.round(left)}px`;
-            tip.classList.add('gio-ibtn-tip--show');
-        });
-    };
-
-    const hideTip = () => {
-        const tip = document.getElementById('gio-ibtn-floating-tip');
-        if (tip) tip.classList.remove('gio-ibtn-tip--show');
-    };
-
-    const resolveIcon = (key) => {
-        if (!key) return '';
-        if (typeof GiovanniIconDB !== 'undefined' && GiovanniIconDB[key]) {
-            return GiovanniIconDB[key];
-        }
-        return key.startsWith('<') ? key : `<path d="${key}"/>`;
-    };
-
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'gio-ibtn-item' + (active ? ' gio-ibtn-item--active' : '');
-    if (id) btn.dataset.id = id;
-    btn.dataset.tooltip = tooltip;
-
-    btn.style.setProperty('--gio-ibtn-size', `${size}px`);
-    btn.style.setProperty('--gio-ibtn-icon', `${iconSize}px`);
-    btn.style.setProperty('--gio-ibtn-radius', `${radius}px`);
-
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('viewBox', '0 0 24 24');
-    svg.innerHTML = resolveIcon(icon);
-    btn.appendChild(svg);
-
-    btn.addEventListener('mouseenter', () => showTip(btn, btn.dataset.tooltip, tooltipPosition));
-    btn.addEventListener('mouseleave', hideTip);
-    btn.addEventListener('focus',      () => showTip(btn, btn.dataset.tooltip, tooltipPosition));
-    btn.addEventListener('blur',       hideTip);
-
-    const api = {
-        el: btn,
-        id,
-        isActive: () => btn.classList.contains('gio-ibtn-item--active'),
-        setActive: (v = true) => { btn.classList.toggle('gio-ibtn-item--active', Boolean(v)); return api; },
-        toggleActive: () => { btn.classList.toggle('gio-ibtn-item--active'); return api; },
-        setTooltip: (t) => { btn.dataset.tooltip = t; return api; },
-        setIcon: (key) => { svg.innerHTML = resolveIcon(key); return api; },
-        setDisabled: (v = true) => { btn.disabled = Boolean(v); return api; },
-        mount: (target) => {
-            const dest = target?.element || target;
-            if (dest && dest.appendChild) dest.appendChild(btn);
-            return api;
-        },
-        remove: () => { hideTip(); btn.remove(); }
-    };
-
-    btn.addEventListener('click', (e) => {
-        if (toggle) api.toggleActive();
-        if (typeof onClick === 'function') onClick(api, e);
-    });
-
-    if (container) api.mount(container);
-
-    return api;
-}
- 
     createSelectSearch(options = [], selected = null, onChange = null) {
         const normalized = options.map(o => typeof o === 'object' ? o : { value: o, label: String(o) });
         let currentVal = selected !== null ? selected : (normalized[0]?.value ?? '');
@@ -6009,8 +5350,7 @@ createToggle({ label = '', value = false, onChange } = {}) {
             const search = filter.toLowerCase().trim();
             const filtered = normalized.filter(o => o.label.toLowerCase().includes(search));
 
-            if (filtered.length >= 8) itemsWrap.style.maxHeight = '240px';
-            else itemsWrap.style.maxHeight = 'none';
+            itemsWrap.style.maxHeight = filtered.length >= 8 ? '240px' : 'none';
 
             if (filtered.length === 0) {
                 const empty = document.createElement('div');
@@ -6083,12 +5423,11 @@ createToggle({ label = '', value = false, onChange } = {}) {
         return this._wrapWithLabel('Selector Desplegable', wrap);
     }
 
-    
     createTable({ label = 'Tabla de Datos', columns = [], data = [], endpoint = null, pageSize = 5, onRowDelete = null, onRowClick = null } = {}) {
         const container = document.createElement('div');
         container.style.cssText = "display: flex; flex-direction: column; gap: 6px; width: 100%; box-sizing: border-box; overflow: hidden;";
 
-        let cols = [...columns];
+        const cols = [...columns];
         let originalData = [...data];
         let displayData = [...data];
         let currentPage = 1;
@@ -6289,8 +5628,6 @@ createToggle({ label = '', value = false, onChange } = {}) {
     }
 }
 
- 
-
 Giovanni.getSVG = function(keyOrPath, size = 18) {
     const pathData = GiovanniIconDB[keyOrPath] || keyOrPath;
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -6344,7 +5681,6 @@ Giovanni.prototype.createIconButton = function({ icon = 'square', active = false
             btn.style.boxShadow = 'none';
         }
     };
-    setActiveStyle(active);
 
     btn.addEventListener('mouseenter', () => {
         if (!btn.dataset.active) {
@@ -6375,6 +5711,8 @@ Giovanni.prototype.createIconButton = function({ icon = 'square', active = false
         setActiveStyle(state);
         return btn;
     };
+
+    btn.setActive(active);
 
     btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -6545,7 +5883,7 @@ Giovanni.prototype.createNodeTree = function({
 
                 row.addEventListener('click', () => {
                     selectedNodeId = item.id;
-                    renderTree();  
+                    renderTree();
                     if (onSelect) onSelect(item);
                 });
 
@@ -6582,8 +5920,8 @@ Giovanni.prototype.createNodeTree = function({
                     if (src && dst) {
                         const [moved] = src.parentList.splice(src.parentList.indexOf(src.node), 1);
                         const r = row.getBoundingClientRect();
-                        const insertIndex = e.clientY < r.top + r.height / 2 
-                            ? dst.parentList.indexOf(dst.node) 
+                        const insertIndex = e.clientY < r.top + r.height / 2
+                            ? dst.parentList.indexOf(dst.node)
                             : dst.parentList.indexOf(dst.node) + 1;
 
                         dst.parentList.splice(insertIndex, 0, moved);
@@ -6639,6 +5977,3 @@ Giovanni.prototype.createNodeTree = function({
     field.setTreeData = (newData) => { nodes = newData; renderTree(); };
     return field;
 };
-
-
- 
