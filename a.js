@@ -1281,7 +1281,7 @@ hacerEditableNumerico._utils = {
           display: flex;
           flex-direction: column;
           gap: var(--ui-panel-body-gap);
-          background: var(--ui-bg-input);
+          background: #404040;//var(--ui-bg-input);
           overflow-y: auto !important;
           overflow-x: hidden !important;
           flex: 1 1 auto;
@@ -7656,4 +7656,705 @@ class InputGioText {
   }
 }
 
- 
+   class checboxAnimado {
+      static contador = 0;
+      static estiloId = 'checboxAnimado-estilos';
+
+      constructor(destino, opciones = {}) {
+        this.contenedor = typeof destino === 'string'
+          ? document.querySelector(destino)
+          : destino;
+
+        if (!this.contenedor) return;
+
+        this.modelo = Number(opciones.modelo) || 4;
+        if (this.modelo < 1 || this.modelo > 6) this.modelo = 1;
+
+        this.checked = Boolean(opciones.checked);
+        this.texto = opciones.texto !== undefined ? String(opciones.texto) : (opciones.label !== undefined ? String(opciones.label) : '');
+        this.posicionLabel = opciones.mostrarLabel === false ? 'oculto' : (opciones.posicionLabel || 'derecha');
+        this.onChange = typeof opciones.onChange === 'function' ? opciones.onChange : null;
+
+        const tamanoBase = Number(opciones.tamano);
+        this.ancho = Number(opciones.ancho) || (tamanoBase > 0 ? tamanoBase : 14);
+        this.alto = Number(opciones.alto) || (tamanoBase > 0 ? tamanoBase : 14);
+        this.color = opciones.color || '#2A5293';
+        this.colorTexto = opciones.colorTexto || '#9e9e9e';
+        this.duracion = Number(opciones.duracion) > 0 ? Number(opciones.duracion) : 1.4;
+        this.sombra = opciones.sombra !== undefined && !isNaN(Number(opciones.sombra)) && Number(opciones.sombra) >= 0
+          ? Number(opciones.sombra)
+          :4;
+
+        checboxAnimado.contador += 1;
+        this.uid = `checboxAnimado-item-${checboxAnimado.contador}`;
+
+        this.inyectarCSS();
+        this.renderizar();
+        this.setTamanos(this.ancho, this.alto);
+        this.setColor(this.color);
+        this.setColorTexto(this.colorTexto);
+        this.setDuracion(this.duracion);
+        this.setSombra(this.sombra);
+        this.setPosicionLabel(this.posicionLabel);
+      }
+
+      inyectarCSS() {
+        if (document.getElementById(checboxAnimado.estiloId)) return;
+
+        const style = document.createElement('style');
+        style.id = checboxAnimado.estiloId;
+        style.textContent = `
+          .checboxAnimado-parent {
+            --checboxAnimado-led: #2A5293;
+            --checboxAnimado-led-rgb: 42, 82, 147;
+            --checboxAnimado-nucleo: #cfdaec;
+            --checboxAnimado-nucleo-borde: #a5b9dc;
+            --checboxAnimado-texto-color: #9e9e9e;
+            --checboxAnimado-difusor-off: rgba(20, 24, 32, 0.48);
+            --checboxAnimado-difusor-on: rgba(135, 152, 172, 0.36);
+            --checboxAnimado-tiempo: 1.2s;
+            --checboxAnimado-sombra: 4;
+            --checboxAnimado-ancho: 13px;
+            --checboxAnimado-alto: 13px;
+            --checboxAnimado-sx: 0.13;
+            --checboxAnimado-sy: 0.13;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+          }
+
+          .checboxAnimado-parent.checboxAnimado-label-izquierda {
+            flex-direction: row-reverse;
+          }
+
+          .checboxAnimado-parent.checboxAnimado-label-oculto {
+            gap: 0;
+          }
+
+          .checboxAnimado-parent.checboxAnimado-label-oculto .checboxAnimado-texto {
+            display: none;
+          }
+
+          .checboxAnimado-parent,
+          .checboxAnimado-parent * {
+            box-sizing: border-box;
+          }
+
+          .checboxAnimado-input {
+            display: none !important;
+          }
+
+          .checboxAnimado-wrap {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: var(--checboxAnimado-ancho);
+            height: var(--checboxAnimado-alto);
+            vertical-align: middle;
+            flex-shrink: 0;
+          }
+
+          .checboxAnimado-label {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            transform: scale(var(--checboxAnimado-sx), var(--checboxAnimado-sy));
+            transform-origin: center center;
+          }
+
+          .checboxAnimado-texto {
+            cursor: pointer;
+            user-select: none;
+            color: var(--checboxAnimado-texto-color);
+            font-size: 14px;
+            line-height: 1.3;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+          }
+
+          .checboxAnimado-texto:empty {
+            display: none;
+          }
+
+          .checboxAnimado-input:checked ~ .checboxAnimado-texto {
+            color: var(--checboxAnimado-texto-color);
+            text-shadow: 0 0 calc(4px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.55);
+          }
+
+          .checboxAnimado-haz-rombo {
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            background: radial-gradient(circle, rgba(var(--checboxAnimado-led-rgb), 0.8) 10%, rgba(var(--checboxAnimado-led-rgb), 0.3) 60%, transparent 100%);
+            transform: rotate(45deg) scale(0.6);
+            filter: blur(20px);
+            opacity: 0;
+            transition: opacity calc(var(--checboxAnimado-tiempo) * 0.4) ease calc(var(--checboxAnimado-tiempo) * 0.55), transform var(--checboxAnimado-tiempo) cubic-bezier(0.22, 1, 0.36, 1);
+            pointer-events: none;
+            z-index: 1;
+          }
+
+          .checboxAnimado-haz-cruz::before,
+          .checboxAnimado-haz-cruz::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.5);
+            background: radial-gradient(ellipse, rgba(var(--checboxAnimado-led-rgb), 0.72) 0%, rgba(var(--checboxAnimado-led-rgb), 0.2) 60%, transparent 100%);
+            filter: blur(15px);
+            opacity: 0;
+            transition: opacity calc(var(--checboxAnimado-tiempo) * 0.4) ease calc(var(--checboxAnimado-tiempo) * 0.55), transform var(--checboxAnimado-tiempo) cubic-bezier(0.22, 1, 0.36, 1);
+            pointer-events: none;
+            z-index: 3;
+            mix-blend-mode: screen;
+          }
+
+          .checboxAnimado-haz-cruz::before {
+            width: 195px;
+            height: 66px;
+          }
+
+          .checboxAnimado-haz-cruz::after {
+            width: 66px;
+            height: 195px;
+          }
+
+          .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-haz-rombo {
+            opacity: 1;
+            transform: rotate(45deg) scale(var(--checboxAnimado-sombra));
+          }
+
+          .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-haz-cruz::before,
+          .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-haz-cruz::after {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(var(--checboxAnimado-sombra));
+          }
+
+          .checboxAnimado-difusor-1 {
+            position: relative;
+            z-index: 2;
+            width: 100px;
+            height: 100px;
+            border-radius: 18px;
+            background: var(--checboxAnimado-difusor-off);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background var(--checboxAnimado-tiempo) ease, box-shadow var(--checboxAnimado-tiempo) ease;
+          }
+
+          .checboxAnimado-nucleo-1 {
+            width: 66px;
+            height: 66px;
+            border-radius: 24px;
+            background: radial-gradient(circle, rgba(var(--checboxAnimado-led-rgb), 0.45) 0%, #141921 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(calc(-115px / var(--checboxAnimado-sx))) rotate(-540deg) scale(0.7);
+            transition:
+              opacity 0.25s ease,
+              transform var(--checboxAnimado-tiempo) cubic-bezier(0.22, 1, 0.36, 1),
+              background calc(var(--checboxAnimado-tiempo) * 0.8) ease-in,
+              box-shadow calc(var(--checboxAnimado-tiempo) * 0.9) ease-in,
+              border-color var(--checboxAnimado-tiempo) ease;
+          }
+
+          .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-difusor-1 {
+            background: var(--checboxAnimado-difusor-on);
+            box-shadow: 0 0 calc(45px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.35);
+          }
+
+          .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-nucleo-1 {
+            opacity: 1;
+            transform: translateX(0) rotate(0deg) scale(1);
+            border-color: transparent;
+            background: radial-gradient(circle, #ffffff 0%, var(--checboxAnimado-nucleo) 68%, var(--checboxAnimado-nucleo-borde) 100%);
+            box-shadow:
+              0 0 calc(20px * var(--checboxAnimado-sombra)) var(--checboxAnimado-nucleo),
+              0 0 calc(50px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.9),
+              0 0 calc(110px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.55);
+            transition:
+              opacity calc(var(--checboxAnimado-tiempo) * 0.35) ease-out,
+              transform var(--checboxAnimado-tiempo) cubic-bezier(0.22, 1, 0.36, 1),
+              background calc(var(--checboxAnimado-tiempo) * 0.75) ease-in,
+              box-shadow calc(var(--checboxAnimado-tiempo) * 0.85) ease-in,
+              border-color var(--checboxAnimado-tiempo) ease;
+          }
+
+          .checboxAnimado-difusor-2 {
+            position: relative;
+            z-index: 2;
+            width: 100px;
+            height: 100px;
+            border-radius: 18px;
+            background: var(--checboxAnimado-difusor-off);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background var(--checboxAnimado-tiempo) ease, box-shadow var(--checboxAnimado-tiempo) ease;
+          }
+
+          .checboxAnimado-nucleo-2 {
+            width: 66px;
+            height: 66px;
+            border-radius: 24px;
+            background: radial-gradient(circle, rgba(var(--checboxAnimado-led-rgb), 0.45) 0%, #141921 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transform: scale(0.5);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+          }
+
+          .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-difusor-2 {
+            background: var(--checboxAnimado-difusor-on);
+            box-shadow: 0 0 calc(45px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.35);
+          }
+
+          .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-nucleo-2 {
+            border-color: transparent;
+            background: radial-gradient(circle, #ffffff 0%, var(--checboxAnimado-nucleo) 68%, var(--checboxAnimado-nucleo-borde) 100%);
+            animation: checboxAnimado-espiralCentro var(--checboxAnimado-tiempo) cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+          }
+
+          @keyframes checboxAnimado-espiralCentro {
+            0% {
+              transform: rotate(0deg) translateX(calc(95px / var(--checboxAnimado-sx))) scale(0.6);
+              opacity: 0;
+              box-shadow:
+                0 0 calc(6px * var(--checboxAnimado-sombra)) var(--checboxAnimado-led),
+                0 0 calc(16px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.5);
+            }
+            20% {
+              opacity: 0.95;
+            }
+            100% {
+              transform: rotate(360deg) translateX(0px) scale(1);
+              opacity: 1;
+              box-shadow:
+                0 0 calc(20px * var(--checboxAnimado-sombra)) var(--checboxAnimado-nucleo),
+                0 0 calc(50px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.9),
+                0 0 calc(110px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.55);
+            }
+          }
+
+          .checboxAnimado-difusor-3 {
+            position: relative;
+            z-index: 2;
+            width: 100px;
+            height: 100px;
+            border-radius: 20px;
+            background: var(--checboxAnimado-difusor-off);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: rotate(180deg);
+            transition:
+              transform var(--checboxAnimado-tiempo) cubic-bezier(0.22, 1, 0.36, 1),
+              background var(--checboxAnimado-tiempo) ease,
+              box-shadow var(--checboxAnimado-tiempo) ease;
+          }
+
+          .checboxAnimado-nucleo-3 {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(var(--checboxAnimado-led-rgb), 0.45) 0%, #141921 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(calc(-115px / var(--checboxAnimado-sx))) rotate(-540deg) scale(0.6);
+            transition:
+              opacity 0.25s ease,
+              transform var(--checboxAnimado-tiempo) cubic-bezier(0.22, 1, 0.36, 1),
+              background calc(var(--checboxAnimado-tiempo) * 0.8) ease-in,
+              box-shadow calc(var(--checboxAnimado-tiempo) * 0.9) ease-in;
+          }
+
+          .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-difusor-3 {
+            transform: rotate(0deg);
+            background: var(--checboxAnimado-difusor-on);
+            box-shadow: 0 0 calc(45px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.35);
+          }
+
+          .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-nucleo-3 {
+            opacity: 1;
+            transform: translateX(0) rotate(0deg) scale(1);
+            border-color: transparent;
+            background: radial-gradient(circle, #ffffff 0%, var(--checboxAnimado-nucleo) 68%, var(--checboxAnimado-nucleo-borde) 100%);
+            box-shadow:
+              0 0 calc(20px * var(--checboxAnimado-sombra)) var(--checboxAnimado-nucleo),
+              0 0 calc(50px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.92),
+              0 0 calc(110px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.55);
+            transition:
+              opacity calc(var(--checboxAnimado-tiempo) * 0.35) ease-out,
+              transform var(--checboxAnimado-tiempo) cubic-bezier(0.22, 1, 0.36, 1),
+              background calc(var(--checboxAnimado-tiempo) * 0.75) ease-in,
+              box-shadow calc(var(--checboxAnimado-tiempo) * 0.85) ease-in;
+          }
+
+          .checboxAnimado-difusor-4 {
+            position: relative;
+            z-index: 2;
+            width: 76px;
+            height: 76px;
+            border-radius: 16px;
+            transform: rotate(45deg);
+            background: var(--checboxAnimado-difusor-off);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background var(--checboxAnimado-tiempo) ease, box-shadow var(--checboxAnimado-tiempo) ease;
+          }
+
+          .checboxAnimado-nucleo-4 {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: radial-gradient(circle, rgba(var(--checboxAnimado-led-rgb), 0.45) 0%, #141921 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            opacity: 0;
+            pointer-events: none;
+            transform: translate(calc(-85px / var(--checboxAnimado-sx)), calc(-85px / var(--checboxAnimado-sy))) rotate(-360deg) scale(0.6);
+            transition:
+              opacity 0.25s ease,
+              transform var(--checboxAnimado-tiempo) cubic-bezier(0.22, 1, 0.36, 1),
+              background calc(var(--checboxAnimado-tiempo) * 0.8) ease-in,
+              box-shadow calc(var(--checboxAnimado-tiempo) * 0.9) ease-in;
+          }
+
+          .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-difusor-4 {
+            background: var(--checboxAnimado-difusor-on);
+            box-shadow: 0 0 calc(45px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.35);
+          }
+
+          .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-nucleo-4 {
+            opacity: 1;
+            transform: translate(0, 0) rotate(0deg) scale(1);
+            border-color: transparent;
+            background: radial-gradient(circle, #ffffff 0%, var(--checboxAnimado-nucleo) 68%, var(--checboxAnimado-nucleo-borde) 100%);
+            box-shadow:
+              0 0 calc(20px * var(--checboxAnimado-sombra)) var(--checboxAnimado-nucleo),
+              0 0 calc(50px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.92),
+              0 0 calc(110px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.55);
+            transition:
+              opacity calc(var(--checboxAnimado-tiempo) * 0.35) ease-out,
+              transform var(--checboxAnimado-tiempo) cubic-bezier(0.22, 1, 0.36, 1),
+              background calc(var(--checboxAnimado-tiempo) * 0.75) ease-in,
+              box-shadow calc(var(--checboxAnimado-tiempo) * 0.85) ease-in;
+          }
+
+          .checboxAnimado-difusor-5 {
+            position: relative;
+            z-index: 2;
+            width: 100px;
+            height: 46px;
+            border-radius: 14px;
+            background: var(--checboxAnimado-difusor-off);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background var(--checboxAnimado-tiempo) ease, box-shadow var(--checboxAnimado-tiempo) ease;
+          }
+
+          .checboxAnimado-nucleo-5 {
+            width: 76px;
+            height: 20px;
+            border-radius: 9px;
+            background: radial-gradient(circle, rgba(var(--checboxAnimado-led-rgb), 0.45) 0%, #141921 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(calc(-95px / var(--checboxAnimado-sy))) rotate(-360deg) scale(0.6);
+            transition:
+              opacity 0.25s ease,
+              transform var(--checboxAnimado-tiempo) cubic-bezier(0.22, 1, 0.36, 1),
+              background calc(var(--checboxAnimado-tiempo) * 0.8) ease-in,
+              box-shadow calc(var(--checboxAnimado-tiempo) * 0.9) ease-in;
+          }
+
+          .checboxAnimado-haz-5::before {
+            width: 195px;
+            height: 34px;
+          }
+
+          .checboxAnimado-haz-5::after {
+            width: 95px;
+            height: 140px;
+          }
+
+          .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-difusor-5 {
+            background: var(--checboxAnimado-difusor-on);
+            box-shadow: 0 0 calc(45px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.35);
+          }
+
+          .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-nucleo-5 {
+            opacity: 1;
+            transform: translateY(0) rotate(0deg) scale(1);
+            border-color: transparent;
+            background: linear-gradient(90deg, var(--checboxAnimado-nucleo-borde), #ffffff, var(--checboxAnimado-nucleo-borde));
+            box-shadow:
+              0 0 calc(18px * var(--checboxAnimado-sombra)) var(--checboxAnimado-nucleo),
+              0 0 calc(48px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.9),
+              0 0 calc(105px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.55);
+            transition:
+              opacity calc(var(--checboxAnimado-tiempo) * 0.35) ease-out,
+              transform var(--checboxAnimado-tiempo) cubic-bezier(0.22, 1, 0.36, 1),
+              background calc(var(--checboxAnimado-tiempo) * 0.75) ease-in,
+              box-shadow calc(var(--checboxAnimado-tiempo) * 0.85) ease-in;
+          }
+
+          .checboxAnimado-difusor-6 {
+            position: relative;
+            z-index: 2;
+            width: 100px;
+            height: 100px;
+            border-radius: 18px;
+            background: var(--checboxAnimado-difusor-off);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background var(--checboxAnimado-tiempo) ease, box-shadow var(--checboxAnimado-tiempo) ease;
+          }
+
+          .checboxAnimado-nucleo-6 {
+            width: 64px;
+            height: 64px;
+            border-radius: 22px;
+            border: 9px solid rgba(var(--checboxAnimado-led-rgb), 0.4);
+            background: #040608;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(calc(115px / var(--checboxAnimado-sx))) rotate(540deg) scale(0.6);
+            transition:
+              opacity 0.25s ease,
+              transform var(--checboxAnimado-tiempo) cubic-bezier(0.22, 1, 0.36, 1),
+              border-color calc(var(--checboxAnimado-tiempo) * 0.8) ease-in,
+              background calc(var(--checboxAnimado-tiempo) * 0.8) ease-in,
+              box-shadow calc(var(--checboxAnimado-tiempo) * 0.9) ease-in;
+          }
+
+          .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-difusor-6 {
+            background: var(--checboxAnimado-difusor-on);
+            box-shadow: 0 0 calc(45px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.35);
+          }
+
+          .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-nucleo-6 {
+            opacity: 1;
+            transform: translateX(0) rotate(0deg) scale(1);
+            border-color: var(--checboxAnimado-nucleo);
+            background: rgba(var(--checboxAnimado-led-rgb), 0.14);
+            box-shadow:
+              0 0 calc(18px * var(--checboxAnimado-sombra)) var(--checboxAnimado-nucleo),
+              0 0 calc(48px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.88),
+              inset 0 0 calc(20px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.75);
+            transition:
+              opacity calc(var(--checboxAnimado-tiempo) * 0.35) ease-out,
+              transform var(--checboxAnimado-tiempo) cubic-bezier(0.22, 1, 0.36, 1),
+              border-color calc(var(--checboxAnimado-tiempo) * 0.75) ease-in,
+              background calc(var(--checboxAnimado-tiempo) * 0.75) ease-in,
+              box-shadow calc(var(--checboxAnimado-tiempo) * 0.85) ease-in;
+          }
+        `;
+        document.head.appendChild(style);
+      }
+
+      parsearColor(color) {
+        let limpio = String(color).trim();
+        if (/^[0-9a-fA-F]{6}$/.test(limpio) || /^[0-9a-fA-F]{3}$/.test(limpio)) {
+          limpio = `#${limpio}`;
+        }
+
+        const ctx = document.createElement('canvas').getContext('2d');
+        ctx.fillStyle = '#2A5293';
+        ctx.fillStyle = limpio;
+        const valor = ctx.fillStyle;
+
+        if (valor.startsWith('#')) {
+          const num = parseInt(valor.slice(1), 16);
+          return {
+            r: (num >> 16) & 255,
+            g: (num >> 8) & 255,
+            b: num & 255
+          };
+        }
+
+        const partes = valor.match(/\d+/g);
+        if (partes && partes.length >= 3) {
+          return {
+            r: Number(partes[0]),
+            g: Number(partes[1]),
+            b: Number(partes[2])
+          };
+        }
+
+        return { r: 42, g: 82, b: 147 };
+      }
+
+      mezclarBlanco(rgb, factor) {
+        const r = Math.round(rgb.r + (255 - rgb.r) * factor);
+        const g = Math.round(rgb.g + (255 - rgb.g) * factor);
+        const b = Math.round(rgb.b + (255 - rgb.b) * factor);
+        return `rgb(${r}, ${g}, ${b})`;
+      }
+
+      setColor(color) {
+        if (!this.parent || !color) return;
+        this.color = color;
+        const rgb = this.parsearColor(color);
+        this.parent.style.setProperty('--checboxAnimado-led', `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`);
+        this.parent.style.setProperty('--checboxAnimado-led-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
+        this.parent.style.setProperty('--checboxAnimado-nucleo', this.mezclarBlanco(rgb, 0.8));
+        this.parent.style.setProperty('--checboxAnimado-nucleo-borde', this.mezclarBlanco(rgb, 0.62));
+      }
+
+      setColorTexto(color) {
+        if (!this.parent || !color) return;
+        let limpio = String(color).trim();
+        if (/^[0-9a-fA-F]{6}$/.test(limpio) || /^[0-9a-fA-F]{3}$/.test(limpio)) {
+          limpio = `#${limpio}`;
+        }
+        this.colorTexto = limpio;
+        this.parent.style.setProperty('--checboxAnimado-texto-color', limpio);
+      }
+
+      setTamanos(ancho, alto) {
+        if (!this.parent) return;
+        const w = Number(ancho);
+        const h = alto !== undefined ? Number(alto) : w;
+        if (!(w > 0) || !(h > 0)) return;
+        this.ancho = w;
+        this.alto = h;
+        this.parent.style.setProperty('--checboxAnimado-ancho', `${w}px`);
+        this.parent.style.setProperty('--checboxAnimado-alto', `${h}px`);
+        this.parent.style.setProperty('--checboxAnimado-sx', `${w / 100}`);
+        this.parent.style.setProperty('--checboxAnimado-sy', `${h / 100}`);
+      }
+
+      setDuracion(segundos) {
+        if (!this.parent) return;
+        const t = Number(segundos);
+        if (!(t > 0)) return;
+        this.duracion = t;
+        this.parent.style.setProperty('--checboxAnimado-tiempo', `${t}s`);
+      }
+
+      setSombra(escala) {
+        if (!this.parent) return;
+        const s = Number(escala);
+        if (isNaN(s) || s < 0) return;
+        this.sombra = s;
+        this.parent.style.setProperty('--checboxAnimado-sombra', `${s}`);
+      }
+
+      setSombras(escala) {
+        this.setSombra(escala);
+      }
+
+      setTexto(texto) {
+        if (!this.textoLabel) return;
+        this.texto = String(texto);
+        this.textoLabel.textContent = this.texto;
+        this.actualizarClaseLabel();
+      }
+
+      setPosicionLabel(posicion) {
+        if (!this.parent) return;
+        if (posicion === false || posicion === 'oculto' || posicion === 'none' || posicion === 'ninguno' || posicion === 'no') {
+          this.posicionLabel = 'oculto';
+        } else if (posicion === 'izquierda' || posicion === 'left') {
+          this.posicionLabel = 'izquierda';
+        } else {
+          this.posicionLabel = 'derecha';
+        }
+        this.actualizarClaseLabel();
+      }
+
+      actualizarClaseLabel() {
+        if (!this.parent) return;
+        this.parent.classList.remove('checboxAnimado-label-izquierda', 'checboxAnimado-label-oculto');
+        if (this.posicionLabel === 'oculto' || this.texto.trim() === '') {
+          this.parent.classList.add('checboxAnimado-label-oculto');
+        } else if (this.posicionLabel === 'izquierda') {
+          this.parent.classList.add('checboxAnimado-label-izquierda');
+        }
+      }
+
+      renderizar() {
+        const parent = document.createElement('div');
+        parent.className = 'checboxAnimado-parent';
+
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.id = this.uid;
+        input.className = 'checboxAnimado-input';
+        input.checked = this.checked;
+
+        const wrap = document.createElement('div');
+        wrap.className = 'checboxAnimado-wrap';
+
+        const label = document.createElement('label');
+        label.htmlFor = this.uid;
+        label.className = 'checboxAnimado-label';
+
+        const hazRombo = document.createElement('span');
+        hazRombo.className = 'checboxAnimado-haz-rombo';
+
+        const hazCruz = document.createElement('span');
+        hazCruz.className = this.modelo === 5
+          ? 'checboxAnimado-haz-cruz checboxAnimado-haz-5'
+          : 'checboxAnimado-haz-cruz';
+
+        const difusor = document.createElement('div');
+        difusor.className = `checboxAnimado-difusor-${this.modelo}`;
+
+        const nucleo = document.createElement('div');
+        nucleo.className = `checboxAnimado-nucleo-${this.modelo}`;
+
+        difusor.appendChild(nucleo);
+        label.appendChild(hazRombo);
+        label.appendChild(hazCruz);
+        label.appendChild(difusor);
+        wrap.appendChild(label);
+
+        const textoLabel = document.createElement('label');
+        textoLabel.htmlFor = this.uid;
+        textoLabel.className = 'checboxAnimado-texto';
+        textoLabel.textContent = this.texto;
+
+        parent.appendChild(input);
+        parent.appendChild(wrap);
+        parent.appendChild(textoLabel);
+        this.contenedor.appendChild(parent);
+
+        this.parent = parent;
+        this.input = input;
+        this.wrap = wrap;
+        this.textoLabel = textoLabel;
+
+        this.input.addEventListener('change', () => {
+          this.checked = this.input.checked;
+          if (this.onChange) this.onChange(this.checked, this);
+        });
+      }
+
+      obtenerEstado() {
+        return this.input ? this.input.checked : false;
+      }
+
+      cambiarEstado(valor, notificar = false) {
+        if (!this.input) return;
+        this.input.checked = Boolean(valor);
+        this.checked = this.input.checked;
+        if (notificar && this.onChange) this.onChange(this.checked, this);
+      }
+    }
