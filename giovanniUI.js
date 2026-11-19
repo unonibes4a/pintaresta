@@ -941,7 +941,7 @@ class GiovanniColorPicker {
     }
 }
 
- class GiovanniToggleAcordion {
+  class GiovanniToggleAcordion {
     static _injectCSS() {
         if (document.getElementById('gio-accordion-theme-styles')) return;
         const style = document.createElement('style');
@@ -960,7 +960,6 @@ class GiovanniColorPicker {
             .gio-acc-item {
                 position: relative;
                 background: var(--bg);
-   
                 border-radius: 13px;
                 display: flex;
                 flex-direction: column;
@@ -970,8 +969,6 @@ class GiovanniColorPicker {
                 overflow: hidden;
                 min-width: 0;
                 flex-shrink: 0;
-     
-                max-width: 100%;
                 width: 100%;
             }
 
@@ -991,7 +988,6 @@ class GiovanniColorPicker {
                 margin: 0 !important;
                 border-color: var(--textoAlfa) !important;
                 transform: scale(0.985);
-                max-width: calc(100vw - 20px);
                 transition: box-shadow 0.18s, border-color 0.18s, transform 0.15s !important;
             }
 
@@ -1008,7 +1004,6 @@ class GiovanniColorPicker {
                 cursor: grab;
                 user-select: none;
                 touch-action: none;
-               
                 border-radius: 8px 8px 0 0;
                 min-height: 44px;
                 height: 45px;
@@ -1040,7 +1035,7 @@ class GiovanniColorPicker {
                 flex-shrink: 0;
             }
 
-            .gio-acc-btn-reset, .gio-acc-btn-toggle {
+            .gio-acc-btn-reset, .gio-acc-btn-expand, .gio-acc-btn-toggle {
                 background: transparent;
                 border: none;
                 padding: 4px;
@@ -1052,12 +1047,14 @@ class GiovanniColorPicker {
                 border-radius: 4px;
                 transition: color 0.2s, background 0.2s, transform 0.25s ease;
             }
-            .gio-acc-btn-reset:hover {
+            .gio-acc-btn-reset:hover, .gio-acc-btn-expand:hover {
                 color: var(--textoA);
                 background: rgba(255, 255, 255, 0.08);
+            }
+            .gio-acc-btn-reset:hover {
                 transform: rotate(-90deg);
             }
-            .gio-acc-btn-reset svg {
+            .gio-acc-btn-reset svg, .gio-acc-btn-expand svg {
                 width: 16px;
                 height: 16px;
                 fill: currentColor;
@@ -1083,10 +1080,9 @@ class GiovanniColorPicker {
                 transform: rotate(180deg);
                 stroke: var(--textoA);
             }
-                  .gio-acc-item.open {
-                  -webkit-box-shadow: 50px 8px 50px 14px rgba(0,0,0,0.66); 
-box-shadow: 50px 8px 50px 14px rgba(0,0,0,0.66);
-    
+            .gio-acc-item.open {
+                -webkit-box-shadow: 50px 8px 50px 14px rgba(0,0,0,0.66); 
+                box-shadow: 50px 8px 50px 14px rgba(0,0,0,0.66);
             }
 
             .gio-acc-content {
@@ -1104,7 +1100,6 @@ box-shadow: 50px 8px 50px 14px rgba(0,0,0,0.66);
                 border-bottom-right-radius: 8px;
                 width: 100%;
                 box-sizing: border-box;
-            
             }
            
             .gio-acc-item.open > .gio-acc-content { opacity: 1; }
@@ -1201,6 +1196,11 @@ box-shadow: 50px 8px 50px 14px rgba(0,0,0,0.66);
         this._fitRaf2 = null;
         this._lastFitW = null;
         this._lastFitMaxW = null;
+        this._fixedWidth = null;
+
+        // Estado de expansión al contenedor padre
+        this._isExpandedToParent = false;
+        this._preExpandState = null;
 
         this.element = document.createElement('div');
         this.element.className = 'gio-acc-item open';
@@ -1219,7 +1219,7 @@ box-shadow: 50px 8px 50px 14px rgba(0,0,0,0.66);
         this.btnReset = document.createElement('button');
         this.btnReset.type = 'button';
         this.btnReset.className = 'gio-acc-btn-reset';
-        this.btnReset.title = 'Restaurar';
+        this.btnReset.title = 'Restaurar Posición';
         this.btnReset.innerHTML = `
             <svg viewBox="0 0 24 24">
                 <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
@@ -1228,6 +1228,21 @@ box-shadow: 50px 8px 50px 14px rgba(0,0,0,0.66);
         this.btnReset.addEventListener('click', (e) => {
             e.stopPropagation();
             this.resetPosition();
+        });
+
+        // NUEVO BOTÓN: Expandir al Parent / Restaurar Tamaño de Construcción
+        this.btnExpandParent = document.createElement('button');
+        this.btnExpandParent.type = 'button';
+        this.btnExpandParent.className = 'gio-acc-btn-expand';
+        this.btnExpandParent.title = 'Ajustar al contenedor';
+        this.btnExpandParent.innerHTML = `
+            <svg viewBox="0 0 24 24">
+                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+            </svg>
+        `;
+        this.btnExpandParent.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.toggleExpandToParent();
         });
 
         this.btnToggle = document.createElement('button');
@@ -1247,6 +1262,7 @@ box-shadow: 50px 8px 50px 14px rgba(0,0,0,0.66);
         });
 
         tools.appendChild(this.btnReset);
+        tools.appendChild(this.btnExpandParent); // Ubicado al lado del botón reset
         tools.appendChild(this.btnToggle);
 
         this.header.appendChild(this.titleSpan);
@@ -1277,7 +1293,82 @@ box-shadow: 50px 8px 50px 14px rgba(0,0,0,0.66);
             }, 0);
         }
 
-        setTimeout(() => this._updateHeight(this.isOpen), 50);
+        setTimeout(() => {
+            if (!this._fixedWidth) {
+                this._fixedWidth = parseFloat(this.element.style.width) || this.element.offsetWidth;
+            }
+            this._updateHeight(this.isOpen);
+        }, 50);
+    }
+
+    toggleExpandToParent() {
+        if (!this._isExpandedToParent) {
+            // Guardar estado previo antes de expandir
+            this._preExpandState = {
+                width: this.element.style.width,
+                maxWidth: this.element.style.maxWidth,
+                left: this.element.style.left,
+                top: this.element.style.top,
+                right: this.element.style.right,
+                bottom: this.element.style.bottom,
+                position: this.element.style.position,
+                isFloating: this.element.classList.contains('gio-is-floating')
+            };
+
+            const parent = this.element.parentNode;
+            if (parent && parent !== document.body && parent instanceof HTMLElement) {
+                this.element.classList.remove('gio-is-floating');
+                this.element.style.position = 'relative';
+                this.element.style.left = '0px';
+                this.element.style.top = '0px';
+                this.element.style.width = '100%';
+                this.element.style.maxWidth = '100%';
+            } else {
+                // Si está en el body flotando, expande al área visible
+                this.element.style.left = '10px';
+                this.element.style.right = '10px';
+                this.element.style.width = 'calc(100vw - 20px)';
+                this.element.style.maxWidth = 'calc(100vw - 20px)';
+            }
+
+            this._isExpandedToParent = true;
+            this.btnExpandParent.title = 'Restaurar tamaño original';
+            // Cambiar icono a fullscreenExit
+            this.btnExpandParent.innerHTML = `
+                <svg viewBox="0 0 24 24">
+                    <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>
+                </svg>
+            `;
+        } else {
+            // Restaurar tamaño de construcción
+            if (this._preExpandState) {
+                this.element.style.width = this._preExpandState.width || (this._fixedWidth ? `${this._fixedWidth}px` : '');
+                this.element.style.maxWidth = this._preExpandState.maxWidth || (this._fixedWidth ? `${this._fixedWidth}px` : '');
+                this.element.style.left = this._preExpandState.left || '';
+                this.element.style.top = this._preExpandState.top || '';
+                this.element.style.right = this._preExpandState.right || '';
+                this.element.style.bottom = this._preExpandState.bottom || '';
+                this.element.style.position = this._preExpandState.position || '';
+
+                if (this._preExpandState.isFloating) {
+                    this.element.classList.add('gio-is-floating');
+                }
+            } else if (this._fixedWidth) {
+                this.element.style.width = `${this._fixedWidth}px`;
+                this.element.style.maxWidth = `${this._fixedWidth}px`;
+            }
+
+            this._isExpandedToParent = false;
+            this.btnExpandParent.title = 'Ajustar al contenedor';
+            // Cambiar icono a fullscreen
+            this.btnExpandParent.innerHTML = `
+                <svg viewBox="0 0 24 24">
+                    <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+                </svg>
+            `;
+        }
+
+        if (this.isOpen) this._updateHeight(true);
     }
 
     _registerDropZone(parent) {
@@ -1311,7 +1402,7 @@ box-shadow: 50px 8px 50px 14px rgba(0,0,0,0.66);
             el.style.maxWidth = '';
             return;
         }
-        if (el.classList.contains('is-dragging') || el.classList.contains('gio-is-floating') || this._isResetting) return;
+        if (el.classList.contains('is-dragging') || el.classList.contains('gio-is-floating') || this._isResetting || this._isExpandedToParent) return;
 
         const viewportW = document.documentElement.clientWidth || window.innerWidth;
         const left = Math.max(0, el.getBoundingClientRect().left);
@@ -1380,7 +1471,7 @@ box-shadow: 50px 8px 50px 14px rgba(0,0,0,0.66);
     }
 
     _clampFloatingToViewport() {
-        if (!this.element.classList.contains('gio-is-floating')) return;
+        if (!this.element.classList.contains('gio-is-floating') || this._isExpandedToParent) return;
 
         const viewportW = document.documentElement.clientWidth || window.innerWidth;
         const viewportH = document.documentElement.clientHeight || window.innerHeight;
@@ -1394,14 +1485,13 @@ box-shadow: 50px 8px 50px 14px rgba(0,0,0,0.66);
             if (Number.isNaN(curTop)) curTop = rect.top;
         }
 
-        curLeft = Math.max(margin, Math.min(curLeft, Math.max(margin, viewportW - margin - 240)));
-
-        const idealFloatW = Math.max(Math.min(280, viewportW * 0.9), Math.min(viewportW * 0.5, 460));
-        const { width: floatW, maxAllowed } = this._limitWidthToScreenOrigin(idealFloatW, curLeft);
+        const exactWidth = this._fixedWidth || parseFloat(this.element.style.width) || this.element.offsetWidth;
+        const maxLeft = Math.max(margin, viewportW - exactWidth - margin);
+        curLeft = Math.max(margin, Math.min(curLeft, maxLeft));
 
         this.element.style.left = `${Math.round(curLeft)}px`;
-        this.element.style.width = `${floatW}px`;
-        this.element.style.maxWidth = `${maxAllowed}px`;
+        this.element.style.width = `${exactWidth}px`;
+        this.element.style.maxWidth = `${exactWidth}px`;
 
         if (this.isOpen) this._updateHeight(true);
 
@@ -1450,6 +1540,7 @@ box-shadow: 50px 8px 50px 14px rgba(0,0,0,0.66);
         if (!this._originParent || this._isResetting) return;
 
         this._isResetting = true;
+        this._isExpandedToParent = false;
         const firstRect = this.element.getBoundingClientRect();
 
         this.element.classList.remove('is-dragging', 'gio-is-floating');
@@ -1684,12 +1775,11 @@ box-shadow: 50px 8px 50px 14px rgba(0,0,0,0.66);
                 this._lastFitMaxW = null;
 
                 const rect = this.element.getBoundingClientRect();
-                const viewportW = document.documentElement.clientWidth || window.innerWidth;
-                const baseDragW = Math.min(
-                    rect.width,
-                    Math.max(Math.min(240, viewportW - 20), viewportW * 0.45)
-                );
-                const { width: dragW } = this._limitWidthToScreenOrigin(baseDragW, rect.left);
+                if (!this._fixedWidth) {
+                    this._fixedWidth = parseFloat(this.element.style.width) || rect.width;
+                }
+                const dragW = this._fixedWidth;
+
                 const ratioX = rect.width > 0 ? (startX - rect.left) / rect.width : 0.5;
                 grabOffsetX = ratioX * dragW;
                 grabOffsetY = startY - rect.top;
@@ -1714,15 +1804,12 @@ box-shadow: 50px 8px 50px 14px rgba(0,0,0,0.66);
             const screenW = document.documentElement.clientWidth || window.innerWidth;
             const screenH = document.documentElement.clientHeight || window.innerHeight;
 
-            const curW = this.element.offsetWidth;
-            const maxLeft = Math.max(10, screenW - Math.min(curW, 180) - 10);
+            const curW = this._fixedWidth || this.element.offsetWidth;
+            const maxLeft = Math.max(10, screenW - curW - 10);
             const maxTop = Math.max(10, screenH - this._getMinVisibleBottom());
 
             const targetX = Math.max(10, Math.min(maxLeft, e.clientX - grabOffsetX));
             const targetY = Math.max(10, Math.min(maxTop, e.clientY - grabOffsetY));
-
-            const { maxAllowed } = this._limitWidthToScreenOrigin(curW, targetX);
-            this.element.style.maxWidth = `${maxAllowed}px`;
 
             const curH = this.element.offsetHeight;
             const { container } = resolveDropContext(e.clientX, e.clientY);
@@ -1747,7 +1834,7 @@ box-shadow: 50px 8px 50px 14px rgba(0,0,0,0.66);
                 let snapX = null, snapY = null;
                 if (targetX < snapDistance) snapX = 10;
                 if (targetY < snapDistance) snapY = 10;
-                if (Math.abs((screenW - 10) - (targetX + this.element.offsetWidth)) < snapDistance) snapX = screenW - 10;
+                if (Math.abs((screenW - 10) - (targetX + curW)) < snapDistance) snapX = screenW - 10;
                 if (Math.abs((screenH - 10) - (targetY + curH)) < snapDistance) snapY = screenH - 10;
 
                 guideV.style.display = snapX !== null ? 'block' : 'none';
@@ -2110,7 +2197,7 @@ class Giovanni {
              color: #4daafc;
             }
              .gio-field:hover .gio-field-label {
-    color: #4daafc;  
+   /*  color: #4daafc;   */
 }
             .clsslb{
             font-size: 12px; font-weight: 500;
