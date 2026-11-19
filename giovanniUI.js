@@ -948,7 +948,7 @@ class GiovanniColorPicker {
         style.id = 'gio-accordion-theme-styles';
         style.textContent = `
             :root {
-                --bg: #2d2d2d;
+                --bg: #404040;
                 --backghead: #2f2f2f;
                 --textoA: #4daafc;
                 --textoAlfa: #959ba0;
@@ -960,7 +960,7 @@ class GiovanniColorPicker {
             .gio-acc-item {
                 position: relative;
                 background: var(--bg);
-                border: 20px solid #333333;
+   
                 border-radius: 13px;
                 display: flex;
                 flex-direction: column;
@@ -970,7 +970,7 @@ class GiovanniColorPicker {
                 overflow: hidden;
                 min-width: 0;
                 flex-shrink: 0;
-                box-shadow: -6px 2px 50px 9px var(--shadow);
+     
                 max-width: 100%;
                 width: 100%;
             }
@@ -1008,7 +1008,7 @@ class GiovanniColorPicker {
                 cursor: grab;
                 user-select: none;
                 touch-action: none;
-                background: var(--backghead);
+               
                 border-radius: 8px 8px 0 0;
                 min-height: 44px;
                 height: 45px;
@@ -1083,6 +1083,11 @@ class GiovanniColorPicker {
                 transform: rotate(180deg);
                 stroke: var(--textoA);
             }
+                  .gio-acc-item.open {
+                  -webkit-box-shadow: 50px 8px 50px 14px rgba(0,0,0,0.66); 
+box-shadow: 50px 8px 50px 14px rgba(0,0,0,0.66);
+    
+            }
 
             .gio-acc-content {
                 flex: 0 1 auto;
@@ -1099,23 +1104,9 @@ class GiovanniColorPicker {
                 border-bottom-right-radius: 8px;
                 width: 100%;
                 box-sizing: border-box;
-                scrollbar-width: thin;
-                scrollbar-color: var(--textotenue) #1e1e1e;
+            
             }
-            .gio-acc-content::-webkit-scrollbar {
-                width: 6px;
-            }
-            .gio-acc-content::-webkit-scrollbar-track {
-                background: #1e1e1e;
-                border-radius: 4px;
-            }
-            .gio-acc-content::-webkit-scrollbar-thumb {
-                background: var(--textotenue);
-                border-radius: 4px;
-            }
-            .gio-acc-content::-webkit-scrollbar-thumb:hover {
-                background: var(--textoA);
-            }
+           
             .gio-acc-item.open > .gio-acc-content { opacity: 1; }
 
             .gio-acc-body {
@@ -1128,7 +1119,7 @@ class GiovanniColorPicker {
                 width: 100%;
                 max-width: 100%;
                 min-width: 0;
-                background: #333333;
+                background: var(--backg0);
                 color-scheme: dark;
                 overflow-wrap: anywhere;
                 overflow-x: hidden;
@@ -1931,14 +1922,14 @@ const injectStyles = `
     height: 6px !important;
 }
 *::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.15) !important;
+    background: #2d2d2d !important;
 }
 *::-webkit-scrollbar-thumb {
-    background: #555 !important;
+    background: #414243 !important;
     border-radius: 4px !important;
 }
 *::-webkit-scrollbar-thumb:hover {
-    background: #777 !important;
+    background: #9e9e9e !important;
 }
 `;
 const styleSheet = document.createElement('style');
@@ -1957,23 +1948,23 @@ class Giovanni {
         style.id = 'gio-core-engine-styles';
         style.textContent = `
             :root {
-                --backg0: #2d2d2d;
-                --backg1: #3c3c3c;
+                --backg0: #404040;
+                --backg1: #404040;
                 --backg2: #2d2d2d;
                 --backg3: #2e2e2e;
                 --backg: #303030;
-                --borde: #4d4d4d;
+                --borde: #2d2d2d;
                 --slidernofill: #4a4a4a;
                 --sliderfill: #363636;
                 --texto: #8c8e8f;
                 --textoAlfa: #959ba0;
                 --textoActivo: #e3e3e3bb;
-                --textodisable: #60605f;
+                --textodisable: #9e9e9e;
                 --textoActvioBlue: #4daafc;
-                --textoledBrillo: #2f3b46;
+                --textoledBrillo: #f0f8ff;
                 --danger: #f85149;
                 --radius: 6px;
-                --scrollbar-size: 5px;
+                --scrollbar-size: 6px;
             }
 
             .gio-menu, .gioU-menu {
@@ -2034,7 +2025,7 @@ class Giovanni {
             }
             .gio-btn:hover, .gioU-btn:hover { background: var(--backg3); color: var(--textoActvioBlue); }
             .gio-btn:active, .gioU-btn:active { transform: scale(.94); }
-            .gio-btn.gio-active, .gioU-btn.gioU-active { color: var(--textoActvioBlue); background: var(--textoledBrillo); }
+            .gio-btn.gio-active, .gioU-btn.gioU-active { color: var(--textoActvioBlue);  }
             .gio-btn svg, .gioU-btn svg { width: var(--gio-icon-size, var(--gioU-icon-size, 22px)); height: var(--gio-icon-size, var(--gioU-icon-size, 22px)); fill: currentColor; pointer-events: none; }
             .gio-btn.gio-burger, .gioU-btn.gioU-burger { color: var(--textoActvioBlue); }
 
@@ -2081,28 +2072,8 @@ class Giovanni {
             }
             .gio-tooltip.gio-visible { opacity: 1; transform: scale(1); }
 
-            .gio-container *::-webkit-scrollbar,
-            .gio-custom-scroll::-webkit-scrollbar {
-                width: var(--scrollbar-size);
-                height: var(--scrollbar-size);
-            }
-            .gio-container *::-webkit-scrollbar-track,
-            .gio-custom-scroll::-webkit-scrollbar-track {
-                background: transparent;
-            }
-            .gio-container *::-webkit-scrollbar-thumb,
-            .gio-custom-scroll::-webkit-scrollbar-thumb {
-                background: var(--borde);
-                border-radius: 10px;
-            }
-            .gio-container *::-webkit-scrollbar-thumb:hover,
-            .gio-custom-scroll::-webkit-scrollbar-thumb:hover {
-                background: var(--textoledBrillo);
-            }
-            .gio-container * {
-                scrollbar-width: thin;
-                scrollbar-color: var(--borde) transparent;
-            }
+        
+          
 
             .gio-container {
                 width: 100%;
@@ -2127,10 +2098,27 @@ class Giovanni {
                 padding: 8px 10px;
                 transition: border-color 0.2s, box-shadow 0.2s;
                 position: relative;
+             
             }
             .gio-field:hover {
-                border-color: #5c5c5c;
+             
+               -webkit-box-shadow: 50px 3px 50px -6px #000000; 
+                box-shadow: 50px 3px 50px -6px #000000;
             }
+            .gio-field:hover .clsslb   {
+             
+             color: #4daafc;
+            }
+             .gio-field:hover .gio-field-label {
+    color: #4daafc;  
+}
+            .clsslb{
+            font-size: 12px; font-weight: 500;
+            flex: 1; overflow: hidden;
+            text-overflow: ellipsis; white-space: nowrap;
+            color: #9e9e9e;
+            }
+             
 
             .gio-field.is-dragging {
                 position: fixed !important;
@@ -2139,7 +2127,7 @@ class Giovanni {
                 box-shadow: 0 16px 36px rgba(0,0,0,0.8), 0 0 15px rgba(33, 96, 199, 0.4) !important;
                 pointer-events: none;
                 margin: 0 !important;
-                border-color: #4daafc !important;
+ 
                 background: var(--backg1) !important;
             }
 
@@ -2150,7 +2138,7 @@ class Giovanni {
                 cursor: grab;
                 user-select: none;
                 padding-bottom: 4px;
-                border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+ 
                 margin-bottom: 4px;
             }
             .gio-field-handle:hover {
@@ -2457,10 +2445,10 @@ class Giovanni {
                 height: 30px;
                 transition: border-color 0.15s, background-color 0.15s;
             }
-            .inputGio-num-wrap:hover { border-color: rgba(77, 170, 252, 0.5); }
+            .inputGio-num-wrap:hover {   }
             .inputGio-num-wrap.inputGio-num-editing {
-                border-color: #4daafc;
-                /* Sin background-color: #181818 para que no se vea negro */
+     
+ 
             }
             .inputGio-num-btn {
                 background-color: #2d2d2d;
@@ -2784,7 +2772,7 @@ class Giovanni {
             }
             .inputGio-text-wrap:hover * { color: #4daafcc2; }
             .inputGio-text-wrap.inputGio-text-editing {
-                border-color: #4daafc;
+                
                 /* Sin background-color: #181818 para que no se vea negro */
             }
             .inputGio-text-val {
@@ -4593,7 +4581,7 @@ class Giovanni {
         };
     }
 
-    createCheckbox({ label = '', checked = false, onChange } = {}) {
+    createChNoUtilizar({ label = '', checked = false, onChange } = {}) {
         const styleId = 'giopre-checkbox-standalone-styles';
         if (!document.getElementById(styleId)) {
             const style = document.createElement('style');
@@ -4715,6 +4703,602 @@ class Giovanni {
 
         return instance;
     }
+      createCheckbox({
+        label = '',
+        checked = false,
+        onChange,
+        modelo = 4,
+        ancho = 14,
+        alto = 14,
+        tamano,
+        color = '#2A5293',
+        colorTexto,
+        duracion = 1.5,
+        sombra = 4,
+        posicionLabel = 'derecha'
+      } = {}) {
+        const styleId = 'giopre-checkbox-standalone-styles';
+        if (!document.getElementById(styleId)) {
+          const style = document.createElement('style');
+          style.id = styleId;
+          style.textContent = `
+            .giopre-checkbox {
+              --checboxAnimado-led: #2A5293;
+              --checboxAnimado-led-rgb: 42, 82, 147;
+              --checboxAnimado-nucleo: #cfdaec;
+              --checboxAnimado-nucleo-borde: #a5b9dc;
+              --checboxAnimado-texto-color: var(--giopre-text-muted, #b0b0b0);
+              --checboxAnimado-difusor-off: rgba(20, 24, 32, 0.48);
+              --checboxAnimado-difusor-on: rgba(135, 152, 172, 0.36);
+              --checboxAnimado-tiempo: 1.5s;
+              --checboxAnimado-sombra: 4;
+              --checboxAnimado-ancho: 14px;
+              --checboxAnimado-alto: 14px;
+              --checboxAnimado-sx: 0.14;
+              --checboxAnimado-sy: 0.14;
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              cursor: pointer;
+              margin: var(--giopre-margin, 4px);
+              touch-action: manipulation;
+              flex-shrink: 0 !important;
+              min-height: 24px;
+              user-select: none;
+              font-family: var(--giopre-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+              box-sizing: border-box;
+              position: relative;
+            }
+            .giopre-checkbox *,
+            .giopre-checkbox *::before,
+            .giopre-checkbox *::after {
+              box-sizing: border-box;
+            }
+            .giopre-checkbox.label-izquierda {
+              flex-direction: row-reverse;
+            }
+            .giopre-checkbox.label-oculto {
+              gap: 0;
+            }
+            .giopre-checkbox.label-oculto .giopre-label {
+              display: none;
+            }
+            .giopre-checkbox.disabled {
+              opacity: var(--giopre-opacity-disabled, 0.35);
+              cursor: not-allowed;
+              pointer-events: none;
+            }
+            .giopre-checkbox .giopre-label {
+              font-size: var(--giopre-font-size-label, 12px);
+              font-weight: var(--giopre-font-weight-medium, 500);
+              color: var(--checboxAnimado-texto-color);
+              white-space: nowrap;
+              margin: var(--giopre-label-margin, 0px);
+              flex-shrink: 0;
+              transition: color 0.3s ease, text-shadow 0.3s ease;
+            }
+            .giopre-checkbox .giopre-label:empty {
+              display: none;
+            }
+            .giopre-checkbox.checked .giopre-label {
+              text-shadow: 0 0 calc(4px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.55);
+            }
+            .checboxAnimado-input {
+              display: none !important;
+            }
+            .checboxAnimado-wrap {
+              position: relative;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              width: var(--checboxAnimado-ancho);
+              height: var(--checboxAnimado-alto);
+              vertical-align: middle;
+              flex-shrink: 0 !important;
+            }
+            .checboxAnimado-label {
+              position: relative;
+              width: 100px;
+              height: 100px;
+              flex-shrink: 0;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              user-select: none;
+              transform: scale(var(--checboxAnimado-sx), var(--checboxAnimado-sy));
+              transform-origin: center center;
+            }
+            .checboxAnimado-haz-rombo {
+              position: absolute;
+              width: 110px;
+              height: 110px;
+              background: radial-gradient(circle, rgba(var(--checboxAnimado-led-rgb), 0.8) 10%, rgba(var(--checboxAnimado-led-rgb), 0.3) 60%, transparent 100%);
+              transform: rotate(45deg) scale(0.6);
+              filter: blur(20px);
+              opacity: 0;
+              transition: opacity calc(var(--checboxAnimado-tiempo) * 0.4) ease calc(var(--checboxAnimado-tiempo) * 0.55), transform var(--checboxAnimado-tiempo) cubic-bezier(0.22, 1, 0.36, 1);
+              pointer-events: none;
+              z-index: 1;
+            }
+            .checboxAnimado-haz-cruz::before,
+            .checboxAnimado-haz-cruz::after {
+              content: "";
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%) scale(0.5);
+              background: radial-gradient(ellipse, rgba(var(--checboxAnimado-led-rgb), 0.72) 0%, rgba(var(--checboxAnimado-led-rgb), 0.2) 60%, transparent 100%);
+              filter: blur(15px);
+              opacity: 0;
+              transition: opacity calc(var(--checboxAnimado-tiempo) * 0.4) ease calc(var(--checboxAnimado-tiempo) * 0.55), transform var(--checboxAnimado-tiempo) cubic-bezier(0.22, 1, 0.36, 1);
+              pointer-events: none;
+              z-index: 3;
+              mix-blend-mode: screen;
+            }
+            .checboxAnimado-haz-cruz::before { width: 195px; height: 66px; }
+            .checboxAnimado-haz-cruz::after { width: 66px; height: 195px; }
+            .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-haz-rombo {
+              opacity: 1;
+              transform: rotate(45deg) scale(var(--checboxAnimado-sombra));
+            }
+            .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-haz-cruz::before,
+            .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-haz-cruz::after {
+              opacity: 1;
+              transform: translate(-50%, -50%) scale(var(--checboxAnimado-sombra));
+            }
+
+            /* Modelo 1 */
+            .checboxAnimado-difusor-1 {
+              position: relative;
+              z-index: 2;
+              width: 100px;
+              height: 100px;
+              border-radius: 18px;
+              background: var(--checboxAnimado-difusor-off);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              transition: background var(--checboxAnimado-tiempo) ease, box-shadow var(--checboxAnimado-tiempo) ease;
+            }
+            .checboxAnimado-nucleo-1 {
+              width: 66px;
+              height: 66px;
+              border-radius: 24px;
+              background: radial-gradient(circle, rgba(var(--checboxAnimado-led-rgb), 0.45) 0%, #141921 100%);
+              border: 1px solid rgba(255, 255, 255, 0.08);
+              opacity: 0;
+              pointer-events: none;
+              transform: translateX(calc(-115px / var(--checboxAnimado-sx))) rotate(-540deg) scale(0.7);
+              transition: opacity 0.25s ease, transform var(--checboxAnimado-tiempo) cubic-bezier(0.22, 1, 0.36, 1), background calc(var(--checboxAnimado-tiempo) * 0.8) ease-in, box-shadow calc(var(--checboxAnimado-tiempo) * 0.9) ease-in, border-color var(--checboxAnimado-tiempo) ease;
+            }
+            .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-difusor-1 {
+              background: var(--checboxAnimado-difusor-on);
+              box-shadow: 0 0 calc(45px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.35);
+            }
+            .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-nucleo-1 {
+              opacity: 1;
+              transform: translateX(0) rotate(0deg) scale(1);
+              border-color: transparent;
+              background: radial-gradient(circle, #ffffff 0%, var(--checboxAnimado-nucleo) 68%, var(--checboxAnimado-nucleo-borde) 100%);
+              box-shadow: 0 0 calc(20px * var(--checboxAnimado-sombra)) var(--checboxAnimado-nucleo), 0 0 calc(50px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.9), 0 0 calc(110px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.55);
+              transition: opacity calc(var(--checboxAnimado-tiempo) * 0.35) ease-out, transform var(--checboxAnimado-tiempo) cubic-bezier(0.22, 1, 0.36, 1), background calc(var(--checboxAnimado-tiempo) * 0.75) ease-in, box-shadow calc(var(--checboxAnimado-tiempo) * 0.85) ease-in, border-color var(--checboxAnimado-tiempo) ease;
+            }
+
+            /* Modelo 2 */
+            .checboxAnimado-difusor-2 {
+              position: relative;
+              z-index: 2;
+              width: 100px;
+              height: 100px;
+              border-radius: 18px;
+              background: var(--checboxAnimado-difusor-off);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              transition: background var(--checboxAnimado-tiempo) ease, box-shadow var(--checboxAnimado-tiempo) ease;
+            }
+            .checboxAnimado-nucleo-2 {
+              width: 66px;
+              height: 66px;
+              border-radius: 24px;
+              background: radial-gradient(circle, rgba(var(--checboxAnimado-led-rgb), 0.45) 0%, #141921 100%);
+              border: 1px solid rgba(255, 255, 255, 0.08);
+              transform: scale(0.5);
+              opacity: 0;
+              pointer-events: none;
+              transition: opacity 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+            }
+            .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-difusor-2 {
+              background: var(--checboxAnimado-difusor-on);
+              box-shadow: 0 0 calc(45px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.35);
+            }
+            .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-nucleo-2 {
+              border-color: transparent;
+              background: radial-gradient(circle, #ffffff 0%, var(--checboxAnimado-nucleo) 68%, var(--checboxAnimado-nucleo-borde) 100%);
+              animation: checboxAnimado-espiralCentro var(--checboxAnimado-tiempo) cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+            }
+            @keyframes checboxAnimado-espiralCentro {
+              0% {
+                transform: rotate(0deg) translateX(calc(95px / var(--checboxAnimado-sx))) scale(0.6);
+                opacity: 0;
+                box-shadow: 0 0 calc(6px * var(--checboxAnimado-sombra)) var(--checboxAnimado-led), 0 0 calc(16px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.5);
+              }
+              20% { opacity: 0.95; }
+              100% {
+                transform: rotate(360deg) translateX(0px) scale(1);
+                opacity: 1;
+                box-shadow: 0 0 calc(20px * var(--checboxAnimado-sombra)) var(--checboxAnimado-nucleo), 0 0 calc(50px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.9), 0 0 calc(110px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.55);
+              }
+            }
+
+            /* Modelo 3 */
+            .checboxAnimado-difusor-3 {
+              position: relative;
+              z-index: 2;
+              width: 100px;
+              height: 100px;
+              border-radius: 20px;
+              background: var(--checboxAnimado-difusor-off);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              transform: rotate(180deg);
+              transition: transform var(--checboxAnimado-tiempo) cubic-bezier(0.22, 1, 0.36, 1), background var(--checboxAnimado-tiempo) ease, box-shadow var(--checboxAnimado-tiempo) ease;
+            }
+            .checboxAnimado-nucleo-3 {
+              width: 64px;
+              height: 64px;
+              border-radius: 50%;
+              background: radial-gradient(circle, rgba(var(--checboxAnimado-led-rgb), 0.45) 0%, #141921 100%);
+              border: 1px solid rgba(255, 255, 255, 0.08);
+              opacity: 0;
+              pointer-events: none;
+              transform: translateX(calc(-115px / var(--checboxAnimado-sx))) rotate(-540deg) scale(0.6);
+              transition: opacity 0.25s ease, transform var(--checboxAnimado-tiempo) cubic-bezier(0.22, 1, 0.36, 1), background calc(var(--checboxAnimado-tiempo) * 0.8) ease-in, box-shadow calc(var(--checboxAnimado-tiempo) * 0.9) ease-in;
+            }
+            .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-difusor-3 {
+              transform: rotate(0deg);
+              background: var(--checboxAnimado-difusor-on);
+              box-shadow: 0 0 calc(45px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.35);
+            }
+            .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-nucleo-3 {
+              opacity: 1;
+              transform: translateX(0) rotate(0deg) scale(1);
+              border-color: transparent;
+              background: radial-gradient(circle, #ffffff 0%, var(--checboxAnimado-nucleo) 68%, var(--checboxAnimado-nucleo-borde) 100%);
+              box-shadow: 0 0 calc(20px * var(--checboxAnimado-sombra)) var(--checboxAnimado-nucleo), 0 0 calc(50px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.92), 0 0 calc(110px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.55);
+              transition: opacity calc(var(--checboxAnimado-tiempo) * 0.35) ease-out, transform var(--checboxAnimado-tiempo) cubic-bezier(0.22, 1, 0.36, 1), background calc(var(--checboxAnimado-tiempo) * 0.75) ease-in, box-shadow calc(var(--checboxAnimado-tiempo) * 0.85) ease-in;
+            }
+
+            /* Modelo 4 (por defecto) */
+            .checboxAnimado-difusor-4 {
+              position: relative;
+              z-index: 2;
+              width: 76px;
+              height: 76px;
+              border-radius: 16px;
+              transform: rotate(45deg);
+              background: var(--checboxAnimado-difusor-off);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              transition: background var(--checboxAnimado-tiempo) ease, box-shadow var(--checboxAnimado-tiempo) ease;
+            }
+            .checboxAnimado-nucleo-4 {
+              width: 48px;
+              height: 48px;
+              border-radius: 14px;
+              background: radial-gradient(circle, rgba(var(--checboxAnimado-led-rgb), 0.45) 0%, #141921 100%);
+              border: 1px solid rgba(255, 255, 255, 0.08);
+              opacity: 0;
+              pointer-events: none;
+              transform: translate(calc(-85px / var(--checboxAnimado-sx)), calc(-85px / var(--checboxAnimado-sy))) rotate(-360deg) scale(0.6);
+              transition: opacity 0.25s ease, transform var(--checboxAnimado-tiempo) cubic-bezier(0.22, 1, 0.36, 1), background calc(var(--checboxAnimado-tiempo) * 0.8) ease-in, box-shadow calc(var(--checboxAnimado-tiempo) * 0.9) ease-in;
+            }
+            .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-difusor-4 {
+              background: var(--checboxAnimado-difusor-on);
+              box-shadow: 0 0 calc(45px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.35);
+            }
+            .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-nucleo-4 {
+              opacity: 1;
+              transform: translate(0, 0) rotate(0deg) scale(1);
+              border-color: transparent;
+              background: radial-gradient(circle, #ffffff 0%, var(--checboxAnimado-nucleo) 68%, var(--checboxAnimado-nucleo-borde) 100%);
+              box-shadow: 0 0 calc(20px * var(--checboxAnimado-sombra)) var(--checboxAnimado-nucleo), 0 0 calc(50px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.92), 0 0 calc(110px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.55);
+              transition: opacity calc(var(--checboxAnimado-tiempo) * 0.35) ease-out, transform var(--checboxAnimado-tiempo) cubic-bezier(0.22, 1, 0.36, 1), background calc(var(--checboxAnimado-tiempo) * 0.75) ease-in, box-shadow calc(var(--checboxAnimado-tiempo) * 0.85) ease-in;
+            }
+
+            /* Modelo 5 */
+            .checboxAnimado-difusor-5 {
+              position: relative;
+              z-index: 2;
+              width: 100px;
+              height: 46px;
+              border-radius: 14px;
+              background: var(--checboxAnimado-difusor-off);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              transition: background var(--checboxAnimado-tiempo) ease, box-shadow var(--checboxAnimado-tiempo) ease;
+            }
+            .checboxAnimado-nucleo-5 {
+              width: 76px;
+              height: 20px;
+              border-radius: 9px;
+              background: radial-gradient(circle, rgba(var(--checboxAnimado-led-rgb), 0.45) 0%, #141921 100%);
+              border: 1px solid rgba(255, 255, 255, 0.08);
+              opacity: 0;
+              pointer-events: none;
+              transform: translateY(calc(-95px / var(--checboxAnimado-sy))) rotate(-360deg) scale(0.6);
+              transition: opacity 0.25s ease, transform var(--checboxAnimado-tiempo) cubic-bezier(0.22, 1, 0.36, 1), background calc(var(--checboxAnimado-tiempo) * 0.8) ease-in, box-shadow calc(var(--checboxAnimado-tiempo) * 0.9) ease-in;
+            }
+            .checboxAnimado-haz-5::before { width: 195px; height: 34px; }
+            .checboxAnimado-haz-5::after { width: 95px; height: 140px; }
+            .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-difusor-5 {
+              background: var(--checboxAnimado-difusor-on);
+              box-shadow: 0 0 calc(45px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.35);
+            }
+            .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-nucleo-5 {
+              opacity: 1;
+              transform: translateY(0) rotate(0deg) scale(1);
+              border-color: transparent;
+              background: linear-gradient(90deg, var(--checboxAnimado-nucleo-borde), #ffffff, var(--checboxAnimado-nucleo-borde));
+              box-shadow: 0 0 calc(18px * var(--checboxAnimado-sombra)) var(--checboxAnimado-nucleo), 0 0 calc(48px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.9), 0 0 calc(105px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.55);
+              transition: opacity calc(var(--checboxAnimado-tiempo) * 0.35) ease-out, transform var(--checboxAnimado-tiempo) cubic-bezier(0.22, 1, 0.36, 1), background calc(var(--checboxAnimado-tiempo) * 0.75) ease-in, box-shadow calc(var(--checboxAnimado-tiempo) * 0.85) ease-in;
+            }
+
+            /* Modelo 6 */
+            .checboxAnimado-difusor-6 {
+              position: relative;
+              z-index: 2;
+              width: 100px;
+              height: 100px;
+              border-radius: 18px;
+              background: var(--checboxAnimado-difusor-off);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              transition: background var(--checboxAnimado-tiempo) ease, box-shadow var(--checboxAnimado-tiempo) ease;
+            }
+            .checboxAnimado-nucleo-6 {
+              width: 64px;
+              height: 64px;
+              border-radius: 22px;
+              border: 9px solid rgba(var(--checboxAnimado-led-rgb), 0.4);
+              background: #040608;
+              opacity: 0;
+              pointer-events: none;
+              transform: translateX(calc(115px / var(--checboxAnimado-sx))) rotate(540deg) scale(0.6);
+              transition: opacity 0.25s ease, transform var(--checboxAnimado-tiempo) cubic-bezier(0.22, 1, 0.36, 1), border-color calc(var(--checboxAnimado-tiempo) * 0.8) ease-in, background calc(var(--checboxAnimado-tiempo) * 0.8) ease-in, box-shadow calc(var(--checboxAnimado-tiempo) * 0.9) ease-in;
+            }
+            .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-difusor-6 {
+              background: var(--checboxAnimado-difusor-on);
+              box-shadow: 0 0 calc(45px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.35);
+            }
+            .checboxAnimado-input:checked + .checboxAnimado-wrap .checboxAnimado-nucleo-6 {
+              opacity: 1;
+              transform: translateX(0) rotate(0deg) scale(1);
+              border-color: var(--checboxAnimado-nucleo);
+              background: rgba(var(--checboxAnimado-led-rgb), 0.14);
+              box-shadow: 0 0 calc(18px * var(--checboxAnimado-sombra)) var(--checboxAnimado-nucleo), 0 0 calc(48px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.88), inset 0 0 calc(20px * var(--checboxAnimado-sombra)) rgba(var(--checboxAnimado-led-rgb), 0.75);
+              transition: opacity calc(var(--checboxAnimado-tiempo) * 0.35) ease-out, transform var(--checboxAnimado-tiempo) cubic-bezier(0.22, 1, 0.36, 1), border-color calc(var(--checboxAnimado-tiempo) * 0.75) ease-in, background calc(var(--checboxAnimado-tiempo) * 0.75) ease-in, box-shadow calc(var(--checboxAnimado-tiempo) * 0.85) ease-in;
+            }
+          `;
+          (document.head || document.documentElement).appendChild(style);
+        }
+
+        let modeloFinal = Number(modelo) || 4;
+        if (modeloFinal < 1 || modeloFinal > 6) modeloFinal = 1;
+
+        const tamanoBase = Number(tamano);
+        const anchoInicial = Number(ancho) || (tamanoBase > 0 ? tamanoBase : 14);
+        const altoInicial = Number(alto) || (tamanoBase > 0 ? tamanoBase : 14);
+        const duracionInicial = Number(duracion) > 0 ? Number(duracion) : 1.5;
+        const sombraInicial = sombra !== undefined && !isNaN(Number(sombra)) && Number(sombra) >= 0
+          ? Number(sombra)
+          : 4;
+
+        const parsearColor = (c) => {
+          let limpio = String(c).trim();
+          if (/^[0-9a-fA-F]{6}$/.test(limpio) || /^[0-9a-fA-F]{3}$/.test(limpio)) {
+            limpio = `#${limpio}`;
+          }
+          const ctx = document.createElement('canvas').getContext('2d');
+          if (!ctx) return { r: 42, g: 82, b: 147 };
+          ctx.fillStyle = '#2A5293';
+          ctx.fillStyle = limpio;
+          const valor = ctx.fillStyle;
+
+          if (valor.startsWith('#')) {
+            const num = parseInt(valor.slice(1), 16);
+            return {
+              r: (num >> 16) & 255,
+              g: (num >> 8) & 255,
+              b: num & 255
+            };
+          }
+          const partes = valor.match(/\d+/g);
+          if (partes && partes.length >= 3) {
+            return {
+              r: Number(partes[0]),
+              g: Number(partes[1]),
+              b: Number(partes[2])
+            };
+          }
+          return { r: 42, g: 82, b: 147 };
+        };
+
+        const mezclarBlanco = (rgb, factor) => {
+          const r = Math.round(rgb.r + (255 - rgb.r) * factor);
+          const g = Math.round(rgb.g + (255 - rgb.g) * factor);
+          const b = Math.round(rgb.b + (255 - rgb.b) * factor);
+          return `rgb(${r}, ${g}, ${b})`;
+        };
+
+        const instance = {
+          checked: !!checked,
+          disabled: false,
+          element: document.createElement('div')
+        };
+
+        instance.element.className = `giopre-checkbox ${instance.checked ? 'checked' : ''}`;
+
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.className = 'checboxAnimado-input';
+        input.checked = instance.checked;
+
+        const wrap = document.createElement('div');
+        wrap.className = 'checboxAnimado-wrap';
+
+        const visual = document.createElement('div');
+        visual.className = 'checboxAnimado-label';
+
+        const hazRombo = document.createElement('span');
+        hazRombo.className = 'checboxAnimado-haz-rombo';
+
+        const hazCruz = document.createElement('span');
+        hazCruz.className = modeloFinal === 5
+          ? 'checboxAnimado-haz-cruz checboxAnimado-haz-5'
+          : 'checboxAnimado-haz-cruz';
+
+        const difusor = document.createElement('div');
+        difusor.className = `checboxAnimado-difusor-${modeloFinal}`;
+
+        const nucleo = document.createElement('div');
+        nucleo.className = `checboxAnimado-nucleo-${modeloFinal}`;
+
+        difusor.appendChild(nucleo);
+        visual.appendChild(hazRombo);
+        visual.appendChild(hazCruz);
+        visual.appendChild(difusor);
+        wrap.appendChild(visual);
+
+        const labelEl = document.createElement('span');
+        labelEl.className = 'giopre-label';
+        labelEl.textContent = label;
+
+        instance.element.appendChild(input);
+        instance.element.appendChild(wrap);
+        instance.element.appendChild(labelEl);
+
+        const setColor = (c) => {
+          if (!instance.element || !c) return instance;
+          const rgb = parsearColor(c);
+          instance.element.style.setProperty('--checboxAnimado-led', `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`);
+          instance.element.style.setProperty('--checboxAnimado-led-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
+          instance.element.style.setProperty('--checboxAnimado-nucleo', mezclarBlanco(rgb, 0.8));
+          instance.element.style.setProperty('--checboxAnimado-nucleo-borde', mezclarBlanco(rgb, 0.62));
+          return instance;
+        };
+
+        const setColorTexto = (c) => {
+          if (!instance.element || !c) return instance;
+          let limpio = String(c).trim();
+          if (/^[0-9a-fA-F]{6}$/.test(limpio) || /^[0-9a-fA-F]{3}$/.test(limpio)) {
+            limpio = `#${limpio}`;
+          }
+          instance.element.style.setProperty('--checboxAnimado-texto-color', limpio);
+          return instance;
+        };
+
+        const setTamanos = (wIn, hIn) => {
+          if (!instance.element) return instance;
+          const w = Number(wIn);
+          const h = hIn !== undefined ? Number(hIn) : w;
+          if (!(w > 0) || !(h > 0)) return instance;
+          instance.element.style.setProperty('--checboxAnimado-ancho', `${w}px`);
+          instance.element.style.setProperty('--checboxAnimado-alto', `${h}px`);
+          instance.element.style.setProperty('--checboxAnimado-sx', `${w / 100}`);
+          instance.element.style.setProperty('--checboxAnimado-sy', `${h / 100}`);
+          return instance;
+        };
+
+        const setDuracion = (segundos) => {
+          if (!instance.element) return instance;
+          const t = Number(segundos);
+          if (!(t > 0)) return instance;
+          instance.element.style.setProperty('--checboxAnimado-tiempo', `${t}s`);
+          return instance;
+        };
+
+        const setSombra = (escala) => {
+          if (!instance.element) return instance;
+          const s = Number(escala);
+          if (isNaN(s) || s < 0) return instance;
+          instance.element.style.setProperty('--checboxAnimado-sombra', `${s}`);
+          return instance;
+        };
+
+        const setPosicionLabel = (pos) => {
+          if (!instance.element) return instance;
+          instance.element.classList.remove('label-izquierda', 'label-oculto');
+          if (pos === false || pos === 'oculto' || pos === 'none' || pos === 'ninguno' || pos === 'no') {
+            instance.element.classList.add('label-oculto');
+          } else if (pos === 'izquierda' || pos === 'left') {
+            instance.element.classList.add('label-izquierda');
+          }
+          return instance;
+        };
+
+        setTamanos(anchoInicial, altoInicial);
+        setColor(color);
+        if (colorTexto) setColorTexto(colorTexto);
+        setDuracion(duracionInicial);
+        setSombra(sombraInicial);
+        setPosicionLabel(posicionLabel);
+
+        const handleClick = () => {
+          if (instance.disabled) return;
+          instance.checked = !instance.checked;
+          input.checked = instance.checked;
+          instance.element.classList.toggle('checked', instance.checked);
+          if (typeof onChange === 'function') {
+            onChange(instance.checked, instance);
+          }
+        };
+
+        instance.element.addEventListener('click', handleClick);
+
+        instance.getValue = () => instance.checked;
+        instance.setValue = (v) => {
+          instance.checked = !!v;
+          input.checked = instance.checked;
+          if (instance.element) instance.element.classList.toggle('checked', instance.checked);
+          return instance;
+        };
+        instance.setDisabled = (v) => {
+          instance.disabled = !!v;
+          input.disabled = instance.disabled;
+          if (instance.element) instance.element.classList.toggle('disabled', instance.disabled);
+          return instance;
+        };
+        instance.mount = (parent) => {
+          if (instance.element && parent) {
+            const p = parent.element ? parent.element : parent;
+            p.appendChild(instance.element);
+          }
+          return instance;
+        };
+        instance.destroy = () => {
+          if (instance.element) {
+            instance.element.removeEventListener('click', handleClick);
+            if (instance.element.parentNode) instance.element.parentNode.removeChild(instance.element);
+            instance.element = null;
+          }
+        };
+
+    
+        instance.setColor = setColor;
+        instance.setColorTexto = setColorTexto;
+        instance.setTamanos = setTamanos;
+        instance.setDuracion = setDuracion;
+        instance.setSombra = setSombra;
+        instance.setPosicionLabel = setPosicionLabel;
+
+        return instance;
+      }
+   
 
     createRadio({ items = [], activeIndex = 0, onChange } = {}) {
         const styleId = 'giopre-radiogroup-standalone-styles';
@@ -5007,7 +5591,8 @@ class Giovanni {
 
         const title = document.createElement('span');
         title.textContent = label;
-        title.style.cssText = "font-size: 12px; font-weight: 500; color: #4daafc; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;";
+        title.classList.add('clsslb');
+        title.style.cssText = "";
 
         const rightTools = document.createElement('div');
         rightTools.style.cssText = "display: flex; align-items: center; gap: 6px; flex-shrink: 0;";
@@ -5391,7 +5976,7 @@ class Giovanni {
         const openDropdown = () => {
             isOpen = true;
             menu.style.display = 'flex';
-            trigger.style.borderColor = 'var(--textoActvioBlue)';
+             
             arrow.style.transform = 'rotate(180deg)';
             renderList();
             setTimeout(() => searchInput.focus(), 50);
